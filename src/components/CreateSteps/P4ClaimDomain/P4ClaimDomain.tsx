@@ -36,17 +36,20 @@ export const P4ClaimDomain = () => {
       console.log('string to embed:', '"' + forwardsString + '"')
       return forwardsString
     }
-
-    setTx(
-      calcBidDomainTx(
-        combineForwards(data),
-        state.wallet,
-        state.alias + state.extension,
-        state.settings.feeRate,
-        state.notifications.txHistory,
-        state.network
+    try {
+      setTx(
+        calcBidDomainTx(
+          combineForwards(data),
+          state.wallet,
+          state.alias + state.extension,
+          state.settings.feeRate,
+          state.notifications.txHistory,
+          state.network
+        )
       )
-    )
+    } catch (e) {
+      // console.log('Could not build tx yet', e)
+    }
   }, [state, data])
 
   console.log(tx)

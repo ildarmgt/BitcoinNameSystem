@@ -1,9 +1,9 @@
 
 /* prevents rendering outside page range */
 .cutOverflow {
-  top:                    0.25%;
-  left:                   0.25%;
-  width:                  99.5%;
+  top:                    0%;
+  left:                   0%;
+  width:                  100%;
   position:               absolute;
   overflow:               hidden;
   height:                 15vw;             /* modified by js */

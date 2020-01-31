@@ -36,7 +36,7 @@ export const calcBidDomainTx = (
   // gather necessary utxo to use until enough to cover costs
   let usedUtxoOfPayer: Array<any> = []
   let totalGathered = 0 // sat
-  wallet.utxoList.forEach((utxo: any) => {
+  wallet.utxoList?.forEach((utxo: any) => {
     // while not enough funds
     if (totalGathered < valueNeeded) {
       usedUtxoOfPayer.push(utxo)
