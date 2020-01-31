@@ -1,0 +1,72 @@
+.wrapper {
+  margin-top: calc(2 * var(--s));
+  font-size: calc(2.5 * var(--s));
+  color: var(--colorBitcoinBlue);
+  display: flex;
+  flex-direction: row;
+  /* wrap makes basis of child elements go to next line */
+  flex-wrap: wrap;
+  align-items: stretch;
+}
+
+.contentWrapper {
+  display: flex;
+  flex-direction: column;
+  flex-basis: 100%;
+  justify-content: center;
+  flex-wrap: wrap;
+  align-items: center;
+  /* text-align: right; */
+}
+
+.buttonWrapper {
+  display: flex;
+  flex-wrap: wrap-reverse;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  flex-basis: 100%;
+  margin-right: calc(7 * var(--s));
+  margin-left: calc(7 * var(--s));
+}
+
+.buttonWrapper > div,
+.contentWrapper > div {
+  margin: calc(1 * var(--s)) calc(3 * var(--s));
+}
+
+.address {
+  display: inline-block;
+  overflow-wrap: break-word;
+  word-wrap: break-word;
+  word-break: break-all;
+}
+
+
+
+.imgQr,
+.imgQr img {
+  height: calc(20 * var(--s));
+  width: calc(20 * var(--s));
+}
+
+@media screen and (min-aspect-ratio: 12/9) {
+  .contentWrapper {
+    justify-content: center;
+
+    flex-basis: 60%;
+    /* aligns perpendicular to main column axis to the right */
+    align-items: flex-end;
+    margin-right: 3%;
+  }
+  .buttonWrapper {
+    flex-basis: 30%;
+    flex-direction: column-reverse;
+    /* along column, so top */
+    justify-content: space-between;
+    /* perpendicular to column, so left */
+    align-items: flex-end;
+    margin-right: calc(2 * var(--s));
+    margin-left: 0;
+  }
+}

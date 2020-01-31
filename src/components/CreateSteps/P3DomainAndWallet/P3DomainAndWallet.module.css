@@ -1,0 +1,104 @@
+.wrapper {
+  margin-top: calc(2 * var(--s));
+  font-size: calc(2 * var(--s));
+  color: var(--colorBitcoinBlue);
+  display: grid;
+  grid-template-columns:  0% auto 50%;
+  grid-template-rows:     auto calc(2 * var(--s)) auto auto auto auto auto;
+
+  grid-gap: calc(1 * var(--s)) calc(1 * var(--s));
+
+  grid-template-areas:
+    ".  title            title"
+    ".  .                ."
+    ".  walletInfo       walletButton"
+    ".  domainInfo       domainButton"
+    ".  unspent          unspent"
+    ".  ownership         ownership"
+    ".  buttonWrapper    buttonWrapper"
+  ;
+
+  align-items: center;
+}
+
+.contentWrapper {
+
+}
+
+.title {
+  font-size: calc(2.5 * var(--s));
+  grid-area: title;
+}
+
+.domainInfo {
+  grid-area: domainInfo;
+}
+
+.domainButton {
+  grid-area: domainButton;
+}
+
+.walletInfo {
+  grid-area: walletInfo;
+}
+
+.walletButton {
+  grid-area: walletButton;
+}
+
+.domainInfo,
+.walletInfo {
+  text-align: right;
+}
+
+.domainButton,
+.walletButton {
+  text-align: left;
+}
+
+.unspent {
+  grid-area: unspent;
+}
+
+.buttonWrapper {
+  grid-area: buttonWrapper;
+  text-align: center;
+  /* margin: calc(1 * var(--s)); */
+}
+
+.ownership {
+  grid-area: ownership;
+}
+
+@media screen and (min-aspect-ratio: 12/9) {
+  .wrapper {
+    margin-right: calc(11 * var(--s));
+    grid-template-columns:  auto calc(20 * var(--s)) calc(35 * var(--s));
+
+    grid-template-areas:
+    ".                title             title"
+    ".                .                 ."
+    "walletInfo       walletButton      unspent"
+    "domainInfo       domainButton      ownership"
+    ".                .                 ."
+    ".                .                 ."
+    ".                .                 buttonWrapper"
+  ;
+  }
+  .wrapper div {
+    text-align: right;
+  }
+
+  .buttonWrapper {
+    align-self: end;
+  }
+
+}
+
+.balance {
+  display: inline-flex;
+  background-color: var(--colorDarker1);
+  border-radius: calc(1 * var(--s));
+  padding: calc(0.5 * var(--s)) calc(1 * var(--s));
+  margin: calc(0.5 * var(--s)) calc(1 * var(--s));
+}

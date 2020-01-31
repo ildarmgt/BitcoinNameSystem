@@ -1,0 +1,9 @@
+
+.wrapper {
+  padding: 0;
+  padding-top: 14vh;
+  box-sizing: border-box;
+  margin: 0 calc(0.2 * var(--s));
+  overflow-y: auto;
+  height: calc(100vh - 7vw - calc(5 * var(--s)));
+}

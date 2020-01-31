@@ -1,0 +1,29 @@
+.root {
+  display: inline-block;
+  position: absolute;
+  bottom: calc(0.1 * var(--s));
+  right: calc(1 * var(--s));
+  text-align: right;
+  font-size: calc(1.5 * var(--s));
+  color: var(--colorDarker4);
+  margin: calc(0.5 * var(--s)) calc(0.5 * var(--s));
+  vertical-align: middle;
+}
+
+.root a {
+  color: var(--colorDarker5);
+  display: inline-block;
+  vertical-align: middle;
+}
+
+.warning {
+  /* padding: calc(1 * var(--s)); */
+  display: inline-block;
+  position: absolute;
+  bottom: calc(1.5 * var(--s));
+  left: calc(1 * var(--s));
+  color: red;
+  font-size: calc(2 * var(--s));
+  margin-right: calc(2 * var(--s));
+  vertical-align: middle;
+}

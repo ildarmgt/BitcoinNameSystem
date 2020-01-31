@@ -1,0 +1,87 @@
+.wrapper {
+  color: var(--colorBitcoinBlue);
+  padding-top: calc(5 * var(--s));
+}
+
+.title {
+  display: inline-block;
+  font-size: calc(2.5 * var(--s));
+  margin: calc(1 * var(--s));
+  margin-bottom: calc(3 * var(--s));
+  cursor: default;
+  color: var(--colorBitcoinBlue);
+  /* text-shadow: 1px 1px var(--colorBackground); */
+}
+
+.contentWrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.buttonWrapper {
+  display: flex;
+  flex-wrap: wrap-reverse;
+  flex-direction: row;
+  /* justify-content: space-evenly; */
+  justify-content: center;
+  align-items: center;
+  margin: calc(2 * var(--s));
+}
+
+.buttonWrapper > div {
+  margin: calc(1 * var(--s)) calc(2 * var(--s));
+}
+
+.describe {
+  /* text-shadow: 1px 1px var(--colorBackground); */
+  font-size: calc(2.5 * var(--s));
+  cursor: default;
+  -webkit-user-select: none;
+  -moz-user-select: -moz-none;
+  -ms-user-select: none;
+  user-select: none;
+}
+
+.Orange {
+  color: var(--colorBitcoinOrange);;
+  text-shadow: none;
+}
+
+.spacer {
+  margin-top: 30vh;
+}
+
+.backup {
+  font-size: calc(2.5 * var(--s));
+  border-radius: calc(0.5 * var(--s));
+  padding: calc(1 * var(--s)) calc(2 * var(--s));
+  margin: calc(2 * var(--s));
+  color: var(--colorBitcoinOrange);
+  background-color: var(--colorBackground);
+  width: 80%;
+  cursor: default;
+}
+
+/* .backup:focus {
+  outline: none;
+} */
+
+.restoreBackup {
+  width: 80%;
+  color: var(--colorBitcoinOrange);
+  caret-color: var(--colorBitcoinOrange);
+  height: auto;
+  overflow-y: auto;
+  overflow-x: hidden;
+  word-wrap: normal;
+  overflow-wrap: normal;
+  white-space: normal;
+  box-sizing: border-box;
+  margin: calc(1 * var(--s));
+}
+
+.restoreBackup::placeholder {
+  color: var(--colorBitcoinOrange);
+  opacity: 0.5;
+}

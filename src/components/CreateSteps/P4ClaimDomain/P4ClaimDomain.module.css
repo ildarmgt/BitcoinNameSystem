@@ -1,0 +1,278 @@
+.wrapper {
+  box-sizing: border-box;
+
+  margin: 0 calc(2 * var(--s));
+  font-size: calc(2 * var(--s));
+  color: var(--colorBitcoinBlue);
+  display: grid;
+
+  grid-template-columns:  auto auto;
+  grid-template-rows:     auto auto auto auto auto auto;
+
+  grid-gap: calc(1 * var(--s)) calc(1 * var(--s));
+
+  grid-template-areas:
+    "title            title"
+    "changes          changes"
+    "buttonWrapper buttonWrapper"
+    "editor           editor"
+    "pastList         pastList"
+    "pastList         pastList"
+  ;
+
+  align-items: center;
+}
+
+.title {
+  grid-area: title;
+  font-size: calc(3 * var(--s));
+}
+
+.changes {
+  grid-area: changes;
+}
+.pastList {
+  grid-area: pastList;
+}
+
+.buttonWrapper {
+  grid-area: buttonWrapper;
+}
+
+.buttonWrapper > div {
+  margin: calc(3 * var(--s)) 0;
+}
+
+.editor {
+  align-self: center;
+  grid-area: editor;
+
+  display: grid;
+  grid-template-columns: 30% 2% calc(66% - (5 * var(--s)))  2% calc(5 * var(--s));
+  grid-template-rows: auto calc(3.5 * var(--s)) ;
+  grid-template-areas:
+    "editorNetwork    .     editorAddress   .               btnAdd"
+    "btnDelete        .     .               .               ."
+  ;
+  grid-row-gap: calc(0.5 * var(--s));
+  justify-items: start;
+  align-items: center;
+}
+
+/* planned updates list */
+
+.updateItem {
+  box-sizing: border-box;
+
+  width: 100%;
+  display: grid;
+  grid-template-columns: calc(5 * var(--s)) auto;
+  grid-template-columns: calc(5 * var(--s)) auto;
+  grid-template-areas:
+    "updateCancel updateInfo"
+  ;
+  justify-items: center;
+  align-items: center;
+  background-color: var(--colorDarker1);
+  border-radius: calc(0.5 * var(--s));
+  margin-top: calc(1 * var(--s));
+  padding: calc(0.5 * var(--s)) calc(1 * var(--s));
+  cursor: pointer;
+}
+.updateItem:hover{
+  background-color: var(--colorDarker2);
+}
+
+.updateCancel {
+  justify-self: start;
+  grid-area: updateCancel;
+  text-align: center;
+  color: var(--colorBackground);
+  background-color: var(--colorTransparent);
+  transform: scale(0.9);
+}
+.updateCancel:hover {
+  background-color: var(--colorWarning);
+}
+
+.updateInfo {
+  justify-self: start;
+  width: 100%;
+  grid-area: updateInfo;
+  text-align: left;
+}
+.updateInfo span {
+  font-weight: bold;
+  overflow-wrap: break-word;
+  word-wrap: break-word;
+  word-break: break-all;
+}
+
+
+/* textarea editor */
+
+.editorNetwork {
+  grid-area: editorNetwork;
+  width: 100%;
+  color: var(--colorBitcoinOrange);
+}
+
+.editorAddress {
+  grid-area: editorAddress;
+  width: 100%;
+  color: var(--colorBitcoinOrange);
+}
+
+/* add changes button */
+.btnAdd {
+  grid-area: btnAdd;
+  transform: scale(1.2);
+  background-color: var(--colorBitcoinOrange);
+}
+
+
+/* delete network history button */
+
+.btnDelete {
+  grid-area: btnDelete;
+  justify-self: end;
+  font-size: calc(2 * var(--s));
+  cursor: pointer;
+  border-radius: calc(1.5 * var(--s));
+  background-color: var(--colorDarker2);
+  padding: calc(0.3 * var(--s)) calc(1.5 * var(--s));
+  color: var(--colorBackground);
+}
+.btnDelete:hover {
+  background-color: var(--colorWarning);
+}
+
+/* List of past forwarding information */
+
+.pastPair {
+  box-sizing: border-box;
+
+  display: grid;
+  width: 100%;
+  grid-template-areas:
+    "pastNetwork    pastAddress"
+  ;
+  grid-template-columns: 30% 68%;
+  grid-template-rows: auto;
+  margin: calc(0.5 * var(--s)) 0;
+  margin-top: calc(0.5 * var(--s));
+  grid-column-gap: 2%;
+  align-items: center;
+}
+.pastPair:hover {
+  background-color: var(--colorDarker1);
+  cursor: pointer;
+}
+
+.pastNetwork {
+  grid-area: pastNetwork;
+  width: 100%;
+  box-sizing: border-box;
+  padding: calc(0.5 * var(--s)) calc(1 * var(--s));
+
+  justify-self: right;
+  text-align: right;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.pastAddress {
+  width: 100%;
+  grid-area: pastAddress;
+  box-sizing: border-box;
+  padding: calc(0.5 * var(--s)) calc(1 * var(--s));
+  justify-self: left;
+  text-align: left;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* wide screen settings */
+@media screen and (min-aspect-ratio: 12/9) {
+  .wrapper {
+    grid-template-areas:
+      "editor       title"
+      "editor       buttonWrapper"
+      "pastList     changes"
+      "pastList     ."
+      "pastList     ."
+      "pastList     ."
+    ;
+    grid-template-columns:  50% 45%;
+    grid-template-rows:     auto auto auto auto auto auto;
+
+    grid-gap: 0% 5%;
+    transform: scale(0.85);
+    margin-top: calc(-5 * var(--s));
+  }
+  .pastList {
+    align-self: end;
+  }
+  .title {
+    align-self: flex-start;
+    justify-self: right;
+    margin-bottom: calc(5 * var(--s));
+  }
+  .changes {
+    justify-self: right;
+  }
+  .buttonWrapper {
+    justify-self: right;
+  }
+  .editor {
+    justify-self: right;
+    align-self: flex-end;
+    text-align: right;
+  }
+
+
+}
+
+
+/* .contentWrapper {
+  display: flex;
+  flex-direction: column;
+  flex-basis: 100%;
+  flex-wrap: wrap;
+  text-align: right;
+} */
+
+/* .buttonWrapper {
+  display: flex;
+  flex-wrap: wrap-reverse;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  flex-basis: 100%;
+}
+
+.buttonWrapper > div,
+.contentWrapper > div {
+  margin: calc(1 * var(--s)) calc(2 * var(--s));
+}
+
+.address {
+  display: inline-block;
+  overflow-wrap: break-word;
+  word-wrap: break-word;
+  word-break: break-all;
+}
+
+.imgQr {
+  height: calc(20 * var(--s));
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center;
+}
+
+.imgQr img {
+  width: calc(20 * var(--s));
+  opacity: 0%;
+} */

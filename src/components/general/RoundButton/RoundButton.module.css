@@ -1,0 +1,74 @@
+.roundButtonWrap {
+  display: inline-block;
+  background-color: var(--colorThisButton);
+  border-radius: calc(0.5 * var(--sizeButton));
+  color: var(--colorThisButtonText);
+  margin: calc(1 * var(--sizeButton));
+  text-decoration: none;
+  font-weight: normal;
+  -webkit-user-select: none;
+  -moz-user-select: -moz-none;
+  -ms-user-select: none;
+  user-select: none;
+  cursor: pointer;
+  vertical-align: middle;
+}
+
+.roundButton {
+  display: inline-block;
+  padding: calc(0.7 * var(--sizeButton)) calc(3 * var(--sizeButton));
+  border-radius: calc(0.5 * var(--sizeButton));
+  font-size: calc(2.9 * var(--sizeButton));
+  vertical-align: middle;
+  white-space: nowrap;
+}
+
+.roundButtonWrap:active {
+  transform: translateY(calc(0.2 * var(--sizeButton)));
+}
+
+.roundButton:hover {
+  background-color: var(--colorDarker2);
+}
+
+.nextArrow {
+  /* prevents arrow from wrapping */
+  padding-right: calc(5 * var(--sizeButton));
+}
+.nextArrow:after {
+  display: block;
+  white-space: nowrap;
+  content: "";
+  float: right;
+  vertical-align: top;
+  /* prevents arrow from wrapping */
+  margin-right: calc(-3 * var(--sizeButton));
+  margin-left: calc(-2 * var(--sizeButton));
+  margin-top: calc(1.0 * var(--sizeButton));
+  width: 0;
+  height: 0;
+  border-top: calc(0.75 * var(--sizeButton)) solid transparent;
+  border-left: calc(1.5 * var(--sizeButton)) solid var(--colorThisButtonText);
+  border-bottom: calc(0.75 * var(--sizeButton)) solid transparent;
+}
+
+.backArrow {
+  /* prevents arrow from wrapping */
+  padding-left: calc(5 * var(--sizeButton));
+}
+
+.backArrow:before {
+  display: inline-block;
+  content: "";
+  float: left;
+  vertical-align: middle;
+  /* prevents arrow from wrapping */
+  margin-left: calc(-3 * var(--sizeButton));
+  margin-right: calc(-2 * var(--sizeButton));
+  margin-top: calc(1.0 * var(--sizeButton));
+  width: 0;
+  height: 0;
+  border-top: calc(0.75 * var(--sizeButton)) solid transparent;
+  border-right: calc(1.5 * var(--sizeButton)) solid var(--colorThisButtonText);
+  border-bottom: calc(0.75 * var(--sizeButton)) solid transparent;
+}

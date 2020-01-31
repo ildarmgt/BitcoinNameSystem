@@ -1,0 +1,45 @@
+.wrapper {
+  display: block;
+  position: absolute;
+  top: 0;
+  left: 0;
+  padding:            calc(0.5 * var(--s));
+  margin:             calc(0.1 * var(--s));
+  margin-left:        1vw;
+  margin-bottom:      1vw;
+  /* align-items: flex-start; */
+  /* overflow-x: auto; */
+  /* border: 1px solid yellow; */
+  z-index: 100;
+}
+
+.bar {
+  position:           absolute;
+  top:                -10vw;
+  left:               0;
+  background-color:   var(--colorBitcoinBlue);
+  transform:          skewY(-6deg);
+  height:             24vw;
+  width:              105%;
+  z-index: 100;
+}
+
+.alias {
+  color: var(--colorBackground);
+}
+
+.ext {
+  color: var(--colorBitcoinOrange);
+}
+
+.alias, .ext {
+  transform: translateX(calc(2 * var(--s)));
+  cursor: default;
+}
+
+.spacer {
+  display: block;
+  position: static;
+  margin-bottom: 7vw;
+}
+

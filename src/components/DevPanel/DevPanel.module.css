@@ -1,0 +1,29 @@
+.divDev {
+  position: absolute;
+  display: inline-block;
+  left: 10px;
+  top: 10px;
+  font-size: calc(1.2 * var(--s));
+  background-color: white;
+  padding: 5px;
+  z-index: 1000;
+
+}
+
+.hidden {
+  display: none;
+}
+
+.btnOutline {
+  border: 1px red solid;
+}
+
+.button {
+  cursor: pointer;
+  margin: 2px;
+  padding: 2px;
+}
+
+.button:hover {
+  background-color: rgba(0, 0, 0, 0.192);
+}

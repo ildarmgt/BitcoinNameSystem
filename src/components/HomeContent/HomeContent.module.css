@@ -1,0 +1,29 @@
+.lblMainTitle {
+  display: block;
+  font-size: calc(5.0 * var(--s));
+  color: var(--colorBitcoinBlue);
+  margin-top: 25vh;
+  margin-bottom: 5vh;
+}
+.lblMainTitle span {
+  color: var(--colorBitcoinOrange);
+}
+
+.divSearch {
+  display: inline-block;
+  width: 100%;
+}
+
+.txtSearch {
+  color: var(--colorBitcoinOrange);
+  width: 50vw;
+  caret-color: var(--colorBitcoinOrange);
+}
+
+.txtSearch:placeholder-shown {
+  caret-color: rgba(255, 166, 0, 0.13);
+}
+
+.txtSearch::placeholder {
+  color: var(--colorBitcoinOrange);
+}

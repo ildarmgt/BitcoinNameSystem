@@ -1,0 +1,41 @@
+.wrapper {
+  margin: calc(1.5 * var(--s));
+  overflow-y: auto;
+  height: calc(100vh - (10 * var(--s)));
+
+  /* firefox */
+  scrollbar-color: var(--colorDarker1) var(--colorTransparent);
+  scrollbar-width: thin;
+}
+
+.wrapper pre {
+  font-size: calc(1.5 * var(--s));
+  text-align: left;
+  white-space: pre-wrap;       /* css-3 */
+  white-space: -moz-pre-wrap;  /* Mozilla, since 1999 */
+  white-space: -pre-wrap;      /* Opera 4-6 */
+  white-space: -o-pre-wrap;    /* Opera 7 */
+  word-wrap: break-word;
+  word-break: break-all;
+
+  user-select: text;
+}
+
+.wrapper::-webkit-scrollbar {
+  /* chrome scroll bar */
+  background: var(--colorTransparent);
+  height: calc(0.5 * var(--s));
+  width: calc(1 * var(--s));
+}
+
+.wrapper::-webkit-scrollbar-track {
+  /* chrome scroll bar background */
+  background: var(--colorTransparent);
+}
+
+.wrapper::-webkit-scrollbar-thumb {
+  /* scroll bar itself */
+  background-color: var(--colorDarker1);
+  border-radius: calc(0.5 * var(--s));
+  box-shadow: inset 0 0 0 calc(0.1 * var(--s)) var(--colorTransparent);
+}
