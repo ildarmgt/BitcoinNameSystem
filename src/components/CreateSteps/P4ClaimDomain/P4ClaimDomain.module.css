@@ -129,7 +129,9 @@
   transform: scale(1.2);
   background-color: var(--colorBitcoinOrange);
 }
-
+.btnAdd:hover {
+  background-color: var(--colorBitcoinBlue);
+}
 
 /* delete network history button */
 

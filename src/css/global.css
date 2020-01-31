@@ -165,7 +165,7 @@ textarea:focus {
 .btnCircle {
   align-self: center;
   display: flex;
-  font-size: calc(4 * var(--s));
+  font-size: calc(4.1 * var(--s));
   width: calc(3 * var(--s));
   height: calc(3 * var(--s));
   line-height: calc(3 * var(--s));

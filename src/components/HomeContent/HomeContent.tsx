@@ -18,6 +18,9 @@ export const HomeContent = (props: any): JSX.Element => {
     searchAction({...state, alias}, dispatch, props.history)
   }
 
+  // is serach done
+  const isSearchDone = () => state.notifications.checkedHistory
+
   // put the textarea (by ref) into focus on mount and move caret to end
   const inputEl = useRef<HTMLTextAreaElement>(null)
   useEffect(() => {
@@ -31,10 +34,18 @@ export const HomeContent = (props: any): JSX.Element => {
   const placeHolder = 'satoshi'
   return (
     <>
-      <div className={ [styles.lblMainTitle, styles.noselect].join(' ') }>
+      <div className={
+        !isSearchDone()
+          ? [styles.lblMainTitle, styles.noselect].join(' ')
+          : [styles.lblMainTitle, styles.lblMainTitleAfter, styles.noselect].join(' ')
+      }>
         <span>Bitcoin</span> Name System
       </div>
-      <div className={ styles.divSearch }>
+      <div className={
+        !isSearchDone()
+          ? styles.divSearch
+          : [styles.divSearch, styles.divSearchAfter].join(' ')
+      }>
         <textarea
           id="txtSearch"
           className={ styles.txtSearch }
@@ -44,8 +55,8 @@ export const HomeContent = (props: any): JSX.Element => {
           value={ state.alias }
           placeholder={ placeHolder }
           ref={ inputEl }
-          onChange={e => changeAliasAction(state, dispatch, e?.target?.value)}
-          onKeyPress={e => { e.key === 'Enter' && searchAction(state, dispatch) }}
+          onChange={ e => changeAliasAction(state, dispatch, e?.target?.value) }
+          onKeyPress={ e => { e.key === 'Enter' && searchAction(state, dispatch) } }
         ></textarea>
         <RoundButton
           sizebutton='2.6'
@@ -54,7 +65,7 @@ export const HomeContent = (props: any): JSX.Element => {
           .btc
         </RoundButton>
       </div>
-      <div style={{ display: state.notifications.address ? 'block' : 'none' }}>
+      <div style={{ display: isSearchDone() ? 'block' : 'none' }}>
         <SearchResults />
       </div>
     </>

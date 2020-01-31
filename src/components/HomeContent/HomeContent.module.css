@@ -3,15 +3,24 @@
   font-size: calc(5.0 * var(--s));
   color: var(--colorBitcoinBlue);
   margin-top: 25vh;
-  margin-bottom: 5vh;
 }
 .lblMainTitle span {
   color: var(--colorBitcoinOrange);
 }
 
+.lblMainTitleAfter {
+  margin-top: 5vh;
+}
+
 .divSearch {
   display: inline-block;
   width: 100%;
+  margin-top: 5vh;
+}
+
+.divSearchAfter {
+  margin-top: 3vh;
+  /* margin-bottom: 2vh; */
 }
 
 .txtSearch {
