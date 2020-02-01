@@ -10,7 +10,8 @@ import sanitize from './../../../helpers/sanitize'
  * Bid on network
  */
 export const P4ClaimDomain = () => {
-  const { state, dispatch } = React.useContext(Store) // global state
+  // global state
+  const { state, dispatch } = React.useContext(Store)
 
   // array of network:forwardingAddress objects
   const forwards = state.ownership.current.forwards.slice().reverse()
@@ -19,14 +20,10 @@ export const P4ClaimDomain = () => {
   const [customAdd, setCustomAdd] = React.useState({network: '', address: '' })
 
   // local state for all plannedChanges to embed in this tx
-  const initialChanges = {}
-  // const initialChanges = {
-  //   longaddresscentral: 'banananannananananaananannaaannananannaanannananannananannanananan3456abcdefghi',
-  //   thisisaverylongnetworknamethisisaverylongnetworknamethisisaverylongnetworkname: 'lol',
-  //   http: '',
-  //   imgur: 'abcde.jpg'
-  // }
-  const [plannedChanges, setPlannedChanges] = React.useState(initialChanges as { [key: string]: string })
+  const initialPlannedChanges = {}
+  const [plannedChanges, setPlannedChanges] = React.useState(
+    initialPlannedChanges as { [key: string]: string }
+  )
 
   // local state for tx hex
   const [tx, setTx] = React.useState({ hex: '', txid: '' })

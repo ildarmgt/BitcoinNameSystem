@@ -1,18 +1,29 @@
 
-Short term
+## Short term
+
+- P3 should let user pick type of MAIN_ACTION to do
+- P4 will then allow filling remaining space w/ other info
+
+- derive all available BNS actions for wallet address
+
+- renew rule of extend lease (done on scan side)
 
 - minimal interface missing parts:
+  - burn amount
   - fee selection
   - command selection
   - broadcast page
   - post broadcast page
 
+- show expired values with warnings on search
+
+- add previous forwarding info to suggestions even if ownership expired (diff color for active, inactive)
 
 - add commands and interface
 
   - interface has a selection of all known commands to pick from
 
-  - `!el ` - Extend lease. Burn winning amount again for another ~year. Must be no owner's ACS, use as inputs (inputs @1+). notify (output @1). Use owner address (input @0).
+  - ~~`!el ` - Extend lease. Burn winning amount again for another ~year. Must be no owner's ACS, use as inputs (inputs @1+). notify (output @1). Use owner address (input @0).~~ Not necessary, burn amount enough to identify extend of lease
 
   - `!so <btcaddress>` - Send ownership to btcaddress. Can avoid reusing addresses by including new each time. Must be no owner's ACS, use as inputs (inputs @1+). owner address (input @0).
 

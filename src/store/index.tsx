@@ -35,7 +35,8 @@ export const initialState: IState = {
       forwards: [],         // array of forwards for this owner
       burnAmount: 0,        // price burnt for ownership
       winTimestamp: 0,      // unix timestamp of winning bid to simplify comparison w/ current time (0 default)
-      winHeight: 0          // block height of win
+      winHeight: 0,         // block height of win
+      updateHeight: 0       // last height of updated
     },
     topBidder: {},          // bidding info (only relevant during challenge time)
     history: [],            // history of ownership

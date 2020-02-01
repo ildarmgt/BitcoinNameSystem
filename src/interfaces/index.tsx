@@ -48,6 +48,7 @@ export interface IState {
       burnAmount: number
       winTimestamp: number
       winHeight: number
+      updateHeight: number
     }
     topBidder: object
     history: []

@@ -35,7 +35,7 @@ export const calcOwnership = (
     burnAmount: number
     winHeight: number
     winTimestamp: number
-    lastUpdate: number
+    updateHeight: number
   }
   const resetOwner: IOwner = {  // values to reset owner when ownership is lost
     address: '',                // address in control
@@ -43,59 +43,113 @@ export const calcOwnership = (
     burnAmount: 0,              // burned to get ownership
     winHeight: 0,               // blockheight winning bid
     winTimestamp: 0,            // winHeight in block's timestamp
-    lastUpdate: 0               // for parsing data later, last tx blockheight
+    updateHeight: 0             // nonce, for counting last notification height from this address, no matter good/bad/type
   }
-  const ownersHistory: Array<IOwner> = []          // history of all owners
-  let currentOwner: IOwner = { ...resetOwner };   // clone initial values
+  // history of all owners
+  const ownersHistory: Array<IOwner> = []
+  // variable tracks currentOwner
+  let currentOwner: IOwner = { ...resetOwner };
+
   // Array to track utxo to redeem
   // const utxoToRedeem = []
   // Array to track notification utxo to consume
   // const utxoToConsume = []
 
+  ownersHistory.push(currentOwner) // initiate history
+
   // iterate through all relevant tx history to derive ownership of this domainName
   sortedNotificationsHistory.forEach(tx => {
-    ownersHistory.push(currentOwner) // update ownership history
     try {
+      // Each tx blockheight serves as reference time
+
+      // First, derive if there's still an owner at this new time (block height)
       // Expiration: if OWNERSHIP_DURATION_BY_BLOCKS blocks since ownership update, no owner again
+
+      // block height of this tx
       const txBlockHeight = tx.status.block_height
+
       const blocksSinceUpdate = txBlockHeight - currentOwner.winHeight
-      const isExpired = blocksSinceUpdate > OWNERSHIP_DURATION_BY_BLOCKS
-      if (!!currentOwner.address && isExpired) {
+      const isOwnerExpired = blocksSinceUpdate > OWNERSHIP_DURATION_BY_BLOCKS
+      const isCurrentOwnerStored = !!currentOwner.address
+      if ( isCurrentOwnerStored && isOwnerExpired) {
         currentOwner = { ...resetOwner }
         console.log(domainName, txBlockHeight, 'ownership expired')
       }
 
-      // Rules on ownership bid tx described in throw's
-      if (!(tx.vout.length >= 2)) { throw new Error('Not enough outputs') }
+      const doesCurrentOwnerExist = !!currentOwner.address
 
+      // ===Computed ownership rules & enforcement ===
+
+      // Describe:    2 outputs minimum
+      // Required:    ALL
+      const atLeastTwoOutputs = (tx.vout.length >= 2)
+      if (!atLeastTwoOutputs) { throw new Error('Not enough outputs') }
+
+      // Describe:    Is [0] output OP_RETURN type
+      // Required:    ALL
       const isOpreturn = (tx.vout[0].scriptpubkey_asm.split(' ')[0] === 'OP_RETURN')
       if (!isOpreturn) { throw new Error('OP_RETURN missing from output index 0') }
 
-      const txBurnAmount = tx.vout[0].value
-      const didBurnMin = (txBurnAmount >= MIN_BURN)
-      if (!didBurnMin) { throw new Error('Did not burn the minimum of ' + MIN_BURN) }
-
-      const didNotifyMin = (tx.vout[1].value >= MIN_NOTIFY)
-      if (!didNotifyMin) { throw new Error('Did not send enough for notify ' + MIN_BURN) }
-
+      // Describe:    Is [1] output this domain's notification address?
+      // Required:    ALL
       const isNotify = (tx.vout[1].scriptpubkey_address === notificationsAddress)
       if (!isNotify) { throw new Error('Notification output missing from output index 1') }
 
-      // if no owner, good enough to give ownership
-      if (!currentOwner.address) {
+      const txNotifyAmount = tx.vout[1].value
+
+      // Describe:    At least minimum amount used in notification output? (Dust level is main danger)
+      // Required:    ALL
+      const didNotifyMin = (txNotifyAmount >= MIN_NOTIFY)
+      if (!didNotifyMin) { throw new Error('Did not send enough for notify ' + MIN_BURN) }
+
+      // Describe:    Is sender the current domain owner (input [0], id'ed by address)?
+      // Required:    renew lease
+      // Irrelevant:  available domain claim, forwarding information updates (warn)
+      const isFromCurrentOwner = currentOwner.address === tx.vin[0].prevout.scriptpubkey_address
+
+      const txBurnAmount = tx.vout[0].value
+
+      // Describe:    At least minimum amount burned?
+      // Required:    available domain claim, renew lease
+      // Irrelevant:  forwarding information updates
+      const didBurnMin = (txBurnAmount >= MIN_BURN)
+
+      // Cannot do anything about ownership if not owner and did not burn
+      if (!isFromCurrentOwner && !didBurnMin) { throw new Error('Not owner & did not burn the minimum of ' + MIN_BURN) }
+
+      // BNS_ACTION:  OLD_OWNER_RENEW     - If from current owner & burned past winning minimum, extend ownership.
+      const burnedPreviousRateMin = txBurnAmount >= currentOwner.burnAmount
+      if (isFromCurrentOwner && burnedPreviousRateMin) {
+        currentOwner = {
+          address: currentOwner.address,        // unchanged
+          forwards: currentOwner.forwards,      // unchanged
+          burnAmount: currentOwner.burnAmount,  // unchanged
+
+          // update winning height to extend ownership duration
+          winHeight: txBlockHeight,
+          winTimestamp: tx.status.block_time,
+          updateHeight: 0
+        }
+        throw new Error(`${ domainName } : ${ txBlockHeight } height: owner extended ownership ${ currentOwner.address }`)
+      }
+
+      // BNS_ACTION:  NEW_OWNER_CLAIM     - If no owner & burned minimum, give ownership.
+      if (!doesCurrentOwnerExist && didBurnMin) {
         currentOwner = {
           address: tx.vin[0].prevout.scriptpubkey_address,
-          forwards: [...resetOwner.forwards],
+          forwards: [],
           burnAmount: txBurnAmount,
           winHeight: txBlockHeight,
           winTimestamp: tx.status.block_time,
-          lastUpdate: 0
+          updateHeight: 0
         }
-        console.log(domainName, txBlockHeight, 'new owner found:', currentOwner.address)
+        throw new Error(`${ domainName } : ${ txBlockHeight } height: new owner is ${ currentOwner.address }`)
       }
     } catch (e) {
-      console.log(e.message, '\n', tx)
+      console.log('tx scanned:', e.message)
     }
+    // update ownership history each tx
+    ownersHistory.push(currentOwner)
   })
 
   // Iterate through history one more time to build up forwards for this owner
@@ -121,9 +175,9 @@ export const calcOwnership = (
 
       // If from owner, update blockheight as future nonce.
       // The only requirement for nonce update for this controlling address is for input [0] to be from this address.
-      const nonce = currentOwner.lastUpdate.toString()        // prev update height by this owner or 0
+      const nonce = currentOwner.updateHeight.toString()        // prev notification height by this owner or 0
       const txBlockHeight = tx.status.block_height
-      currentOwner.lastUpdate = txBlockHeight                 // new update height
+      currentOwner.updateHeight = txBlockHeight
 
       const isOpreturn = (tx.vout[0].scriptpubkey_asm.split(' ')[0] === 'OP_RETURN')
       if (!isOpreturn) { return foundForwardsInHistory } // skip tx bc didn't have op_return so irrelevant
@@ -181,7 +235,7 @@ export const calcOwnership = (
   const blocksSinceUpdate = currentHeight - currentOwner.winHeight
   const isExpired = blocksSinceUpdate > OWNERSHIP_DURATION_BY_BLOCKS
   if (!!currentOwner.address && isExpired) {
-    ownersHistory.push(currentOwner) // update ownership history
+    ownersHistory.push(currentOwner) // update ownership history final time
     currentOwner = { ...resetOwner } // reset current owner
     console.log(domainName, currentHeight, 'current ownership expired')
   }

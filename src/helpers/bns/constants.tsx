@@ -17,7 +17,9 @@ const MIN_NOTIFY  = 1000
 
 // Ownership duration after victory (blocks)
 const OWNERSHIP_DURATION_BY_BLOCKS = !TESTING ? 52560 : 1000
-// ^ (real) 52560 blocks ~365 days. (testing) 288 blocks ~48 hours. Block times can vary from 10 minutes.
+// ^ (real) 52560 blocks ~365 days.
+// (testing) 288 blocks ~48 hours. 1000 blocks ~ a week
+// Block times can vary from 10 minutes.
 // const CHALLENGE_PERIOD_DURATION_BY_BLOCKS = 3456
 // ^ ~24 hours. Only matters if someone is monitoring specific domainName, otherwise they won't know what domainName the bids are for.
 
