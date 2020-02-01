@@ -2,7 +2,7 @@ import React, { useState } from 'react'
 import { RoundButton } from '../../general/RoundButton'
 import styles from './P1RestoreOrBackup.module.css'
 import { createNewWalletAction, changePageInfoAction } from '../../../store/actions/'
-
+import sanitize from './../../../helpers/sanitize'
 import { Store } from './../../../store/'
 
 enum pages {
@@ -17,8 +17,12 @@ export const P1RestoreOrBackup = () => {
   const [ page, setPage ] = useState(pages.ROOT) // local state
   const [ backup, setBackup ] = useState('') // local state
 
+  // count non empty string strings separated by spaces
+  const wordCount = backup.split(' ').filter(v => v !== '').length
+
   return (
     <div className={ styles.wrapper }>
+
       {/* ROOT PAGE */}
       <div
         style={{ display: page === pages.ROOT ? 'block' : 'none' }}
@@ -68,7 +72,9 @@ export const P1RestoreOrBackup = () => {
           </RoundButton>
         </div>
       </div>
-      {/* NEW_WALLET PAGE */}
+
+      {/* NEW_WALLET PAGE */ }
+
       <div
         className={ styles.contentWrapper }
         style={{ display: page === pages.NEW_WALLET ? 'flex' : 'none' }}
@@ -120,20 +126,35 @@ export const P1RestoreOrBackup = () => {
           </RoundButton>
         </div>
       </div>
-      {/* LOAD_BACKUP PAGE */}
+
+      {/* LOAD_BACKUP PAGE */ }
+
       <div
         style={{ display: page === pages.LOAD_BACKUP ? 'block' : 'none' }}
       >
-        <div className={ styles.describe }>
-          Paste backup here (TODO: no validity checks yet)
+        <div className={ styles.title }>
+          Type or paste your backup here
         </div>
+        <br></br>
+        <div>
+          { 'Enter 12+ words. So far ' + (wordCount).toString() + ' words.' }
+        </div>
+        <br></br>
         <textarea
           className={ styles.restoreBackup }
           cols={ 30 }
           rows={ 3 }
           spellCheck={ false }
-          placeholder={ '12 words' }
-          onChange={e => setBackup(e.target.value)}
+          placeholder={ 'mnemonic backup' }
+          onChange={ e => {
+            // lowcaps, spaces, single space max, only one space on left while typing
+            const cleanString = sanitize(
+              e.target.value.toLowerCase(),
+              'lowcaps spaces single_space_width'.split(' ')
+            ).trimLeft()
+            setBackup(cleanString.trim()) // store without trailing space
+            e.target.value = cleanString // quick update
+          } }
         ></textarea>
         <div className={ styles.buttonWrapper } >
           <RoundButton
@@ -146,7 +167,7 @@ export const P1RestoreOrBackup = () => {
           </RoundButton>
           <RoundButton
             // 12 words minimum separated by spaces (TODO): proper checks
-            show={ (backup.split(' ').length >= 12) ? 'true' : 'false' }
+            show={ (wordCount >= 12) ? 'true' : 'false' }
             next='true'
             onClick={() => {
               createNewWalletAction(state, dispatch, backup)

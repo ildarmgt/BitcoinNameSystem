@@ -5,7 +5,7 @@
 
 .title {
   display: inline-block;
-  font-size: calc(2.5 * var(--s));
+  font-size: calc(3 * var(--s));
   margin: calc(1 * var(--s));
   margin-bottom: calc(3 * var(--s));
   cursor: default;
@@ -71,7 +71,9 @@
   width: 80%;
   color: var(--colorBitcoinOrange);
   caret-color: var(--colorBitcoinOrange);
-  height: auto;
+  height: calc(20 * var(--s));
+  border: calc(1 * var(--s)) solid white;
+  line-height: calc(4 * var(--s));
   overflow-y: auto;
   overflow-x: hidden;
   word-wrap: normal;

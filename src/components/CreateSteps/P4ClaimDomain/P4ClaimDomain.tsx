@@ -3,10 +3,8 @@ import { RoundButton } from '../../general/RoundButton'
 import styles from './P4ClaimDomain.module.css'
 import { Store } from '../../../store'
 import { changePageInfoAction } from '../../../store/actions'
-import { calcBidDomainTx, stringByteCount } from '../../../helpers/bns/'
+import { calcBidDomainTx, stringByteCount, BYTES_MAX } from '../../../helpers/bns/'
 import sanitize from './../../../helpers/sanitize'
-
-const BYTES_MAX = 80
 
 /**
  * Bid on network

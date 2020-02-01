@@ -38,6 +38,9 @@ export default function  sanitize (inputString, stringOrArray) {
     if (choice === 'highcaps') {
       filter += 'ABCDEFGHIJKLMNOPQRSTUVWYZ';
     }
+    if (choice === 'spaces') {
+      filter += ' ';
+    }
 
     // longer masks
     if (choice === 'base58') {
@@ -65,6 +68,13 @@ export default function  sanitize (inputString, stringOrArray) {
           .join(''))
     }
 
+    if (choice === 'single_space_width') {
+      logicFilters.push(str =>
+        // split by 2+ spaces and replace with single space
+        str.split(/  */).join(' ')
+      )
+    }
+
     // keep only first decimal point
     if (choice === 'decimal_point') {
 
@@ -74,12 +84,12 @@ export default function  sanitize (inputString, stringOrArray) {
           .split('.')
           // join first 2 elements with ., others with empty string
           // returns a string
-          .reduce((result = '', letter, index) =>
+          .reduce((resultingString = '', letter, index) =>
             // real . goes b/w array's index 0 and 1, even if string had . first
             (index === 1)
-              ? [ ...result, letter ].join('.')
-              : [ ...result, letter ].join('')
-          )
+              ? [ ...resultingString, letter ].join('.')
+              : [ ...resultingString, letter ].join('')
+          , undefined)
         )
       )
     }
@@ -102,7 +112,6 @@ export default function  sanitize (inputString, stringOrArray) {
 
   // use every selected logic function on the outputString
   logicFilters.forEach(fn => outputString = fn(outputString))
-
 
   return outputString;
 }
