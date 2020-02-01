@@ -6,7 +6,7 @@ Used: React, TypeScript, Node.js, JavaScript, CSS, HTML.
 
 ![pic](https://i.imgur.com/KQtiSHn.png)
 
-This readme and all else is work in progress.
+This readme and all else is work in progress. I'm open to collaborations.
 
 [Github pages demo (testnet only now)](https://ildarmgt.github.io/BitcoinNameSystem/)
 
