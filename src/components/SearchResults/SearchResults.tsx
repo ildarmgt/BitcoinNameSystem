@@ -10,21 +10,21 @@ import { OWNERSHIP_DURATION_BY_BLOCKS, interpretFw, findLatestForwards } from '.
 export const SearchResults = () => {
   const { state } = React.useContext(Store)
 
-  // calc time left in ownership
-  const diff = timeDiff(
-    state.ownership.current.winTimestamp, // this is 0 when nothing found
-    OWNERSHIP_DURATION_BY_BLOCKS
-  )
+  // calc time left in ownership via block heights
+  const heightOfExpiration = state.ownership.current.winHeight + OWNERSHIP_DURATION_BY_BLOCKS
+  const blocksUntilExpires = (heightOfExpiration - state.chain.height)
+  const msUntilExpires = blocksUntilExpires * 10.0 * 60.0 * 1000.0
+  const diff = timeDiff(msUntilExpires, 0)
 
-  // account expires or expired information
+  // account expires or isExpired information
   const expirationMsg = () => {
     // abort if no known ownership history
     if (state.ownership.current.winTimestamp === 0) { return ('') }
     return (
       <div
-        className={ diff.expired ? styles.expired : styles.notExpired }
+        className={ diff.isExpired ? styles.isExpired : styles.notisExpired }
       >
-        {(diff.expired
+        {(diff.isExpired
           ? 'expired ' + diff.dh + ' ago'
           : 'expires in ' + diff.dh
         )}
@@ -45,7 +45,7 @@ export const SearchResults = () => {
           { expirationMsg() }
         </div>
         <div className={ styles.listContainer } >
-          {(diff.expired) && (
+          {(diff.isExpired) && (
             <Link
               to='/create'
               className={ styles.createLink }

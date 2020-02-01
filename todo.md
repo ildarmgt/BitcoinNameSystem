@@ -1,6 +1,13 @@
 
 Short term
 
+- minimal interface missing parts:
+  - fee selection
+  - command selection
+  - broadcast page
+  - post broadcast page
+
+
 - add commands and interface
 
   - interface has a selection of all known commands to pick from

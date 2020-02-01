@@ -93,6 +93,14 @@ export const DevPanel = (props: any): JSX.Element => {
       >
         Load State
       </div>
+      <div
+        className={ styles.button }
+        onClick={ () => {
+          console.log(state);
+        } }
+      >
+        Console State
+      </div>
     </div>
   )
 }

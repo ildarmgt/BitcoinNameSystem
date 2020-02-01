@@ -30,7 +30,8 @@ export const P1RestoreOrBackup = () => {
         <div
           className={ styles.title }
         >
-          Need <span className={styles.Orange}>BTC</span> address to control<br />
+          Need <span className={ styles.Orange }>BTC</span>
+          address to control<br />
           the domain name
         </div>
         <div
@@ -137,7 +138,7 @@ export const P1RestoreOrBackup = () => {
         </div>
         <br></br>
         <div>
-          { 'Enter 12+ words. So far ' + (wordCount).toString() + ' words.' }
+          { (wordCount).toString() + ' words now. 12 minimum.' }
         </div>
         <br></br>
         <textarea

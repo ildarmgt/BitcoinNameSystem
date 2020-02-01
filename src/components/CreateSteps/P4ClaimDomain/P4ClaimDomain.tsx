@@ -15,10 +15,10 @@ export const P4ClaimDomain = () => {
   // array of network:forwardingAddress objects
   const forwards = state.ownership.current.forwards.slice().reverse()
 
-  // local state for data to embed (content inside textboxes for network/address)
+  // local state for plannedChanges to embed (content inside textboxes for network/address)
   const [customAdd, setCustomAdd] = React.useState({network: '', address: '' })
 
-  // local state for all data to embed in this tx
+  // local state for all plannedChanges to embed in this tx
   const initialChanges = {}
   // const initialChanges = {
   //   longaddresscentral: 'banananannananananaananannaaannananannaanannananannananannanananan3456abcdefghi',
@@ -26,7 +26,7 @@ export const P4ClaimDomain = () => {
   //   http: '',
   //   imgur: 'abcde.jpg'
   // }
-  const [data, setData] = React.useState(initialChanges as { [key: string]: string })
+  const [plannedChanges, setPlannedChanges] = React.useState(initialChanges as { [key: string]: string })
 
   // local state for tx hex
   const [tx, setTx] = React.useState({ hex: '', txid: '' })
@@ -42,12 +42,12 @@ export const P4ClaimDomain = () => {
     return forwardsString
   }
 
-  // calculate tx (on mount or changes in global state or local data to embed)
+  // calculate tx (on mount or changes in global state or local plannedChanges to embed)
   useEffect(() => {
     try { // to make tx
       setTx(
         calcBidDomainTx(
-          combineForwards(data),
+          combineForwards(plannedChanges),
           state.wallet,
           state.alias + state.extension,
           state.settings.feeRate,
@@ -58,11 +58,11 @@ export const P4ClaimDomain = () => {
     } catch (e) {
       // tx creation expected to fail often
     }
-  }, [state, data])
+  }, [state, plannedChanges])
 
   console.log('tx attempt info', tx)
 
-  const bytesOfChanges = stringByteCount(combineForwards(data))
+  const bytesOfChanges = stringByteCount(combineForwards(plannedChanges))
   console.log(bytesOfChanges)
 
   return (
@@ -72,7 +72,7 @@ export const P4ClaimDomain = () => {
       </div>
       <div className={ styles.changes }>
         {/* bytes info */ }
-        { (Object.keys(data).length === 0) && 'Nothing added yet' }
+        { (Object.keys(plannedChanges).length === 0) && 'Nothing added yet' }
         { (bytesOfChanges <= BYTES_MAX) &&
           <div className={ styles.bytesLeft }>
             { BYTES_MAX - bytesOfChanges } Bytes left
@@ -83,38 +83,38 @@ export const P4ClaimDomain = () => {
             Too much by { bytesOfChanges - BYTES_MAX } Bytes
           </div>
         }
-        { Object.keys(data).map((fwNetwork) => {
+        { Object.keys(plannedChanges).map((fwNetwork) => {
           return (
             <div
               className={ styles.updateItem }
               key={ fwNetwork }
               onClick={ () => {
-                setCustomAdd({ network: fwNetwork, address: data[fwNetwork] })
+                setCustomAdd({ network: fwNetwork, address: plannedChanges[fwNetwork] })
               } }
             >
               <div
                 className={ styles.updateInfo }
               >
                 {
-                  (data[fwNetwork] !== '')
+                  (plannedChanges[fwNetwork] !== '')
                     ? (<>
                       Updating forwarding on <span>{ ' ' + fwNetwork + ' ' }</span>
-                      network to address of <span>{ ' ' + data[fwNetwork] + ' ' }</span>
-                      <i>{' '}(+{ stringByteCount(fwNetwork + ' ' + data[fwNetwork]) }B)</i>
+                      network to address of <span>{ ' ' + plannedChanges[fwNetwork] + ' ' }</span>
+                      <i>{' '}(+{ stringByteCount(fwNetwork + ' ' + plannedChanges[fwNetwork]) }B)</i>
                     </>)
                     : (<>
                       Deleting previously set forwarding information for
                       <span>{ ' ' + fwNetwork + ' '}</span> network
-                      <i>{' '}(+{ stringByteCount(fwNetwork + ' ' + data[fwNetwork]) }B)</i>
+                      <i>{' '}(+{ stringByteCount(fwNetwork + ' ' + plannedChanges[fwNetwork]) }B)</i>
                     </>)
                 }
               </div>
               <div
                 className={ ['btnCircle', styles.updateCancel, 'addTooltipRight'].join(' ') }
                 onClick={ (e) => {
-                  const newData = { ...data }
+                  const newData = { ...plannedChanges }
                   delete newData[fwNetwork]
-                  setData(newData)
+                  setPlannedChanges(newData)
                   e.stopPropagation()
                 } }
               >
@@ -129,8 +129,8 @@ export const P4ClaimDomain = () => {
         { (customAdd.network.length > 0) && <div
           className={ [styles.btnDelete, 'canPress'].join(' ') }
           onClick={ () => {
-            setData({
-              ...data,
+            setPlannedChanges({
+              ...plannedChanges,
               [customAdd.network]: ''
             })
             setCustomAdd({ network: '', address: '' })
@@ -163,8 +163,8 @@ export const P4ClaimDomain = () => {
         <div
           className={ ['btnCircle', styles.btnAdd, 'canPress', 'addTooltip'].join(' ') }
           onClick={ () => {
-            setData({
-              ...data,
+            setPlannedChanges({
+              ...plannedChanges,
               [customAdd.network]: customAdd.address
             })
             setCustomAdd({ network: '', address: '' })
@@ -206,7 +206,7 @@ export const P4ClaimDomain = () => {
         <RoundButton
           next='true'
           onClick={ () => {
-            // changePageInfoAction(state, dispatch, 5)
+            changePageInfoAction(state, dispatch, 5)
           }}
         >
           Ready

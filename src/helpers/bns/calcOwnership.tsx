@@ -183,7 +183,7 @@ export const calcOwnership = (
   if (!!currentOwner.address && isExpired) {
     ownersHistory.push(currentOwner) // update ownership history
     currentOwner = { ...resetOwner } // reset current owner
-    console.log(domainName, currentHeight, 'currently ownership expired')
+    console.log(domainName, currentHeight, 'current ownership expired')
   }
 
   // returns notification info and ownership info that includes current owners forwards

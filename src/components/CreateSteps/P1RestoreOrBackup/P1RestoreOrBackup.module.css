@@ -1,6 +1,7 @@
 .wrapper {
   color: var(--colorBitcoinBlue);
-  padding-top: calc(5 * var(--s));
+  font-size: calc(2 * var(--s));
+  /* padding-top: calc(5 * var(--s)); */
 }
 
 .title {
