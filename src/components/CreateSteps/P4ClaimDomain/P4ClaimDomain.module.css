@@ -26,10 +26,12 @@
 .title {
   grid-area: title;
   font-size: calc(3 * var(--s));
+  margin-bottom: calc(2 * var(--s));
 }
 
 .changes {
   grid-area: changes;
+  width: 100%;
 }
 .pastList {
   grid-area: pastList;
@@ -37,10 +39,11 @@
 
 .buttonWrapper {
   grid-area: buttonWrapper;
+  margin: calc(3 * var(--s)) 0;
 }
 
 .buttonWrapper > div {
-  margin: calc(3 * var(--s)) 0;
+  margin-left: calc(2 * var(--s));
 }
 
 .editor {
@@ -51,8 +54,8 @@
   grid-template-columns: 30% 2% calc(66% - (5 * var(--s)))  2% calc(5 * var(--s));
   grid-template-rows: auto calc(3.5 * var(--s)) ;
   grid-template-areas:
-    "editorNetwork    .     editorAddress   .               btnAdd"
-    "btnDelete        .     .               .               ."
+    "editorNetwork    .             editorAddress   .               btnAdd"
+    "btnDelete        .             .               .               ."
   ;
   grid-row-gap: calc(0.5 * var(--s));
   justify-items: start;
@@ -100,6 +103,7 @@
   width: 100%;
   grid-area: updateInfo;
   text-align: left;
+  white-space: pre-wrap;
 }
 .updateInfo span {
   font-weight: bold;
@@ -107,7 +111,10 @@
   word-wrap: break-word;
   word-break: break-all;
 }
-
+.updateInfo i {
+  font-style: normal;
+  color: var(--colorDarker4);
+}
 
 /* textarea editor */
 
@@ -126,8 +133,16 @@
 /* add changes button */
 .btnAdd {
   grid-area: btnAdd;
-  transform: scale(1.2);
   background-color: var(--colorBitcoinOrange);
+}
+.btnAdd {
+  transform: scale(1.2);
+}
+.btnAdd:active {
+  transform: translateY(calc(0.2 * var(--s))) scale(1.2);
+}
+.btnAdd:hover aside {
+  transform: scale(0.8);
 }
 .btnAdd:hover {
   background-color: var(--colorBitcoinBlue);
@@ -142,7 +157,7 @@
   cursor: pointer;
   border-radius: calc(1.5 * var(--s));
   background-color: var(--colorDarker2);
-  padding: calc(0.3 * var(--s)) calc(1.5 * var(--s));
+  padding: calc(0.3 * var(--s)) calc(1 * var(--s));
   color: var(--colorBackground);
 }
 .btnDelete:hover {
@@ -196,6 +211,19 @@
   white-space: nowrap;
 }
 
+.changes .bytesLeft,
+.changes .bytesOver {
+  display: block;
+  width: 100%;
+  /* margin: calc(1 * var(--s)) 0; */
+}
+.bytesLeft {
+  color: var(--colorDarker4);
+}
+.bytesOver {
+  color: var(--colorWarning);
+}
+
 /* wide screen settings */
 @media screen and (min-aspect-ratio: 12/9) {
   .wrapper {
@@ -215,7 +243,7 @@
     margin-top: calc(-5 * var(--s));
   }
   .pastList {
-    align-self: end;
+    align-self: flex-start;
   }
   .title {
     align-self: flex-start;
@@ -224,6 +252,7 @@
   }
   .changes {
     justify-self: right;
+    text-align: left;
   }
   .buttonWrapper {
     justify-self: right;
@@ -237,44 +266,3 @@
 
 }
 
-
-/* .contentWrapper {
-  display: flex;
-  flex-direction: column;
-  flex-basis: 100%;
-  flex-wrap: wrap;
-  text-align: right;
-} */
-
-/* .buttonWrapper {
-  display: flex;
-  flex-wrap: wrap-reverse;
-  flex-direction: row;
-  justify-content: center;
-  align-items: center;
-  flex-basis: 100%;
-}
-
-.buttonWrapper > div,
-.contentWrapper > div {
-  margin: calc(1 * var(--s)) calc(2 * var(--s));
-}
-
-.address {
-  display: inline-block;
-  overflow-wrap: break-word;
-  word-wrap: break-word;
-  word-break: break-all;
-}
-
-.imgQr {
-  height: calc(20 * var(--s));
-  background-size: contain;
-  background-repeat: no-repeat;
-  background-position: center;
-}
-
-.imgQr img {
-  width: calc(20 * var(--s));
-  opacity: 0%;
-} */

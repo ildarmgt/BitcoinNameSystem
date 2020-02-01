@@ -9,6 +9,8 @@ Short term
 
 - scan notification address for tx history (search does that) and current utxo (could derive from tx history but still need raw tx)
 
+- sanitization of users custom text when read by other users to avoid unexpected injections
+
 - Create process
   1. Create ownership address to create unique tx/wallet not easily done in other clients I know of. The keys for that address become controlling owners of that alias
   2. Create tx to own alias

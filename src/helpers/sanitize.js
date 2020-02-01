@@ -12,7 +12,7 @@ export default function sanitize (inString, type) {
   } else if (type === 'fractions') {
     filter = '0123456789.';
   } else if (type === 'oneline') {
-    filter = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ.';
+    filter = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ,./-_!`~[]{}|@#%^&()-=?$';
   } else if (type === 'url') {
     filter = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ./-_';
   } else {

@@ -63,7 +63,7 @@ export const SearchResults = () => {
                   <a
                     key={ fw.network }
                     className={ styles.listItem }
-                    href={ ifw?.link }
+                    href={ encodeURI(ifw?.link || '') || undefined }
                     target="_blank"
                     rel="noopener noreferrer"
                   >

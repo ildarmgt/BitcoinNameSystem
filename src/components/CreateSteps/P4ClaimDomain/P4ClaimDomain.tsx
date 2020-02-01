@@ -3,8 +3,10 @@ import { RoundButton } from '../../general/RoundButton'
 import styles from './P4ClaimDomain.module.css'
 import { Store } from '../../../store'
 import { changePageInfoAction } from '../../../store/actions'
+import { calcBidDomainTx, stringByteCount } from '../../../helpers/bns/'
+import sanitize from './../../../helpers/sanitize'
 
-import { calcBidDomainTx } from '../../../helpers/bns/'
+const BYTES_MAX = 80
 
 /**
  * Bid on network
@@ -18,25 +20,33 @@ export const P4ClaimDomain = () => {
   // local state for data to embed (content inside textboxes for network/address)
   const [customAdd, setCustomAdd] = React.useState({network: '', address: '' })
 
-  // local state for all data to embed
-  const [data, setData] = React.useState({} as { [key: string]: string })
+  // local state for all data to embed in this tx
+  const initialChanges = {}
+  // const initialChanges = {
+  //   longaddresscentral: 'banananannananananaananannaaannananannaanannananannananannanananan3456abcdefghi',
+  //   thisisaverylongnetworknamethisisaverylongnetworknamethisisaverylongnetworkname: 'lol',
+  //   http: '',
+  //   imgur: 'abcde.jpg'
+  // }
+  const [data, setData] = React.useState(initialChanges as { [key: string]: string })
 
   // local state for tx hex
   const [tx, setTx] = React.useState({ hex: '', txid: '' })
 
+  // combine forwards into a string for the tx
+  const combineForwards = (objForwards: any) => {
+    let forwardsString = ''
+    Object.keys(objForwards).forEach(fwNetwork => {
+      forwardsString += fwNetwork + ' ' + objForwards[fwNetwork] + ' '
+    })
+    if (forwardsString.length > 0) { forwardsString = forwardsString.slice(0, -1) }
+    console.log('string to embed:', '"' + forwardsString + '"')
+    return forwardsString
+  }
+
   // calculate tx (on mount or changes in global state or local data to embed)
   useEffect(() => {
-    // combine forwards into a string for the tx
-    const combineForwards = (objForwards: any) => {
-      let forwardsString = ''
-      Object.keys(objForwards).forEach(fwNetwork => {
-        forwardsString += fwNetwork + ' ' + objForwards[fwNetwork] + ' '
-      })
-      if (forwardsString.length > 0) { forwardsString = forwardsString.slice(0, -1) }
-      console.log('string to embed:', '"' + forwardsString + '"')
-      return forwardsString
-    }
-    try {
+    try { // to make tx
       setTx(
         calcBidDomainTx(
           combineForwards(data),
@@ -48,20 +58,33 @@ export const P4ClaimDomain = () => {
         )
       )
     } catch (e) {
-      // console.log('Could not build tx yet', e)
+      // tx creation expected to fail often
     }
   }, [state, data])
 
-  console.log(tx)
+  console.log('tx attempt info', tx)
 
+  const bytesOfChanges = stringByteCount(combineForwards(data))
+  console.log(bytesOfChanges)
 
   return (
     <div className={ styles.wrapper }>
       <div className={ styles.title }>
-        Add new forwarding changes
+        Update forwarding information
       </div>
       <div className={ styles.changes }>
+        {/* bytes info */ }
         { (Object.keys(data).length === 0) && 'Nothing added yet' }
+        { (bytesOfChanges <= BYTES_MAX) &&
+          <div className={ styles.bytesLeft }>
+            { BYTES_MAX - bytesOfChanges } Bytes left
+          </div>
+        }
+        { (bytesOfChanges > BYTES_MAX) &&
+          <div className={ styles.bytesOver }>
+            Too much by { bytesOfChanges - BYTES_MAX } Bytes
+          </div>
+        }
         { Object.keys(data).map((fwNetwork) => {
           return (
             <div
@@ -77,13 +100,19 @@ export const P4ClaimDomain = () => {
                 {
                   (data[fwNetwork] !== '')
                     ? (<>
-                      Updating forwarding on <span>{ fwNetwork }</span> network to address of <span>{ data[fwNetwork] }</span>
+                      Updating forwarding on <span>{ ' ' + fwNetwork + ' ' }</span>
+                      network to address of <span>{ ' ' + data[fwNetwork] + ' ' }</span>
+                      <i>{' '}(+{ stringByteCount(fwNetwork + ' ' + data[fwNetwork]) }B)</i>
                     </>)
-                    : (<>Deleting previously set forwarding information for <span>{ fwNetwork }</span> network</>)
+                    : (<>
+                      Deleting previously set forwarding information for
+                      <span>{ ' ' + fwNetwork + ' '}</span> network
+                      <i>{' '}(+{ stringByteCount(fwNetwork + ' ' + data[fwNetwork]) }B)</i>
+                    </>)
                 }
               </div>
               <div
-                className={ ['btnCircle', styles.updateCancel].join(' ') }
+                className={ ['btnCircle', styles.updateCancel, 'addTooltipRight'].join(' ') }
                 onClick={ (e) => {
                   const newData = { ...data }
                   delete newData[fwNetwork]
@@ -92,6 +121,7 @@ export const P4ClaimDomain = () => {
                 } }
               >
                 <span>×</span>
+                <aside>Remove from planned changes</aside>
               </div>
             </div>
           )
@@ -108,7 +138,7 @@ export const P4ClaimDomain = () => {
             setCustomAdd({ network: '', address: '' })
           } }
         >
-          Delete
+            No address
         </div> }
         <textarea
           spellCheck={ false }
@@ -116,7 +146,9 @@ export const P4ClaimDomain = () => {
           className={ styles.editorNetwork }
           placeholder={ 'network' }
           onChange={ (e) => {
-            setCustomAdd({ ...customAdd, network: e.target.value })
+            const cleanText = sanitize(e.target.value, 'oneline')
+            setCustomAdd({ ...customAdd, network: cleanText })
+            e.target.value = cleanText
           } }
         ></textarea>
         <textarea
@@ -125,11 +157,13 @@ export const P4ClaimDomain = () => {
           className={ styles.editorAddress }
           placeholder={ 'address on network' }
           onChange={ (e) => {
+            const cleanText = sanitize(e.target.value, 'oneline')
             setCustomAdd({ ...customAdd, address: e.target.value })
+            e.target.value = cleanText
           } }
         ></textarea>
         <div
-          className={ ['btnCircle', styles.btnAdd, 'canPress'].join(' ') }
+          className={ ['btnCircle', styles.btnAdd, 'canPress', 'addTooltip'].join(' ') }
           onClick={ () => {
             setData({
               ...data,
@@ -139,6 +173,7 @@ export const P4ClaimDomain = () => {
           } }
         >
           <span>+</span>
+          <aside>Add to planned changes</aside>
         </div>
       </div>
       <div className={ styles.pastList } >
@@ -170,14 +205,16 @@ export const P4ClaimDomain = () => {
         >
           Back
         </RoundButton>
+        <RoundButton
+          next='true'
+          onClick={ () => {
+            // changePageInfoAction(state, dispatch, 5)
+          }}
+        >
+          Ready
+        </RoundButton>
       </div>
     </div>
   )
 }
 
-// const dummyChanges = {
-//   longaddresscentral: 'banananannananananaananannaaannananannaanannananannananannanananan3456abcdefghi',
-//   thisisaverylongnetworknamethisisaverylongnetworknamethisisaverylongnetworkname: 'lol',
-//   http: '',
-//   imgur: 'abcde.jpg'
-// }

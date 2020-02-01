@@ -18,6 +18,7 @@ html {
   --colorDarker1: rgba(0, 0, 0, 0.1);
   --colorDarker2: rgba(0, 0, 0, 0.2);
   --colorDarker4: rgba(0, 0, 0, 0.4);
+  --colorDarker8: rgba(0, 0, 0, 0.8);
   --colorDisabled: rgba(128, 128, 128, 0.5);
   --colorLightText: rgba(17, 17, 51, 0.5);
   --colorBitcoinOrange: orange;
@@ -69,6 +70,7 @@ a:active,
   transform: translateY(calc(0.2 * var(--s)));
 }
 
+.canPress,
 .noselect {
   -webkit-user-select: none;
   -moz-user-select: -moz-none;
@@ -163,8 +165,9 @@ textarea:focus {
 }
 
 .btnCircle {
+  position: static;
   align-self: center;
-  display: flex;
+  display: inline-block;
   font-size: calc(4.1 * var(--s));
   width: calc(3 * var(--s));
   height: calc(3 * var(--s));
@@ -175,17 +178,96 @@ textarea:focus {
   background-color: var(--colorBitcoinBlue);
   cursor: pointer;
   color: var(--colorBackground);
-  /* font-weight: bold; */
   vertical-align: middle;
   text-align: center;
   align-items: center;
   justify-items: center;
-  z-index: 0;
 }
 .btnCircle span {
+  display: block;
+  position: static;
   width: 100%;
   height: 100%;
 }
 .btnCircle:hover {
   background-color: var(--colorBitcoinOrange);
 }
+
+/* tooltips */
+/* add content for tooltips inside <aside> tags inside element */
+
+.addToolTip:hover {
+  transform: translateY(calc(0.02 * var(--s)));
+}
+
+.addTooltip aside {
+  /* display: none; */
+  /* box-sizing: border-box; */
+  font-size: calc(2 * var(--s));
+  content: "";
+  visibility: hidden;
+  width: calc(12 * var(--s));
+  background-color: var(--colorBitcoinBlue);
+  color: var(--colorBackground);
+  text-align: center;
+  border-radius: calc(0.6 * var(--s));
+  border: 0 solid transparent;
+  padding: calc(0.5 * var(--s)) 0;
+  position: absolute;
+  z-index: 11;
+  top: 150%;
+  left: 20%;
+  margin-left: calc(-6 * var(--s));
+  /* opacity: 0; */
+  /* transition: opacity ease-in-out  0.15s ; */
+}
+
+.addTooltip aside::after {
+  content: "";
+  position: absolute;
+  bottom: calc(97%);
+  left: 63%;
+  margin-left: calc(-1 * var(--s));
+  border: calc(1 * var(--s)) solid transparent;
+  border-bottom: calc(1.5 * var(--s)) solid transparent;
+  border-style: solid;
+  border-color: transparent transparent var(--colorBitcoinBlue) transparent;
+}
+
+/* to right version  */
+.addTooltipRight aside {
+  box-sizing: border-box;
+  display: inline-block;
+  font-size: calc(2 * var(--s));
+  content: "";
+  visibility: hidden;
+  width: calc(20 * var(--s));
+  background-color: var(--colorBitcoinBlue);
+  color: var(--colorBackground);
+  text-align: center;
+  border-radius: calc(0.6 * var(--s));
+  border: 0 solid transparent;
+  padding: calc(0.7 * var(--s)) calc(1 * var(--s));
+  position: absolute;
+  z-index: 11;
+  left: 150%;
+  top: -50%;
+}
+.addTooltipRight aside::after {
+  content: "";
+  position: absolute;
+  top: 50%;
+  right: calc(100% - 0.1 * var(--s));
+  margin-top: calc(-0.7 * var(--s));
+  border: calc(0.7 * var(--s)) solid transparent;
+  border-right: calc(1 * var(--s)) solid transparent;
+  border-style: solid;
+  border-color: transparent var(--colorBitcoinBlue) transparent transparent ;
+}
+
+.addTooltipRight:hover aside,
+.addTooltip:hover aside {
+  /* display: inline-block; */
+  visibility: visible;
+}
+
