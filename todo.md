@@ -1,11 +1,20 @@
 
 Short term
 
-- scan wallet address for utxo and calc sum
+- add commands
 
-- add what is done section to readme
+  - `!el ` - extend lease. Burn winning amount again for another ~year. Must be no owner's ACS, use as inputs (inputs @1+). notify (output @1). owner address (input @0).
+
+  - `!so <btcaddress>` - send ownership to btcaddress. can avoid reusing addresses that way. Must be no owner's ACS, use as inputs (inputs @1+). owner address (input @0).
+
+  - `!a  <# of BTCs>` - post price to sell (output @0), measured in floating point btc. owner address (input @0). Similar to challenge period but instead of burning, tx are sent to owner. ~24 hours from time of first bid w/ more left on lease, cannot transfer ownership after first bid. include notification (output @1) & optional public notification to '':'' address (@output 2). Must be no owner's ACS, use as inputs (inputs @1+).
+
+  - `!ba <last price in floating BTC>` Bid on auction. Must: 1. state price at point of bid via the !buy command in op_return (output @0). 2. must consume past ACS inputs at that price height (includes the owners public notification at '':'' if used) (inputs @1+). 3. refund previous valid bidders (outputs @4+). 4. pay 1.5x last price requested except for original price (output @3). 5. create notification (output @1). 6. use desired ownership/refund adderss as first input (input @0).
+
 
 - multipage tx scan
+
+- don't let add bad entries on submission: e.g. blank network
 
 - scan notification address for tx history (search does that) and current utxo (could derive from tx history but still need raw tx)
 
