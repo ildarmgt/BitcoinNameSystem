@@ -76,7 +76,9 @@ Wasn't sure what's better: Bitcoin Name Service, Bitcoin Name System, Bitcoin Na
 
   **Bid** - Attempt to get an unowned domain name with a challenge period of ~24 hours in block height. The winner of this process gets to be the Owner of this domain name until ownership expires or is given up. (Details TBD)
 
-  **Owner address** or **Controlling address** - The bitcoin address that owns a specific domain name and can control and change the networks and forwarding addresses pairs for it.
+  **Source address** - The bitcoin address used to interact with domains including being able to control the ones it owns. In transactions, it's the address at input[0]
+
+  **Owner address** - A controlling address that owns a specific domain name based on ownership derivation rules and can control (e.g. can change the networks active forwarding addresses for the domain it owns).
 
   **Burn** - The act of making some Bitcoin unspendable for everyone so nobody gets an unfair advantage.
 

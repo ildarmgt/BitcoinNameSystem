@@ -4,7 +4,29 @@
 - P3 should let user pick type of MAIN_ACTION to do
 - P4 will then allow filling remaining space w/ other info
 
-- derive all available BNS actions for wallet address
+- Derive all available BNS actions for wallet address:
+  - Create enum with all possible BNS actions
+  - Function that takes in address and returns possible actions at current height?
+    Different from calcOwnership. That one checks if rules were executed correctly (input/output choices already made)
+    Need function that determines simply permitted actions in future (e.g. owner vs not owner)
+
+    While iterating block heights, at any height, should be able to derive
+    1. transactions parameters
+    2. state of each source address (e.g. nonce, embedded data) - source address as keys for their info.
+        maybe state.notifications.sources[address] = { address, forwards, updateHeight (nonce) }
+    3. BNS Actions: functions
+        - feed them state at any height (including real time height) and who is acting
+          (raw state or boolean checks? too much variety, best each action derives booleans separately)
+        - feed them potential or existing tx source address
+        - let BNS_ACTION_PERMISSION functions derive if source address meets minimum permissions to do an action
+        - let BNS_ACTION_REVIEW functions derive if source address has met all requirements of an action & modify BNS state
+    4. I should be able to then feed arbitrary wallet address into the action permission function with most current BNS state to see which actions user can take.
+    5. While putting together a tx, can run action review function through the tx as if deployed to see what's missing.
+
+
+
+
+- typescript instance for a forward that's part of state
 
 - renew rule of extend lease (done on scan side)
 
@@ -25,11 +47,11 @@
 
   - ~~`!el ` - Extend lease. Burn winning amount again for another ~year. Must be no owner's ACS, use as inputs (inputs @1+). notify (output @1). Use owner address (input @0).~~ Not necessary, burn amount enough to identify extend of lease
 
-  - `!so <btcaddress>` - Send ownership to btcaddress. Can avoid reusing addresses by including new each time. Must be no owner's ACS, use as inputs (inputs @1+). owner address (input @0).
+  - `!so <btcaddress>` - Send ownership to btcaddress. Can avoid reusing addresses by including new each time. Must be no owner's ACS, use as inputs (inputs @1+). owner address (input @0). Does not change lease expiration - only burns can extend even if transfered.
 
-  - `!a  <# of BTCs>` - Post price to sell (output @0), measured in floating point btc. Owner address (input @0). Similar to challenge period but instead of burning, tx are sent to owner. ~24 hours from time of first bid w/ more left on lease, cannot transfer ownership after first bid. Include notification (output @1) & optional public notification to '':'' address (@output 2). Must be no owner's ACS, use as inputs (inputs @1+).
+  - `!a  <# of BTCs>` - Post price to sell (output @0), measured in floating point btc. Owner address (input @0). Similar to challenge period but instead of burning, tx are sent to owner. ~24 hours from time of first bid w/ more left on lease, cannot transfer ownership after first bid. Include notification (output @1) & optional public notification to '':'' address (@output 2). Must be no owner's ACS, use as inputs (inputs @1+). Does not change lease expiration - only burns can extend even if transfered.
 
-  - `!ba <last price in floating BTC>` Bid on auction. Must: 1. State price at point of bid via the !buy command in op_return (output @0). 2. Must consume past ACS inputs at that price height (includes the owners public notification at '':'' if used) (inputs @1+). 3. Refund previous valid bidders (outputs @4+). 4. Pay 1.5x last price requested except for original price (output @3). 5. Create notification (output @1). 6. Use desired ownership/refund adderss as first input (input @0). Winner is derived 24 hours after first bid by highest price that followed all the rules.
+  - `!ba <last price in floating BTC>` Bid on auction. Must: 1. State price at point of bid via the !buy command in op_return (output @0). 2. Must consume past ACS inputs at that price height (includes the owners public notification at '':'' if used) (inputs @1+). 3. Refund previous valid bidders (outputs @4+). 4. Pay 1.5x last price requested except for original price (output @3). 5. Create notification (output @1). 6. Use desired ownership/refund adderss as first input (input @0). Winner is derived 24 hours after first bid by highest price that followed all the rules. Does not change lease expiration - only burns can extend even if transfered.
 
 
 - multipage tx scan
