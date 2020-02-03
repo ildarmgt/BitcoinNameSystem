@@ -1,19 +1,12 @@
 
-/**
- * All possible types of Bitcoin Name System Actions (BNSA)
- */
-export enum BNSActionTypes {
-  GET_AVAILABLE_DOMAIN          = 'GET_AVAILABLE_DOMAIN',       // attempt to get available domain
-  EXTEND_OWNERSHIP_DURATION     = 'EXTEND_OWNERSHIP_DURATION',  // extend ownership duration
-  PUSH_FORWARDING_INFO          = 'PUSH_FORWARDING_INFO'        // update forwarding information
-}
 
 export interface IUser {
   address:      string
-  forwards:     Array<any>
+  forwards:     Array<Iforward>
   burnAmount:   number
   winHeight:    number
   winTimestamp: number
+  nonce:        number
   updateHeight: number
 }
 
@@ -26,21 +19,22 @@ export interface Iforward {
 }
 
 export interface IBnsState {
-  domain: {
-    domainName: string
-    address: string
-    txHistory: Array<any>
-    utxoList: Array<any>
-    sources: {
-      [key: string]: any
-    }
-    currentOwner:  string
-    bidding: {}
-    ownersHistory: Array<IUser>
-  }
-  chain: {
+  domain: IDomain
+  chain?: {
     parsedHeight: number
-    nonce: number
     currentHeight: number
   }
+}
+
+export interface IDomain {
+  domainName: string
+  notificationAddress: string
+  txHistory: Array<any>
+  utxoList: Array<any>
+  users: {
+    [key: string]: IUser
+  }
+  currentOwner: string
+  bidding: {}
+  ownersHistory: Array<IUser>
 }

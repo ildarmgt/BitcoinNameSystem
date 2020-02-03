@@ -32,14 +32,14 @@ export const searchAction = async (state: IState, dispatch: Dispatch, router: an
     const notificationsTxHistory = await getAddressHistory(notificationsAddress, state.network)
 
     // calculate bns data from this history via helper functions
-    const { notifications, ownership } = calcOwnership(
+    const { domain } = calcOwnership(
       notificationsTxHistory,
       domainName,
       currentHeight,
       state.network
     )
 
-    // if navigated via id, use router to navigate home w/o id in url
+    // 3. if navigated via id, use router to navigate home w/o id in url
     if (router) { router?.push('/') }
 
     // store data
@@ -47,8 +47,7 @@ export const searchAction = async (state: IState, dispatch: Dispatch, router: an
       type: STORE_SEARCH_RESULTS,
       payload: {
         alias: state.alias,
-        notifications,
-        ownership,
+        domain,
         chain: {
           height: currentHeight
         }
@@ -62,6 +61,7 @@ export const searchAction = async (state: IState, dispatch: Dispatch, router: an
       type: STORE_SEARCH_RESULTS_FAIL,
       payload: {
         alias: state.alias,               // can save alias
+        domainName,
         notificationsAddress              // can save this easy derivation
       }
     });

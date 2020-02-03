@@ -22,7 +22,7 @@ export const P3DomainAndWallet = () => {
   // most important for domain notificaiton address is the transaction history to know ownership
   // but also the current utxo in case we want to control the domain
   const domainInfo = () => {
-    if (state.notifications.checkedHistory && state.notifications.checkedUtxo) {
+    if (state.domain.checkedHistory && state.domain.checkedUtxo) {
       return ('✓')
     } else {
       return ('needs scan')
@@ -43,8 +43,8 @@ export const P3DomainAndWallet = () => {
     return (
       state.wallet.checkedUtxo &&
       state.wallet.checkedHistory &&
-      state.notifications.checkedUtxo &&
-      state.notifications.checkedHistory
+      state.domain.checkedUtxo &&
+      state.domain.checkedHistory
     )
   }
 
@@ -58,7 +58,7 @@ export const P3DomainAndWallet = () => {
       // needs scans
       return { isReady: false,  type: 'missing', info: 'Scan both to move on' }
     }
-    const ownerAddress = state.ownership.current.address;
+    const ownerAddress = state.domain.currentOwner;
     const walletAddress = state.wallet.address;
     const isWalletAddress = (walletAddress !== '')
     const isDomainAvailable = (ownerAddress === '')
@@ -94,7 +94,7 @@ export const P3DomainAndWallet = () => {
           onClick={ () => {
             if (apiStatus === 'ok') {
               setApiStatus('domain')
-              scanAddressFullyAction(state, dispatch, ActionTypes.UPDATE_NOTIFICATION_ADDRESS)
+              scanAddressFullyAction(state, dispatch, ActionTypes.UPDATE_DOMAIN)
             }
           }}
         >

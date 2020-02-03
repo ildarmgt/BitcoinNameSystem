@@ -1,7 +1,7 @@
 import { IState, Dispatch, ActionTypes } from '../../interfaces'
 import { calcP2WSH, calcOwnership } from '../../helpers/bns'
 import { getAddressHistory, getUTXOList, addRawTxToArray, getHeight } from '../../api/blockstream'
-const { UPDATE_WALLET, UPDATE_NOTIFICATION_ADDRESS, ACTION_FAIL } = ActionTypes
+const { UPDATE_WALLET, UPDATE_DOMAIN, ACTION_FAIL } = ActionTypes
 
 /**
  * Scans the address for utxo on a given network (w/ API).
@@ -40,7 +40,7 @@ export const scanAddressFullyAction = async (
       console.log({ walletAddress, walletTxHistory, utxoListWalletAddress, arrayUtxoWithHex, erroredOutputs })
 
       return dispatch({
-        type: addressType,
+        type: UPDATE_WALLET,
         payload: {
           wallet: {
             txHistory: walletTxHistory,
@@ -61,7 +61,7 @@ export const scanAddressFullyAction = async (
   }
 
   // notification address scan
-  if (addressType === UPDATE_NOTIFICATION_ADDRESS) {
+  if (addressType === UPDATE_DOMAIN) {
 
 
     try {
@@ -74,12 +74,7 @@ export const scanAddressFullyAction = async (
 
       const { notificationsAddress } = calcP2WSH(domainName, state.network)
       const notificationsTxHistory = await getAddressHistory(notificationsAddress, state.network)
-      const { notifications, ownership } = calcOwnership(
-        notificationsTxHistory,
-        domainName,
-        currentHeight,
-        state.network
-      )
+
 
       // 3. get address UTXO list (could also calculate from tx history or API)
 
@@ -89,18 +84,22 @@ export const scanAddressFullyAction = async (
 
       const { arrayUtxoWithHex, erroredOutputs } = await addRawTxToArray(utxoListNotificationAddress, state.network)
 
-      console.log({ notifications, ownership, utxoListNotificationAddress, arrayUtxoWithHex, erroredOutputs })
+      // (TODO) add utxo param & use to calcOwnership
+      const { domain } = calcOwnership(
+        notificationsTxHistory,
+        domainName,
+        currentHeight,
+        state.network
+      )
+
+      console.log({ domain, utxoListNotificationAddress, arrayUtxoWithHex, erroredOutputs })
 
       return dispatch({
-        type: addressType,
+        type: UPDATE_DOMAIN,
         payload: {
-          notifications: {
-            address: notificationsAddress,
-            txHistory: notifications.txHistory, // sorted
+          domain: {
+            ...domain,
             utxoList: arrayUtxoWithHex
-          },
-          ownership: {
-            ...ownership
           },
           chain: {
             height: currentHeight

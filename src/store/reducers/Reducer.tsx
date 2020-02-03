@@ -7,7 +7,7 @@ const {
   NEW_WALLET,
   CHANGE_PAGE_INFO,
   UPDATE_WALLET,
-  UPDATE_NOTIFICATION_ADDRESS,
+  UPDATE_DOMAIN,
   ACTION_FAIL,
   LOAD_STATE
 } = ActionTypes
@@ -38,19 +38,13 @@ export default function reducer (state: IState, action: IAction): IState {
       }
     }
 
-    case UPDATE_NOTIFICATION_ADDRESS: {
+    case UPDATE_DOMAIN: {
       return {
         ...state,
-        notifications: {
-          address: payload.notifications.address,
-          txHistory: payload.notifications.txHistory,
-          utxoList: payload.notifications.utxoList,
+        domain: {
+          ...payload.domain,
           checkedHistory: true,
           checkedUtxo: true
-        },
-        ownership: {
-          ...payload.ownership,
-          checked: true
         },
         chain: {
           height: payload.chain.height
@@ -86,15 +80,10 @@ export default function reducer (state: IState, action: IAction): IState {
       return {
         ...state,
         alias: payload.alias,
-        notifications: {
-          ...initialState.notifications,
-          ...payload.notifications,
+        domain: {
+          ...initialState.domain,
+          ...payload.domain,
           checkedHistory: true
-        },
-        ownership: {
-          ...initialState.ownership,
-          ...payload.ownership,
-          checked: true
         },
         chain: {
           height: payload.chain.height
@@ -109,12 +98,10 @@ export default function reducer (state: IState, action: IAction): IState {
       return {
         ...state,
         alias: payload.alias,
-        notifications: {
-          ...initialState.notifications,
-          address: payload.notificationAddress
-        },
-        ownership: {
-          ...initialState.ownership
+        domain: {
+          ...initialState.domain,
+          domainName: payload.domainName,
+          notificationAddress: payload.notificationAddress
         },
         lastTimeStamp: Date.now()
       }
@@ -126,8 +113,7 @@ export default function reducer (state: IState, action: IAction): IState {
       return {
         ...state,
         alias: payload,
-        notifications: initialState.notifications,
-        ownership: initialState.ownership,
+        domain: initialState.domain,
         lastTimeStamp: Date.now()
       }
     }

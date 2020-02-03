@@ -2,7 +2,8 @@ import * as bitcoin from 'bitcoinjs-lib'
 import { calcP2WSH } from './calcP2WSH'
 import { MIN_BURN, MIN_NOTIFY } from './constants'
 import { encrypt } from './cryptography'
-import { getLastMessageHeight } from './getLastMessageHeight'
+import { IDomain } from './types/'
+import { getUser } from './formathelpers'
 
 /**
  * Creates hex of tx to bid on domain.
@@ -10,9 +11,8 @@ import { getLastMessageHeight } from './getLastMessageHeight'
  * Leave vBytes blank, it will call itself via recursion until it derives needed size.
  * @param   {string}      stringToEmbed           - string of forwarding information to embed in tx.
  * @param   {object}      wallet                  - { WIF, address, txHistory, utxoList, ... }.
- * @param   {string}      domainName              - full domainName to use (e.g. 'satoshi.btc').
+ * @param   {object}      domain                  - all domain info
  * @param   {number}      feeRate                 - fee rate in satoshi/vBytes.
- * @param   {Array}       notificationTxHistory   - Array of transactions to notification address.
  * @param   {string}      networkChoice           - 'testnet' or 'bitcoin' (matches bitcoinjs-lib).
  * @param   {number=}     [vBytes=0]              - size of transaction in vBytes. *
  * @returns {object}                              - { thisVirtualSize, txid, hex, valueNeeded, fee, change }.
@@ -20,15 +20,16 @@ import { getLastMessageHeight } from './getLastMessageHeight'
 export const calcBidDomainTx = (
   stringToEmbed: string,
   wallet: any,
-  domainName: string,
+  domain: IDomain,
   feeRate: number,
-  notificationTxHistory: Array<any>,
   networkChoice: string,
   vBytes: number = 0
 ): any => {
 
+  const user = getUser({ domain }, wallet.address)
+
   const network = bitcoin.networks[networkChoice]
-  const { notificationsAddress } = calcP2WSH(domainName, networkChoice)
+  const { notificationsAddress } = calcP2WSH(domain.domainName, networkChoice)
 
   // calculate funds necessary for this tx, more than needed better than less.
   const fee = Math.ceil(vBytes * feeRate)
@@ -70,12 +71,12 @@ export const calcBidDomainTx = (
 
 
   // add the op_return output (always index 0)
-
   // if first time sending, nonce is '0', otherwise the last blockheight when notification was sent from this owner address
   // TODO calculate nonce in case this owner has unspent acs utxo left at notification address
-  const nonce = getLastMessageHeight(wallet.address, notificationsAddress, notificationTxHistory)
-  const encryptionKey =  domainName + wallet.address + nonce.toString()
-  const data = encrypt(stringToEmbed,encryptionKey)
+  // const nonce = getLastMessageHeight(wallet.address, notificationsAddress, notificationTxHistory)
+  const nonce = user.nonce.toString()
+  const encryptionKey =  domain.domainName + wallet.address + nonce
+  const data = encrypt(stringToEmbed, encryptionKey)
   const embed = bitcoin.payments.embed({ data: [data] })
   psbt.addOutput({
     script: embed.output,
@@ -125,6 +126,6 @@ export const calcBidDomainTx = (
     return { thisVirtualSize, txid, hex, valueNeeded, fee, change }
   } else {
     // Redo this tx calculation using the virtual size we just calculated for vByte optional parameter.
-    return calcBidDomainTx(stringToEmbed, wallet, domainName, feeRate, notificationTxHistory, networkChoice, thisVirtualSize)
+    return calcBidDomainTx(stringToEmbed, wallet, domain, feeRate, networkChoice, thisVirtualSize)
   }
 }

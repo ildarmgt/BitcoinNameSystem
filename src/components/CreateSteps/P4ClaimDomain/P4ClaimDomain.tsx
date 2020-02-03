@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react'
 import { RoundButton } from '../../general/RoundButton'
 import styles from './P4ClaimDomain.module.css'
-import { Store } from '../../../store'
+import { Store, getOwner } from '../../../store'
 import { changePageInfoAction } from '../../../store/actions'
 import { calcBidDomainTx, stringByteCount, BYTES_MAX } from '../../../helpers/bns/'
 import sanitize from './../../../helpers/sanitize'
@@ -14,7 +14,7 @@ export const P4ClaimDomain = () => {
   const { state, dispatch } = React.useContext(Store)
 
   // array of network:forwardingAddress objects
-  const forwards = state.ownership.current.forwards.slice().reverse()
+  const forwards = getOwner(state)?.forwards.slice().reverse() || []
 
   // local state for plannedChanges to embed (content inside textboxes for network/address)
   const [customAdd, setCustomAdd] = React.useState({network: '', address: '' })
@@ -46,9 +46,8 @@ export const P4ClaimDomain = () => {
         calcBidDomainTx(
           combineForwards(plannedChanges),
           state.wallet,
-          state.alias + state.extension,
+          state.domain,
           state.settings.feeRate,
-          state.notifications.txHistory,
           state.network
         )
       )

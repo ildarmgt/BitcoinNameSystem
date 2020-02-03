@@ -1,5 +1,5 @@
 import React from 'react'
-import { Store } from './../../store'
+import { Store, getOwner } from './../../store'
 import { Link } from 'react-router-dom'
 
 import styles from './SearchResults.module.css'
@@ -10,30 +10,33 @@ import { OWNERSHIP_DURATION_BY_BLOCKS, interpretFw, findLatestForwards } from '.
 export const SearchResults = () => {
   const { state } = React.useContext(Store)
 
+  let diff = { isExpired: true, dh: '' }
+
   // calc time left in ownership via block heights
-  const heightOfExpiration = state.ownership.current.winHeight + OWNERSHIP_DURATION_BY_BLOCKS
-  const blocksUntilExpires = (heightOfExpiration - state.chain.height)
-  const msUntilExpires = blocksUntilExpires * 10.0 * 60.0 * 1000.0
-  const diff = timeDiff(msUntilExpires, 0)
+  const owner = getOwner(state)
+
+  if (owner) {
+    const heightOfExpiration = owner.winHeight + OWNERSHIP_DURATION_BY_BLOCKS
+    const blocksUntilExpires = (heightOfExpiration - state.chain.height)
+    const msUntilExpires = blocksUntilExpires * 10.0 * 60.0 * 1000.0
+    diff = timeDiff(msUntilExpires, 0)
+  }
 
   // account expires or isExpired information
   const expirationMsg = () => {
     // abort if no known ownership history
-    if (state.ownership.current.winTimestamp === 0) { return ('') }
+    if (!owner) return ('')
     return (
       <div
         className={ diff.isExpired ? styles.isExpired : styles.notisExpired }
       >
-        {(diff.isExpired
-          ? 'expired ' + diff.dh + ' ago'
-          : 'expires in ' + diff.dh
-        )}
+        { !diff.isExpired && ('expires in ' + diff.dh) }
       </div>
     )
   }
 
   // calculate latest forwards
-  const latestForwards = findLatestForwards(state.ownership.current.forwards)
+  const latestForwards = owner ? findLatestForwards(owner.forwards) : []
 
   return (
     <>

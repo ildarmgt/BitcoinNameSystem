@@ -1,5 +1,5 @@
 /**
- * All the interfaces
+ * All the interfaces & enums
  */
 
 export enum ActionTypes {
@@ -9,50 +9,60 @@ export enum ActionTypes {
   NEW_WALLET = 'NEW_WALLET',
   CHANGE_PAGE_INFO = 'CHANGE_PAGE_INFO',
   UPDATE_WALLET = 'UPDATE_WALLET',
-  UPDATE_NOTIFICATION_ADDRESS = 'UPDATE_NOTIFICATION_ADDRESS',
+  UPDATE_DOMAIN = 'UPDATE_DOMAIN',
   ACTION_FAIL = 'ACTION_FAIL',
   LOAD_STATE = 'LOAD_STATE'
 }
 
 export type Dispatch = React.Dispatch<IAction>
 
+export interface IAction {
+  type: ActionTypes
+  payload: any
+}
+
+export interface Iforward {
+  network: string
+  address: string
+  updateHeight: number
+  updateTimestamp: number
+}
+
+export interface IUser {
+  address:      string
+  forwards:     Array<Iforward>
+  burnAmount:   number
+  winHeight:    number
+  winTimestamp: number
+  nonce:        number
+  updateHeight: number
+}
+
 export interface IState {
   network: string
   alias: string
   extension: string
-  notifications: {
-    address: string
+  domain: {
+    domainName: string
+    notificationAddress: string
     txHistory: Array<any>
     utxoList: Array<any>
+    users: {
+      [key: string]: IUser
+    }
+    currentOwner: string
+    bidding: {}
     checkedHistory: boolean
     checkedUtxo: boolean
   }
   wallet: {
-    WIF: string
     address: string
     mnemonic: string
+    WIF: string
     txHistory: Array<any>
     utxoList: Array<any>
     checkedHistory: boolean
     checkedUtxo: boolean
-  }
-  ownership: {
-    current: {
-      address: string
-      forwards: [ {
-        network: string
-        address: string
-        updateHeight: number
-        updateTimestamp: number
-      } ] | []
-      burnAmount: number
-      winTimestamp: number
-      winHeight: number
-      updateHeight: number
-    }
-    topBidder: object
-    history: []
-    checked: boolean
   }
   chain: {
     height: number
@@ -64,9 +74,4 @@ export interface IState {
     feeRate: number
   }
   lastTimeStamp: number
-}
-
-export interface IAction {
-  type: ActionTypes
-  payload: any
 }
