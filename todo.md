@@ -7,7 +7,7 @@
 - Derive all available BNS actions for wallet address:
   - Create enum with all possible BNS actions
   - Function that takes in address and returns possible actions at current height?
-    Different from calcOwnership. That one checks if rules were executed correctly (input/output choices already made)
+    Different from calcBnsState. That one checks if rules were executed correctly (input/output choices already made)
     Need function that determines simply permitted actions in future (e.g. owner vs not owner)
 
     While iterating block heights, at any height, should be able to derive

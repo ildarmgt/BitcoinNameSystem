@@ -1,6 +1,7 @@
 import { calcP2WSH } from './calcP2WSH'
 import { newState } from './initialState'
 import * as actions from './actions'
+import { IDomain } from './types'
 import {
   setParsedHeight,
   updateSourceUserFromTx,
@@ -12,24 +13,23 @@ import {
 
 /**
  * Returns ownership and notification information objects.
- * @param   {Array<any>}  notificationsHistory  - array of any tx with notificationsAddress.
- * @param   {string}      domainName            - full domainName to use (e.g. 'satoshi.btc').
- * @param   {number}      currentHeight         - current blockheight of the network chain selected.
+ * @param   {Array<any>}  notificationsHistory  - Array of any tx with notificationsAddress.
+ * @param   {string}      domainName            - Full domainName to use (e.g. 'satoshi.btc').
+ * @param   {number}      currentHeight         - Current blockheight of the network chain selected.
  * @param   {string}      networkChoice         - 'testnet' or 'bitcoin' (matches bitcoinjs-lib).
- * @returns {object}                            - { notifications, ownership } information objects.
+ * @returns {IDomain}                           - Domain state describing object.
  */
-export const calcOwnership = (
+export const calcBnsState = (
   notificationsHistory: Array<any>,
   domainName: string,
   currentHeight: number,
   networkChoice: string
-) => {
-  const st = newState;
+): IDomain => {
 
+  // initialize temporary derivation state
+  const st = newState;
   st.domain.domainName = domainName
   st.chain && (st.chain.currentHeight = currentHeight)
-
-  // grab notification address
   st.domain.notificationAddress = calcP2WSH(domainName, networkChoice)?.notificationsAddress || ''
 
   // Sorting history from earliest to latest
@@ -42,10 +42,6 @@ export const calcOwnership = (
       return aBlockHeight - bBlockHeight
     })
   )
-
-  // (TODO) spends to redeem / utxo to consume
-
-  // ========================= MAIN LOOP ===================
 
   // iterate with blockheights of relevant tx to derive st state
   // Each tx blockheight serves as reference time
@@ -76,8 +72,6 @@ export const calcOwnership = (
   setParsedHeight(st, getCurrentHeight(st))
   actions.autoCheckForOwnerExpired(st)
 
-  return {
-    domain: st.domain
-  }
+  return st.domain
 }
 

@@ -18,6 +18,7 @@
   display: inline-block;
   padding: calc(0.7 * var(--sizeButton)) calc(3 * var(--sizeButton));
   border-radius: calc(0.5 * var(--sizeButton));
+  /* was sized as 2.9 but js code resizes it using params to 2.5 default */
   font-size: calc(2.9 * var(--sizeButton));
   vertical-align: middle;
   white-space: nowrap;

@@ -18,7 +18,7 @@ export const Navbar = (): JSX.Element => {
           target="_blank"
           rel="noopener noreferrer"
         >
-          {'source'}
+          { 'source' }
         </a>
         <Link to='/about'>about</Link>
         <Link to='/create'>owners</Link>

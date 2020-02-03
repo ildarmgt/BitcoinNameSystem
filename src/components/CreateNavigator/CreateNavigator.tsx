@@ -13,14 +13,18 @@ export const CreateNavigator = () => {
   const { state } = React.useContext(Store) // global state
 
   const page = state.pageInfo?.current
+
+  !page && console.log('Unknown Page')
+
   return (
     <div className={ [styles.wrapper, 'scrollbar'].join(' ') }>
-      { (page === 1) && <P1RestoreOrBackup /> }
-      { (page === 2) && <P2LoadWallet /> }
-      { (page === 3) && <P3DomainAndWallet /> }
-      { (page === 4) && <P4ClaimDomain /> }
+      <div className={ styles.horizontalScaler } >
+        { (page === 1) && <P1RestoreOrBackup /> }
+        { (page === 2) && <P2LoadWallet /> }
+        { (page === 3) && <P3DomainAndWallet /> }
+        { (page === 4) && <P4ClaimDomain /> }
+      </div>
 
-      { (!page) && console.log('Unknown Page') }
     </div>
   )
 }

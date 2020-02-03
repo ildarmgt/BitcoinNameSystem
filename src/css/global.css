@@ -8,7 +8,11 @@ html {
   overflow-y: hidden;
   overflow-x: hidden;
 
-  --s: calc(1.0 * (0.5vw + 0.5vh));
+  /* Global CSS variables */
+
+  --s: calc(1.0 * (0.5vw + 0.5vh)); /* base size of all things */
+  --horizontalScale: 0.7;
+  --verticalScale: 1.0;
 
   --colorHighlight: rgb(39, 167, 156);
   --colorButtonText: white;
@@ -21,7 +25,7 @@ html {
   --colorDarker8: rgba(0, 0, 0, 0.8);
   --colorDisabled: rgba(128, 128, 128, 0.5);
   --colorLightText: rgba(17, 17, 51, 0.5);
-  --colorBitcoinOrange: orange;
+  --colorBitcoinOrange: rgb(255, 155, 0);
   --colorBitcoinBlue: rgb(17, 17, 51);
   --colorWarning: rgba(153, 17, 62, 0.75);
 
@@ -53,7 +57,7 @@ body {
 a {
   text-decoration: none;
   color: var(--colorDarker2);
-  font-size: var(--s2);
+  font-size: calc(2.0 * var(--s));
   padding: calc(0.6 * var(--s)) calc(3 * var(--s));
   margin: calc(0.5 * var(--s));
   border-radius: calc(0.5 * var(--s));
@@ -247,7 +251,8 @@ textarea:focus {
   text-align: center;
   border-radius: calc(0.6 * var(--s));
   border: 0 solid transparent;
-  padding: calc(0.7 * var(--s)) calc(1 * var(--s));
+  /* padding: calc(0.7 * var(--s)) calc(1 * var(--s)); */
+  padding: calc(1 * var(--s));
   position: absolute;
   z-index: 11;
   left: 150%;

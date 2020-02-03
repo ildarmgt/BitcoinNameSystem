@@ -1,5 +1,5 @@
 import { IState, Dispatch, ActionTypes } from '../../interfaces'
-import { calcP2WSH, calcOwnership } from '../../helpers/bns'
+import { calcP2WSH, calcBnsState } from '../../helpers/bns'
 import { getAddressHistory, getUTXOList, addRawTxToArray, getHeight } from '../../api/blockstream'
 const { UPDATE_WALLET, UPDATE_DOMAIN, ACTION_FAIL } = ActionTypes
 
@@ -84,8 +84,8 @@ export const scanAddressFullyAction = async (
 
       const { arrayUtxoWithHex, erroredOutputs } = await addRawTxToArray(utxoListNotificationAddress, state.network)
 
-      // (TODO) add utxo param & use to calcOwnership
-      const { domain } = calcOwnership(
+      // (TODO) add utxo param & use to calcBnsState
+      const domain = calcBnsState(
         notificationsTxHistory,
         domainName,
         currentHeight,

@@ -1,6 +1,6 @@
 .wrapper {
   margin-top: calc(2 * var(--s));
-  font-size: calc(2 * var(--s));
+  font-size: calc(2.5 * var(--s));
   color: var(--colorBitcoinBlue);
   display: grid;
   grid-template-columns:  0% auto 50%;
@@ -26,7 +26,7 @@
 }
 
 .title {
-  font-size: calc(2.5 * var(--s));
+  font-size: calc(3 * var(--s));
   grid-area: title;
 }
 
@@ -70,6 +70,14 @@
   grid-area: ownership;
 }
 
+.balance {
+  display: inline-flex;
+  background-color: var(--colorDarker1);
+  border-radius: calc(1 * var(--s));
+  padding: calc(0.5 * var(--s)) calc(1 * var(--s));
+  margin: calc(0.5 * var(--s)) calc(1 * var(--s));
+}
+
 @media screen and (min-aspect-ratio: 12/9) {
   .wrapper {
     margin-right: calc(11 * var(--s));
@@ -95,10 +103,3 @@
 
 }
 
-.balance {
-  display: inline-flex;
-  background-color: var(--colorDarker1);
-  border-radius: calc(1 * var(--s));
-  padding: calc(0.5 * var(--s)) calc(1 * var(--s));
-  margin: calc(0.5 * var(--s)) calc(1 * var(--s));
-}

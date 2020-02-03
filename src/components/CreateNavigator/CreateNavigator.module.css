@@ -8,3 +8,15 @@
   overflow-x: hidden;
   height: calc(100vh - 7vw - calc(5 * var(--s)));
 }
+
+.horizontalScaler {
+  transform-origin: top;
+  transform: scale(var(--verticalScale));
+}
+
+@media screen and (min-aspect-ratio: 12/9) {
+  .horizontalScaler {
+    transform-origin: top;
+    transform: scale(var(--horizontalScale));
+  }
+}

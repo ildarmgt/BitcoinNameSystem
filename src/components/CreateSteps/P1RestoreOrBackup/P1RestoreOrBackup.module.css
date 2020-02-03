@@ -1,7 +1,6 @@
 .wrapper {
   color: var(--colorBitcoinBlue);
-  font-size: calc(2 * var(--s));
-  /* padding-top: calc(5 * var(--s)); */
+  font-size: calc(2.5 * var(--s));
 }
 
 .title {
@@ -11,7 +10,6 @@
   margin-bottom: calc(3 * var(--s));
   cursor: default;
   color: var(--colorBitcoinBlue);
-  /* text-shadow: 1px 1px var(--colorBackground); */
 }
 
 .contentWrapper {
@@ -21,22 +19,21 @@
 }
 
 .buttonWrapper {
+  box-sizing: border-box;
   display: flex;
   flex-wrap: wrap-reverse;
   flex-direction: row;
-  /* justify-content: space-evenly; */
   justify-content: center;
   align-items: center;
-  margin: calc(2 * var(--s));
+  margin: calc(4 * var(--s));
 }
 
 .buttonWrapper > div {
-  margin: calc(1 * var(--s)) calc(2 * var(--s));
+  box-sizing: border-box;
+  margin: calc(2 * var(--s)) calc(3 * var(--s));
 }
 
 .describe {
-  /* text-shadow: 1px 1px var(--colorBackground); */
-  font-size: calc(2.5 * var(--s));
   cursor: default;
   -webkit-user-select: none;
   -moz-user-select: -moz-none;
@@ -60,16 +57,12 @@
   margin: calc(2 * var(--s));
   color: var(--colorBitcoinOrange);
   background-color: var(--colorBackground);
-  width: 80%;
+  width: 70vw;
   cursor: default;
 }
 
-/* .backup:focus {
-  outline: none;
-} */
-
 .restoreBackup {
-  width: 80%;
+  width: 70vw;
   color: var(--colorBitcoinOrange);
   caret-color: var(--colorBitcoinOrange);
   height: calc(20 * var(--s));
@@ -81,7 +74,7 @@
   overflow-wrap: normal;
   white-space: normal;
   box-sizing: border-box;
-  margin: calc(1 * var(--s));
+  margin: calc(2 * var(--s));
 }
 
 .restoreBackup::placeholder {

@@ -1,12 +1,11 @@
 .root {
   display: inline-block;
   position: absolute;
-  bottom: calc(0.1 * var(--s));
+  bottom: calc(0 * var(--s));
   right: calc(1 * var(--s));
   text-align: right;
-  font-size: calc(1.5 * var(--s));
   color: var(--colorDarker4);
-  margin: calc(0.5 * var(--s)) calc(0.5 * var(--s));
+  margin: 0 calc(0.5 * var(--s));
   vertical-align: middle;
 }
 
@@ -14,16 +13,28 @@
   color: var(--colorDarker5);
   display: inline-block;
   vertical-align: middle;
+  font-size: calc(2.2 * var(--s));
+
 }
 
 .warning {
   /* padding: calc(1 * var(--s)); */
   display: inline-block;
   position: absolute;
-  bottom: calc(1.5 * var(--s));
-  left: calc(1 * var(--s));
+  top: calc(1.5 * var(--s));
+  right: calc(1 * var(--s));
   color: red;
   font-size: calc(2 * var(--s));
   margin-right: calc(2 * var(--s));
   vertical-align: middle;
+  z-index: 1000;
+}
+
+
+/* wide screen settings */
+@media screen and (min-aspect-ratio: 12/9) {
+  .root a {
+    font-size: calc(1.9 * var(--s));
+  }
+
 }

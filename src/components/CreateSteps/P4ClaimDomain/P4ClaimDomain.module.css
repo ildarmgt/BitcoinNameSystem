@@ -2,7 +2,7 @@
   box-sizing: border-box;
 
   margin: 0 calc(2 * var(--s));
-  font-size: calc(2 * var(--s));
+  font-size: calc(2.5 * var(--s));
   color: var(--colorBitcoinBlue);
   display: grid;
 
@@ -43,7 +43,10 @@
 }
 
 .buttonWrapper > div {
+  margin: 0;
   margin-left: calc(2 * var(--s));
+  margin-top: calc(1 * var(--s));
+  margin-bottom: calc(1 * var(--s));
 }
 
 .editor {
@@ -51,7 +54,7 @@
   grid-area: editor;
 
   display: grid;
-  grid-template-columns: 30% 2% calc(66% - (5 * var(--s)))  2% calc(5 * var(--s));
+  grid-template-columns: 30% 2% calc(65.5% - (5 * var(--s)))  2.5% calc(5 * var(--s));
   grid-template-rows: auto calc(3.5 * var(--s)) ;
   grid-template-areas:
     "editorNetwork    .             editorAddress   .               btnAdd"
@@ -239,7 +242,6 @@
     grid-template-rows:     auto auto auto auto auto auto;
 
     grid-gap: 0% 5%;
-    transform: scale(0.85);
     margin-top: calc(-5 * var(--s));
   }
   .pastList {

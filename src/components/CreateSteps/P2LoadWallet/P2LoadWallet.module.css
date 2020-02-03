@@ -40,6 +40,7 @@
   overflow-wrap: break-word;
   word-wrap: break-word;
   word-break: break-all;
+  width: 50%;
 }
 
 
@@ -68,5 +69,9 @@
     align-items: flex-end;
     margin-right: calc(2 * var(--s));
     margin-left: 0;
+  }
+
+  .address {
+    text-align: right;
   }
 }

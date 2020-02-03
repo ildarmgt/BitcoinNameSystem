@@ -1,5 +1,5 @@
 import { IState, Dispatch, ActionTypes } from '../../interfaces'
-import { calcP2WSH, calcOwnership } from '../../helpers/bns'
+import { calcP2WSH, calcBnsState } from '../../helpers/bns'
 import { getAddressHistory, getHeight } from './../../api/blockstream'
 const { STORE_SEARCH_RESULTS_FAIL, STORE_SEARCH_RESULTS } = ActionTypes;
 
@@ -32,7 +32,7 @@ export const searchAction = async (state: IState, dispatch: Dispatch, router: an
     const notificationsTxHistory = await getAddressHistory(notificationsAddress, state.network)
 
     // calculate bns data from this history via helper functions
-    const { domain } = calcOwnership(
+    const domain = calcBnsState(
       notificationsTxHistory,
       domainName,
       currentHeight,
