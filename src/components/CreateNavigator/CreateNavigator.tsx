@@ -3,7 +3,8 @@ import { Store } from './../../store/'
 import { P1RestoreOrBackup } from '../CreateSteps/P1RestoreOrBackup'
 import { P2LoadWallet } from '../CreateSteps/P2LoadWallet'
 import { P3DomainAndWallet } from '../CreateSteps/P3DomainAndWallet'
-import { P4ClaimDomain } from '../CreateSteps/P4ClaimDomain'
+import { P4ActionChoice } from '../CreateSteps/P4ActionChoice'
+import { P5CustomForwards } from '../CreateSteps/P5CustomForwards'
 import styles from './CreateNavigator.module.css'
 
 /**
@@ -22,7 +23,8 @@ export const CreateNavigator = () => {
         { (page === 1) && <P1RestoreOrBackup /> }
         { (page === 2) && <P2LoadWallet /> }
         { (page === 3) && <P3DomainAndWallet /> }
-        { (page === 4) && <P4ClaimDomain /> }
+        { (page === 4) && <P4ActionChoice /> }
+        { (page === 5) && <P5CustomForwards /> }
       </div>
 
     </div>

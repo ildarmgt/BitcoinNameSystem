@@ -31,6 +31,10 @@ export const searchAction = async (state: IState, dispatch: Dispatch, router: an
     // Upon failure error should be caught in this function
     const notificationsTxHistory = await getAddressHistory(notificationsAddress, state.network)
 
+    console.log('\n'.repeat(5))
+    console.log(notificationsTxHistory)
+    console.log('\n'.repeat(5))
+
     // calculate bns data from this history via helper functions
     const domain = calcBnsState(
       notificationsTxHistory,

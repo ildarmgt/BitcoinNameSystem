@@ -1,7 +1,7 @@
 import React from 'react'
 import { Store } from '../../../store'
 import { RoundButton } from '../../general/RoundButton'
-import styles from './P5Broadcast.module.css'
+import styles from './P6Broadcast.module.css'
 import { changePageInfoAction } from '../../../store/actions'
 
 /**
@@ -9,7 +9,7 @@ import { changePageInfoAction } from '../../../store/actions'
  * Fee selection.
  * Transaction summary/status. *
  */
-export const P4ClaimDomain = () => {
+export const P6Broadcast = () => {
   // global state
   const { state, dispatch } = React.useContext(Store)
 

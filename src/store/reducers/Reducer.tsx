@@ -77,8 +77,9 @@ export default function reducer (state: IState, action: IAction): IState {
     case STORE_SEARCH_RESULTS: {
       // store results of looking up totally new alias
       // update notifications and ownership information
+
       return {
-        ...state,
+        ...initialState,
         alias: payload.alias,
         domain: {
           ...initialState.domain,

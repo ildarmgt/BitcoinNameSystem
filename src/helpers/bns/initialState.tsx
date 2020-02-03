@@ -2,7 +2,7 @@ import { IUser, IBnsState } from './types/'
 
 // Initializing values
 
-export const newState: IBnsState = JSON.parse(JSON.stringify({
+export const newState: IBnsState = {
   domain: {                                     // notification info for this domain name
     domainName:                   '',           // domain name
     notificationAddress:          '',           // p2wsh address for this domain name (alias + extension)
@@ -17,10 +17,10 @@ export const newState: IBnsState = JSON.parse(JSON.stringify({
     parsedHeight:                 0,            // parsed height for derivation
     currentHeight:                0             // real world block height
   }
-}))
+}
 
 // values to initialize users with
-export const newUser: IUser = JSON.parse(JSON.stringify({
+export const newUser: IUser = {
   address:        '',           // address in control
   forwards:       [],           // for forwards later
   burnAmount:     0,            // burned to get ownership
@@ -28,4 +28,4 @@ export const newUser: IUser = JSON.parse(JSON.stringify({
   winTimestamp:   0,            // winHeight in block's timestamp
   nonce:          0,            // for counting previous notification height from this address, no matter good/bad/type
   updateHeight:   0             // the height of most current parsed update, created after nonce height & therefore using it
-}))
+}

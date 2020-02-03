@@ -13,8 +13,10 @@
   color: var(--colorDarker5);
   display: inline-block;
   vertical-align: middle;
-  font-size: calc(2.2 * var(--s));
-
+  font-size: calc(2.5 * var(--s));
+  margin: 0;
+  margin-bottom: calc(0.25 * var(--s));
+  margin-right: calc(0.25 * var(--s));
 }
 
 .warning {
@@ -34,7 +36,9 @@
 /* wide screen settings */
 @media screen and (min-aspect-ratio: 12/9) {
   .root a {
-    font-size: calc(1.9 * var(--s));
+    /* font-size: calc(1.9 * var(--s)); */
+    transform-origin: ;
+    transform: scale(var(--horizontalScale));
   }
 
 }

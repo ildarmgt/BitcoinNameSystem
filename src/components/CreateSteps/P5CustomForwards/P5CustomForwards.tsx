@@ -1,15 +1,15 @@
 import React, { useEffect } from 'react'
 import { RoundButton } from '../../general/RoundButton'
-import styles from './P4ClaimDomain.module.css'
+import styles from './P5CustomForwards.module.css'
 import { Store, getOwner } from '../../../store'
 import { changePageInfoAction } from '../../../store/actions'
-import { calcBidDomainTx, stringByteCount, BYTES_MAX } from '../../../helpers/bns/'
-import sanitize from './../../../helpers/sanitize'
+import { calcBidDomainTx, stringByteCount, BYTES_MAX } from '../../../helpers/bns'
+import sanitize from '../../../helpers/sanitize'
 
 /**
  * Bid on network
  */
-export const P4ClaimDomain = () => {
+export const P5CustomForwards = () => {
   // global state
   const { state, dispatch } = React.useContext(Store)
 

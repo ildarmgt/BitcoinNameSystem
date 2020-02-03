@@ -27,7 +27,7 @@ export const calcBnsState = (
 ): IDomain => {
 
   // initialize temporary derivation state
-  const st = newState;
+  const st = JSON.parse(JSON.stringify(newState)); // deep object clone
   st.domain.domainName = domainName
   st.chain && (st.chain.currentHeight = currentHeight)
   st.domain.notificationAddress = calcP2WSH(domainName, networkChoice)?.notificationsAddress || ''
@@ -45,7 +45,7 @@ export const calcBnsState = (
 
   // iterate with blockheights of relevant tx to derive st state
   // Each tx blockheight serves as reference time
-  st.domain.txHistory.forEach(tx => {
+  st.domain.txHistory.forEach((tx: any) => {
 
     // update current parsed height based on tx confirmed height
     setParsedHeight(st, getTxHeight(tx))
