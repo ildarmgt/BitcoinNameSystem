@@ -5,13 +5,15 @@ import { P2LoadWallet } from '../CreateSteps/P2LoadWallet'
 import { P3DomainAndWallet } from '../CreateSteps/P3DomainAndWallet'
 import { P4ActionChoice } from '../CreateSteps/P4ActionChoice'
 import { P5CustomForwards } from '../CreateSteps/P5CustomForwards'
+import { P6Broadcast } from './../CreateSteps/P6Broadcast'
 import styles from './CreateNavigator.module.css'
 
 /**
  * Handle navigation of alias manipulation
  */
 export const CreateNavigator = () => {
-  const { state } = React.useContext(Store) // global state
+  // global state
+  const { state } = React.useContext(Store)
 
   const page = state.pageInfo?.current
 
@@ -25,8 +27,8 @@ export const CreateNavigator = () => {
         { (page === 3) && <P3DomainAndWallet /> }
         { (page === 4) && <P4ActionChoice /> }
         { (page === 5) && <P5CustomForwards /> }
+        { (page === 6) && <P6Broadcast /> }
       </div>
-
     </div>
   )
 }

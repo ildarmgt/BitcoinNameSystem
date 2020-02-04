@@ -34,7 +34,7 @@ export const P6Broadcast = () => {
       </div>
       <div className={ styles.buttonWrapper }>
         <RoundButton>
-          Broadcast (API)
+          Broadcast (TODO)
         </RoundButton>
         <RoundButton
           onClick={ () => changePageInfoAction(state, dispatch, 4)

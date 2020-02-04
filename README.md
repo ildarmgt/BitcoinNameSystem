@@ -22,8 +22,8 @@ npm run build
 ```
 The latest compiled release used can be found in `./docs/` folder
 
-Website can run offline by running index.html in `/docs/` folder (w/ rest of files in folder present) for putting together transactions on air-gapped computers.
-(Tx creator not done. Work in progress)
+Website can eventually run offline by running index.html in `/docs/` folder (w/ rest of files in folder present) for putting together transactions on air-gapped computers.
+(Tx creator not done & airgapped offline loading not done. Work in progress)
 
 ## To run project on localhost
 

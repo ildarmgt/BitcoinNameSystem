@@ -35,7 +35,7 @@ export const P4ActionChoice = () => {
       </div>
       <div className={ styles.contentWrapper }>
         <div>
-          Allowed actions
+          Allowed actions:
         </div>
         <div>
         {
@@ -43,6 +43,9 @@ export const P4ActionChoice = () => {
             if (action.isUsable) {
               return (
               <RoundButton
+                onClick={ () => {
+                  changePageInfoAction(state, dispatch, 5)
+                }}
                 key={ action.info }
               >
                 { action.info }
@@ -55,7 +58,7 @@ export const P4ActionChoice = () => {
         }
         </div>
         <div>
-          Unavailable actions
+          Unavailable actions:
         </div>
         <div>
         {

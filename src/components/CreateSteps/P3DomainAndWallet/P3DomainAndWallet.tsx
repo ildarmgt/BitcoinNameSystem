@@ -136,7 +136,7 @@ export const P3DomainAndWallet = () => {
           Back
         </RoundButton>
         <RoundButton
-          // show={ readyStatus().isReady ? 'true' : 'false' }
+          show={ readyStatus().isReady ? 'true' : 'false' }
           next='true'
           onClick={ () => {
             changePageInfoAction(state, dispatch, 4)
