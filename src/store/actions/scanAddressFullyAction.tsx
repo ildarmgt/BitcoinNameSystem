@@ -85,7 +85,7 @@ export const scanAddressFullyAction = async (
       const { arrayUtxoWithHex, erroredOutputs } = await addRawTxToArray(utxoListNotificationAddress, state.network)
 
       // (TODO) add utxo param & use to calcBnsState
-      const domain = calcBnsState(
+      const { domain } = calcBnsState(
         notificationsTxHistory,
         domainName,
         currentHeight,

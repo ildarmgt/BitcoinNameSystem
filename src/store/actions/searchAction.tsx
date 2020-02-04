@@ -36,7 +36,7 @@ export const searchAction = async (state: IState, dispatch: Dispatch, router: an
     console.log('\n'.repeat(5))
 
     // calculate bns data from this history via helper functions
-    const domain = calcBnsState(
+    const { domain } = calcBnsState(
       notificationsTxHistory,
       domainName,
       currentHeight,

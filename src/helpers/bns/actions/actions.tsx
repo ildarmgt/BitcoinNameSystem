@@ -61,13 +61,13 @@ export const claimOwnershipAction = (st: IBnsState, tx: any = undefined) => {
   const args = { st, tx }
 
   return {
-    info: 'Claim ownership of the available domain',
+    info: 'Claim ownership of an available domain',
 
-    permissions: [
+    permissions: () => [
       NO_OWNER(args)
     ],
 
-    conditions: [
+    conditions: () => [
       OUTS_2(args),
       OUT_0(args),
       OUT_1(args),
@@ -101,13 +101,13 @@ export const claimOwnershipAction = (st: IBnsState, tx: any = undefined) => {
 export const currentOwnerRenewAction = (st: IBnsState, address: string, tx: any = undefined) => {
   const args = { st, address, tx }
   return {
-    info: 'Renew ownership by current owner of this domain',
+    info: 'Extend ownership of this domain',
 
-    permissions: [
+    permissions: () => [
       USER_IS_OWNER(args)
     ],
 
-    conditions: [
+    conditions: () => [
       OUTS_2(args),
       OUT_0(args),
       OUT_1(args),
@@ -135,7 +135,7 @@ export const autoCheckForOwnerExpired = (st: IBnsState) => {
   return {
     info: 'Existing ownerships that expire are removed',
 
-    conditions: [
+    conditions: () => [
       EXISTS_OWNER(args),
       IS_OWNER_EXPIRED(args)
     ],

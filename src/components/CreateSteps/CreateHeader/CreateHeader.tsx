@@ -2,8 +2,6 @@ import React, { useEffect, useState } from 'react'
 import styles from './CreateHeader.module.css'
 import { Store } from './../../../store/'
 
-
-
 // restore backup or create new
 export const CreateHeader = () => {
   const { state } = React.useContext(Store) // global state
