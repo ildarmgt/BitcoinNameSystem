@@ -23,8 +23,8 @@
   /* padding: calc(1 * var(--s)); */
   display: inline-block;
   position: absolute;
-  top: calc(1.5 * var(--s));
-  right: calc(1 * var(--s));
+  top: calc(0.1 * var(--s));
+  right: calc(0.1 * var(--s));
   color: red;
   font-size: calc(2 * var(--s));
   margin-right: calc(2 * var(--s));

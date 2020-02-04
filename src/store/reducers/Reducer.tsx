@@ -79,7 +79,7 @@ export default function reducer (state: IState, action: IAction): IState {
       // update notifications and ownership information
 
       return {
-        ...initialState,
+        ...state,
         alias: payload.alias,
         domain: {
           ...initialState.domain,

@@ -140,8 +140,6 @@ export async function getAddressHistory (address: string, network: string) {
   // Get confirmed transaction history for the specified address/scripthash, sorted with newest first.
   // Returns 25 transactions per page. More can be requested by specifying the last txid seen by the previous query.
 
-  // const API_PATH_TESTNET = 'https://blockstream.info/testnet/api/address/'
-  // const API_PATH_BITCOIN = 'https://blockstream.info/api/address/'
   const CONFIRMED_PAGES_ADDON = '/txs/chain'
 
   const API_PATH = (
