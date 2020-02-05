@@ -9,7 +9,9 @@ export const existsCurrentOwner = (st: IBnsState): boolean => st.domain.currentO
 
 export const getOwnerAddress = (st: IBnsState): string => st.domain.currentOwner || ''
 
-export const setOwner = (st: IBnsState, newOwnerAddress: string) => { st.domain.currentOwner = newOwnerAddress }
+export const setOwner = (st: IBnsState, newOwnerAddress: string) => {
+  st.domain.currentOwner = newOwnerAddress
+}
 
 export const getUser = (st: IBnsState, address: string): IUser => st.domain.users[address]
 
@@ -27,7 +29,9 @@ export const clearOwner = (st: IBnsState): void => { st.domain.currentOwner = ''
 
 export const getCurrentHeight = (st: IBnsState): number => st.chain?.currentHeight || 0
 export const getParsedHeight = (st: IBnsState): number => st.chain?.parsedHeight || 0
-export const setParsedHeight = (st: IBnsState, height: number): void => { st.chain && (st.chain.parsedHeight = height) }
+export const setParsedHeight = (st: IBnsState, height: number): void => {
+  st.chain && (st.chain.parsedHeight = height)
+}
 
 export const getNotificationAddress = (st: IBnsState): string => st.domain.notificationAddress || ''
 
@@ -58,7 +62,9 @@ export const getTxOutput0Data = (tx: any):string => {
 export const getTxOutput1NotifyValue = (tx: any): number => tx.vout[1]?.value || 0
 export const getTxOutput1NotifyAddress = (tx: any): string => tx.vout[1]?.scriptpubkey_address || ''
 
-export const getTxInput0SourceUserAddress = (tx: any): string => tx.vin[0]?.prevout.scriptpubkey_address || ''
+export const getTxInput0SourceUserAddress = (tx: any): string => (
+  tx.vin[0]?.prevout.scriptpubkey_address || ''
+)
 
 
 // ======= update state from tx (setters) ========
@@ -82,7 +88,11 @@ export const updateSourceUserFromTx = (st: IBnsState, tx: any): void => {
   console.log('source:', user)
 }
 
-export const addToUserForwards = (st: IBnsState, fromAddress: string, forwardsInThisTx: Array<Iforward>) => {
+export const addToUserForwards = (
+  st: IBnsState,
+  fromAddress: string,
+  forwardsInThisTx: Array<Iforward>
+) => {
   const user = getUser(st, fromAddress)
   user.forwards = [...user.forwards, ...forwardsInThisTx]
 }
@@ -142,11 +152,15 @@ export const atLeastTwoOutputs = (tx: any): boolean => tx.vout.length >= 2
 
 // Describe:    Is [0] output OP_RETURN type
 // Required:    ALL
-export const isOpreturnOutput0 = (tx: any): boolean => tx.vout[0].scriptpubkey_asm.split(' ')[0] === 'OP_RETURN'
+export const isOpreturnOutput0 = (tx: any): boolean => (
+  tx.vout[0].scriptpubkey_asm.split(' ')[0] === 'OP_RETURN'
+)
 
 // Describe:    Is [1] output this domain's notification address?
 // Required:    ALL
-export const isNotify =  (st: IBnsState, tx: any): boolean => getTxOutput1NotifyAddress(tx) === getNotificationAddress(st)
+export const isNotify =  (st: IBnsState, tx: any): boolean => (
+  getTxOutput1NotifyAddress(tx) === getNotificationAddress(st)
+)
 
 // Describe:    At least minimum amount used in notification output? (Dust level is main danger)
 // Required:    ALL
@@ -163,5 +177,7 @@ export const isAddressTheCurrentOwner = (st: IBnsState, address: string): boolea
 export const didBurnMin = (tx: any): boolean => getTxOutput0BurnValue(tx) >= MIN_BURN
 
 // Describe:    Burned at least as much as previously burnt
-export const burnedPreviousRateMin = (st: IBnsState, tx: any): boolean => getTxOutput0BurnValue(tx) >= getLastOwnerBurnedValue(st)
+export const burnedPreviousRateMin = (st: IBnsState, tx: any): boolean => (
+  getTxOutput0BurnValue(tx) >= getLastOwnerBurnedValue(st)
+)
 

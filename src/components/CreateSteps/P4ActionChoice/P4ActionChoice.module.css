@@ -1,13 +1,13 @@
 .wrapper {
   box-sizing: border-box;
-  margin: 0 calc(2 * var(--s));
+  margin: 0 2%;
   font-size: calc(2.5 * var(--s));
   color: var(--colorBitcoinBlue);
 
   display: grid;
-  grid-template-columns:  auto auto;
+  grid-template-columns:  49% 49%;
   grid-template-rows:     auto auto auto auto auto;
-  grid-gap: calc(1 * var(--s)) calc(1 * var(--s));
+  grid-gap: calc(2.5 * var(--s)) 2%;
   grid-template-areas:
     "title                      title"
     "availableActions           availableActions"
@@ -21,6 +21,7 @@
 
 .title {
   grid-area: title;
+
   font-size: calc(3 * var(--s));
   margin-bottom: calc(2 * var(--s));
 }
@@ -46,6 +47,11 @@
   flex-wrap: wrap;
   align-items: flex-start;
   text-align: left;
+
+  overflow-wrap: normal;
+  word-wrap: normal;
+  width: 100%;
+  overflow-x: hidden;
 }
 
 .buttonWrapper {
@@ -56,14 +62,43 @@
 }
 
 .unavailableActions__title {
-  margin-bottom: calc(2 * var(--s));
+  margin-bottom: calc(1 * var(--s));
+  overflow-wrap: normal;
+  word-wrap: normal;
+  width: 100%;
 }
 .unavailableActions__actionList {
 
 }
 .unavailableActions__actionList__action {
+  box-sizing: border-box;
   margin: calc(1 * var(--s)) 0;
+  padding-left: calc(1 * var(--s));
+  overflow-wrap: normal;
+  word-wrap: normal;
+  width: 100%;
 }
-.unavailableActions__actionList__action__title {}
-.unavailableActions__actionList__action__permissionList {}
-.unavailableActions__actionList__action__permissionList__permission {}
+.unavailableActions__actionList__action__title {
+  box-sizing: border-box;
+  background-color: var(--colorDarker1);
+  border-radius: calc(0.5 * var(--s));
+  padding: calc(0.5 * var(--s)) calc(1 * var(--s));
+  overflow-wrap: normal;
+  word-wrap: normal;
+  width: 100%;
+}
+.unavailableActions__actionList__action__permissionList {
+  box-sizing: border-box;
+  padding-left: calc(1 * var(--s));
+  overflow-x: hidden;
+  width: 100%;
+}
+.unavailableActions__actionList__action__permissionList__permission {
+  box-sizing: border-box;
+  overflow-wrap: normal;
+  word-wrap: normal;
+  width: 100%;
+  padding-left: calc(1 * var(--s));
+  word-break: normal;
+  overflow-wrap: normal;
+}

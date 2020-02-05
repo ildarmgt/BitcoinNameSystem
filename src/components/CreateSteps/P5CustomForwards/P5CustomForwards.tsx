@@ -194,7 +194,7 @@ export const P5CustomForwards = () => {
         <RoundButton
           back='true'
           onClick={ () => {
-            changePageInfoAction(state, dispatch, 3)
+            changePageInfoAction(state, dispatch, 4)
           }}
         >
           Back
