@@ -35,6 +35,7 @@ export const P4ActionChoice = () => {
         {
           checkActions.map(action => {
             if (action.isUsable) {
+              console.log('special tx instructions:', action.special)
               return (
               <RoundButton
                 next={ 'true' }

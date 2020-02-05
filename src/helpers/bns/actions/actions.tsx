@@ -19,40 +19,67 @@ import {
   getTxOutput0BurnValue,
   isAddressTheCurrentOwner,
   burnedPreviousRateMin,
-  readEmbeddedData
+  readEmbeddedData,
+  getLastOwnerBurnedValue
 } from './../formathelpers'
 
 // =========== CONDITIONS / PERMISSIONS ================
+// Called by the actions for conditions
+// Return object with "info": describing condition,
+// "status" to check conditoin,
+// and optional "special" to give transaction forming specifications
 
-const OUTS_2 = ({ tx }: any) =>
-  ({ info: 'Tx must have 2+ outputs', status: atLeastTwoOutputs(tx) })
+const OUTS_2 = ({ tx=undefined }: any) => ({
+  info: 'Tx must have 2+ outputs',
+  status: () => atLeastTwoOutputs(tx)
+})
 
-const OUT_0 = ({ tx }: any) =>
-  ({ info: 'Tx must have OP_RETURN @ output[0]', status: isOpreturnOutput0(tx) })
+const OUT_0 = ({ tx=undefined }: any) => ({
+  info: 'Tx must have OP_RETURN @ output[0]',
+  status: () => isOpreturnOutput0(tx)
+})
 
-const OUT_1 = ({ st, tx }: any) =>
-  ({ info: 'Tx must have notification address @ output[1]' , status: isNotify(st, tx) })
+const OUT_1 = ({ st, tx=undefined }: any) => ({
+  info: 'Tx must have notification address @ output[1]' ,
+  status: () => isNotify(st, tx)
+})
 
-const NOTIFIED_MIN = ({ tx }: any) =>
-  ({ info: `Tx must have minimum ${MIN_NOTIFY} @ output[1]`, status: didNotifyMin(tx) })
+const NOTIFIED_MIN = ({ tx=undefined }: any) => ({
+  info: `Tx must have minimum ${MIN_NOTIFY} @ output[1]`,
+  status: () => didNotifyMin(tx)
+})
 
-const BURNED_MIN = ({ tx }: any) =>
-  ({ info: `Tx must burn ${MIN_BURN} @ output[0]`, status: didBurnMin(tx) })
+const BURNED_MIN = ({ tx=undefined }: any) => ({
+    info: `Tx must burn ${MIN_BURN} @ output[0]`,
+    status: () => didBurnMin(tx),
+    special: { output0value: MIN_BURN }
+  })
 
-const NO_OWNER = ({ st }: any) =>
-  ({ info: 'There must not be an existing owner', status: !existsCurrentOwner(st) })
+const NO_OWNER = ({ st }: any) => ({
+  info: 'There must not be an existing owner',
+  status: () => !existsCurrentOwner(st)
+})
 
-const EXISTS_OWNER = ({ st }: any) =>
-  ({ info: 'There must be existing owner', status: existsCurrentOwner(st) })
+const EXISTS_OWNER = ({ st }: any) => ({
+  info: 'There must be existing owner',
+  status: () => existsCurrentOwner(st)
+})
 
-const BURN_LAST_WIN = ({ st, tx }: any) =>
-  ({ info: 'Tx must burn the last ownership winning burn amount', status: burnedPreviousRateMin(st, tx) })
+const BURN_LAST_WIN = ({ st, tx=undefined }: any) => ({
+  info: 'Tx must burn the last ownership winning burn amount',
+  status: () => burnedPreviousRateMin(st, tx),
+  special: { output0value: getLastOwnerBurnedValue(st) }
+})
 
-const USER_IS_OWNER = ({ st, address }: any) =>
-  ({ info: `User's address must match owner's address`, status: isAddressTheCurrentOwner(st, address) })
+const USER_IS_OWNER = ({ st, address=undefined }: any) => ({
+  info: `User's address must match owner's address`,
+  status: () => isAddressTheCurrentOwner(st, address)
+})
 
-const IS_OWNER_EXPIRED = ({ st }: any) =>
-  ({ info: 'Ownership must be expired at current parsed height', status: isOwnerExpired(st) })
+const IS_OWNER_EXPIRED = ({ st }: any) => ({
+  info: 'Ownership must be expired at current parsed height',
+  status: () => isOwnerExpired(st)
+})
 
 
 // ============ USER ACTIONs ===============
@@ -64,11 +91,11 @@ export const claimOwnershipAction = (st: IBnsState, tx: any = undefined) => {
 
     info: 'Claim ownership of an available domain',
 
-    permissions: () => [
+    permissions: [
       NO_OWNER(args)
     ],
 
-    conditions: () => [
+    conditions: [
       OUTS_2(args),
       OUT_0(args),
       OUT_1(args),
@@ -109,11 +136,11 @@ export const currentOwnerRenewAction = (
 
     info: 'Extend ownership of this domain',
 
-    permissions: () => [
+    permissions: [
       USER_IS_OWNER(args)
     ],
 
-    conditions: () => [
+    conditions: [
       OUTS_2(args),
       OUT_0(args),
       OUT_1(args),
@@ -128,13 +155,14 @@ export const currentOwnerRenewAction = (
       // set owner's win height to current tx height therefore updating ownership
       owner && (owner.winHeight = getTxHeight(tx))
       owner && (owner.winTimestamp = getTxTimestamp(tx))
-      console.log(`${ st.domain.domainName } : ${ getTxHeight(tx) } height: owner extended ownership ${ owner?.address }`)
+      console.log(
+        `${ st.domain.domainName } : ${ getTxHeight(tx) } height: owner extended ownership ${ owner?.address }`
+      )
     }
   }
 }
 
 // Describe: update forwarding information.
-// No significant requirements necessary.
 export const updateForwardingInfoAction = (
   st: IBnsState,
   tx: any = undefined
@@ -144,9 +172,9 @@ export const updateForwardingInfoAction = (
 
     info: "Only update forwarding information",
 
-    permissions: () => [],
+    permissions: [],
 
-    conditions: () => [
+    conditions: [
       OUTS_2(args),
       OUT_0(args),
       OUT_1(args),
@@ -167,7 +195,7 @@ export const autoCheckForOwnerExpired = (st: IBnsState) => {
   return {
     info: 'Existing ownerships that expire are removed',
 
-    conditions: () => [
+    conditions: [
       EXISTS_OWNER(args),
       IS_OWNER_EXPIRED(args)
     ],

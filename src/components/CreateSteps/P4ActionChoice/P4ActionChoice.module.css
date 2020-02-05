@@ -102,3 +102,24 @@
   word-break: normal;
   overflow-wrap: normal;
 }
+
+
+@media screen and (min-aspect-ratio: 12/9) {
+  .wrapper {
+
+    grid-template-columns:  auto calc(60 * var(--s));
+    grid-template-rows:     auto auto auto auto auto;
+
+    grid-template-areas:
+      ".                          title"
+      "unavailableActions         availableActions"
+      "unavailableActions         availableActions   "
+      "unavailableActions         availableActions"
+      "buttonWrapper              buttonWrapper"
+    ;
+  }
+  .title {
+    text-align: right;
+    margin-right: calc(2 * var(--s));
+  }
+}

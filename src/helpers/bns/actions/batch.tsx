@@ -27,8 +27,8 @@ export const runAllActionPermissionChecks = (st: IBnsState, address: string) => 
 
     // check each permission in each action
     const checkedPermissions: any[] = []
-    action.permissions().forEach((permission: any) => {
-      const isAllowed = permission.status
+    action.permissions.forEach((permission: any) => {
+      const isAllowed = permission.status()
 
       // add to list of permissions checked in this action & their display info
       checkedPermissions.push({
@@ -37,11 +37,28 @@ export const runAllActionPermissionChecks = (st: IBnsState, address: string) => 
       })
     })
 
+    // grab every special rule so can put together tx based on them
+    const specialTxDirections: any[] = []
+    action.permissions.forEach((permission: any) => {
+      if ('special' in permission) specialTxDirections.push({
+        info: permission.info,
+        rule: permission.special
+      })
+    })
+    action.conditions.forEach((condition: any) => {
+      if ('special' in condition) specialTxDirections.push({
+        info: condition.info,
+        rule: condition.special
+      })
+    })
+
+
     // add to list of all actions with summary of all their permissions checks
     checkedActions.push({
       info: action.info,
       isUsable: checkedPermissions.every(permission => permission.isAllowed),
-      permissionList: checkedPermissions
+      permissionList: checkedPermissions,
+      special: specialTxDirections
     })
   })
 
@@ -65,12 +82,12 @@ export const runAllUserActions = (st: IBnsState, tx: any) => {
   allUserActions.forEach((action: any) => {
 
     // check that all conditions & permissions are true
-    const okConditions = action.conditions().reduce(
-      (areAllConditionsMet: boolean, eaCondition: any) => areAllConditionsMet && eaCondition.status
+    const okConditions = action.conditions.reduce(
+      (areAllConditionsMet: boolean, eaCondition: any) => areAllConditionsMet && eaCondition.status()
     , true)
 
-    const okPermissions = action.permissions().reduce(
-      (areAllPermissionsMet: boolean, eaPermission: any) => areAllPermissionsMet && eaPermission.status
+    const okPermissions = action.permissions.reduce(
+      (areAllPermissionsMet: boolean, eaPermission: any) => areAllPermissionsMet && eaPermission.status()
     , true)
 
     if (okConditions && okPermissions) action.execute()
@@ -90,7 +107,9 @@ export const runAllAutomaticChecks = (st: IBnsState) => {
 
   allAutoChecks.forEach(action => {
     // check that all conditions are true
-    const ok = action.conditions().reduce((areAllConditionsMet, eaCondition) => areAllConditionsMet && eaCondition.status, true)
+    const ok = action.conditions.reduce((areAllConditionsMet, eaCondition) => (
+      areAllConditionsMet && eaCondition.status()
+    ), true)
     if (ok) action.execute()
   })
 }

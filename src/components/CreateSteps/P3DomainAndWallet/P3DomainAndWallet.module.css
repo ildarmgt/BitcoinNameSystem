@@ -84,14 +84,14 @@
     grid-template-columns:  auto calc(20 * var(--s)) calc(35 * var(--s));
 
     grid-template-areas:
-    ".                title             title"
-    ".                .                 ."
-    "walletInfo       walletButton      unspent"
-    "domainInfo       domainButton      ownership"
-    ".                .                 ."
-    ".                .                 ."
-    ".                .                 buttonWrapper"
-  ;
+      ".                title             title"
+      ".                .                 ."
+      "walletInfo       walletButton      unspent"
+      "domainInfo       domainButton      ownership"
+      ".                .                 ."
+      ".                .                 ."
+      ".                .                 buttonWrapper"
+    ;
   }
   .wrapper div {
     text-align: right;
