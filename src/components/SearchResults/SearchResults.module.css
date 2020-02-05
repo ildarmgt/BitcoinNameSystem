@@ -3,26 +3,17 @@
   font-size: (2 * var(--s));
   display: flex;
 
-  /* align-items: center; */
   flex-direction: column;
-  /* justify-content: space-between; */
-  /* align-items: center; */
   text-align: left;
   align-items: left;
-  /* text-align: center; */
   margin: calc(2.0 * var(--s));
   margin-top: 0;
   height: calc(100vh - 13.5vh - (20.5 * var(--s)));
 
 
   color: var(--colorDarkText);
-  font-size: calc(2 * var(--s));
-  /* background-color: var(--colorDarker1); */
   border-radius: calc(0.5 * var(--s));
-  /* margin: 0 auto; */
-  /* margin-top: calc(5.0 * var(--s)); */
   padding: calc(2.0 * var(--s));
-  /* flex-basis: 100%; */
 
   overflow-y: auto;
 }
@@ -42,20 +33,11 @@
   align-items: center;
   margin: calc(0.1 * var(--s));
   margin-bottom: calc(1 * var(--s));
-  /* display: block; */
-  /* display: flex; */
-  /* text-align: left; */
-  /* align-items: initial; */
-  /* justify-content: left; */
 }
 
 .wrapper .listItem {
   box-sizing: border-box;
   font-size: calc(2.5 * var(--s));
-  /* text-align: left; */
-  /* display: flex; */
-  /* flex-direction: column; */
-  /* justify-content: left; */
   color: var(--colorBackground);
   background-color: var(--colorBitcoinBlue);
   border-radius: calc(0.5 * var(--s));
@@ -94,7 +76,6 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  /* opacity: 0.5; */
 }
 
 .wrapper .listItem:hover:active {
@@ -144,4 +125,11 @@
 .createLink:hover {
   background-color: var(--colorBitcoinBlue);
   color: var(--colorBackground);
+}
+
+
+@media screen and (min-aspect-ratio: 12/9) {
+  .wrapper .listItem {
+    font-size: calc(2 * var(--s));
+  }
 }
