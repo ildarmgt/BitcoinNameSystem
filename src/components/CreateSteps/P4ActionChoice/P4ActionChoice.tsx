@@ -26,23 +26,18 @@ export const P4ActionChoice = () => {
   // and get all permissions
   const checkActions = runAllActionPermissionChecks(bns, state.wallet.address)
 
-  // console.log('checkActions', checkActions())
-
   return (
     <div className={ styles.wrapper }>
       <div className={ styles.title }>
-        Choose an available action
+        Available actions
       </div>
-      <div className={ styles.contentWrapper }>
-        <div>
-          Allowed actions:
-        </div>
-        <div>
+      <div className={ styles.availableActions }>
         {
           checkActions.map(action => {
             if (action.isUsable) {
               return (
               <RoundButton
+                next={ 'true' }
                 onClick={ () => {
                   changePageInfoAction(state, dispatch, 5)
                 }}
@@ -56,39 +51,54 @@ export const P4ActionChoice = () => {
             }
           })
         }
-        </div>
-        <div>
+      </div>
+      <div className={ styles.unavailableActions }>
+        <div className={ styles.unavailableActions__title }>
           Unavailable actions:
         </div>
-        <div>
-        {
-          checkActions.map(action => {
-            if (!action.isUsable) {
-              return (
-                <div
-                  key={action.info}
-                >
-                  <div>
-                    { action.info }
+        <div className={ styles.unavailableActions__actionList }>
+          {
+            checkActions.map(action => {
+              if (!action.isUsable) {
+                return (
+                  <div
+                    className={
+                      styles.unavailableActions__actionList__action
+                    }
+                    key={ action.info }
+                  >
+                    <div
+                      className={
+                        styles.unavailableActions__actionList__action__title
+                      }
+                    >
+                      { action.info }
+                    </div>
+                    <div
+                      className={
+                        styles.unavailableActions__actionList__action__permissionList
+                      }
+                    >
+                      { action.permissionList.map((permission: any) => {
+                        return (
+                          <div
+                            className={
+                              styles.unavailableActions__actionList__action__permissionList__permission
+                            }
+                            key={permission.info}
+                          >
+                            - { permission.info }
+                          </div>
+                        )
+                      })}
+                    </div>
                   </div>
-                  <div>
-                    { action.permissionList.map((permission: any) => {
-                      return (
-                        <div
-                          key={permission.info}
-                        >
-                          * { permission.info } : { permission.isAllowed ? 'passed' : 'failed' }
-                        </div>
-                      )
-                    })}
-                  </div>
-                </div>
-              )
-            } else {
-              return ('')
-            }
-          })
-        }
+                )
+              } else {
+                return ('')
+              }
+            })
+          }
         </div>
       </div>
       <div className={ styles.buttonWrapper }>

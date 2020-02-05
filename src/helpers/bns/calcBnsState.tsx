@@ -6,7 +6,6 @@ import {
   setParsedHeight,
   updateSourceUserFromTx,
   getTxHeight,
-  readEmbeddedData,
   updateOwnerHistory,
   getCurrentHeight
  } from './formathelpers'
@@ -57,10 +56,8 @@ export const calcBnsState = (
     // check if owner expired
     actions.runAllAutomaticChecks(st)
 
-    // read embedded data
-    readEmbeddedData(st, tx)
-
     // run all possible actions
+    // starting with reading embedded data
     actions.runAllUserActions(st, tx)
 
     // update ownership history each tx

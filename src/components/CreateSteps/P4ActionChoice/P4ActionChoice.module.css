@@ -1,8 +1,69 @@
 .wrapper {
+  box-sizing: border-box;
+  margin: 0 calc(2 * var(--s));
+  font-size: calc(2.5 * var(--s));
+  color: var(--colorBitcoinBlue);
 
+  display: grid;
+  grid-template-columns:  auto auto;
+  grid-template-rows:     auto auto auto auto auto;
+  grid-gap: calc(1 * var(--s)) calc(1 * var(--s));
+  grid-template-areas:
+    "title                      title"
+    "availableActions           availableActions"
+    ".                          .   "
+    "unavailableActions         unavailableActions"
+    "buttonWrapper              buttonWrapper"
+  ;
+
+  align-items: center;
 }
 
-.wrapper > div {
-  margin: calc(1 * var(--s))
+.title {
+  grid-area: title;
+  font-size: calc(3 * var(--s));
+  margin-bottom: calc(2 * var(--s));
 }
 
+.availableActions {
+  box-sizing: border-box;
+
+  grid-area: availableActions;
+  display: flex;
+  flex-direction: column-reverse;
+  flex-wrap: wrap;
+  align-items: flex-end;
+}
+
+.availableActions > div {
+  margin: calc(2 * var(--s));
+}
+
+.unavailableActions {
+  grid-area: unavailableActions;
+  display: flex;
+  flex-direction: column;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  text-align: left;
+}
+
+.buttonWrapper {
+  grid-area: buttonWrapper;
+}
+.buttonWrapper > div {
+  margin: calc(2 * var(--s));
+}
+
+.unavailableActions__title {
+  margin-bottom: calc(2 * var(--s));
+}
+.unavailableActions__actionList {
+
+}
+.unavailableActions__actionList__action {
+  margin: calc(1 * var(--s)) 0;
+}
+.unavailableActions__actionList__action__title {}
+.unavailableActions__actionList__action__permissionList {}
+.unavailableActions__actionList__action__permissionList__permission {}

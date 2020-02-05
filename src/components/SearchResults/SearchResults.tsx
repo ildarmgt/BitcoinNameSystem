@@ -8,13 +8,14 @@ import { OWNERSHIP_DURATION_BY_BLOCKS, interpretFw, findLatestForwards } from '.
 
 
 export const SearchResults = () => {
+  // global state
   const { state } = React.useContext(Store)
 
+  // temp object to keep track of timers
   let diff = { isExpired: true, dh: '' }
 
   // calc time left in ownership via block heights
   const owner = getOwner(state)
-
   if (owner) {
     const heightOfExpiration = owner.winHeight + OWNERSHIP_DURATION_BY_BLOCKS
     const blocksUntilExpires = (heightOfExpiration - state.chain.height)

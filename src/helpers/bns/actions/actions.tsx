@@ -18,7 +18,8 @@ import {
   getTxTimestamp,
   getTxOutput0BurnValue,
   isAddressTheCurrentOwner,
-  burnedPreviousRateMin
+  burnedPreviousRateMin,
+  readEmbeddedData
 } from './../formathelpers'
 
 // =========== CONDITIONS / PERMISSIONS ================
@@ -39,7 +40,7 @@ const BURNED_MIN = ({ tx }: any) =>
   ({ info: `Tx must burn ${MIN_BURN} @ output[0]`, status: didBurnMin(tx) })
 
 const NO_OWNER = ({ st }: any) =>
-  ({ info: 'There must not be existing owner', status: !existsCurrentOwner(st) })
+  ({ info: 'There must not be an existing owner', status: !existsCurrentOwner(st) })
 
 const EXISTS_OWNER = ({ st }: any) =>
   ({ info: 'There must be existing owner', status: existsCurrentOwner(st) })
@@ -59,8 +60,8 @@ const IS_OWNER_EXPIRED = ({ st }: any) =>
 // Describe: If no owner, sender can claim ownership
 export const claimOwnershipAction = (st: IBnsState, tx: any = undefined) => {
   const args = { st, tx }
-
   return {
+
     info: 'Claim ownership of an available domain',
 
     permissions: () => [
@@ -98,9 +99,14 @@ export const claimOwnershipAction = (st: IBnsState, tx: any = undefined) => {
 
 
 // Describe: If from current owner & burned past winning minimum, extend ownership.
-export const currentOwnerRenewAction = (st: IBnsState, address: string, tx: any = undefined) => {
+export const currentOwnerRenewAction = (
+  st: IBnsState,
+  address: string,
+  tx: any = undefined
+) => {
   const args = { st, address, tx }
   return {
+
     info: 'Extend ownership of this domain',
 
     permissions: () => [
@@ -123,6 +129,32 @@ export const currentOwnerRenewAction = (st: IBnsState, address: string, tx: any 
       owner && (owner.winHeight = getTxHeight(tx))
       owner && (owner.winTimestamp = getTxTimestamp(tx))
       console.log(`${ st.domain.domainName } : ${ getTxHeight(tx) } height: owner extended ownership ${ owner?.address }`)
+    }
+  }
+}
+
+// Describe: update forwarding information.
+// No significant requirements necessary.
+export const updateForwardingInfoAction = (
+  st: IBnsState,
+  tx: any = undefined
+) => {
+  const args = { st, tx }
+  return {
+
+    info: "Only update forwarding information",
+
+    permissions: () => [],
+
+    conditions: () => [
+      OUTS_2(args),
+      OUT_0(args),
+      OUT_1(args),
+      NOTIFIED_MIN(args)
+    ],
+
+    execute: () => {
+      readEmbeddedData(st, tx)
     }
   }
 }

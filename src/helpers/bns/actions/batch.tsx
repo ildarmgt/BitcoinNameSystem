@@ -1,10 +1,13 @@
 import {
   currentOwnerRenewAction,
   claimOwnershipAction,
-  autoCheckForOwnerExpired
+  autoCheckForOwnerExpired,
+  updateForwardingInfoAction
 } from './actions'
 import { IBnsState } from './../types/'
-import { getTxInput0SourceUserAddress } from './../formathelpers'
+import {
+  getTxInput0SourceUserAddress
+} from './../formathelpers'
 
 /****************************************************************************************
  * Returns what actions are available for specific user address at current state
@@ -13,6 +16,7 @@ export const runAllActionPermissionChecks = (st: IBnsState, address: string) => 
 
   // Edit this list to include more actions for checks
   const allActions = [
+    updateForwardingInfoAction(st),
     currentOwnerRenewAction(st, address),
     claimOwnershipAction(st)
   ]
@@ -53,6 +57,7 @@ export const runAllUserActions = (st: IBnsState, tx: any) => {
 
   // edit this list
   const allUserActions = [
+    updateForwardingInfoAction(st, tx),
     currentOwnerRenewAction(st, getTxInput0SourceUserAddress(tx), tx),
     claimOwnershipAction(st, tx)
   ]

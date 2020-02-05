@@ -12,7 +12,7 @@
   /* text-align: center; */
   margin: calc(2.0 * var(--s));
   margin-top: 0;
-  height: calc(100vh - 8vh - (21.5 * var(--s)));
+  height: calc(100vh - 13.5vh - (20.5 * var(--s)));
 
 
   color: var(--colorDarkText);
