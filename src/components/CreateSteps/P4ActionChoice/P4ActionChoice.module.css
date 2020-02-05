@@ -81,6 +81,7 @@
 .unavailableActions__actionList__action__title {
   box-sizing: border-box;
   background-color: var(--colorDarker1);
+  margin-bottom: calc(1 * var(--s));
   border-radius: calc(0.5 * var(--s));
   padding: calc(0.5 * var(--s)) calc(1 * var(--s));
   overflow-wrap: normal;
@@ -101,6 +102,7 @@
   padding-left: calc(1 * var(--s));
   word-break: normal;
   overflow-wrap: normal;
+  font-size: calc(2 * var(--s));
 }
 
 
