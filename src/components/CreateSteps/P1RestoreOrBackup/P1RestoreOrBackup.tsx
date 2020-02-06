@@ -30,8 +30,7 @@ export const P1RestoreOrBackup = () => {
         <div
           className={ styles.title }
         >
-          Need <span className={ styles.Orange }>BTC</span>
-          address to control<br />
+          Need <span className={ styles.Orange }>BTC</span> address to control<br />
           the domain name
         </div>
         <div
