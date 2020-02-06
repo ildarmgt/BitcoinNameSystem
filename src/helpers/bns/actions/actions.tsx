@@ -1,4 +1,4 @@
-import { IBnsState } from './../types/'
+import { IBnsState, BNSActions } from './../types/'
 import { MIN_NOTIFY, MIN_BURN } from './../constants'
 import {
   existsCurrentOwner,
@@ -22,6 +22,7 @@ import {
   readEmbeddedData,
   getLastOwnerBurnedValue
 } from './../formathelpers'
+const { RENEW, ONLY_FORWARDS, CLAIM_OWNERSHIP } = BNSActions
 
 // =========== CONDITIONS / PERMISSIONS ================
 // Called by the actions for conditions
@@ -50,10 +51,10 @@ const NOTIFIED_MIN = ({ tx=undefined }: any) => ({
 })
 
 const BURNED_MIN = ({ tx=undefined }: any) => ({
-    info: `Tx must burn ${MIN_BURN} @ output[0]`,
-    status: () => didBurnMin(tx),
-    special: { output0value: MIN_BURN }
-  })
+  info: `Tx must burn ${MIN_BURN} @ output[0]`,
+  status: () => didBurnMin(tx),
+  special: { output0value: MIN_BURN }
+})
 
 const NO_OWNER = ({ st }: any) => ({
   info: 'There must not be an existing owner',
@@ -89,6 +90,7 @@ export const claimOwnershipAction = (st: IBnsState, tx: any = undefined) => {
   const args = { st, tx }
   return {
 
+    type: CLAIM_OWNERSHIP,
     info: 'Claim ownership of an available domain',
 
     permissions: [
@@ -113,10 +115,6 @@ export const claimOwnershipAction = (st: IBnsState, tx: any = undefined) => {
       getUser(st, senderAddress).winHeight = height
       getUser(st, senderAddress).winTimestamp = getTxTimestamp(tx)
       getUser(st, senderAddress).burnAmount = getTxOutput0BurnValue(tx)
-
-      // set ownership to this address
-      // update win height / time
-
       console.log(
         `${ st.domain.domainName } : ${ getTxHeight(tx) } height: new owner is ${ getUser(st, senderAddress).address }`
       )
@@ -134,6 +132,7 @@ export const currentOwnerRenewAction = (
   const args = { st, address, tx }
   return {
 
+    type: RENEW,
     info: 'Extend ownership of this domain',
 
     permissions: [
@@ -170,6 +169,7 @@ export const updateForwardingInfoAction = (
   const args = { st, tx }
   return {
 
+    type: ONLY_FORWARDS,
     info: "Only update forwarding information",
 
     permissions: [],

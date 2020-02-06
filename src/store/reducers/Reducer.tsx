@@ -9,7 +9,8 @@ const {
   UPDATE_WALLET,
   UPDATE_DOMAIN,
   ACTION_FAIL,
-  LOAD_STATE
+  LOAD_STATE,
+  CHOICES_BNS_ACTION
 } = ActionTypes
 
 /**
@@ -22,6 +23,18 @@ export default function reducer (state: IState, action: IAction): IState {
   const { payload } = action
 
   switch (action.type) {
+
+    case CHOICES_BNS_ACTION: {
+      // BNS action chosen
+      return {
+        ...state,
+        choices: {
+          ...state.choices,
+          action: payload.action
+        },
+        lastTimeStamp: Date.now()
+      }
+    }
 
     case UPDATE_WALLET: {
       // after full scan of the wallet address

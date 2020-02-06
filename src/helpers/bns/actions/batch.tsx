@@ -42,19 +42,20 @@ export const runAllActionPermissionChecks = (st: IBnsState, address: string) => 
     action.permissions.forEach((permission: any) => {
       if ('special' in permission) specialTxDirections.push({
         info: permission.info,
-        rule: permission.special
+        rules: permission.special
       })
     })
     action.conditions.forEach((condition: any) => {
       if ('special' in condition) specialTxDirections.push({
         info: condition.info,
-        rule: condition.special
+        rules: condition.special
       })
     })
 
 
     // add to list of all actions with summary of all their permissions checks
     checkedActions.push({
+      type: action.type,
       info: action.info,
       isUsable: checkedPermissions.every(permission => permission.isAllowed),
       permissionList: checkedPermissions,

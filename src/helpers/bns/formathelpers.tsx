@@ -70,6 +70,7 @@ export const getTxInput0SourceUserAddress = (tx: any): string => (
 // ======= update state from tx (setters) ========
 
 // update the info for the source user of the tx within bns state
+// when ran a second time, it simply updates nonce for post-tx value
 export const updateSourceUserFromTx = (st: IBnsState, tx: any): void => {
   const fromAddress = getTxInput0SourceUserAddress(tx)
 
@@ -113,6 +114,13 @@ export const readEmbeddedData = (st: IBnsState, tx: any):void => {
   const embeddedDataBuffer = Buffer.from(embeddedDataHex, 'hex')
 
   const decryptionKey = st.domain.domainName + user.address + nonce
+  console.log(
+    getTxHeight(tx),
+    ': decryption key: ',
+    st.domain.domainName,
+    user.address,
+    nonce
+  )
   const embeddedDataUtf8 = decrypt(embeddedDataBuffer, decryptionKey)
   console.log(getTxHeight(tx), ': found embedded data:', embeddedDataUtf8)
 

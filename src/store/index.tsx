@@ -39,7 +39,8 @@ export const initialState: IState = {
   pageInfo: {                     // user navigation information for controlling domain name
     current: 1
   },
-  settings: {
+  choices: {
+    action: [],                   // choices and data for action to take
     feeRate: 1.1                  // fee rate to use in sat/bByte
   },
   lastTimeStamp: Date.now(),      // last change timestamp, to detect any changes to state or time out

@@ -1,4 +1,9 @@
-
+// for BNS
+export enum BNSActions {
+  RENEW = 'RENEW',
+  ONLY_FORWARDS = 'ONLY_FORWARDS',
+  CLAIM_OWNERSHIP = 'CLAIM_OWNERSHIP'
+}
 
 export interface IUser {
   address:      string

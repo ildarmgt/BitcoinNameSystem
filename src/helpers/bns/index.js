@@ -1,6 +1,5 @@
 export * from './constants'
 export * from './interpretFw'
-export * from './calcBidDomainTx'
 export * from './calcBnsState'
 export * from './calcP2WSH'
 export * from './getLastMessageHeight'
@@ -9,3 +8,6 @@ export * from './findLatestForwards'
 export * from './cryptography'
 export * from './stringByteCount'
 export * from './actions'
+
+export * from './calcBidDomainTx'
+export * from './calcTx'

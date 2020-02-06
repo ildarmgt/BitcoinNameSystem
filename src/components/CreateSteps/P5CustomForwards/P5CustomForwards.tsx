@@ -3,7 +3,7 @@ import { RoundButton } from '../../general/RoundButton'
 import styles from './P5CustomForwards.module.css'
 import { Store, getOwner } from '../../../store'
 import { changePageInfoAction } from '../../../store/actions'
-import { calcBidDomainTx, stringByteCount, BYTES_MAX } from '../../../helpers/bns'
+import { calcTx, stringByteCount, BYTES_MAX } from '../../../helpers/bns'
 import sanitize from '../../../helpers/sanitize'
 
 /**
@@ -43,11 +43,11 @@ export const P5CustomForwards = () => {
   useEffect(() => {
     try { // to make tx
       setTx(
-        calcBidDomainTx(
+        calcTx(
           combineForwards(plannedChanges),
           state.wallet,
           state.domain,
-          state.settings.feeRate,
+          state.choices,
           state.network
         )
       )
@@ -122,40 +122,50 @@ export const P5CustomForwards = () => {
         }) }
       </div>
       <div className={ styles.editor } >
-        { (customAdd.network.length > 0) && <div
-          className={ [styles.btnDelete, 'canPress'].join(' ') }
-          onClick={ () => {
-            setPlannedChanges({
-              ...plannedChanges,
-              [customAdd.network]: ''
-            })
-            setCustomAdd({ network: '', address: '' })
-          } }
-        >
+        { (customAdd.network.length > 0) &&
+          <div
+            className={ [styles.btnDelete, 'canPress'].join(' ') }
+            onClick={ () => {
+              setPlannedChanges({
+                ...plannedChanges,
+                [customAdd.network]: ''
+              })
+              setCustomAdd({ network: '', address: '' })
+            } }
+          >
             No address
-        </div> }
-        <textarea
-          spellCheck={ false }
-          value={ customAdd.network }
+          </div>
+        }
+        <div
           className={ styles.editorNetwork }
-          placeholder={ 'network' }
-          onChange={ (e) => {
-            const cleanText = sanitize(e.target.value, 'oneline')
-            setCustomAdd({ ...customAdd, network: cleanText })
-            e.target.value = cleanText
-          } }
-        ></textarea>
-        <textarea
-          spellCheck={ false }
-          value={ customAdd.address }
+        >
+          <aside>Network</aside>
+          <textarea
+            spellCheck={ false }
+            value={ customAdd.network }
+            placeholder={ 'e.g. btc' }
+            onChange={ (e) => {
+              const cleanText = sanitize(e.target.value, 'oneline')
+              setCustomAdd({ ...customAdd, network: cleanText })
+              e.target.value = cleanText
+            } }
+          ></textarea>
+        </div>
+        <div
           className={ styles.editorAddress }
-          placeholder={ 'address on network' }
-          onChange={ (e) => {
-            const cleanText = sanitize(e.target.value, 'oneline')
-            setCustomAdd({ ...customAdd, address: e.target.value })
-            e.target.value = cleanText
-          } }
-        ></textarea>
+        >
+          <aside>Forwarding address</aside>
+          <textarea
+            spellCheck={ false }
+            value={ customAdd.address }
+            placeholder={ 'e.g. your btc address' }
+            onChange={ (e) => {
+              const cleanText = sanitize(e.target.value, 'oneline')
+              setCustomAdd({ ...customAdd, address: e.target.value })
+              e.target.value = cleanText
+            } }
+          ></textarea>
+        </div>
         <div
           className={ ['btnCircle', styles.btnAdd, 'canPress', 'addTooltip'].join(' ') }
           onClick={ () => {

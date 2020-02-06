@@ -85,7 +85,7 @@
   padding: calc(0.5 * var(--s)) calc(1 * var(--s));
   cursor: pointer;
 }
-.updateItem:hover{
+.updateItem:hover {
   background-color: var(--colorDarker2);
 }
 
@@ -125,12 +125,34 @@
   grid-area: editorNetwork;
   width: 100%;
   color: var(--colorBitcoinOrange);
+  display: block;
+  position: relative;
 }
 
 .editorAddress {
   grid-area: editorAddress;
   width: 100%;
   color: var(--colorBitcoinOrange);
+  display: block;
+  position: relative;
+}
+
+.editorAddress textarea,
+.editorNetwork textarea {
+  width: 100%;
+  color: var(--colorBitcoinOrange);
+}
+
+.editorAddress aside,
+.editorNetwork aside {
+  top: calc(-2.1 * var(--s));
+  line-height: calc(2 * var(--s));
+  left: calc(+0.5 * var(--s));
+  font-size: calc(2 * var(--s));
+  position: absolute;
+  display: block;
+  color: var(--colorBitcoinBlue);
+  text-align: left;
 }
 
 /* add changes button */

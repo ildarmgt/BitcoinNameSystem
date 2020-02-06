@@ -2,7 +2,7 @@ import React from 'react'
 import { RoundButton } from '../../general/RoundButton'
 import styles from './P4ActionChoice.module.css'
 import { Store } from '../../../store'
-import { changePageInfoAction } from '../../../store/actions'
+import { changePageInfoAction, changeChoicesBNSAction } from '../../../store/actions'
 
 import { runAllActionPermissionChecks, calcBnsState } from './../../../helpers/bns/'
 
@@ -40,6 +40,13 @@ export const P4ActionChoice = () => {
               <RoundButton
                 next={ 'true' }
                 onClick={ () => {
+                  changeChoicesBNSAction(state, dispatch, {
+                    action: {
+                      type: action.type,
+                      info: action.info,
+                      special: action.special
+                    }
+                  })
                   changePageInfoAction(state, dispatch, 5)
                 }}
                 key={ action.info }

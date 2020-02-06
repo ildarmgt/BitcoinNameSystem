@@ -6,8 +6,7 @@ import {
   setParsedHeight,
   updateSourceUserFromTx,
   getTxHeight,
-  updateOwnerHistory,
-  getCurrentHeight
+  updateOwnerHistory
  } from './formathelpers'
 
 /**
@@ -46,11 +45,11 @@ export const calcBnsState = (
   // Each tx blockheight serves as reference time
   st.domain.txHistory.forEach((tx: any) => {
 
-    // update current parsed height based on tx confirmed height
+    // update current chain's parsed height based on tx confirmed height
     setParsedHeight(st, getTxHeight(tx))
 
     // update or create new basic user info based on source address @ input0
-    // this includes nonce set to previous update height for this user
+    // this includes user's NONCE set to height of the user's tx prior to this one
     updateSourceUserFromTx(st, tx)
 
     // check if owner expired
@@ -60,13 +59,17 @@ export const calcBnsState = (
     // starting with reading embedded data
     actions.runAllUserActions(st, tx)
 
-    // update ownership history each tx
-    updateOwnerHistory(st)
+    // update nonce
+    // after this tx, this tx height is the last tx height, so the new nonce
+    updateSourceUserFromTx(st, tx)
 
+    // update ownership history each tx even if not owner
+    updateOwnerHistory(st)
   })
 
   // final check for current block height
-  setParsedHeight(st, getCurrentHeight(st))
+  setParsedHeight(st, currentHeight)
+
   actions.autoCheckForOwnerExpired(st)
 
   return st
