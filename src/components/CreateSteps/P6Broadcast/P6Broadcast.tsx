@@ -3,7 +3,7 @@ import { Store } from '../../../store'
 import { RoundButton } from '../../general/RoundButton'
 import styles from './P6Broadcast.module.css'
 import { changePageInfoAction } from '../../../store/actions'
-
+import { txPush } from './../../../api/blockstream'
 /**
  * Broadcast tx page.
  * Fee selection.
@@ -32,12 +32,20 @@ export const P6Broadcast = () => {
       <div className={ styles.txSummary }>
         tx stats or tx fail
       </div>
+      <div className={ styles.txHex }>
+        Tx hex: { state.choices.txHex }
+      </div>
       <div className={ styles.buttonWrapper }>
-        <RoundButton>
-          Broadcast (TODO)
+        <RoundButton
+          onClick={ () => {
+            console.log('tx hex', state.choices.txHex)
+            txPush(state.choices.txHex, state.network)
+          } }
+        >
+          Broadcast
         </RoundButton>
         <RoundButton
-          onClick={ () => changePageInfoAction(state, dispatch, 4)
+          onClick={ () => changePageInfoAction(state, dispatch, 5)
           }
         >
           Back

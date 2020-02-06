@@ -30,7 +30,7 @@ export default function reducer (state: IState, action: IAction): IState {
         ...state,
         choices: {
           ...state.choices,
-          action: payload.action
+          ...payload
         },
         lastTimeStamp: Date.now()
       }

@@ -7,13 +7,14 @@ export function interpretFw (
   fw: { network: string, address: string, updateHeight: number, updateTimestamp: number }
 ) {
   // blank address means it was removed
-  if (fw.address === '') {
+  // ! at start means it's a command, not a network
+  if (fw.address === '' || fw.network.startsWith('!')) {
     return {
       render: false
     }
   }
 
-  if (fw.network === 'p2wsh' || fw.network === 'btc') {
+  if (fw.network === 'p2wsh' || fw.network === 'btc' || fw.network === 'p2pkh') {
     return {
       where: 'btc:',
       what: (

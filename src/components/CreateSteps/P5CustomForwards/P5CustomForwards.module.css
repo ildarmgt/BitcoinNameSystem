@@ -147,7 +147,7 @@
 .editorNetwork aside {
   top: calc(-2.1 * var(--s));
   line-height: calc(2 * var(--s));
-  left: calc(+0.5 * var(--s));
+  left: calc(0.5 * var(--s));
   font-size: calc(2 * var(--s));
   position: absolute;
   display: block;

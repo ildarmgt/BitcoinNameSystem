@@ -77,6 +77,7 @@ export interface IState {
       special: Array<any> | []
     } | {}
     feeRate: number
+    txHex: string
   }
   pageInfo: {
     current: number

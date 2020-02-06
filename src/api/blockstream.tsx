@@ -169,12 +169,6 @@ export async function getAddressHistory (address: string, network: string) {
  */
 export async function txPush (content: string, network: string) {
 
-  // const API_PATH_TESTNET =
-  //  'https://blockstream.info/testnet/api/broadcast'
-
-  // const API_PATH_BITCOIN =
-  //   'https://blockstream.info/api/broadcast'
-
   const API_PATH =
     (network === 'testnet')
     ? API_PATH_TESTNET + 'broadcast'

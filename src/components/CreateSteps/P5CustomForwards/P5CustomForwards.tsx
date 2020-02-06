@@ -2,7 +2,7 @@ import React, { useEffect } from 'react'
 import { RoundButton } from '../../general/RoundButton'
 import styles from './P5CustomForwards.module.css'
 import { Store, getOwner } from '../../../store'
-import { changePageInfoAction } from '../../../store/actions'
+import { changePageInfoAction, changeChoicesBNSAction } from '../../../store/actions'
 import { calcTx, stringByteCount, BYTES_MAX } from '../../../helpers/bns'
 import sanitize from '../../../helpers/sanitize'
 
@@ -26,7 +26,8 @@ export const P5CustomForwards = () => {
   )
 
   // local state for tx hex
-  const [tx, setTx] = React.useState({ hex: '', txid: '' })
+  // const [tx, setTx] = React.useState({ hex: '', txid: '' })
+
 
   // combine forwards into a string for the tx
   const combineForwards = (objForwards: any) => {
@@ -41,22 +42,13 @@ export const P5CustomForwards = () => {
 
   // calculate tx (on mount or changes in global state or local plannedChanges to embed)
   useEffect(() => {
-    try { // to make tx
-      setTx(
-        calcTx(
-          combineForwards(plannedChanges),
-          state.wallet,
-          state.domain,
-          state.choices,
-          state.network
-        )
-      )
-    } catch (e) {
-      // tx creation expected to fail often
-    }
-  }, [state, plannedChanges])
 
-  console.log('tx attempt info', tx)
+
+  }, [state, dispatch, plannedChanges])
+
+
+
+  // console.log('tx attempt info', tx)
 
   const bytesOfChanges = stringByteCount(combineForwards(plannedChanges))
   console.log(bytesOfChanges)
@@ -212,6 +204,17 @@ export const P5CustomForwards = () => {
         <RoundButton
           next='true'
           onClick={ () => {
+            // update global state tx hex storage
+            const res = changeChoicesBNSAction(state, dispatch, {
+              txHex: calcTx(
+                combineForwards(plannedChanges),
+                state.wallet,
+                state.domain,
+                state.choices,
+                state.network
+              ).hex
+            })
+            console.log(res)
             changePageInfoAction(state, dispatch, 6)
           }}
         >
