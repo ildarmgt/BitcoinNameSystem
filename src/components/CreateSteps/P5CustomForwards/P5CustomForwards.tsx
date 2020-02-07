@@ -3,7 +3,7 @@ import { RoundButton } from '../../general/RoundButton'
 import styles from './P5CustomForwards.module.css'
 import { Store, getOwner } from '../../../store'
 import { changePageInfoAction, changeChoicesBNSAction } from '../../../store/actions'
-import { calcTx, stringByteCount, BYTES_MAX } from '../../../helpers/bns'
+import { stringByteCount, BYTES_MAX } from '../../../helpers/bns'
 import sanitize from '../../../helpers/sanitize'
 
 /**
@@ -40,11 +40,10 @@ export const P5CustomForwards = () => {
     return forwardsString
   }
 
-  // calculate tx (on mount or changes in global state or local plannedChanges to embed)
   useEffect(() => {
 
 
-  }, [state, dispatch, plannedChanges])
+  }, [])
 
 
 
@@ -205,16 +204,9 @@ export const P5CustomForwards = () => {
           next='true'
           onClick={ () => {
             // update global state tx hex storage
-            const res = changeChoicesBNSAction(state, dispatch, {
-              txHex: calcTx(
-                combineForwards(plannedChanges),
-                state.wallet,
-                state.domain,
-                state.choices,
-                state.network
-              ).hex
+            changeChoicesBNSAction(state, dispatch, {
+              embedString: combineForwards(plannedChanges)
             })
-            console.log(res)
             changePageInfoAction(state, dispatch, 6)
           }}
         >

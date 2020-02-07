@@ -56,6 +56,7 @@ export interface I_State {
     } | {}
     feeRate: number
     txHex: string
+    embedString: string
   }
   pageInfo: {
     current: number

@@ -1,5 +1,6 @@
  /* total height: padding 2s, 2.5s a text line, 2s a padding = 6.0s */
 .root {
+  box-sizing: border-box;
   display: inline-block;
   position: absolute;
   bottom: calc(0 * var(--s));
@@ -38,6 +39,16 @@
   z-index: 1000;
 }
 
+.pageNum {
+  color: var(--colorDarker5);
+  display: inline-block;
+  font-size: calc(2.5 * var(--s));
+  line-height: calc(2.5 * var(--s));
+  float: left;
+  margin: 0 calc(0.25 * var(--s));
+  padding: calc(0.75 * var(--s)) calc(1 * var(--s));
+  vertical-align: middle;
+}
 
 /* wide screen settings */
 @media screen and (min-aspect-ratio: 12/9) {

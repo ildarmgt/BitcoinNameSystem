@@ -1,8 +1,11 @@
 import React from 'react'
-import { Link } from 'react-router-dom'
+import { Store } from './../../store'
+import { Link, useHistory } from 'react-router-dom'
 import styles from './Navbar.module.css'
 
 export const Navbar = (): JSX.Element => {
+  // global state
+  const { state } = React.useContext(Store)
   return (
     <>
       <div
@@ -13,6 +16,12 @@ export const Navbar = (): JSX.Element => {
       <div
         className={ styles.root }
       >
+        {/* only show page number in create path */}
+        { (useHistory().location.pathname === '/create') && (
+          <div className={ styles.pageNum }>
+            { state.pageInfo.current }/6
+          </div>
+        ) }
         <a
           href="https://github.com/ildarmgt/BitcoinNameSystem"
           target="_blank"

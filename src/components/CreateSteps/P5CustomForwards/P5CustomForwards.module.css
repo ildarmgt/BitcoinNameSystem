@@ -152,6 +152,7 @@
   position: absolute;
   display: block;
   color: var(--colorBitcoinBlue);
+  opacity: 0.5;
   text-align: left;
 }
 

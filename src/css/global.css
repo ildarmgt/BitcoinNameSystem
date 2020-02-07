@@ -70,8 +70,7 @@ a:active,
   transform: translateY(calc(0.2 * var(--s)));
 }
 
-.canPress,
-.noselect,
+/* not selectable by default */
 * {
   -webkit-user-select: none;
   -moz-user-select: -moz-none;
@@ -79,6 +78,7 @@ a:active,
   user-select: none;
 }
 
+/* mark selectable where necessary */
 .selectable {
   -webkit-user-select: text;
   -moz-user-select: -moz-text;
