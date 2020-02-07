@@ -76,14 +76,7 @@ const BURN_LAST_WIN = ({ st, tx=undefined }: any) => ({
 // calculated based on tx if available, otherwise address
 const USER_IS_OWNER = ({ st, address, tx=undefined }: any) => ({
   info: `User's address must match owner's address`,
-  status: () => {
-    console.log(
-      'USER_IS_OWNER',
-      isAddressTheCurrentOwner(st, address),
-      tx ? isSenderTheCurrentOwner(st, tx) : isAddressTheCurrentOwner(st, address)
-    )
-    return tx ? isSenderTheCurrentOwner(st, tx) : isAddressTheCurrentOwner(st, address)
-  }
+  status: () => tx ? isSenderTheCurrentOwner(st, tx) : isAddressTheCurrentOwner(st, address)
 })
 
 const IS_OWNER_EXPIRED = ({ st }: any) => ({
