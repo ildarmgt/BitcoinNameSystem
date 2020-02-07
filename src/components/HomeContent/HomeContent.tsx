@@ -19,7 +19,7 @@ export const HomeContent = (props: any): JSX.Element => {
   }
 
   // is serach done
-  const isSearchDone = () => state.domain.checkedHistory
+  const isSearchDone = () => state.pageInfo.checkedDomain
 
   // put the textarea (by ref) into focus on mount and move caret to end
   const inputEl = useRef<HTMLTextAreaElement>(null)

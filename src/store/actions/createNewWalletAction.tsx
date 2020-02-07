@@ -1,4 +1,4 @@
-import { IState, Dispatch } from '../../interfaces'
+import { I_State, Dispatch } from '../../interfaces'
 import { ActionTypes } from './../../interfaces'
 
 import { createNewWallet, loadWallet } from './../../helpers/bitcoin'
@@ -10,7 +10,7 @@ const { NEW_WALLET } = ActionTypes;
  * If mnemonic is provided, wallet is generated from that.
  */
 export const createNewWalletAction = async (
-  state: IState, dispatch: Dispatch, strMnemonic: string = ''
+  state: I_State, dispatch: Dispatch, strMnemonic: string = ''
 ) => {
 
   // load all the wallet info from mnemonic or generate new random mnemonic to do it

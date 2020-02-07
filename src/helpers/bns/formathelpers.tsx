@@ -1,43 +1,43 @@
 import { newUser } from './initialState'
 import { OWNERSHIP_DURATION_BY_BLOCKS, MIN_BURN, MIN_NOTIFY } from './constants'
-import { IUser, Iforward, IBnsState } from './types/'
+import { I_User, I_Forward, I_BnsState } from './types/'
 import { decrypt } from './cryptography'
 
 // ========== helper functions =====================
 
-export const existsCurrentOwner = (st: IBnsState): boolean => st.domain.currentOwner !== ''
+export const existsCurrentOwner = (st: I_BnsState): boolean => st.domain.currentOwner !== ''
 
-export const getOwnerAddress = (st: IBnsState): string => st.domain.currentOwner || ''
+export const getOwnerAddress = (st: I_BnsState): string => st.domain.currentOwner || ''
 
-export const setOwner = (st: IBnsState, newOwnerAddress: string) => {
+export const setOwner = (st: I_BnsState, newOwnerAddress: string) => {
   st.domain.currentOwner = newOwnerAddress
 }
 
-export const getUser = (st: IBnsState, address: string): IUser => st.domain.users[address]
+export const getUser = (st: I_BnsState, address: string): I_User => st.domain.users[address]
 
-export const getOwner = (st: IBnsState) => {
+export const getOwner = (st: I_BnsState) => {
   const ownerAddress = getOwnerAddress(st)
   if (!ownerAddress) return undefined
   return getUser(st, ownerAddress)
 }
 
-export const updateOwnerHistory = (st: IBnsState): void => {
+export const updateOwnerHistory = (st: I_BnsState): void => {
   st.domain.ownersHistory.push(getOwner(st) || JSON.parse(JSON.stringify(newUser)))
 }
 
-export const clearOwner = (st: IBnsState): void => { st.domain.currentOwner = '' }
+export const clearOwner = (st: I_BnsState): void => { st.domain.currentOwner = '' }
 
-export const getCurrentHeight = (st: IBnsState): number => st.chain?.currentHeight || 0
-export const getParsedHeight = (st: IBnsState): number => st.chain?.parsedHeight || 0
-export const setParsedHeight = (st: IBnsState, height: number): void => {
+export const getCurrentHeight = (st: I_BnsState): number => st.chain?.currentHeight || 0
+export const getParsedHeight = (st: I_BnsState): number => st.chain?.parsedHeight || 0
+export const setParsedHeight = (st: I_BnsState, height: number): void => {
   st.chain && (st.chain.parsedHeight = height)
 }
 
-export const getNotificationAddress = (st: IBnsState): string => st.domain.notificationAddress || ''
+export const getNotificationAddress = (st: I_BnsState): string => st.domain.notificationAddress || ''
 
-export const getLastOwnerBurnedValue = (st: IBnsState): number => getOwner(st)?.burnAmount || 0
+export const getLastOwnerBurnedValue = (st: I_BnsState): number => getOwner(st)?.burnAmount || 0
 
-export const isOwnerExpired = (st: IBnsState): boolean => {
+export const isOwnerExpired = (st: I_BnsState): boolean => {
   if (existsCurrentOwner(st)) return true
   const owner = getOwner(st)
   if (!owner) return true
@@ -71,7 +71,7 @@ export const getTxInput0SourceUserAddress = (tx: any): string => (
 
 // update the info for the source user of the tx within bns state
 // when ran a second time, it simply updates nonce for post-tx value
-export const updateSourceUserFromTx = (st: IBnsState, tx: any): void => {
+export const updateSourceUserFromTx = (st: I_BnsState, tx: any): void => {
   const fromAddress = getTxInput0SourceUserAddress(tx)
 
   // create new user if not already one of users
@@ -90,15 +90,15 @@ export const updateSourceUserFromTx = (st: IBnsState, tx: any): void => {
 }
 
 export const addToUserForwards = (
-  st: IBnsState,
+  st: I_BnsState,
   fromAddress: string,
-  forwardsInThisTx: Array<Iforward>
+  forwardsInThisTx: Array<I_Forward>
 ) => {
   const user = getUser(st, fromAddress)
   user.forwards = [...user.forwards, ...forwardsInThisTx]
 }
 
-export const readEmbeddedData = (st: IBnsState, tx: any):void => {
+export const readEmbeddedData = (st: I_BnsState, tx: any):void => {
   // only go on if there is op_return with embedded data on output 0
   if (!isOpreturnOutput0(tx)) {
     console.log(getTxHeight(tx), ': no op_return found for txid')
@@ -128,7 +128,7 @@ export const readEmbeddedData = (st: IBnsState, tx: any):void => {
   const embeddedDataUtf8Array = embeddedDataUtf8.split(' ')
 
   // collect all forwards in this tx
-  const forwardsInThisTx: Array<Iforward> = []
+  const forwardsInThisTx: Array<I_Forward> = []
 
   embeddedDataUtf8Array.forEach((word: string, index: number) => {
     // everything must be space separated in pairs
@@ -166,7 +166,7 @@ export const isOpreturnOutput0 = (tx: any): boolean => (
 
 // Describe:    Is [1] output this domain's notification address?
 // Required:    ALL
-export const isNotify =  (st: IBnsState, tx: any): boolean => (
+export const isNotify =  (st: I_BnsState, tx: any): boolean => (
   getTxOutput1NotifyAddress(tx) === getNotificationAddress(st)
 )
 
@@ -177,7 +177,7 @@ export const didNotifyMin = (tx: any): boolean => getTxOutput1NotifyValue(tx) >=
 // Describe:    Is sender the current domain owner (input [0], id'ed by address)?
 // Required:    renew lease
 // Irrelevant:  available domain claim, forwarding information updates (warn)
-export const isAddressTheCurrentOwner = (st: IBnsState, address: string): boolean =>  getOwnerAddress(st) === address
+export const isAddressTheCurrentOwner = (st: I_BnsState, address: string): boolean =>  getOwnerAddress(st) === address
 
 // Describe:    At least minimum amount burned?
 // Required:    available domain claim, renew lease
@@ -185,7 +185,7 @@ export const isAddressTheCurrentOwner = (st: IBnsState, address: string): boolea
 export const didBurnMin = (tx: any): boolean => getTxOutput0BurnValue(tx) >= MIN_BURN
 
 // Describe:    Burned at least as much as previously burnt
-export const burnedPreviousRateMin = (st: IBnsState, tx: any): boolean => (
+export const burnedPreviousRateMin = (st: I_BnsState, tx: any): boolean => (
   getTxOutput0BurnValue(tx) >= getLastOwnerBurnedValue(st)
 )
 

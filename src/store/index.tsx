@@ -1,5 +1,5 @@
 import React from 'react'
-import { IState } from '../interfaces'
+import { I_State } from '../interfaces'
 import reducer from './reducers/Reducer'
 
 // Change state process:
@@ -9,7 +9,7 @@ import reducer from './reducers/Reducer'
 
 // initial state
 // (changes to design need to be matched in reducers & interfaces)
-export const initialState: IState = {
+export const initialState: I_State = {
   network: 'testnet',             // 'testnet' or 'bitcoin'
   alias: 'satoshi',               // first half of domain name
   extension: '.btc',              // last half of domain name
@@ -21,8 +21,7 @@ export const initialState: IState = {
     users: {},                    // object with all interacting users
     currentOwner: '',             // address of user that controls domain
     bidding: {},                  // bidding info
-    checkedHistory: false,        // if notifications tx history has ever been updated
-    checkedUtxo: false            // if notifications utxo including raw tx has ever been updated
+    ownersHistory: []             // history of ownership
   },
   wallet: {                       // wallet information & utxo for controlling domain names
     address: '',                  // public address (p2wpkh)
@@ -30,14 +29,14 @@ export const initialState: IState = {
     WIF: '',                      // wallet import format for private key derivation
     txHistory: [],                // array of all tx for this address
     utxoList: [],                 // array of all current utxo for this address
-    checkedHistory: false,        // if wallet tx history has ever been updated
-    checkedUtxo: false            // if wallet utxo including raw tx has ever been updated
   },
   chain: {
     height: 0                     // height of blockchain
   },
   pageInfo: {                     // user navigation information for controlling domain name
-    current: 1
+    current: 1,
+    checkedDomain: false,         // current domain notification address was scanned
+    checkedWallet: false          // current wallet address was scanned
   },
   choices: {
     action: [],                   // choices and data for action to take
@@ -45,16 +44,15 @@ export const initialState: IState = {
     txHex: ''                     // hex of raw transaction, ideally ready for broadcast
   },
   lastTimeStamp: Date.now(),      // last change timestamp, to detect any changes to state or time out
-
 }
 
 // helper methods
-export const getOwner = (st: IState) => {
+export const getOwner = (st: I_State) => {
   const ownerAddress = st.domain.currentOwner
   return st.domain.users[ownerAddress]
 }
 
-export const getUser = (st: IState, address: string) => {
+export const getUser = (st: I_State, address: string) => {
   return st.domain.users[address]
 }
 

@@ -1,7 +1,16 @@
-import { BNSActions } from './../helpers/bns/types/'
+import {
+  BNSActions,
+  I_Domain,
+  I_TX,
+  I_UTXO
+} from './../helpers/bns/types/'
+
 /**
  * All the interfaces & enums
  */
+
+
+export * from './../helpers/bns/types/'
 
 // for global state action creators
 export enum ActionTypes {
@@ -17,55 +26,24 @@ export enum ActionTypes {
   CHOICES_BNS_ACTION = 'CHOICES_BNS_ACTION'
 }
 
-export type Dispatch = React.Dispatch<IAction>
+export type Dispatch = React.Dispatch<I_Action>
 
-export interface IAction {
+export interface I_Action {
   type: ActionTypes
   payload: any
 }
 
-export interface Iforward {
-  network: string
-  address: string
-  updateHeight: number
-  updateTimestamp: number
-}
-
-export interface IUser {
-  address:      string
-  forwards:     Array<Iforward>
-  burnAmount:   number
-  winHeight:    number
-  winTimestamp: number
-  nonce:        number
-  updateHeight: number
-}
-
-export interface IState {
+export interface I_State {
   network: string
   alias: string
   extension: string
-  domain: {
-    domainName: string
-    notificationAddress: string
-    txHistory: Array<any>
-    utxoList: Array<any>
-    users: {
-      [key: string]: IUser
-    }
-    currentOwner: string
-    bidding: {}
-    checkedHistory: boolean
-    checkedUtxo: boolean
-  }
+  domain: I_Domain
   wallet: {
     address: string
     mnemonic: string
     WIF: string
-    txHistory: Array<any>
-    utxoList: Array<any>
-    checkedHistory: boolean
-    checkedUtxo: boolean
+    txHistory:  Array<I_TX>
+    utxoList: Array<I_UTXO>
   }
   chain: {
     height: number
@@ -81,6 +59,8 @@ export interface IState {
   }
   pageInfo: {
     current: number
+    checkedDomain: boolean
+    checkedWallet: boolean
   }
   lastTimeStamp: number
 }

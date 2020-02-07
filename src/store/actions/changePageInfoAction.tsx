@@ -1,18 +1,15 @@
-import { IState, Dispatch, ActionTypes } from '../../interfaces'
+import { I_State, Dispatch, ActionTypes } from '../../interfaces'
 const { CHANGE_PAGE_INFO } = ActionTypes;
 
 
 /**
  * Request to change page info that's checked for validity here
  */
-export const changePageInfoAction = async (state: IState, dispatch: Dispatch, page: number) => {
+export const changePageInfoAction = async (state: I_State, dispatch: Dispatch, page: number) => {
   // for now no checks
-
-  const { pageInfo } = state
-  pageInfo.current = page
 
   return dispatch({
     type: CHANGE_PAGE_INFO,
-    payload: pageInfo
+    payload: page
   })
 }

@@ -22,7 +22,7 @@ export const P3DomainAndWallet = () => {
   // most important for domain notificaiton address is the transaction history to know ownership
   // but also the current utxo in case we want to control the domain
   const domainInfo = () => {
-    if (state.domain.checkedHistory && state.domain.checkedUtxo) {
+    if (state.pageInfo.checkedDomain) {
       return ('✓')
     } else {
       return ('needs scan')
@@ -31,7 +31,7 @@ export const P3DomainAndWallet = () => {
 
   // wallet needs utxo info including raw tx & tx history for nonce
   const walletInfo = () => {
-    if (state.wallet.checkedHistory && state.wallet.checkedUtxo) {
+    if (state.pageInfo.checkedWallet) {
       return ( '✓' )
     } else {
       return ('needs scan')
@@ -41,10 +41,8 @@ export const P3DomainAndWallet = () => {
   // are all necessary scans done
   const areScansDone = () => {
     return (
-      state.wallet.checkedUtxo &&
-      state.wallet.checkedHistory &&
-      state.domain.checkedUtxo &&
-      state.domain.checkedHistory
+      state.pageInfo.checkedDomain &&
+      state.pageInfo.checkedWallet
     )
   }
 
@@ -119,7 +117,7 @@ export const P3DomainAndWallet = () => {
       </div>
       <div className={ styles.unspent }>
         <div className={ styles.balance }>
-          { state.wallet.checkedUtxo? (getUnspentSum(state.wallet.utxoList) / 1e8).toFixed(8) : 'n/a' }
+          { state.pageInfo.checkedWallet? (getUnspentSum(state.wallet.utxoList) / 1e8).toFixed(8) : 'n/a' }
         </div>
         { (state.network === 'testnet') ? ' tBTC' : ' BTC' }
       </div>

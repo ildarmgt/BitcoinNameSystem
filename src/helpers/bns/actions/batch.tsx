@@ -4,7 +4,7 @@ import {
   autoCheckForOwnerExpired,
   updateForwardingInfoAction
 } from './actions'
-import { IBnsState } from './../types/'
+import { I_BnsState } from './../types/'
 import {
   getTxInput0SourceUserAddress
 } from './../formathelpers'
@@ -12,7 +12,7 @@ import {
 /****************************************************************************************
  * Returns what actions are available for specific user address at current state
  */
-export const runAllActionPermissionChecks = (st: IBnsState, address: string) => {
+export const runAllActionPermissionChecks = (st: I_BnsState, address: string) => {
 
   // Edit this list to include more actions for checks
   const allActions = [
@@ -71,7 +71,7 @@ export const runAllActionPermissionChecks = (st: IBnsState, address: string) => 
  * Executes all actions possible by user that sent tx.
  * Nothing returned.
  */
-export const runAllUserActions = (st: IBnsState, tx: any) => {
+export const runAllUserActions = (st: I_BnsState, tx: any) => {
 
   // edit this list
   const allUserActions = [
@@ -99,7 +99,7 @@ export const runAllUserActions = (st: IBnsState, tx: any) => {
  * Executes non-user actions like ownership expiration over time.
  * Nothing returned.
  */
-export const runAllAutomaticChecks = (st: IBnsState) => {
+export const runAllAutomaticChecks = (st: I_BnsState) => {
 
   // list of all automatic actions
   const allAutoChecks = [

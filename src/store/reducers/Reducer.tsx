@@ -1,4 +1,4 @@
-import { IState, IAction, ActionTypes } from '../../interfaces'
+import { I_State, I_Action, ActionTypes } from '../../interfaces'
 import { initialState } from './../'
 const {
   STORE_SEARCH_RESULTS_FAIL,
@@ -19,7 +19,7 @@ const {
  * type describes what type of changes to global state to make.
  * payload contains data provided to make those changes.
  */
-export default function reducer (state: IState, action: IAction): IState {
+export default function reducer (state: I_State, action: I_Action): I_State {
   const { payload } = action
 
   switch (action.type) {
@@ -43,9 +43,11 @@ export default function reducer (state: IState, action: IAction): IState {
         wallet: {
           ...state.wallet, // wif/mnemonic/address unchanged
           txHistory: payload.wallet.txHistory,
-          utxoList: payload.wallet.utxoList,
-          checkedHistory: true,
-          checkedUtxo: true
+          utxoList: payload.wallet.utxoList
+        },
+        pageInfo: {
+          ...state.pageInfo,
+          checkedWallet: true
         },
         lastTimeStamp: Date.now()
       }
@@ -55,12 +57,14 @@ export default function reducer (state: IState, action: IAction): IState {
       return {
         ...state,
         domain: {
-          ...payload.domain,
-          checkedHistory: true,
-          checkedUtxo: true
+          ...payload.domain
         },
         chain: {
           height: payload.chain.height
+        },
+        pageInfo: {
+          ...state.pageInfo,
+          checkedDomain: true
         },
         lastTimeStamp: Date.now()
       }
@@ -70,7 +74,10 @@ export default function reducer (state: IState, action: IAction): IState {
       // navigation info for controlling domains
       return {
         ...state,
-        pageInfo: payload
+        pageInfo: {
+          ...state.pageInfo,
+          current: payload
+        }
       }
 
     case NEW_WALLET: {
@@ -82,6 +89,10 @@ export default function reducer (state: IState, action: IAction): IState {
           address: payload.address,
           mnemonic: payload.mnemonic,
           WIF: payload.WIF
+        },
+        pageInfo: {
+          ...state.pageInfo,
+          checkedWallet: false
         },
         lastTimeStamp: Date.now()
       }
@@ -96,11 +107,14 @@ export default function reducer (state: IState, action: IAction): IState {
         alias: payload.alias,
         domain: {
           ...initialState.domain,
-          ...payload.domain,
-          checkedHistory: true
+          ...payload.domain
         },
         chain: {
           height: payload.chain.height
+        },
+        pageInfo: {
+          ...state.pageInfo,
+          checkedDomain: true
         },
         lastTimeStamp: Date.now()
       }
@@ -117,6 +131,10 @@ export default function reducer (state: IState, action: IAction): IState {
           domainName: payload.domainName,
           notificationAddress: payload.notificationAddress
         },
+        pageInfo: {
+          ...state.pageInfo,
+          checkedDomain: false
+        },
         lastTimeStamp: Date.now()
       }
     }
@@ -128,6 +146,11 @@ export default function reducer (state: IState, action: IAction): IState {
         ...state,
         alias: payload,
         domain: initialState.domain,
+        pageInfo: {
+          ...state.pageInfo,
+          current: 1,
+          checkedDomain: false
+        },
         lastTimeStamp: Date.now()
       }
     }

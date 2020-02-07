@@ -1,8 +1,8 @@
-import { IUser, IBnsState } from './types/'
+import { I_User, I_BnsState } from './types/'
 
 // Initializing values
 
-export const newState: IBnsState = {
+export const newState: I_BnsState = {
   domain: {                                     // notification info for this domain name
     domainName:                   '',           // domain name
     notificationAddress:          '',           // p2wsh address for this domain name (alias + extension)
@@ -20,7 +20,7 @@ export const newState: IBnsState = {
 }
 
 // values to initialize users with
-export const newUser: IUser = {
+export const newUser: I_User = {
   address:        '',           // address in control
   forwards:       [],           // for forwards later
   burnAmount:     0,            // burned to get ownership

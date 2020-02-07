@@ -5,9 +5,9 @@ export enum BNSActions {
   CLAIM_OWNERSHIP = 'CLAIM_OWNERSHIP'
 }
 
-export interface IUser {
+export interface I_User {
   address:      string
-  forwards:     Array<Iforward>
+  forwards:     Array<I_Forward>
   burnAmount:   number
   winHeight:    number
   winTimestamp: number
@@ -16,30 +16,82 @@ export interface IUser {
 }
 
   // each forward object has the following data
-export interface Iforward {
+export interface I_Forward {
   network: string
   address: string
   updateHeight: number
   updateTimestamp: number
 }
 
-export interface IBnsState {
-  domain: IDomain
+export interface I_BnsState {
+  domain: I_Domain
   chain?: {
     parsedHeight: number
     currentHeight: number
   }
 }
 
-export interface IDomain {
+export interface I_Domain {
   domainName: string
   notificationAddress: string
-  txHistory: Array<any>
-  utxoList: Array<any>
+  txHistory: Array<I_TX>
+  utxoList: Array<I_UTXO>
   users: {
-    [key: string]: IUser
+    [key: string]: I_User
   }
   currentOwner: string
   bidding: {}
-  ownersHistory: Array<IUser>
+  ownersHistory: Array<I_User>
+}
+
+
+export interface I_TX {
+  txid: string
+  version: number
+  locktime: number
+  size: number
+  weight: number
+  fee: number
+  vin: Array <{
+    txid: string
+    vout: number
+    prevout: {
+      scriptpubkey: string
+      scriptpubkey_asm: string
+      scriptpubkey_type: string
+      scriptpubkey_address: string
+    }
+    scriptsig: string
+    scriptsig_asm: string
+    witness: {
+      [key: number]: string
+    }
+    is_coinbase: boolean
+    sequence: number
+  }>
+  vout: Array <{
+    scriptpubkey: string
+    scriptpubkey_asm: string
+    scriptpubkey_type: string
+    value: number
+  }>
+  status: {
+    confirmed: boolean
+    block_height: number
+    block_hash: string
+    block_time: number
+  }
+}
+
+export interface I_UTXO {
+  txid: string
+  vout: number
+  status: {
+    confirmed: boolean
+    block_height: number | null
+    block_hash: string | null
+    block_time: number | null
+  }
+  value: number
+  hex?: string
 }

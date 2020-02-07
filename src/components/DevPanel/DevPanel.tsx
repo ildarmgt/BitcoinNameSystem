@@ -4,7 +4,7 @@ import { Store } from '../../store/'
 import { ActionTypes } from './../../interfaces/'
 const json = require('./../../utils/test.json');
 
-interface IState {
+interface I_State {
   blShow: boolean
   setShow: React.Dispatch<React.SetStateAction<boolean>>
 }

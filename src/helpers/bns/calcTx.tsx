@@ -2,7 +2,7 @@ import * as bitcoin from 'bitcoinjs-lib'
 import { calcP2WSH } from './calcP2WSH'
 import { MIN_BURN, MIN_NOTIFY } from './constants'
 import { encrypt } from './cryptography'
-import { IDomain } from './types/'
+import { I_Domain } from './types/'
 import { getUser } from './formathelpers'
 
 /**
@@ -20,7 +20,7 @@ import { getUser } from './formathelpers'
 export const calcTx = (
   stringToEmbed: string,
   wallet: any,
-  domain: IDomain,
+  domain: I_Domain,
   choices: { action: any, feeRate: number  },
   networkChoice: string,
   vBytes: number = 0

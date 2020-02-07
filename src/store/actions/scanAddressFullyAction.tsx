@@ -1,4 +1,4 @@
-import { IState, Dispatch, ActionTypes } from '../../interfaces'
+import { I_State, Dispatch, ActionTypes } from '../../interfaces'
 import { calcP2WSH, calcBnsState } from '../../helpers/bns'
 import { getAddressHistory, getUTXOList, addRawTxToArray, getHeight } from '../../api/blockstream'
 const { UPDATE_WALLET, UPDATE_DOMAIN, ACTION_FAIL } = ActionTypes
@@ -12,7 +12,7 @@ const { UPDATE_WALLET, UPDATE_DOMAIN, ACTION_FAIL } = ActionTypes
  * Notification scan will reproduce address scan first before getting details.
  */
 export const scanAddressFullyAction = async (
-  state: IState,
+  state: I_State,
   dispatch: Dispatch,
   addressType: ActionTypes
 ) => {

@@ -1,4 +1,4 @@
-import { IState, Dispatch, ActionTypes } from '../../interfaces'
+import { I_State, Dispatch, ActionTypes } from '../../interfaces'
 import { calcP2WSH, calcBnsState } from '../../helpers/bns'
 import { getAddressHistory, getHeight } from './../../api/blockstream'
 const { STORE_SEARCH_RESULTS_FAIL, STORE_SEARCH_RESULTS } = ActionTypes;
@@ -10,7 +10,7 @@ const { STORE_SEARCH_RESULTS_FAIL, STORE_SEARCH_RESULTS } = ActionTypes;
  * find current owner's forwarding info,
  * send/dispatch to reducer to store important data found
  */
-export const searchAction = async (state: IState, dispatch: Dispatch, router: any = undefined) => {
+export const searchAction = async (state: I_State, dispatch: Dispatch, router: any = undefined) => {
   const domainName = state.alias + state.extension
   // stop if no alias submitted, nothing to save to state
   if (!state.alias) { return undefined }

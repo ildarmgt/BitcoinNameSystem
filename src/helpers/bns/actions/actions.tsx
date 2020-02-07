@@ -1,4 +1,4 @@
-import { IBnsState, BNSActions } from './../types/'
+import { I_BnsState, BNSActions } from './../types/'
 import { MIN_NOTIFY, MIN_BURN } from './../constants'
 import {
   existsCurrentOwner,
@@ -86,7 +86,7 @@ const IS_OWNER_EXPIRED = ({ st }: any) => ({
 // ============ USER ACTIONs ===============
 
 // Describe: If no owner, sender can claim ownership
-export const claimOwnershipAction = (st: IBnsState, tx: any = undefined) => {
+export const claimOwnershipAction = (st: I_BnsState, tx: any = undefined) => {
   const args = { st, tx }
   return {
 
@@ -125,7 +125,7 @@ export const claimOwnershipAction = (st: IBnsState, tx: any = undefined) => {
 
 // Describe: If from current owner & burned past winning minimum, extend ownership.
 export const currentOwnerRenewAction = (
-  st: IBnsState,
+  st: I_BnsState,
   address: string,
   tx: any = undefined
 ) => {
@@ -163,7 +163,7 @@ export const currentOwnerRenewAction = (
 
 // Describe: update forwarding information.
 export const updateForwardingInfoAction = (
-  st: IBnsState,
+  st: I_BnsState,
   tx: any = undefined
 ) => {
   const args = { st, tx }
@@ -190,7 +190,7 @@ export const updateForwardingInfoAction = (
 // =========== AUTOMATIC PARSED ACTIONS NOT BY USERS (e.g. TIME BASED) ===========
 
 // Describe: if OWNERSHIP_DURATION_BY_BLOCKS blocks since ownership update, no owner again
-export const autoCheckForOwnerExpired = (st: IBnsState) => {
+export const autoCheckForOwnerExpired = (st: I_BnsState) => {
   const args = { st }
   return {
     info: 'Existing ownerships that expire are removed',

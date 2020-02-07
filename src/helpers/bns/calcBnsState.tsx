@@ -1,7 +1,7 @@
 import { calcP2WSH } from './calcP2WSH'
 import { newState } from './initialState'
 import * as actions from './actions'
-import { IBnsState } from './types'
+import { I_BnsState } from './types'
 import {
   setParsedHeight,
   updateSourceUserFromTx,
@@ -15,14 +15,14 @@ import {
  * @param   {string}      domainName            - Full domainName to use (e.g. 'satoshi.btc').
  * @param   {number}      currentHeight         - Current blockheight of the network chain selected.
  * @param   {string}      networkChoice         - 'testnet' or 'bitcoin' (matches bitcoinjs-lib).
- * @returns {IBnsState}                         - BNS state describing object.
+ * @returns {I_BnsState}                         - BNS state describing object.
  */
 export const calcBnsState = (
   notificationsHistory: Array<any>,
   domainName: string,
   currentHeight: number,
   networkChoice: string
-): IBnsState => {
+): I_BnsState => {
 
   // initialize temporary derivation state
   const st = JSON.parse(JSON.stringify(newState)); // deep object clone
