@@ -9,6 +9,7 @@ const { STORE_SEARCH_RESULTS_FAIL, STORE_SEARCH_RESULTS } = ActionTypes;
  * calculate owner,
  * find current owner's forwarding info,
  * send/dispatch to reducer to store important data found
+ * (No UTXO nor raw TX scan for speed in front page search)
  */
 export const searchAction = async (state: I_State, dispatch: Dispatch, router: any = undefined) => {
   const domainName = state.alias + state.extension

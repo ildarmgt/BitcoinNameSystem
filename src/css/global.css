@@ -57,10 +57,6 @@ body {
 a {
   text-decoration: none;
   color: var(--colorDarker2);
-  /* font-size: calc(2.0 * var(--s)); */
-  /* padding: calc(0.6 * var(--s)) calc(3 * var(--s)); */
-  /* margin: calc(0.5 * var(--s)); */
-  /* border-radius: calc(0.5 * var(--s)); */
   vertical-align: middle;
 }
 
@@ -75,11 +71,19 @@ a:active,
 }
 
 .canPress,
-.noselect {
+.noselect,
+* {
   -webkit-user-select: none;
   -moz-user-select: -moz-none;
   -ms-user-select: none;
   user-select: none;
+}
+
+.selectable {
+  -webkit-user-select: text;
+  -moz-user-select: -moz-text;
+  -ms-user-select: text;
+  user-select: text;
 }
 
 textarea {
@@ -117,7 +121,8 @@ textarea {
 }
 
 textarea::placeholder {
-  color: var(--colorDisabled);
+  color: var(--colorBitcoinOrange);
+  opacity: 0.5;
 }
 
 textarea::-webkit-scrollbar {

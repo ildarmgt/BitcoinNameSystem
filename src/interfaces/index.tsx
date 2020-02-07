@@ -61,6 +61,7 @@ export interface I_State {
     current: number
     checkedDomain: boolean
     checkedWallet: boolean
+    checkedLightSearch: boolean
   }
   lastTimeStamp: number
 }

@@ -36,7 +36,8 @@ export const initialState: I_State = {
   pageInfo: {                     // user navigation information for controlling domain name
     current: 1,
     checkedDomain: false,         // current domain notification address was scanned
-    checkedWallet: false          // current wallet address was scanned
+    checkedWallet: false,         // current wallet address was scanned
+    checkedLightSearch: false     // if light search was done (no utxo / txhex scan)
   },
   choices: {
     action: [],                   // choices and data for action to take

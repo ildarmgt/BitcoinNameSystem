@@ -29,7 +29,7 @@ export const SearchResults = () => {
     if (!owner) return ('')
     return (
       <div
-        className={ diff.isExpired ? styles.isExpired : styles.notisExpired }
+        className={ diff.isExpired ? styles.expired : styles.notExpired }
       >
         { !diff.isExpired && ('expires in ' + diff.dh) }
       </div>

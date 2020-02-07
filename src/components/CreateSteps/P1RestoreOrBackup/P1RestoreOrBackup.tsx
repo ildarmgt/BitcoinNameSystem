@@ -88,13 +88,13 @@ export const P1RestoreOrBackup = () => {
         <div
           id='divBackup'
           spellCheck={ false }
-          className={ styles.backup }
+          className={ [styles.backup, 'selectable'].join(' ') }
           onClick={ () => {
             // select div entire contents
-            const thisDiv = document?.getElementById('divBackup')
-            if (thisDiv) {
-              window.getSelection()?.selectAllChildren(thisDiv)
-            }
+            // const thisDiv = document?.getElementById('divBackup')
+            // if (thisDiv) {
+            //   window.getSelection()?.selectAllChildren(thisDiv)
+            // }
           }}
         >
           { state.wallet.mnemonic }

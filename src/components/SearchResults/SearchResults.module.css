@@ -70,14 +70,6 @@
   color: var(--colorBitcoinBlue);
 }
 
-.describe {
-  color: var(--colorLightText);
-  margin-bottom: calc(2 * var(--s));
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
-
 .wrapper .listItem:hover:active {
   transform: translateY(calc(0.2 * var(--s)));
 }
@@ -101,6 +93,14 @@
   box-shadow: inset 0 0 0 calc(0.1 * var(--s)) var(--colorTransparent);
 }
 
+.describe {
+  color: var(--colorLightText);
+  margin-bottom: calc(2 * var(--s));
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
 .expired {
   display: inline-block;
   color: var(--colorWarning);
@@ -120,6 +120,9 @@
   color: var(--colorBackground);
   width: calc(40 * var(--s));;
   font-size: calc(3 * var(--s));
+  padding: calc(0.6 * var(--s)) calc(3 * var(--s));
+  margin: calc(0.5 * var(--s));
+  border-radius: calc(0.5 * var(--s));
 }
 
 .createLink:hover {

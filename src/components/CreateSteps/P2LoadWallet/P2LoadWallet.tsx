@@ -31,7 +31,7 @@ export const P2LoadWallet = () => {
         <div>
           Fund your wallet to control domain.
         </div>
-        <div className={ styles.address }>
+        <div className={ [styles.address, 'selectable'].join(' ') }>
           { state.wallet.address }
         </div>
       </div>

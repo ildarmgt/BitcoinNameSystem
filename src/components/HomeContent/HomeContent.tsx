@@ -19,7 +19,7 @@ export const HomeContent = (props: any): JSX.Element => {
   }
 
   // is serach done
-  const isSearchDone = () => state.pageInfo.checkedDomain
+  const isSearchDone = () => state.pageInfo.checkedLightSearch
 
   // put the textarea (by ref) into focus on mount and move caret to end
   const inputEl = useRef<HTMLTextAreaElement>(null)
@@ -31,13 +31,12 @@ export const HomeContent = (props: any): JSX.Element => {
     }
   }, [])
 
-  const placeHolder = 'satoshi'
   return (
     <>
       <div className={
         !isSearchDone()
-          ? [styles.lblMainTitle, styles.noselect].join(' ')
-          : [styles.lblMainTitle, styles.lblMainTitleAfter, styles.noselect].join(' ')
+          ? [styles.lblMainTitle].join(' ')
+          : [styles.lblMainTitle, styles.lblMainTitleAfter].join(' ')
       }>
         <span>Bitcoin</span> Name System
       </div>
@@ -53,7 +52,7 @@ export const HomeContent = (props: any): JSX.Element => {
           rows={ 1 }
           spellCheck={ false }
           value={ state.alias }
-          placeholder={ placeHolder }
+          placeholder={ 'e.g. satoshi' }
           ref={ inputEl }
           onChange={ e => changeAliasAction(state, dispatch, e?.target?.value) }
           onKeyPress={ e => { e.key === 'Enter' && searchAction(state, dispatch) } }

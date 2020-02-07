@@ -114,7 +114,8 @@ export default function reducer (state: I_State, action: I_Action): I_State {
         },
         pageInfo: {
           ...state.pageInfo,
-          checkedDomain: true
+          checkedDomain: false,
+          checkedLightSearch: true
         },
         lastTimeStamp: Date.now()
       }
@@ -133,7 +134,8 @@ export default function reducer (state: I_State, action: I_Action): I_State {
         },
         pageInfo: {
           ...state.pageInfo,
-          checkedDomain: false
+          checkedDomain: false,
+          checkedLightSearch: false
         },
         lastTimeStamp: Date.now()
       }
@@ -149,7 +151,8 @@ export default function reducer (state: I_State, action: I_Action): I_State {
         pageInfo: {
           ...state.pageInfo,
           current: 1,
-          checkedDomain: false
+          checkedDomain: false,
+          checkedLightSearch: false
         },
         lastTimeStamp: Date.now()
       }
