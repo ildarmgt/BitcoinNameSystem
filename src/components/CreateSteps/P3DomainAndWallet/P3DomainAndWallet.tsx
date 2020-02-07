@@ -38,43 +38,21 @@ export const P3DomainAndWallet = () => {
     }
   }
 
-  // are all necessary scans done
-  const areScansDone = () => {
-    return (
-      state.pageInfo.checkedDomain &&
-      state.pageInfo.checkedWallet
-    )
-  }
-
   // Conditions to enable next pages.
-  // if owner - full control
-  // if domain available - bid
-  // if not owner, warn user
-  // (TODO) if auction period, challenge bids
   const readyStatus = () => {
-    if (!areScansDone()) {
-      // needs scans
-      return { isReady: false,  type: 'missing', info: 'Scan both to move on' }
+    if (!state.pageInfo.checkedDomain && !state.pageInfo.checkedWallet) {
+      return { isReady: false,    info: 'Scan both to move on' }
     }
-    const ownerAddress = state.domain.currentOwner;
-    const walletAddress = state.wallet.address;
-    const isWalletAddress = (walletAddress !== '')
-    const isDomainAvailable = (ownerAddress === '')
-    const isWalletTheOwner = (walletAddress === ownerAddress)
-    if (!isWalletAddress) {
-      return { isReady: false,  type: 'nowallet', info: 'No wallet loaded' }
+    if (!state.pageInfo.checkedDomain && state.pageInfo.checkedWallet) {
+      return { isReady: false,    info: 'Scan domain to move on' }
     }
-    if (isWalletTheOwner && !isDomainAvailable) {
-      return { isReady: true,   type: 'owner',    info: 'Your domain ready' }
+    if (state.pageInfo.checkedDomain && !state.pageInfo.checkedWallet) {
+      return { isReady: false,    info: 'Scan wallet to move on' }
     }
-    if (!isWalletTheOwner && isDomainAvailable) {
-      return { isReady: true,   type: 'open',     info: 'Domain is available' }
+    if (state.pageInfo.checkedDomain && state.pageInfo.checkedWallet) {
+      return { isReady: true,     info: '' }
     }
-    if (!isWalletTheOwner && !isDomainAvailable) {
-      return { isReady: false,  type: 'taken',    info: 'Not your domain' }
-    }
-    console.log('Unknown status of ownership', ownerAddress, walletAddress, isWalletAddress, isDomainAvailable, isWalletTheOwner)
-    return { isReady: false,    type: 'unknown',  info: '' }
+    return { isReady: false,      info: 'Unknown status' }
   }
 
   return (

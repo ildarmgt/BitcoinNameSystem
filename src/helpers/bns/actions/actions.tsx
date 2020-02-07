@@ -1,4 +1,4 @@
-import { I_BnsState, BNSActions } from './../types/'
+import { I_BnsState, BNSActions, I_BNS_Action, I_BNS_Auto_Action } from './../types/'
 import { MIN_NOTIFY, MIN_BURN } from './../constants'
 import {
   existsCurrentOwner,
@@ -20,7 +20,8 @@ import {
   isAddressTheCurrentOwner,
   burnedPreviousRateMin,
   readEmbeddedData,
-  getLastOwnerBurnedValue
+  getLastOwnerBurnedValue,
+  isSenderTheCurrentOwner
 } from './../formathelpers'
 const { RENEW, ONLY_FORWARDS, CLAIM_OWNERSHIP } = BNSActions
 
@@ -72,9 +73,17 @@ const BURN_LAST_WIN = ({ st, tx=undefined }: any) => ({
   special: { output0value: getLastOwnerBurnedValue(st) }
 })
 
-const USER_IS_OWNER = ({ st, address=undefined }: any) => ({
+// calculated based on tx if available, otherwise address
+const USER_IS_OWNER = ({ st, address, tx=undefined }: any) => ({
   info: `User's address must match owner's address`,
-  status: () => isAddressTheCurrentOwner(st, address)
+  status: () => {
+    console.log(
+      'USER_IS_OWNER',
+      isAddressTheCurrentOwner(st, address),
+      tx ? isSenderTheCurrentOwner(st, tx) : isAddressTheCurrentOwner(st, address)
+    )
+    return tx ? isSenderTheCurrentOwner(st, tx) : isAddressTheCurrentOwner(st, address)
+  }
 })
 
 const IS_OWNER_EXPIRED = ({ st }: any) => ({
@@ -86,7 +95,7 @@ const IS_OWNER_EXPIRED = ({ st }: any) => ({
 // ============ USER ACTIONs ===============
 
 // Describe: If no owner, sender can claim ownership
-export const claimOwnershipAction = (st: I_BnsState, tx: any = undefined) => {
+export const claimOwnershipAction = (st: I_BnsState, tx: any = undefined): I_BNS_Action => {
   const args = { st, tx }
   return {
 
@@ -126,9 +135,9 @@ export const claimOwnershipAction = (st: I_BnsState, tx: any = undefined) => {
 // Describe: If from current owner & burned past winning minimum, extend ownership.
 export const currentOwnerRenewAction = (
   st: I_BnsState,
-  address: string,
+  address: string = '',
   tx: any = undefined
-) => {
+): I_BNS_Action => {
   const args = { st, address, tx }
   return {
 
@@ -164,13 +173,15 @@ export const currentOwnerRenewAction = (
 // Describe: update forwarding information.
 export const updateForwardingInfoAction = (
   st: I_BnsState,
+  address: string = '',
   tx: any = undefined
-) => {
-  const args = { st, tx }
+): I_BNS_Action => {
+  const args = { st, address, tx }
   return {
 
     type: ONLY_FORWARDS,
-    info: "Only update forwarding information",
+
+    info: 'Only update forwarding information',
 
     permissions: [],
 
@@ -183,14 +194,22 @@ export const updateForwardingInfoAction = (
 
     execute: () => {
       readEmbeddedData(st, tx)
-    }
+    },
+
+    // Change info to warning when attempting to update forwarding info
+    // for domain you do not control.
+    // Such a change would be wasted until it's owned.
+    warning:
+      !USER_IS_OWNER(args).status()
+        ? 'Warning: not your domain yet!'
+        : undefined
   }
 }
 
 // =========== AUTOMATIC PARSED ACTIONS NOT BY USERS (e.g. TIME BASED) ===========
 
 // Describe: if OWNERSHIP_DURATION_BY_BLOCKS blocks since ownership update, no owner again
-export const autoCheckForOwnerExpired = (st: I_BnsState) => {
+export const autoCheckForOwnerExpired = (st: I_BnsState): I_BNS_Auto_Action => {
   const args = { st }
   return {
     info: 'Existing ownerships that expire are removed',

@@ -70,6 +70,29 @@
   width: 0;
   height: 0;
   border-top: calc(0.75 * var(--sizeButton)) solid transparent;
-  border-right: calc(1.5 * var(--sizeButton)) solid var(--colorThisButtonText);
+  border-right: calc(1.5 * var(--sizeButton)) solid var(--colorThisButton);
   border-bottom: calc(0.75 * var(--sizeButton)) solid transparent;
+}
+
+.back {
+  background-color: var(--colorTransparent);
+  box-shadow: 0 0 0 calc(0.2 * var(--sizeButton)) var(--colorThisButton) inset;
+}
+
+.backArrow {
+  color: var(--colorThisButton);
+}
+
+.backArrow:hover {
+  color: var(--colorThisButtonText);
+  background-color: var(--colorDarker2);
+  /* box-shadow: 0 0 0 calc(0.2 * var(--sizeButton)) var(--colorTransparent) inset; */
+}
+
+.backArrow:hover:before {
+  border-right: calc(1.5 * var(--sizeButton)) solid var(--colorThisButtonText);
+}
+
+.back:hover {
+  background-color: var(--colorThisButton);
 }

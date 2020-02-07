@@ -25,6 +25,7 @@ export const P4ActionChoice = () => {
   )
   // and get all permissions
   const checkActions = runAllActionPermissionChecks(bns, state.wallet.address)
+  console.log(checkActions)
 
   return (
     <div className={ styles.wrapper }>
@@ -34,7 +35,8 @@ export const P4ActionChoice = () => {
       <div className={ styles.availableActions }>
         {
           checkActions.map(action => {
-            if (action.isUsable) {
+            // usable actions only + not displaying actions with warnings
+            if (action.isUsable && !action.warning) {
               console.log('special tx instructions:', action.special)
               return (
               <RoundButton

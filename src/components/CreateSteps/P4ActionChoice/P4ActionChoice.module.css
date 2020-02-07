@@ -38,6 +38,8 @@
 
 .availableActions > div {
   margin: calc(2 * var(--s));
+  margin-top: 0;
+
 }
 
 .unavailableActions {
@@ -123,5 +125,8 @@
   .title {
     text-align: right;
     margin-right: calc(2 * var(--s));
+  }
+  .availableActions {
+    align-self: flex-start;
   }
 }

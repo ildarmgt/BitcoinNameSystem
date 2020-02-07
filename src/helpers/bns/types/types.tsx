@@ -5,6 +5,21 @@ export enum BNSActions {
   CLAIM_OWNERSHIP = 'CLAIM_OWNERSHIP'
 }
 
+export interface I_BNS_Action {
+  type: BNSActions
+  info: string
+  permissions: Array<any>
+  conditions: Array<any>
+  execute: () => void
+  warning?: string | undefined
+}
+
+export interface I_BNS_Auto_Action {
+  info: string
+  conditions: Array<any>
+  execute: () => void
+}
+
 export interface I_User {
   address:      string
   forwards:     Array<I_Forward>

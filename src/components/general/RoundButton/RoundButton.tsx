@@ -6,9 +6,9 @@ import styles from './RoundButton.module.css'
  *
  * Pass the following props to customize it.
  *
- * next='true' to add next arrow at right.
+ * next='true' to add next arrow at right (off if undefined or '').
  *
- * back='true' to add back arrow on left.
+ * back='true' to add back arrow on left (off if undefined or '').
  *
  * show='true' to display element vs show='false' to set display to none (dom still exists).
  *
@@ -48,7 +48,10 @@ export const RoundButton = (props:any): JSX.Element => {
             : `calc(2.5/2.9 * var(--s))`
         ) as React.CSSProperties
       }}
-      className={ styles.roundButtonWrap }
+      className={ [
+        styles.roundButtonWrap,
+        props.back ? styles.back : undefined
+      ].join(' ') }
       {...props}
     >
       <div

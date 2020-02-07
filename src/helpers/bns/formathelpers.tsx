@@ -155,34 +155,32 @@ export const readEmbeddedData = (st: I_BnsState, tx: any):void => {
 // ===== rule checks (getters) =====
 
 // Describe:    2 outputs minimum
-// Required:    ALL
 export const atLeastTwoOutputs = (tx: any): boolean => tx.vout.length >= 2
 
 // Describe:    Is [0] output OP_RETURN type
-// Required:    ALL
 export const isOpreturnOutput0 = (tx: any): boolean => (
   tx.vout[0].scriptpubkey_asm.split(' ')[0] === 'OP_RETURN'
 )
 
 // Describe:    Is [1] output this domain's notification address?
-// Required:    ALL
 export const isNotify =  (st: I_BnsState, tx: any): boolean => (
   getTxOutput1NotifyAddress(tx) === getNotificationAddress(st)
 )
 
 // Describe:    At least minimum amount used in notification output? (Dust level is main danger)
-// Required:    ALL
 export const didNotifyMin = (tx: any): boolean => getTxOutput1NotifyValue(tx) >= MIN_NOTIFY
 
-// Describe:    Is sender the current domain owner (input [0], id'ed by address)?
-// Required:    renew lease
-// Irrelevant:  available domain claim, forwarding information updates (warn)
-export const isAddressTheCurrentOwner = (st: I_BnsState, address: string): boolean =>  getOwnerAddress(st) === address
+// Describe:    Is address the current domain owner?
+export const isAddressTheCurrentOwner = (st: I_BnsState, address: string): boolean =>
+  getOwnerAddress(st) === address
+
+// Describe:    Is tx sender the current domain owner (input [0], id'ed by address)?
+export const isSenderTheCurrentOwner = (st: I_BnsState, tx: any): boolean =>
+  getOwnerAddress(st) === getTxInput0SourceUserAddress(tx)
 
 // Describe:    At least minimum amount burned?
-// Required:    available domain claim, renew lease
-// Irrelevant:  forwarding information updates
-export const didBurnMin = (tx: any): boolean => getTxOutput0BurnValue(tx) >= MIN_BURN
+export const didBurnMin = (tx: any): boolean =>
+  getTxOutput0BurnValue(tx) >= MIN_BURN
 
 // Describe:    Burned at least as much as previously burnt
 export const burnedPreviousRateMin = (st: I_BnsState, tx: any): boolean => (

@@ -5,18 +5,19 @@ import {
   updateForwardingInfoAction
 } from './actions'
 import { I_BnsState } from './../types/'
-import {
-  getTxInput0SourceUserAddress
-} from './../formathelpers'
+// import {
+//   getTxInput0SourceUserAddress
+// } from './../formathelpers'
 
 /****************************************************************************************
  * Returns what actions are available for specific user address at current state
  */
 export const runAllActionPermissionChecks = (st: I_BnsState, address: string) => {
+  console.log('currentOwnerRenewAction running:')
 
   // Edit this list to include more actions for checks
   const allActions = [
-    updateForwardingInfoAction(st),
+    updateForwardingInfoAction(st, address),
     currentOwnerRenewAction(st, address),
     claimOwnershipAction(st)
   ]
@@ -58,6 +59,7 @@ export const runAllActionPermissionChecks = (st: I_BnsState, address: string) =>
       type: action.type,
       info: action.info,
       isUsable: checkedPermissions.every(permission => permission.isAllowed),
+      warning: action.warning,
       permissionList: checkedPermissions,
       special: specialTxDirections
     })
@@ -75,8 +77,8 @@ export const runAllUserActions = (st: I_BnsState, tx: any) => {
 
   // edit this list
   const allUserActions = [
-    updateForwardingInfoAction(st, tx),
-    currentOwnerRenewAction(st, getTxInput0SourceUserAddress(tx), tx),
+    updateForwardingInfoAction(st, undefined, tx),
+    currentOwnerRenewAction(st, undefined, tx),
     claimOwnershipAction(st, tx)
   ]
 
