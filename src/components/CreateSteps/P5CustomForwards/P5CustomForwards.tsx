@@ -3,7 +3,7 @@ import { RoundButton } from '../../general/RoundButton'
 import styles from './P5CustomForwards.module.css'
 import { Store, getOwner } from '../../../store'
 import { changePageInfoAction, changeChoicesBNSAction } from '../../../store/actions'
-import { stringByteCount, BYTES_MAX } from '../../../helpers/bns'
+import { stringByteCount, BYTES_MAX, findLatestForwards } from '../../../helpers/bns'
 import sanitize from '../../../helpers/sanitize'
 
 type Planned_Changes = { [key: string]: string }
@@ -48,7 +48,8 @@ export const P5CustomForwards = () => {
   }
 
   // array of past network:forwardingAddress objects
-  const pastForwards = getOwner(state)?.forwards.slice().reverse() || []
+  // display only active ones with latest higher
+  const pastForwards = findLatestForwards(getOwner(state)?.forwards).reverse() || []
 
   // local state for content in textboxes for new network address changes
   const [textboxContent, setTextboxContent] = React.useState({network: '', address: '' })
