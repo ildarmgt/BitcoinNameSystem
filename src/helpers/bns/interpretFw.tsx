@@ -1,11 +1,10 @@
+import { I_Forward } from './types/'
 /**
  * Reads a single forward info object to interpret its values
  * as where the forwarding address should be used, what it is, and what link to use.
  * Returns {what: string, where: string, link: string, render: boolean}.
  */
-export function interpretFw (
-  fw: { network: string, address: string, updateHeight: number, updateTimestamp: number }
-) {
+export function interpretFw (fw: I_Forward) {
   // blank address means it was removed
   // ! at start means it's a command, not a network
   if (fw.address === '' || fw.network.startsWith('!')) {

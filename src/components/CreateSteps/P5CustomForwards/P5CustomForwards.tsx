@@ -6,26 +6,54 @@ import { changePageInfoAction, changeChoicesBNSAction } from '../../../store/act
 import { stringByteCount, BYTES_MAX } from '../../../helpers/bns'
 import sanitize from '../../../helpers/sanitize'
 
+type Planned_Changes = { [key: string]: string }
+
 /**
- * Bid on network
+ * Edit custom forwards information.
+ * state - global state.
+ * textboxContent - text content inside the network and address textareas.
  */
 export const P5CustomForwards = () => {
   // global state
   const { state, dispatch } = React.useContext(Store)
 
-  // array of network:forwardingAddress objects
-  const forwards = getOwner(state)?.forwards.slice().reverse() || []
-
-  // local state for plannedChanges to embed (content inside textboxes for network/address)
-  const [customAdd, setCustomAdd] = React.useState({network: '', address: '' })
-
-  // local state for all plannedChanges to embed in this tx
-  const initialPlannedChanges = {}
-  const [plannedChanges, setPlannedChanges] = React.useState(
-    initialPlannedChanges as { [key: string]: string }
+  // object of planned changes derived from chosen string to embed
+  const plannedChanges = (
+    state.choices.embedString.split(' ').reduce((
+      plannedChangesSoFar: Planned_Changes,
+      word: string,
+      index: number,
+      words: Array<string>
+    ): Planned_Changes => {
+        if (index % 2 === 1) {
+          return { ...plannedChangesSoFar, [words[index - 1]]: word }
+        } else {
+          return plannedChangesSoFar
+        }
+      }
+    , {})
   )
 
-  // combine forwards into a string for the tx
+  // change string to embed from an object of planned changes
+  const setPlannedChanges = (objForwards: Planned_Changes) => {
+    let forwardsString = ''
+    Object.keys(objForwards).forEach(fwNetwork => {
+      forwardsString += fwNetwork + ' ' + objForwards[fwNetwork] + ' '
+    })
+    if (forwardsString.length > 0) { forwardsString = forwardsString.slice(0, -1) }
+    console.log('string to embed:', '"' + forwardsString + '"')
+    changeChoicesBNSAction(state, dispatch, {
+      embedString: forwardsString
+    })
+  }
+
+  // array of past network:forwardingAddress objects
+  const pastForwards = getOwner(state)?.forwards.slice().reverse() || []
+
+  // local state for content in textboxes for new network address changes
+  const [textboxContent, setTextboxContent] = React.useState({network: '', address: '' })
+
+  // combine forwards into a string to embed
   const combineForwards = (objForwards: any) => {
     let forwardsString = ''
     Object.keys(objForwards).forEach(fwNetwork => {
@@ -35,6 +63,7 @@ export const P5CustomForwards = () => {
     console.log('string to embed:', '"' + forwardsString + '"')
     return forwardsString
   }
+
 
   useEffect(() => {
 
@@ -67,7 +96,7 @@ export const P5CustomForwards = () => {
               className={ styles.updateItem }
               key={ fwNetwork }
               onClick={ () => {
-                setCustomAdd({ network: fwNetwork, address: plannedChanges[fwNetwork] })
+                setTextboxContent({ network: fwNetwork, address: plannedChanges[fwNetwork] })
               } }
             >
               <div
@@ -104,15 +133,15 @@ export const P5CustomForwards = () => {
         }) }
       </div>
       <div className={ styles.editor } >
-        { (customAdd.network.length > 0) &&
+        { (textboxContent.network.length > 0) &&
           <div
             className={ [styles.btnDelete, 'canPress'].join(' ') }
             onClick={ () => {
               setPlannedChanges({
                 ...plannedChanges,
-                [customAdd.network]: ''
+                [textboxContent.network]: ''
               })
-              setCustomAdd({ network: '', address: '' })
+              setTextboxContent({ network: '', address: '' })
             } }
           >
             No address
@@ -124,11 +153,11 @@ export const P5CustomForwards = () => {
           <aside>Network</aside>
           <textarea
             spellCheck={ false }
-            value={ customAdd.network }
+            value={ textboxContent.network }
             placeholder={ 'e.g. btc' }
             onChange={ (e) => {
               const cleanText = sanitize(e.target.value, 'oneline')
-              setCustomAdd({ ...customAdd, network: cleanText })
+              setTextboxContent({ ...textboxContent, network: cleanText })
               e.target.value = cleanText
             } }
           ></textarea>
@@ -139,11 +168,11 @@ export const P5CustomForwards = () => {
           <aside>Forwarding address</aside>
           <textarea
             spellCheck={ false }
-            value={ customAdd.address }
+            value={ textboxContent.address }
             placeholder={ 'e.g. your btc address' }
             onChange={ (e) => {
               const cleanText = sanitize(e.target.value, 'oneline')
-              setCustomAdd({ ...customAdd, address: e.target.value })
+              setTextboxContent({ ...textboxContent, address: e.target.value })
               e.target.value = cleanText
             } }
           ></textarea>
@@ -153,9 +182,9 @@ export const P5CustomForwards = () => {
           onClick={ () => {
             setPlannedChanges({
               ...plannedChanges,
-              [customAdd.network]: customAdd.address
+              [textboxContent.network]: textboxContent.address
             })
-            setCustomAdd({ network: '', address: '' })
+            setTextboxContent({ network: '', address: '' })
           } }
         >
           <span>+</span>
@@ -163,13 +192,13 @@ export const P5CustomForwards = () => {
         </div>
       </div>
       <div className={ styles.pastList } >
-        { forwards.map((fw: any, i: number) => {
+        { pastForwards.map((fw: any, i: number) => {
           return (
             <div
               className={ styles.pastPair }
               key={ i }
               onClick={ () => {
-                setCustomAdd({ network: fw.network, address: fw.address })
+                setTextboxContent({ network: fw.network, address: fw.address })
               } }
             >
               <div className={ styles.pastNetwork } >
@@ -194,10 +223,6 @@ export const P5CustomForwards = () => {
         <RoundButton
           next='true'
           onClick={ () => {
-            // update global state tx hex storage
-            changeChoicesBNSAction(state, dispatch, {
-              embedString: combineForwards(plannedChanges)
-            })
             changePageInfoAction(state, dispatch, 6)
           }}
         >

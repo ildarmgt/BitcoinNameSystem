@@ -6,6 +6,11 @@ import styles from './Navbar.module.css'
 export const Navbar = (): JSX.Element => {
   // global state
   const { state } = React.useContext(Store)
+
+  const isCreatePage = useHistory().location.pathname === '/create'
+  const isHomePage = useHistory().location.pathname === '/'
+  const isAboutPage = useHistory().location.pathname === '/about'
+
   return (
     <>
       <div
@@ -17,7 +22,7 @@ export const Navbar = (): JSX.Element => {
         className={ styles.root }
       >
         {/* only show page number in create path */}
-        { (useHistory().location.pathname === '/create') && (
+        { isCreatePage && (
           <div className={ styles.pageNum }>
             { state.pageInfo.current }/6
           </div>
@@ -29,9 +34,18 @@ export const Navbar = (): JSX.Element => {
         >
           { 'source' }
         </a>
-        <Link to='/about'>about</Link>
-        <Link to='/create'>owners</Link>
-        <Link to='/'>search</Link>
+        <Link
+          className={ isAboutPage ? styles.selected : '' }
+          to='/about'
+        >about</Link>
+        <Link
+          className={ isCreatePage ? styles.selected : '' }
+          to='/create'
+        >owners</Link>
+        <Link
+          className={ isHomePage ? styles.selected : '' }
+          to='/'
+        >search</Link>
       </div>
     </>
   )

@@ -35,9 +35,9 @@ export const calcBnsState = (
   st.domain.txHistory = (notificationsHistory
     .slice().reverse()
     .sort((prev, next) => {
-      const aBlockHeight = prev.status.block_height
-      const bBlockHeight = next.status.block_height
-      return aBlockHeight - bBlockHeight
+      const prevBlockHeight = prev.status.block_height
+      const nextBlockHeight = next.status.block_height
+      return prevBlockHeight - nextBlockHeight
     })
   )
 

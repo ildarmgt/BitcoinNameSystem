@@ -60,7 +60,7 @@ export const SearchResults = () => {
         </div>
         <div className={ styles.listContainer } >
           {
-            latestForwards.map(fw => {
+            latestForwards.map((fw: any) => {
               const ifw = interpretFw(fw)
               if (ifw.render) {
                 return (

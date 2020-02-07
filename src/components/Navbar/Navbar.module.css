@@ -30,11 +30,11 @@
   /* padding: calc(1 * var(--s)); */
   display: inline-block;
   position: absolute;
-  top: calc(0.1 * var(--s));
-  right: calc(0.1 * var(--s));
+  bottom: calc(6 * var(--s));
+  left: calc(0.1 * var(--s));
   color: red;
   font-size: calc(2 * var(--s));
-  margin-right: calc(2 * var(--s));
+  margin-left: calc(1 * var(--s));
   vertical-align: middle;
   z-index: 1000;
 }
@@ -42,12 +42,20 @@
 .pageNum {
   color: var(--colorDarker5);
   display: inline-block;
-  font-size: calc(2.5 * var(--s));
+  font-size: calc(2.3 * var(--s));
   line-height: calc(2.5 * var(--s));
   float: left;
   margin: 0 calc(0.25 * var(--s));
   padding: calc(0.75 * var(--s)) calc(1 * var(--s));
   vertical-align: middle;
+}
+
+.root .selected {
+  background-color: var(--colorDarker1);
+}
+
+.root .selected:hover {
+  background-color: var(--colorDarker1);
 }
 
 /* wide screen settings */

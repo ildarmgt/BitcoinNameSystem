@@ -39,7 +39,7 @@ export const initialState: I_State = {
     checkedWallet: false,         // current wallet address was scanned
     checkedLightSearch: false     // if light search was done (no utxo / txhex scan)
   },
-  choices: {
+  choices: {                      // choices made by user via this app
     action: [],                   // choices and data for action to take
     feeRate: 1.1,                 // fee rate to use in sat/bByte,
     txHex: '',                    // hex of raw transaction, ideally ready for broadcast

@@ -15,7 +15,7 @@ import { getUser } from './formathelpers'
  * @param   {object}      choices                 - user action and tx choices
  * @param   {string}      networkChoice           - 'testnet' or 'bitcoin' (matches bitcoinjs-lib).
  * @param   {number=}     [vBytes=0]              - size of transaction in vBytes. *
- * @returns {object}                              - { thisVirtualSize, txid, hex, valueNeeded, fee, change }.
+ * @returns {object}                              - { thisVirtualSize, txid, hex, valueNeeded, fee, change, burnAmount }.
  */
 export const calcTx = (
   stringToEmbed: string,
