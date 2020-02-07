@@ -105,7 +105,7 @@ textarea {
   border-radius: calc(0.5 * var(--s));
 
   border: calc(0 * var(--s)) solid var(--colorBackground);
-  border-top: calc(0.1 * var(--s)) solid var(--colorBackground);
+  border-top: calc(0.4 * var(--s)) solid var(--colorBackground);
   border-left: calc(1 * var(--s)) solid var(--colorBackground);
   border-right: calc(1 * var(--s)) solid var(--colorBackground);
 
@@ -118,11 +118,24 @@ textarea {
   /* firefox scrollbar */
   scrollbar-color: var(--colorDarker2) var(--colorTransparent);
   scrollbar-width: thin;
+
+  /* always selectable */
+  -webkit-user-select: text;
+  -moz-user-select: -moz-text;
+  -ms-user-select: text;
+  user-select: text;
 }
 
 textarea::placeholder {
   color: var(--colorBitcoinOrange);
   opacity: 0.5;
+}
+
+/* firefox has pixel based scrollbar and covers up text with viewport sized borders */
+@supports (-moz-appearance:none) {
+  textarea {
+    border-top: calc(0 * var(--s)) solid var(--colorBackground);
+  }
 }
 
 textarea::-webkit-scrollbar {
