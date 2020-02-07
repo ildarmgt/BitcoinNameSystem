@@ -1,3 +1,4 @@
+ /* total height: padding 2s, 2.5s a text line, 2s a padding = 6.0s */
 .root {
   display: inline-block;
   position: absolute;
@@ -10,7 +11,7 @@
   overflow-x: hidden;
   white-space: nowrap;
   width: 100%;
-  padding-right: calc(1 * var(--s));
+  padding: calc(1 * var(--s));
 }
 
 .root a {
@@ -18,9 +19,10 @@
   display: inline-block;
   vertical-align: middle;
   font-size: calc(2.5 * var(--s));
+  line-height: calc(2.5 * var(--s));
   margin: 0 calc(0.25 * var(--s));
-  margin-bottom: calc(0.25 * var(--s));
-
+  padding: calc(0.75 * var(--s)) calc(3 * var(--s));
+  border-radius: calc(0.5 * var(--s));
 }
 
 .warning {
@@ -39,11 +41,10 @@
 
 /* wide screen settings */
 @media screen and (min-aspect-ratio: 12/9) {
-  .root a {
-    /* font-size: calc(1.9 * var(--s)); */
-    margin: 0 0;
-    transform-origin: right;
+  .root {
+    transform-origin: bottom right;
     transform: scale(var(--horizontalScale));
+    width: calc(100% / var(--horizontalScale));
   }
 
 }

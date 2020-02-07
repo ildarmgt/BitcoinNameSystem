@@ -7,10 +7,10 @@ export const AboutContent = () => {
 
   return (
     <>
-      <div>
-        About page
-      </div>
       <div className={ styles.wrapper }>
+        <div>
+          About page (TODO)
+        </div>
         <pre>
           { JSON.stringify({ ...state }, null, 2) }
         </pre>

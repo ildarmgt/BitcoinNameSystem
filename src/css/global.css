@@ -57,10 +57,10 @@ body {
 a {
   text-decoration: none;
   color: var(--colorDarker2);
-  font-size: calc(2.0 * var(--s));
-  padding: calc(0.6 * var(--s)) calc(3 * var(--s));
-  margin: calc(0.5 * var(--s));
-  border-radius: calc(0.5 * var(--s));
+  /* font-size: calc(2.0 * var(--s)); */
+  /* padding: calc(0.6 * var(--s)) calc(3 * var(--s)); */
+  /* margin: calc(0.5 * var(--s)); */
+  /* border-radius: calc(0.5 * var(--s)); */
   vertical-align: middle;
 }
 

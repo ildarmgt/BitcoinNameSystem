@@ -1,5 +1,6 @@
 import React from 'react'
 import { Store } from './../../store/'
+import { CreateHeader } from './../CreateSteps/CreateHeader'
 import { P1RestoreOrBackup } from '../CreateSteps/P1RestoreOrBackup'
 import { P2LoadWallet } from '../CreateSteps/P2LoadWallet'
 import { P3DomainAndWallet } from '../CreateSteps/P3DomainAndWallet'
@@ -20,15 +21,18 @@ export const CreateNavigator = () => {
   !page && console.log('Unknown Page')
 
   return (
-    <div className={ [styles.wrapper, 'scrollbar'].join(' ') }>
-      <div className={ styles.horizontalScaler } >
-        { (page === 1) && <P1RestoreOrBackup /> }
-        { (page === 2) && <P2LoadWallet /> }
-        { (page === 3) && <P3DomainAndWallet /> }
-        { (page === 4) && <P4ActionChoice /> }
-        { (page === 5) && <P5CustomForwards /> }
-        { (page === 6) && <P6Broadcast /> }
+    <>
+      <CreateHeader />
+      <div className={ [styles.wrapper, 'scrollbar'].join(' ') }>
+        <div className={ styles.horizontalScaler } >
+          { (page === 1) && <P1RestoreOrBackup /> }
+          { (page === 2) && <P2LoadWallet /> }
+          { (page === 3) && <P3DomainAndWallet /> }
+          { (page === 4) && <P4ActionChoice /> }
+          { (page === 5) && <P5CustomForwards /> }
+          { (page === 6) && <P6Broadcast /> }
+        </div>
       </div>
-    </div>
+    </>
   )
 }

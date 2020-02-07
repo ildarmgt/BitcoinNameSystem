@@ -8,7 +8,7 @@
   align-items: left;
   margin: calc(2.0 * var(--s));
   margin-top: 0;
-  height: calc(100vh - 13.5vh - (20.5 * var(--s)));
+  height: calc(100vh - 13.5vh - (22 * var(--s)));
 
 
   color: var(--colorDarkText);
@@ -131,5 +131,8 @@
 @media screen and (min-aspect-ratio: 12/9) {
   .wrapper .listItem {
     font-size: calc(2 * var(--s));
+  }
+  .wrapper {
+    height: calc(100vh - (13.5vh + (16 * var(--s)) + (6 * var(--s) * var(--horizontalScale))));
   }
 }

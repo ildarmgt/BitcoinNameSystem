@@ -1,7 +1,7 @@
 .wrapper {
-  margin: calc(1.5 * var(--s));
+  margin: 0 calc(1.5 * var(--s));
   overflow-y: auto;
-  height: calc(100vh - (10 * var(--s)));
+  height: calc(100vh - (6 * var(--s)));
 
   /* firefox */
   scrollbar-color: var(--colorDarker1) var(--colorTransparent);
@@ -38,4 +38,10 @@
   background-color: var(--colorDarker1);
   border-radius: calc(0.5 * var(--s));
   box-shadow: inset 0 0 0 calc(0.1 * var(--s)) var(--colorTransparent);
+}
+
+@media screen and (min-aspect-ratio: 12/9) {
+  .wrapper {
+    height: calc(100vh - (6 * var(--s) * var(--horizontalScale)));
+  }
 }
