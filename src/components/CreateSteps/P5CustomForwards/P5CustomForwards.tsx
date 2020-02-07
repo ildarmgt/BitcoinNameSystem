@@ -25,10 +25,6 @@ export const P5CustomForwards = () => {
     initialPlannedChanges as { [key: string]: string }
   )
 
-  // local state for tx hex
-  // const [tx, setTx] = React.useState({ hex: '', txid: '' })
-
-
   // combine forwards into a string for the tx
   const combineForwards = (objForwards: any) => {
     let forwardsString = ''
@@ -42,12 +38,7 @@ export const P5CustomForwards = () => {
 
   useEffect(() => {
 
-
   }, [])
-
-
-
-  // console.log('tx attempt info', tx)
 
   const bytesOfChanges = stringByteCount(combineForwards(plannedChanges))
   console.log(bytesOfChanges)

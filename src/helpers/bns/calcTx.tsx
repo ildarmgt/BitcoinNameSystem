@@ -24,7 +24,15 @@ export const calcTx = (
   choices: { action: any, feeRate: number  },
   networkChoice: string,
   vBytes: number = 0
-): any => {
+): {
+  thisVirtualSize: number
+  txid: number
+  hex: string
+  valueNeeded: number
+  fee: number
+  change: number
+  burnAmount: number
+} => {
 
   // grab fee rate
   const feeRate = choices.feeRate
@@ -137,7 +145,7 @@ export const calcTx = (
     console.log('getId', tx.getId())
     console.log('hex', tx.toHex())
     console.log('')
-    return { thisVirtualSize, txid, hex, valueNeeded, fee, change, burnAmount, choices }
+    return { thisVirtualSize, txid, hex, valueNeeded, fee, change, burnAmount }
   } else {
     // Redo this tx calculation using the virtual size we just calculated for vByte optional parameter.
     return calcTx(
