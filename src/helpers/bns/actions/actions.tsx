@@ -21,7 +21,8 @@ import {
   burnedPreviousRateMin,
   readEmbeddedData,
   getLastOwnerBurnedValue,
-  isSenderTheCurrentOwner
+  isSenderTheCurrentOwner,
+  noUnspentUserNotificationsUtxo
 } from './../formathelpers'
 const { RENEW, ONLY_FORWARDS, CLAIM_OWNERSHIP } = BNSActions
 
@@ -29,7 +30,7 @@ const { RENEW, ONLY_FORWARDS, CLAIM_OWNERSHIP } = BNSActions
 // Called by the actions for conditions
 // Return object with "info": describing condition,
 // "status" to check conditoin,
-// and optional "special" to give transaction forming specifications
+// and optional "special" to give transaction forming specifications (must be usable w/o tx)
 
 const OUTS_2 = ({ tx=undefined }: any) => ({
   info: 'Tx must have 2+ outputs',
@@ -82,6 +83,12 @@ const USER_IS_OWNER = ({ st, address, tx=undefined }: any) => ({
 const IS_OWNER_EXPIRED = ({ st }: any) => ({
   info: 'Ownership must be expired at current parsed height',
   status: () => isOwnerExpired(st)
+})
+
+const NO_USER_NOTIFICATION_UTXO = ({ st, tx=undefined }: any) => ({
+  info: 'There must not be any remaining notification address utxo created by sender',
+  status: () => noUnspentUserNotificationsUtxo(st, tx),
+  special: { inputs: 'NO_USER_NOTIFICATION_UTXO' }
 })
 
 

@@ -1,6 +1,6 @@
 import { newUser } from './initialState'
 import { OWNERSHIP_DURATION_BY_BLOCKS, MIN_BURN, MIN_NOTIFY } from './constants'
-import { I_User, I_Forward, I_BnsState } from './types/'
+import { I_User, I_Forward, I_BnsState, I_TX } from './types/'
 import { decrypt } from './cryptography'
 
 // ========== helper functions =====================
@@ -47,11 +47,11 @@ export const isOwnerExpired = (st: I_BnsState): boolean => {
 
 // ===== tx functions (getters) =====================
 
-export const getTxTimestamp = (tx: any): number => tx.status.block_time || 0
-export const getTxHeight = (tx: any): number => tx.status.block_height || 0
+export const getTxTimestamp = (tx: I_TX): number => tx.status.block_time || 0
+export const getTxHeight = (tx: I_TX): number => tx.status.block_height || 0
 
-export const getTxOutput0BurnValue = (tx: any): number => tx.vout[0]?.value || 0
-export const getTxOutput0Data = (tx: any):string => {
+export const getTxOutput0BurnValue = (tx: I_TX): number => tx.vout[0]?.value || 0
+export const getTxOutput0Data = (tx: I_TX):string => {
   if (isOpreturnOutput0(tx)) {
     // remove 'OP_RETURN OP_PUSHBYTES_5 ' from it and return the rest
     return tx.vout[0].scriptpubkey_asm.split(' ').slice(2).join('')
@@ -59,10 +59,10 @@ export const getTxOutput0Data = (tx: any):string => {
   return ''
 }
 
-export const getTxOutput1NotifyValue = (tx: any): number => tx.vout[1]?.value || 0
-export const getTxOutput1NotifyAddress = (tx: any): string => tx.vout[1]?.scriptpubkey_address || ''
+export const getTxOutput1NotifyValue = (tx: I_TX): number => tx.vout[1]?.value || 0
+export const getTxOutput1NotifyAddress = (tx: I_TX): string => tx.vout[1]?.scriptpubkey_address || ''
 
-export const getTxInput0SourceUserAddress = (tx: any): string => (
+export const getTxInput0SourceUserAddress = (tx: I_TX): string => (
   tx.vin[0]?.prevout.scriptpubkey_address || ''
 )
 
@@ -71,7 +71,7 @@ export const getTxInput0SourceUserAddress = (tx: any): string => (
 
 // update the info for the source user of the tx within bns state
 // when ran a second time, it simply updates nonce for post-tx value
-export const updateSourceUserFromTx = (st: I_BnsState, tx: any): void => {
+export const updateSourceUserFromTx = (st: I_BnsState, tx: I_TX): void => {
   const fromAddress = getTxInput0SourceUserAddress(tx)
 
   // create new user if not already one of users
@@ -98,7 +98,7 @@ export const addToUserForwards = (
   user.forwards = [...user.forwards, ...forwardsInThisTx]
 }
 
-export const readEmbeddedData = (st: I_BnsState, tx: any):void => {
+export const readEmbeddedData = (st: I_BnsState, tx: I_TX):void => {
   // only go on if there is op_return with embedded data on output 0
   if (!isOpreturnOutput0(tx)) {
     console.log(getTxHeight(tx), ': no op_return found for txid')
@@ -155,35 +155,39 @@ export const readEmbeddedData = (st: I_BnsState, tx: any):void => {
 // ===== rule checks (getters) =====
 
 // Describe:    2 outputs minimum
-export const atLeastTwoOutputs = (tx: any): boolean => tx.vout.length >= 2
+export const atLeastTwoOutputs = (tx: I_TX): boolean => tx.vout.length >= 2
 
 // Describe:    Is [0] output OP_RETURN type
-export const isOpreturnOutput0 = (tx: any): boolean => (
+export const isOpreturnOutput0 = (tx: I_TX): boolean => (
   tx.vout[0].scriptpubkey_asm.split(' ')[0] === 'OP_RETURN'
 )
 
 // Describe:    Is [1] output this domain's notification address?
-export const isNotify =  (st: I_BnsState, tx: any): boolean => (
+export const isNotify =  (st: I_BnsState, tx: I_TX): boolean => (
   getTxOutput1NotifyAddress(tx) === getNotificationAddress(st)
 )
 
 // Describe:    At least minimum amount used in notification output? (Dust level is main danger)
-export const didNotifyMin = (tx: any): boolean => getTxOutput1NotifyValue(tx) >= MIN_NOTIFY
+export const didNotifyMin = (tx: I_TX): boolean => getTxOutput1NotifyValue(tx) >= MIN_NOTIFY
 
 // Describe:    Is address the current domain owner?
 export const isAddressTheCurrentOwner = (st: I_BnsState, address: string): boolean =>
   getOwnerAddress(st) === address
 
 // Describe:    Is tx sender the current domain owner (input [0], id'ed by address)?
-export const isSenderTheCurrentOwner = (st: I_BnsState, tx: any): boolean =>
+export const isSenderTheCurrentOwner = (st: I_BnsState, tx: I_TX): boolean =>
   getOwnerAddress(st) === getTxInput0SourceUserAddress(tx)
 
 // Describe:    At least minimum amount burned?
-export const didBurnMin = (tx: any): boolean =>
+export const didBurnMin = (tx: I_TX): boolean =>
   getTxOutput0BurnValue(tx) >= MIN_BURN
 
 // Describe:    Burned at least as much as previously burnt
-export const burnedPreviousRateMin = (st: I_BnsState, tx: any): boolean => (
+export const burnedPreviousRateMin = (st: I_BnsState, tx: I_TX): boolean => (
   getTxOutput0BurnValue(tx) >= getLastOwnerBurnedValue(st)
 )
 
+export const noUnspentUserNotificationsUtxo = (st: I_BnsState, tx: I_TX): boolean => {
+
+  return true
+}
