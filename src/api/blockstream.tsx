@@ -51,7 +51,7 @@ export async function getHeight (strNetwork: string) {
     const res = await axios.get(API_PATH)
     console.log('getHeight', res.data)
 
-    await rateLimit()
+    // await rateLimit()
 
     return res.data
 

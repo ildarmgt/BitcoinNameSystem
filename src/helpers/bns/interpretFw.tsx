@@ -13,7 +13,13 @@ export function interpretFw (fw: I_Forward) {
     }
   }
 
-  if (fw.network === 'p2wsh' || fw.network === 'btc' || fw.network === 'p2pkh') {
+  if (
+    fw.network === 'p2wsh' ||
+    fw.network === 'btc' ||
+    fw.network === 'p2pkh' ||
+    fw.network === 'p2wpkh' ||
+    fw.network === 'p2sh'
+  ) {
     return {
       where: 'btc:',
       what: (
