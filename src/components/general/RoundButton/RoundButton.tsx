@@ -62,6 +62,9 @@ export const RoundButton = (props:any): JSX.Element => {
         ].join(' ') }
       >
         { props.children }
+        <div
+        className={ styles.overhead }
+        ></div>
       </div>
     </div>
   )
