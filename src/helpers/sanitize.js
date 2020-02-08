@@ -54,6 +54,7 @@ export default function  sanitize (inputString, stringOrArray) {
       filter += '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ,./-_!`~[]{}|@#%^&()-=?$';
     }
     if (choice === 'url') {
+      //  RFC 3986 (Section 2: Characters) 84 total
       filter += `0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ:/?#[]@!$&'()*+,;=-_.~`;
     }
 

@@ -1,4 +1,4 @@
-import { encrypt, decrypt } from './../../../src/helpers/bns'
+import { encrypt, decrypt } from './../../../src/helpers/bns/cryptography'
 
 
 describe('Encrypting and decrypting', () => {
