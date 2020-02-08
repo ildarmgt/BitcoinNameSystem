@@ -84,17 +84,34 @@ export default function  sanitize (inputString, stringOrArray) {
           .split('.')
           // join first 2 elements with ., others with empty string
           // returns a string
-          .reduce((resultingString = '', letter, index) =>
+          .reduce((resultingString, numbers, index) => {
             // real . goes b/w array's index 0 and 1, even if string had . first
-            (index === 1)
-              ? [ ...resultingString, letter ].join('.')
-              : [ ...resultingString, letter ].join('')
-          , undefined)
+            const digits = (index === 0 && numbers === '') ? '0' : numbers
+            return (index === 1)
+              ? [ resultingString, digits ].join('.')
+              : [ resultingString, digits ].join('')
+          }, '')
         )
       )
     }
 
+    if (choice === 'no_leading_zeros') {
 
+      logicFilters.push(str =>
+        (str
+          // splits to array between .
+          .split('.')
+          .map((numbers, index) => {
+            if (index === 0) {
+              return (parseInt(numbers, 10) || 0).toString()
+            } else {
+              return numbers
+            }
+          })
+          .join('.')
+        )
+      )
+    }
 
   })
 

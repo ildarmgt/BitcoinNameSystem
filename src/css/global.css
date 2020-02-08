@@ -69,6 +69,10 @@ a:hover,
   background-color: var(--colorDarker1);
 }
 
+.canPress:hover {
+  cursor: pointer;
+}
+
 a:active,
 .canPress:active {
   transform: translateY(calc(0.2 * var(--s)));
@@ -95,6 +99,10 @@ textarea {
   font-family: 'Montserrat';
   text-align: center;
   resize: none;
+  width: 100%;
+
+  color: var(--colorBitcoinOrange);
+
   background-color: var(--colorBackground);
 
   font-size: calc(2.5 * var(--s));
@@ -298,3 +306,21 @@ textarea:focus {
   visibility: visible;
 }
 
+table {
+  width: 100%;
+  border-spacing: calc(1 * var(--s)) calc(1 * var(--s));
+}
+
+table, tr, th {
+  font-family: 'Montserrat';
+  font-size: calc(2 * var(--s));
+  font-weight: normal;
+}
+
+th:nth-child(1) {
+  text-align: right;
+}
+
+th:nth-child(2) {
+  text-align: left;
+}

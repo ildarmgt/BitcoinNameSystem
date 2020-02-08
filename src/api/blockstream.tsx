@@ -12,6 +12,31 @@ const API_RATE_LIMIT = 0.6    // guessing calls per second cap
 // Meanwhile calling function can use its own busy flag to ensure promises are resolved before repeats.
 // RawTx requests and multipage history (length > 25) are main risks.
 
+export async function getFeeEstimates (strNetwork: string) {
+  const API_PATH = (
+    (strNetwork === 'testnet')
+    ? API_PATH_BITCOIN // only main chain fee estimate for better testing
+    : API_PATH_BITCOIN
+  ) + 'fee-estimates'
+
+  try {
+
+    const res = await axios.get(API_PATH)
+    console.log('getFeeEstimates', res.data)
+
+    // await rateLimit()
+
+    return res.data
+
+  } catch (e) {
+
+    console.log(e)
+    await rateLimit()
+    throw new Error('Blockstream.info API getFeeEstimates failed')
+  }
+
+}
+
 
 export async function getHeight (strNetwork: string) {
   const API_PATH = (
@@ -25,6 +50,9 @@ export async function getHeight (strNetwork: string) {
 
     const res = await axios.get(API_PATH)
     console.log('getHeight', res.data)
+
+    await rateLimit()
+
     return res.data
 
   } catch (e) {
@@ -188,10 +216,9 @@ export async function txPush (content: string, network: string) {
     return { txid: res.data }
 
   } catch (e) {
-    console.log('Failed pushtx', network, e)
+    console.log('Failed pushtx', network, e.response.data )
 
-    // console.log('error main message:', e.response.data)
-    return { error: e.response.data }
+    throw new Error('Blockstream.info API access failed\n' + e.response.data)
   }
 }
 

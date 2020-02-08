@@ -15,6 +15,7 @@ interface I_Tx_Result {
   burnAmount: number
   totalGathered: number
   nInputs: number
+  nOutputs: number
 }
 
 /**
@@ -138,6 +139,7 @@ export const calcTx = (
   const txid = tx.getId()
   const hex = tx.toHex()
   const nInputs = tx.ins.length
+  const nOutputs = tx.outs.length
 
   if (vBytes >= thisVirtualSize) {
     // If this tx fee was calculated for a vBytes size equal to or larger than the resulting derived tx (thisVirtualSize),
@@ -148,7 +150,7 @@ export const calcTx = (
     console.log('getId', tx.getId())
     console.log('hex', tx.toHex())
     console.log('')
-    return { thisVirtualSize, txid, hex, valueNeeded, fee, change, burnAmount, totalGathered, nInputs }
+    return { thisVirtualSize, txid, hex, valueNeeded, fee, change, burnAmount, totalGathered, nInputs, nOutputs }
   } else {
     // Redo this tx calculation using the virtual size we just calculated for vByte optional parameter.
     return calcTx(
