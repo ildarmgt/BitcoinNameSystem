@@ -2,29 +2,10 @@ import * as bitcoin from 'bitcoinjs-lib'
 import { calcP2WSH } from './calcP2WSH'
 import { MIN_BURN, MIN_NOTIFY } from './constants'
 import { encrypt } from './cryptography'
-import { I_Domain } from './types/'
+import { I_Domain, I_Action_Choice } from './types/'
 import { getUser } from './formathelpers'
 
-/**
- * Creates hex of tx to bid on domain.
- * Throws error if not enough funds.
- * Leave vBytes blank, it will call itself via recursion until it derives needed size.
- * @param   {string}      stringToEmbed           - string of forwarding information to embed in tx.
- * @param   {object}      wallet                  - { WIF, address, txHistory, utxoList, ... }.
- * @param   {object}      domain                  - all domain info
- * @param   {object}      choices                 - user action and tx choices
- * @param   {string}      networkChoice           - 'testnet' or 'bitcoin' (matches bitcoinjs-lib).
- * @param   {number=}     [vBytes=0]              - size of transaction in vBytes. *
- * @returns {object}                              - { thisVirtualSize, txid, hex, valueNeeded, fee, change, burnAmount }.
- */
-export const calcTx = (
-  stringToEmbed: string,
-  wallet: any,
-  domain: I_Domain,
-  choices: { action: any, feeRate: number  },
-  networkChoice: string,
-  vBytes: number = 0
-): {
+interface I_Tx_Result {
   thisVirtualSize: number
   txid: number
   hex: string
@@ -32,7 +13,28 @@ export const calcTx = (
   fee: number
   change: number
   burnAmount: number
-} => {
+  totalGathered: number
+  nInputs: number
+}
+
+/**
+ * Creates hex of tx to bid on domain.
+ * Throws error if not enough funds.
+ * Leave vBytes blank, it will call itself via recursion until it derives needed size.
+ * @param   {object}      wallet                  - { WIF, address, txHistory, utxoList, ... }.
+ * @param   {object}      domain                  - all domain info
+ * @param   {object}      choices                 - { action, feeRate, embedString, ... }
+ * @param   {string}      networkChoice           - 'testnet' or 'bitcoin' (matches bitcoinjs-lib).
+ * @param   {number=}     [vBytes=0]              - size of transaction in vBytes. *
+ * @returns {object}                              - Tx Results.
+ */
+export const calcTx = (
+  wallet: any,
+  domain: I_Domain,
+  choices: { action: I_Action_Choice, feeRate: number, embedString: string, [key: string]: any },
+  networkChoice: string,
+  vBytes: number = 0
+): I_Tx_Result => {
 
   // grab fee rate
   const feeRate = choices.feeRate
@@ -89,10 +91,10 @@ export const calcTx = (
   const nonce = user.nonce.toString()
   const encryptionKey =  domain.domainName + wallet.address + nonce
   console.log('nonce used to encrypt', domain.domainName, wallet.address, nonce)
-  const data = encrypt(stringToEmbed, encryptionKey)
+  const data = encrypt(choices.embedString, encryptionKey)
   const embed = bitcoin.payments.embed({ data: [data] })
 
-  // output[0]: check special tx choices for max amount required to burn from special rules
+  // output[0]: check special tx rules for max amount required to burn among all of them
   const burnAmount = choices.action.special.reduce((maxBurn: number, list: any) => {
     console.log(maxBurn, list.rules)
     return (
@@ -135,6 +137,7 @@ export const calcTx = (
   const thisVirtualSize = tx.virtualSize()
   const txid = tx.getId()
   const hex = tx.toHex()
+  const nInputs = tx.ins.length
 
   if (vBytes >= thisVirtualSize) {
     // If this tx fee was calculated for a vBytes size equal to or larger than the resulting derived tx (thisVirtualSize),
@@ -145,11 +148,11 @@ export const calcTx = (
     console.log('getId', tx.getId())
     console.log('hex', tx.toHex())
     console.log('')
-    return { thisVirtualSize, txid, hex, valueNeeded, fee, change, burnAmount }
+    return { thisVirtualSize, txid, hex, valueNeeded, fee, change, burnAmount, totalGathered, nInputs }
   } else {
     // Redo this tx calculation using the virtual size we just calculated for vByte optional parameter.
     return calcTx(
-      stringToEmbed, wallet, domain, choices, networkChoice, thisVirtualSize
+      wallet, domain, choices, networkChoice, thisVirtualSize
     )
   }
 }

@@ -1,6 +1,7 @@
 import { I_Forward } from './types/'
 /**
  * Returns array with only latest forwards from array of all forwards.
+ * Removes actions, ones that start with "!" and ones that are blank addresses.
  */
 export const findLatestForwards = (forwards: Array<I_Forward>): Array<I_Forward> => {
   // simplest would be to go through object where keys of cloned network would overwrite
@@ -14,8 +15,18 @@ export const findLatestForwards = (forwards: Array<I_Forward>): Array<I_Forward>
   // now just overwrite values for same networks in order of sorted array
   const currentNetworks: {[key: string]: I_Forward} = {}
   sortedForwards.forEach(eaForward => {
-    currentNetworks[eaForward.network] = eaForward
+    // add all networks that are not commands
+    const isNotCommand = !eaForward.network.startsWith('!')
+    if (isNotCommand) {
+      currentNetworks[eaForward.network] = eaForward
+    }
+    // if the final address is blank, delete it from object
+    const isDeleted = eaForward.address === ''
+    if (isDeleted) {
+      delete currentNetworks[eaForward.network]
+    }
   })
+
   // return just array of values, networks still part of values as well
   return [...Object.values(currentNetworks)]
 }

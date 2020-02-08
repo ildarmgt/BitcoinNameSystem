@@ -37,7 +37,7 @@ export const P4ActionChoice = () => {
           checkActions.map(action => {
             // usable actions only + not displaying actions with warnings
             if (action.isUsable && !action.warning) {
-              console.log('special tx instructions:', action.special)
+              console.log(action.info, 'special tx instructions:', action.special)
               return (
               <RoundButton
                 next={ 'true' }

@@ -1,8 +1,8 @@
 import {
-  BNSActions,
   I_Domain,
   I_TX,
-  I_UTXO
+  I_UTXO,
+  I_Action_Choice
 } from './../helpers/bns/types/'
 
 /**
@@ -49,11 +49,7 @@ export interface I_State {
     height: number
   }
   choices: {
-    action: {
-      type: BNSActions
-      info: string
-      special: Array<any> | []
-    } | {}
+    action: I_Action_Choice | {}
     feeRate: number
     txHex: string
     embedString: string

@@ -20,6 +20,12 @@ export interface I_BNS_Auto_Action {
   execute: () => void
 }
 
+export interface I_Action_Choice {
+  type: BNSActions
+  info: string
+  special: Array<any>
+}
+
 export interface I_User {
   address:      string
   forwards:     Array<I_Forward>
