@@ -20,12 +20,12 @@ export const CreateHeader = () => {
   const domainName = state.alias + state.extension
   // enforces max size to font size so 1 letter alias has same font as 19 letter alias
   const fontScale = Math.min(
-      Math.floor(1.3 * width / domainName.length),
-      Math.floor(1.3 * width / 20)
+      Math.floor(1.1 * width / domainName.length),
+      Math.floor(1.1 * width / 15)
   )
 
   const barHeight = { height: (0.12 * width + 0.4 * fontScale).toString() + 'px' }
-  const aliasMarginTop = { marginTop: (0.03 * width - 0.3 * fontScale).toString() + 'px' }
+  const aliasMarginTop = { marginTop: (0.02 * width - 0.1 * fontScale).toString() + 'px' }
   const aliasFontSize = { fontSize: fontScale.toString() + 'px' }
 
   return (
