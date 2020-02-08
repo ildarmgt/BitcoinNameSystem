@@ -18,7 +18,10 @@ html {
   --colorButtonText: white;
   --colorBackground: white;
   --colorTransparent: rgba(0, 0, 0, 0);
+  --colorBrighter1: rgba(255, 255, 255, 0.1);
   --colorBrighter2: rgba(255, 255, 255, 0.2);
+  --colorBrighter3: rgba(255, 255, 255, 0.3);
+
   --colorDarker1: rgba(0, 0, 0, 0.1);
   --colorDarker2: rgba(0, 0, 0, 0.2);
   --colorDarker4: rgba(0, 0, 0, 0.4);
