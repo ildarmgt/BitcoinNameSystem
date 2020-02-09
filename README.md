@@ -2,7 +2,7 @@
 
 On-chain DNS where easy to read domain name (i.e. alias) can be looked up or created to forward to very long alphanumeric Bitcoin addresses or other network's types of addreses (e.g. ipfs, https, twitter) on the most secure public network ever created.
 
-Used: React, TypeScript, Node.js, JavaScript, CSS, HTML.
+Used: React (Hooks), TypeScript, Node.js, JavaScript, CSS, HTML.
 
 ![pic](https://i.imgur.com/KQtiSHn.png)
 

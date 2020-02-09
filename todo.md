@@ -1,41 +1,13 @@
 
 ## Short term
 
-- P3 should let user pick type of MAIN_ACTION to do
-- P4 will then allow filling remaining space w/ other info
+- simplest approach to cleaning up utxo
+  - clean up only your own utxo since last tx (simple)
+  - what if utxo were missed? render action failed or allow correction based on current utxo set?
 
-- Derive all available BNS actions for wallet address:
-  - Create enum with all possible BNS actions
-  - Function that takes in address and returns possible actions at current height?
-    Different from calcBnsState. That one checks if rules were executed correctly (input/output choices already made)
-    Need function that determines simply permitted actions in future (e.g. owner vs not owner)
+- Page 4 allow filling remaining space after action w/ other info
+  (after I have actions that need embedded text)
 
-    While iterating block heights, at any height, should be able to derive
-    1. transactions parameters
-    2. state of each source address (e.g. nonce, embedded data) - source address as keys for their info.
-        maybe state.notifications.sources[address] = { address, forwards, updateHeight (nonce) }
-    3. BNS Actions: functions
-        - feed them state at any height (including real time height) and who is acting
-          (raw state or boolean checks? too much variety, best each action derives booleans separately)
-        - feed them potential or existing tx source address
-        - let BNS_ACTION_PERMISSION functions derive if source address meets minimum permissions to do an action
-        - let BNS_ACTION_REVIEW functions derive if source address has met all requirements of an action & modify BNS state
-    4. I should be able to then feed arbitrary wallet address into the action permission function with most current BNS state to see which actions user can take.
-    5. While putting together a tx, can run action review function through the tx as if deployed to see what's missing.
-
-
-
-
-- typescript instance for a forward that's part of state
-
-- renew rule of extend lease (done on scan side)
-
-- minimal interface missing parts:
-  - burn amount
-  - fee selection
-  - command selection
-  - broadcast page
-  - post broadcast page
 
 - show expired values with warnings on search
 
@@ -44,8 +16,6 @@
 - add commands and interface
 
   - interface has a selection of all known commands to pick from
-
-  - ~~`!el ` - Extend lease. Burn winning amount again for another ~year. Must be no owner's ACS, use as inputs (inputs @1+). notify (output @1). Use owner address (input @0).~~ Not necessary, burn amount enough to identify extend of lease
 
   - `!so <btcaddress>` - Send ownership to btcaddress. Can avoid reusing addresses by including new each time. Must be no owner's ACS, use as inputs (inputs @1+). owner address (input @0). Does not change lease expiration - only burns can extend even if transfered.
 
