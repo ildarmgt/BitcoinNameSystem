@@ -114,6 +114,8 @@
   transform: translateY(calc(0.2 * var(--s)));
 }
 
+
+
 .txSummary th {
   font-size: calc(2.3 * var(--s));
   font-weight: normal;
@@ -121,4 +123,16 @@
 
 th:nth-child(1) {
   opacity: 0.7;
+}
+
+.txSummary__total {
+  padding: calc(1 * var(--s)) calc(1 * var(--s));
+}
+
+.txSummary__total > span {
+  display: inline-flex;
+  background-color: var(--colorDarker1);
+  border-radius: calc(1 * var(--s));
+  padding: calc(0.5 * var(--s)) calc(1 * var(--s));
+  margin: calc(0.5 * var(--s)) calc(0.5 * var(--s));
 }

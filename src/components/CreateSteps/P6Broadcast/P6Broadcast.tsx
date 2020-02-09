@@ -160,7 +160,9 @@ export const P6Broadcast = () => {
       <div className={ styles.txSummary }>
         { (!!tx) && (
           <>
-            Total cost: { (tx.valueNeeded / 1e8).toFixed(8) }{ unitBTC }
+            <div className={ styles.txSummary__total }>
+              Total cost: <span>{ (tx.valueNeeded / 1e8).toFixed(8) }</span>{ unitBTC }
+            </div>
             <Details>
               <table><tbody>
                 <tr>
