@@ -52,8 +52,8 @@ export const calcBnsState = (
     // this includes user's NONCE set to height of the user's tx prior to this one
     updateSourceUserFromTx(st, tx)
 
-    // check if owner expired
-    actions.runAllAutomaticChecks(st)
+    // check if owner expired & update derivedUtxo
+    actions.runAllAutomaticActions(st, tx)
 
     // run all possible actions
     // starting with reading embedded data
@@ -70,7 +70,8 @@ export const calcBnsState = (
   // final check for current block height
   setParsedHeight(st, currentHeight)
 
-  actions.autoCheckForOwnerExpired(st)
+  // check if owner expired
+  actions.runAllAutomaticActions(st, undefined)
 
   return st
 }

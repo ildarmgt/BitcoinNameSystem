@@ -5,7 +5,7 @@ import { Store } from '../../../store'
 import { changePageInfoAction } from '../../../store/actions'
 import { scanAddressFullyAction } from './../../../store/actions'
 import { ActionTypes } from './../../../interfaces'
-import { getUnspentSum } from './../../../helpers/bitcoin'
+import { getUnspentSum } from '../../../helpers/bns/bitcoin'
 
 /**
  * Bid on network

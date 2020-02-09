@@ -33,18 +33,18 @@ export const scanAddressFullyAction = async (
 
       const utxoListWalletAddress = await getUTXOList(walletAddress, state.network)
 
-      // 3. get raw tx for each UTXO (psbt requirement...)
+      // 3. get raw tx for each UTXO (psbt requirement for creating new tx later)
 
-      const { arrayUtxoWithHex, erroredOutputs } = await addRawTxToArray(utxoListWalletAddress, state.network)
+      const { utxoList, erroredOutputs } = await addRawTxToArray(utxoListWalletAddress, state.network)
 
-      console.log({ walletAddress, walletTxHistory, utxoListWalletAddress, arrayUtxoWithHex, erroredOutputs })
+      !!erroredOutputs && console.log('API had issues during hex utxo scan:', erroredOutputs)
 
       return dispatch({
         type: UPDATE_WALLET,
         payload: {
           wallet: {
             txHistory: walletTxHistory,
-            utxoList: arrayUtxoWithHex
+            utxoList: utxoList
           }
         }
       })
@@ -76,31 +76,28 @@ export const scanAddressFullyAction = async (
       const notificationsTxHistory = await getAddressHistory(notificationsAddress, state.network)
 
 
-      // 3. get address UTXO list (could also calculate from tx history or API)
-
-      const utxoListNotificationAddress = await getUTXOList(notificationsAddress, state.network)
-
-      // 4. get raw tx for each UTXO (psbt requirement...)
-
-      const { arrayUtxoWithHex, erroredOutputs } = await addRawTxToArray(utxoListNotificationAddress, state.network)
-
-      // (TODO) add utxo param & use to calcBnsState
-      const { domain } = calcBnsState(
+      // 3. derive new BNS domain state & utxo
+      const { domain: newDomain } = calcBnsState(
         notificationsTxHistory,
         domainName,
         currentHeight,
         state.network
       )
 
-      console.log({ domain, utxoListNotificationAddress, arrayUtxoWithHex, erroredOutputs })
+
+      // 4. get raw tx for each UTXO (psbt requirement for creating new tx later)
+
+      const { erroredOutputs } = await addRawTxToArray(
+        newDomain.derivedUtxoList,
+        state.network
+      )
+
+      !!erroredOutputs && console.log('API had issues during hex utxo scan:', erroredOutputs)
 
       return dispatch({
         type: UPDATE_DOMAIN,
         payload: {
-          domain: {
-            ...domain,
-            utxoList: arrayUtxoWithHex
-          },
+          domain: newDomain,
           chain: {
             height: currentHeight
           }

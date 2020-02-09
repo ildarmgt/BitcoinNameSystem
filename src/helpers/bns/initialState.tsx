@@ -7,7 +7,8 @@ export const newState: I_BnsState = {
     domainName:                   '',           // domain name
     notificationAddress:          '',           // p2wsh address for this domain name (alias + extension)
     txHistory:                    [],           // array of all tx for this address (old addressHistory)
-    utxoList:                     [],           // array of all current utxo for this address
+    derivedUtxoList:              [],           // derived utxo set from tx history parse
+    utxoList:                     [],           // array of all real time utxo at address
     users:                        {},           // keeps track of interacting users / source addresses with addresses as keys
     currentOwner:                 '',           // points to a source address or blank string
     bidding:                      {},           // bidding

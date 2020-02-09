@@ -7,7 +7,7 @@ import { calcTx } from './../../../helpers/bns/'
 import { txPush } from './../../../api/blockstream'
 import sanitize from './../../../helpers/sanitize'
 import { getFeeEstimates } from './../../../api/blockstream'
-import { getUnspentSum } from './../../../helpers/bitcoin'
+import { getUnspentSum } from '../../../helpers/bns/bitcoin'
 
 /**
  * Broadcast tx page.
@@ -37,7 +37,7 @@ export const P6Broadcast = () => {
       state.choices,
       state.network
     )
-  } catch (e) { console.log('tx calc failed:', e.message) }
+  } catch (e) { console.log('tx calc failed:', e) }
 
   // summarize number of updates in the embeded string
   const numberOfUpdates = (state

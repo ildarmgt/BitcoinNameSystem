@@ -1,10 +1,11 @@
 import {
   currentOwnerRenewAction,
   claimOwnershipAction,
-  autoCheckForOwnerExpired,
-  updateForwardingInfoAction
+  autoCheckForOwnerExpiredAction,
+  updateForwardingInfoAction,
+  updateUtxoFromTxAction
 } from './actions'
-import { I_BnsState } from './../types/'
+import { I_BnsState, I_TX, I_Condition } from './../types/'
 // import {
 //   getTxInput0SourceUserAddress
 // } from './../formathelpers'
@@ -73,7 +74,7 @@ export const runAllActionPermissionChecks = (st: I_BnsState, address: string) =>
  * Executes all actions possible by user that sent tx.
  * Nothing returned.
  */
-export const runAllUserActions = (st: I_BnsState, tx: any) => {
+export const runAllUserActions = (st: I_BnsState, tx: I_TX) => {
 
   // edit this list
   const allUserActions = [
@@ -98,22 +99,26 @@ export const runAllUserActions = (st: I_BnsState, tx: any) => {
 }
 
 /****************************************************************************************
- * Executes non-user actions like ownership expiration over time.
+ * Executes non-user actions like ownership expiration over time or deriving new UTXO.
  * Nothing returned.
  */
-export const runAllAutomaticChecks = (st: I_BnsState) => {
+export const runAllAutomaticActions = (st: I_BnsState, tx: I_TX | undefined) => {
 
   // list of all automatic actions
   const allAutoChecks = [
-    autoCheckForOwnerExpired(st)
+    autoCheckForOwnerExpiredAction(st),
+    tx ? updateUtxoFromTxAction(st, tx) : undefined
   ]
 
   allAutoChecks.forEach(action => {
-    // check that all conditions are true
-    const ok = action.conditions.reduce((areAllConditionsMet, eaCondition) => (
-      areAllConditionsMet && eaCondition.status()
-    ), true)
-    if (ok) action.execute()
+    if (!!action) {
+      // check that all conditions are true
+      const ok = action.conditions.reduce(
+        (areAllConditionsMet: boolean, eaCondition: I_Condition ) => (
+          areAllConditionsMet && eaCondition.status()
+        ), true)
+      if (ok) action.execute()
+    }
   })
 }
 

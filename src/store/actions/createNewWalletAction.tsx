@@ -1,7 +1,7 @@
 import { I_State, Dispatch } from '../../interfaces'
 import { ActionTypes } from './../../interfaces'
 
-import { createNewWallet, loadWallet } from './../../helpers/bitcoin'
+import { createNewWallet, loadWallet } from '../../helpers/bns/bitcoin'
 
 const { NEW_WALLET } = ActionTypes;
 

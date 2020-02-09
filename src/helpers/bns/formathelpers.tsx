@@ -1,6 +1,6 @@
 import { newUser } from './initialState'
 import { OWNERSHIP_DURATION_BY_BLOCKS, MIN_BURN, MIN_NOTIFY } from './constants'
-import { I_User, I_Forward, I_BnsState, I_TX } from './types/'
+import { I_User, I_Forward, I_BnsState, I_TX, I_UTXO } from './types/'
 import { decrypt } from './cryptography'
 
 // ========== helper functions =====================
@@ -38,9 +38,12 @@ export const getNotificationAddress = (st: I_BnsState): string => st.domain.noti
 export const getLastOwnerBurnedValue = (st: I_BnsState): number => getOwner(st)?.burnAmount || 0
 
 export const isOwnerExpired = (st: I_BnsState): boolean => {
-  if (existsCurrentOwner(st)) return true
+  if (!existsCurrentOwner(st)) return true // no owner same as expired
   const owner = getOwner(st)
-  if (!owner) return true
+  if (!owner) {
+    console.log('isOwnerExpired: owner exists but no user with such address stored')
+    return true
+  }
   const blocksSinceUpdate = getParsedHeight(st) - owner.winHeight
   return blocksSinceUpdate > OWNERSHIP_DURATION_BY_BLOCKS
 }
@@ -78,7 +81,7 @@ export const updateSourceUserFromTx = (st: I_BnsState, tx: I_TX): void => {
   if (!(fromAddress in st.domain.users)) {
     // create new user object by copying values of newUser object
     st.domain.users[fromAddress] = JSON.parse(JSON.stringify(newUser))
-    console.log('new source created:')
+    console.log('new source created:', fromAddress)
   }
 
   // update user
@@ -86,7 +89,6 @@ export const updateSourceUserFromTx = (st: I_BnsState, tx: I_TX): void => {
   user.address = fromAddress
   user.nonce = user.updateHeight
   user.updateHeight = getTxHeight(tx)
-  console.log('source:', user)
 }
 
 export const addToUserForwards = (
@@ -187,7 +189,72 @@ export const burnedPreviousRateMin = (st: I_BnsState, tx: I_TX): boolean => (
   getTxOutput0BurnValue(tx) >= getLastOwnerBurnedValue(st)
 )
 
-export const noUnspentUserNotificationsUtxo = (st: I_BnsState, tx: I_TX): boolean => {
+// Describe: update current derivedUtxoList from tx
+// Since utxo in question are the notificaiton address utxo,
+// they will always be part of txHistory
+export const updateUtxoFromTx = (st: I_BnsState, tx: I_TX): void => {
+  const notificationAddress = getNotificationAddress(st)
 
+  // scan every tx input for notification address and remove those from utxo set
+  tx.vin.forEach((input: any) => {
+    // can scan by previous address or by current utxo list's txid+vout pairs
+    if (input.prevout.scriptpubkey_address === notificationAddress) {
+      const txid = input.txid
+      const vout = input.vout
+      // find first match with these values in derivedUtxoList
+      const spentUtxoIndex = st.domain.derivedUtxoList.findIndex(utxo => (
+        utxo.txid === txid && utxo.vout === vout
+      ))
+      // remove element at the position found
+      // utxo can only be spent once so first match ok
+      st.domain.derivedUtxoList.splice(spentUtxoIndex, 1)
+    }
+  })
+
+  // scan every tx output for notification address and add those to utxo set
+  tx.vout.forEach((output: any, vout: number) => {
+    if (output.scriptpubkey_address === notificationAddress) {
+      // if output address is notification address, it's always new utxo
+      // mark from address as address @ input 0 of the tx
+      st.domain.derivedUtxoList.push({
+        txid: tx.txid,
+        vout: vout,
+        status: tx.status,
+        value: output.value,
+        from_scriptpubkey_address: getTxInput0SourceUserAddress(tx)
+      } as I_UTXO)
+    }
+  })
+}
+
+// returns true only if there are no utxo (at notification address) where the sender address (input[0] in the past) is the same as the sender address of this tx (input[0])
+export const noUnspentUserNotificationsUtxo = (st: I_BnsState, tx: I_TX): boolean => {
+  // sender address of this tx
+  const userOfTxAddress = getTxInput0SourceUserAddress(tx)
+  const txHeight = getTxHeight(tx)
+
+  // go through all derived utxo and make sure none are from this sender
+  for (const utxo of st.domain.derivedUtxoList) {
+    // user that created this utxo
+    const userThatCreatedThisUtxo = utxo.from_scriptpubkey_address
+
+    // block height of utxo creation
+    const utxoHeight = utxo.status.block_height
+
+    // only utxo formed before this tx height matter
+    // this tx would've likely created a new utxo that shouldn't count
+    const isInThePast = utxoHeight < txHeight
+
+    // all utxo in derived set should have from address
+    !userThatCreatedThisUtxo && console.log(
+      'st.domain.derivedUtxoList for some reason has undefined from_scriptpubkey_address'
+    )
+    // if even 1 matches, the check failed
+    if ((userThatCreatedThisUtxo === userOfTxAddress) && isInThePast) {
+      return false
+    }
+  }
+
+  // only gets this far if no utxo creators match our current tx user
   return true
 }

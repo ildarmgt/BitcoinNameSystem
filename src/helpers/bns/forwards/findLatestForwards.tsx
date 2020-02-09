@@ -1,4 +1,4 @@
-import { I_Forward } from './types/'
+import { I_Forward } from '../types'
 /**
  * Returns array with only latest forwards from array of all forwards.
  * Removes actions, ones that start with "!" and ones that are blank addresses.

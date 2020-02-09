@@ -49,7 +49,7 @@ export const P5CustomForwards = () => {
 
   // array of past network:forwardingAddress objects
   // display only active ones with latest higher
-  const pastForwards = findLatestForwards(getOwner(state)?.forwards).reverse() || []
+  const pastForwards = findLatestForwards(getOwner(state)?.forwards || []).reverse()
 
   // local state for content in textboxes for new network address changes
   const [textboxContent, setTextboxContent] = React.useState({network: '', address: '' })

@@ -4,6 +4,10 @@ import { MIN_BURN, MIN_NOTIFY } from './constants'
 import { encrypt } from './cryptography'
 import { I_Domain, I_Action_Choice } from './types/'
 import { getUser } from './formathelpers'
+import { getFinalScripts } from './bitcoin'
+
+const hash160 = bitcoin.crypto.hash160
+const op = bitcoin.opcodes
 
 interface I_Tx_Result {
   thisVirtualSize: number
@@ -50,21 +54,48 @@ export const calcTx = (
   // calculate funds necessary for this tx, round up sat for more better than being below minimum.
   const fee = Math.ceil(vBytes * feeRate)
   const valueNeeded = MIN_BURN + MIN_NOTIFY + fee; // sat
+
   // gather necessary utxo to use until enough to cover costs
-  let usedUtxoOfPayer: Array<any> = []
   let totalGathered = 0 // sat
-  wallet.utxoList?.forEach((utxo: any) => {
-    // while not enough funds
-    if (totalGathered < valueNeeded) {
-      usedUtxoOfPayer.push(utxo)
+
+  // prepare extra inputs from other rules
+  // adding these first to totalGathered satoshi since have to add them all anyway
+  const isACSRequired = choices.action.special.some(list =>
+    list.rules.inputs && (list.rules.inputs === 'NO_USER_NOTIFICATION_UTXO')
+  )
+  isACSRequired && console.log('spending user\'s previous acs utxo appears required')
+  let toBeUsedUtxoOfNotifications: Array<any> = []
+  if (isACSRequired) {
+    // must consume all ACS utxo wallet.address has created
+    // get all utxo for notification address
+    domain.derivedUtxoList.forEach(utxo => {
+      // use only utxo created from this wallet's address
+      if (utxo.from_scriptpubkey_address === wallet.address) {
+        toBeUsedUtxoOfNotifications.push(utxo)
+        totalGathered += utxo.value
+      }
+    })
+  }
+
+  // Adding remaining funds from user's wallet to total Gathered
+  // Must always add at least 1 user utxo @ index 0 to indicate ownership
+  let toBeUsedUtxoOfUserWallet: Array<any> = []
+  wallet.utxoList.forEach((utxo: any) => {
+    // while not enough funds or if haven't added a single user utxo yet
+    if (totalGathered < valueNeeded || toBeUsedUtxoOfUserWallet.length === 0) {
+      toBeUsedUtxoOfUserWallet.push(utxo)
       totalGathered += utxo.value
     }
   })
-  // if still not enough funds
+
+  // all utxo parsed at this point
+
+  // if still not enough funds after all possible inputs,
+  // there are simply not enough funds to do the tx
   if (totalGathered < valueNeeded) {
     throw new Error('Not enough funds in all the utxo')
   }
-  const change = totalGathered - valueNeeded
+
 
   // calculate keys from wallet import format key
   const keyPair = bitcoin.ECPair.fromWIF(wallet.WIF, network)
@@ -73,18 +104,48 @@ export const calcTx = (
   psbt.setVersion(2)    // default
   psbt.setLocktime(0)   // default
 
-  // add all inputs (owner address must always be at index 0)
-  usedUtxoOfPayer.forEach(utxo => {
+  // add all inputs to transaction
+
+  // must be first added as owner address must always be at index 0 input
+  toBeUsedUtxoOfUserWallet.forEach(utxo => {
     psbt.addInput({
       hash: utxo.txid,
       index: utxo.vout,
       sequence: 0xfffffffe,
-      nonWitnessUtxo: Buffer.from(utxo.hex, 'hex') // should work for segwit and nonsegwit inputs
+      // should work for segwit and nonsegwit inputs
+      nonWitnessUtxo: Buffer.from(utxo.hex, 'hex')
     })
   })
 
-  // add inputs of all ACS UTXO from this owner or it doesn't count (TODO)
+  // calculate witnessScript
+  const witnessScript = bitcoin.script.compile([
+    hash160(Buffer.from(domain.domainName, 'utf8')),
+    op.OP_DROP
+  ])
 
+  const inputScript = bitcoin.script.compile([op.OP_TRUE])
+
+  if (isACSRequired) {
+
+    // add each utxo to inputs
+    toBeUsedUtxoOfNotifications.forEach(utxo => {
+      if (!utxo.hex) {
+        // abort if missing raw hex
+        throw new Error(`Utxo is missing hex, txid: ${utxo.txid}, vout:${utxo.vout}`)
+      }
+      psbt.addInput({
+        hash: utxo.txid,
+        index: utxo.vout,
+        sequence: 0xfffffffe,
+        nonWitnessUtxo: Buffer.from(utxo.hex, 'hex'),
+        witnessScript: witnessScript
+      })
+    })
+  }
+
+  // inputs done
+
+  // outputs now
 
   // add the op_return output (always index 0)
   // if first time sending, nonce is '0', otherwise the last blockheight when this user has sent ANY tx to that notification address
@@ -97,9 +158,12 @@ export const calcTx = (
 
   // output[0]: check special tx rules for max amount required to burn among all of them
   const burnAmount = choices.action.special.reduce((maxBurn: number, list: any) => {
-    console.log(maxBurn, list.rules)
+    console.log('choices.action.special each item:', list)
     return (
-      ('output0value' in list.rules) ? Math.max(maxBurn, list.rules.output0value) : maxBurn
+      // if there's another burn rule, use the highest value
+      ('output0value' in list.rules)
+        ? Math.max(maxBurn, list.rules.output0value)
+        : maxBurn
     )
   }, 0)
   psbt.addOutput({
@@ -114,7 +178,8 @@ export const calcTx = (
     value: MIN_NOTIFY
   })
 
-  // add change output (anything is fine for index 2 or higher outputs)
+  // add change output (anything is fine for output[2] or higher)
+  const change = totalGathered - valueNeeded
   psbt.addOutput({
     address: wallet.address,
     value: change
@@ -122,7 +187,7 @@ export const calcTx = (
 
   // at this point all inputs & outputs added so ready to sign
 
-  usedUtxoOfPayer.forEach((utxo, index) => {
+  toBeUsedUtxoOfUserWallet.forEach((utxo, index) => {
     // sign p2wpkh of controlling
     psbt.signInput(index, keyPair)
     // (TODO) signing ACS inputs will need script
@@ -132,9 +197,25 @@ export const calcTx = (
     }
   })
 
-  psbt.finalizeAllInputs()
+  // finalizing inputs
+  // psbt.finalizeAllInputs()
+
+  // finalize regular p2wsh inputs normally
+  for (let i = 0; i < toBeUsedUtxoOfUserWallet.length; i++) {
+    psbt.finalizeInput(i)
+  }
+  // finalize witness script stack inputs with extra parameter
+  // for the submitted script parameters & original full script
+  for (
+    let i = toBeUsedUtxoOfUserWallet.length;
+    i < toBeUsedUtxoOfUserWallet.length + toBeUsedUtxoOfNotifications.length;
+    i++
+  ) {
+    psbt.finalizeInput(i, getFinalScripts({ inputScript, network }))
+  }
 
   const tx = psbt.extractTransaction()
+  console.log(tx)
   const thisVirtualSize = tx.virtualSize()
   const txid = tx.getId()
   const hex = tx.toHex()
@@ -158,3 +239,6 @@ export const calcTx = (
     )
   }
 }
+
+
+

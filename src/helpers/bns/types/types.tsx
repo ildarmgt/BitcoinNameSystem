@@ -26,6 +26,28 @@ export interface I_Action_Choice {
   special: Array<any>
 }
 
+export interface I_BnsState {
+  domain: I_Domain
+  chain?: {
+    parsedHeight: number
+    currentHeight: number
+  }
+}
+
+export interface I_Domain {
+  domainName: string
+  notificationAddress: string
+  txHistory: Array<I_TX>
+  derivedUtxoList: Array<I_UTXO>
+  utxoList: Array<I_UTXO>
+  users: {
+    [key: string]: I_User
+  }
+  currentOwner: string
+  bidding: {}
+  ownersHistory: Array<I_User>
+}
+
 export interface I_User {
   address:      string
   forwards:     Array<I_Forward>
@@ -44,26 +66,7 @@ export interface I_Forward {
   updateTimestamp: number
 }
 
-export interface I_BnsState {
-  domain: I_Domain
-  chain?: {
-    parsedHeight: number
-    currentHeight: number
-  }
-}
 
-export interface I_Domain {
-  domainName: string
-  notificationAddress: string
-  txHistory: Array<I_TX>
-  utxoList: Array<I_UTXO>
-  users: {
-    [key: string]: I_User
-  }
-  currentOwner: string
-  bidding: {}
-  ownersHistory: Array<I_User>
-}
 
 
 export interface I_TX {
@@ -94,11 +97,11 @@ export interface I_TX {
     scriptpubkey: string
     scriptpubkey_asm: string
     scriptpubkey_type: string
-    scriptpubkey_address: string
+    scriptpubkey_address: string // op return case?
     value: number
   }>
   status: {
-    confirmed: boolean
+    confirmed: boolean      // unconfirmed case?
     block_height: number
     block_hash: string
     block_time: number
@@ -110,10 +113,17 @@ export interface I_UTXO {
   vout: number
   status: {
     confirmed: boolean
-    block_height: number | null
-    block_hash: string | null
-    block_time: number | null
+    block_height: number
+    block_hash: string
+    block_time: number
   }
   value: number
   hex?: string
+  from_scriptpubkey_address?: string
+}
+
+export interface I_Condition {
+  info: string
+  status: () => boolean
+  special?: { [key: string]: string | number }
 }

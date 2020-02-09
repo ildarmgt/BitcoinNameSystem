@@ -1,5 +1,6 @@
 import * as bitcoin from 'bitcoinjs-lib'
 import bip39 from 'bip39'
+const varuint = require('varuint-bitcoin');
 
 
 /**
@@ -74,4 +75,80 @@ export function getUnspentSum(utxoArray: Array<any>): number {
     , 0) || 0
 
   return sumSats
+}
+
+
+/**
+ * Finalize outputs that require custom scripts.
+ * Based on based on https://github.com/bitcoinjs/bitcoinjs-lib/blob/master/test/integration/csv.spec.ts
+ */
+export const getFinalScripts = ({ inputScript, network }: any) => {
+  return function (
+    inputIndex: number,
+    input: any,
+    script: Buffer,
+    isSegwit: boolean,
+    isP2SH: boolean,
+    isP2WSH: boolean,
+  ): {
+    finalScriptSig: Buffer | undefined;
+    finalScriptWitness: Buffer | undefined;
+  } {
+    // Step 1: Check to make sure the meaningful script matches what you expect.
+
+    // Step 2: Create final scripts
+    let payment: any = {
+      network,
+      output: script,
+      input: inputScript,
+    };
+    if (isP2WSH && isSegwit)
+      payment = bitcoin.payments.p2wsh({
+        network,
+        redeem: payment,
+      });
+    if (isP2SH)
+      payment = bitcoin.payments.p2sh({
+        network,
+        redeem: payment,
+      });
+
+    function witnessStackToScriptWitness(witness: Buffer[]): Buffer {
+      let buffer = Buffer.allocUnsafe(0);
+
+      function writeSlice(slice: Buffer): void {
+        buffer = Buffer.concat([buffer, Buffer.from(slice)]);
+      }
+
+      function writeVarInt(i: number): void {
+        const currentLen = buffer.length;
+        const varintLen = varuint.encodingLength(i);
+
+        buffer = Buffer.concat([buffer, Buffer.allocUnsafe(varintLen)]);
+        varuint.encode(i, buffer, currentLen);
+      }
+
+      function writeVarSlice(slice: Buffer): void {
+        writeVarInt(slice.length);
+        writeSlice(slice);
+      }
+
+      function writeVector(vector: Buffer[]): void {
+        writeVarInt(vector.length);
+        vector.forEach(writeVarSlice);
+      }
+
+      writeVector(witness);
+
+      return buffer;
+    }
+
+    return {
+      finalScriptSig: payment.input,
+      finalScriptWitness:
+        payment.witness && payment.witness.length > 0
+          ? witnessStackToScriptWitness(payment.witness)
+          : undefined,
+    };
+  }
 }

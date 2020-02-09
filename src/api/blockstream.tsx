@@ -70,18 +70,17 @@ export async function getHeight (strNetwork: string) {
  * @param     {string}    strNetwork      Network type: 'bitcoin' or 'testnet'.
  * @returns   {object}                    { arrayTx: arrayTx w/ .hex, error: string, fails: number }
  */
-export async function addRawTxToArray (arrayUtxo: Array<any>, strNetwork: string) {
+export async function addRawTxToArray (utxoList: Array<any>, strNetwork: string) {
   // to track failures indecies
   let erroredOutputs = ''
 
   // abort if empty array
-  if (arrayUtxo?.length === 0) { return { arrayUtxo, error: 'no utxo' } }
-
-  // clone array
-  const arrayUtxoWithHex = [...arrayUtxo]
+  if (utxoList?.length === 0) {
+    return { utxoList, error: 'no utxo' }
+  }
 
   // iterate through original utxo and add hex onto clone, 2 tries max each
-  for (const [indexString, utxo] of Object.entries(arrayUtxo)) {
+  for (const [indexString, utxo] of Object.entries(utxoList)) {
     // indexString is a string so convert for array index use
     const index = parseInt(indexString, 10)
 
@@ -103,7 +102,7 @@ export async function addRawTxToArray (arrayUtxo: Array<any>, strNetwork: string
         console.log(index, 'index utxo has raw hex of', res.data)
 
         // add hex data into cloned utxo array
-        arrayUtxoWithHex[index].hex = res.data
+        utxoList[index].hex = res.data
 
         // break while loop if got data, don't need more tries
         break
@@ -120,11 +119,12 @@ export async function addRawTxToArray (arrayUtxo: Array<any>, strNetwork: string
   }
 
   // return summary object
-  return { arrayUtxoWithHex, erroredOutputs }
+  return { utxoList, erroredOutputs }
 }
 
 /**
- * API request for all utxo for this address
+ * API request for all utxo for this address.
+ * Blockstream utxo do not have addresses that created them!
  * @param     {string}    address       Bitcoin address.
  * @param     {string}    strNetwork    Network type: 'bitcoin' or 'testnet'.
  * @returns   {Array}                   Array of UTXO.

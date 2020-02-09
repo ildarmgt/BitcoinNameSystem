@@ -1,4 +1,4 @@
-import { I_Forward } from './types/'
+import { I_Forward } from '../types'
 /**
  * Reads a single forward info object to interpret its values
  * as where the forwarding address should be used, what it is, and what link to use.
@@ -13,12 +13,15 @@ export function interpretFw (fw: I_Forward) {
     }
   }
 
+  // remove version modifier (anything after ! after network)
+  const onNetwork = fw.network.split('!')[0]
+
   if (
-    fw.network === 'p2wsh' ||
-    fw.network === 'btc' ||
-    fw.network === 'p2pkh' ||
-    fw.network === 'p2wpkh' ||
-    fw.network === 'p2sh'
+    onNetwork === 'p2wsh' ||
+    onNetwork === 'btc' ||
+    onNetwork === 'p2pkh' ||
+    onNetwork === 'p2wpkh' ||
+    onNetwork === 'p2sh'
   ) {
     return {
       where: 'btc:',
@@ -32,7 +35,12 @@ export function interpretFw (fw: I_Forward) {
     }
   }
 
-  if (fw.network === 'http' || fw.network === 'https' || fw.network === 'url' || fw.network === 'web') {
+  if (
+    onNetwork === 'http' ||
+    onNetwork === 'https' ||
+    onNetwork === 'url' ||
+    onNetwork === 'web'
+  ) {
     return {
       where: 'https://',
       what: fw.address,
@@ -41,7 +49,7 @@ export function interpretFw (fw: I_Forward) {
     }
   }
 
-  if (fw.network === 'twitter') {
+  if (onNetwork === 'twitter') {
     return {
       where: 'twitter.com/',
       what: fw.address,
@@ -50,7 +58,7 @@ export function interpretFw (fw: I_Forward) {
     }
   }
 
-  if (fw.network === 'github') {
+  if (onNetwork === 'github') {
     return {
       where: 'github.com/',
       what: fw.address,
@@ -59,7 +67,7 @@ export function interpretFw (fw: I_Forward) {
     }
   }
 
-  if (fw.network === 'youtube') {
+  if (onNetwork === 'youtube') {
     return {
       where: 'youtu.be/',
       what: fw.address,
@@ -70,7 +78,7 @@ export function interpretFw (fw: I_Forward) {
 
   // if unknown forward network, no link, and the rest is shown as is
   return {
-    where: fw.network,
+    where: onNetwork,
     what: fw.address,
     link: undefined,
     render: true

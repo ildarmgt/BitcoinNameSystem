@@ -17,7 +17,8 @@ export const initialState: I_State = {
     domainName: '',
     notificationAddress: '',      // p2wsh address for this domain name (alias + extension)
     txHistory: [],                // array of all tx for this address (old addressHistory)
-    utxoList: [],                 // array of all current utxo for this address
+    derivedUtxoList: [],          // calculated utxo set from txHistory parse
+    utxoList: [],                 // array of all real time utxo for this address
     users: {},                    // object with all interacting users
     currentOwner: '',             // address of user that controls domain
     bidding: {},                  // bidding info
