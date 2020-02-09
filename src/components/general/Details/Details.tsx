@@ -6,6 +6,9 @@ import styles from './Details.module.css'
  * Optional props:
  * title={ 'random text' } to change text shown on the hide/show toggle button
  * show={ 'true } to show initially *
+ * Background is automatically styled if <p></p> is used directly inside.
+ * If so, <span></span> can be used inside <p></p> to separate
+ * paragraphs and indent the wrap as well.
  */
 export const Details = (props: any) => {
   // local state for showing or hiding details
