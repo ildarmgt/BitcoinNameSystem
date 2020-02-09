@@ -30,7 +30,7 @@ export const RoundButton = (props:any): JSX.Element => {
   return (
     <div
       // variables defined by string will be available to button & its children for scope
-      style={{
+      style={ {
         display: (
           (props?.show === 'false') ? 'none' : 'inline-block'
         ) as React.CSSProperties,
@@ -47,7 +47,7 @@ export const RoundButton = (props:any): JSX.Element => {
             ? `calc(${props.sizebutton}/2.9 * var(--s))`
             : `calc(2.5/2.9 * var(--s))`
         ) as React.CSSProperties
-      }}
+      } }
       className={ [
         styles.roundButtonWrap,
         props.back ? styles.back : undefined

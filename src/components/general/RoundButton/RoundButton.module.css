@@ -56,7 +56,7 @@
 }
 
 .nextArrow {
-  /* prevents arrow from wrapping */
+  /* prevents arrow from wrapping by placing it inside padding */
   padding-right: calc(5 * var(--sizeButton));
 }
 .nextArrow:after {

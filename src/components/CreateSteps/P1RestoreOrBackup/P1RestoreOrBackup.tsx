@@ -4,6 +4,7 @@ import styles from './P1RestoreOrBackup.module.css'
 import { createNewWalletAction, changePageInfoAction } from '../../../store/actions/'
 import sanitize from './../../../helpers/sanitize'
 import { Store } from './../../../store/'
+import { Details } from './../../general/Details'
 
 enum pages {
   ROOT,
@@ -30,8 +31,27 @@ export const P1RestoreOrBackup = () => {
         <div
           className={ styles.title }
         >
-          Need <span className={ styles.Orange }>BTC</span> address to control<br />
-          the domain name
+          { state.wallet.address ? (<>
+            Your <span className={ styles.Orange }>BTC</span> wallet for interacting<br />
+            with the domains
+          </>) : (<>
+            Need a <span className={ styles.Orange }>BTC</span> wallet for interacting<br />
+            with the domains
+          </>) }
+        </div>
+        <div>
+          <Details>
+            <p>
+              This wallet has the built in functionality missing from other wallets to create transactions with custom scripts, inputs, and outputs necessary for this application.<br/>
+              <br/>
+              The wallet's address is how users and owners of the domains are identified and should only be used for this purpose.<br/>
+              <br/>
+              1. BIP39 mnemonic is used from backup or generated<br/>
+              2. BIP32 master seed is derived from the mnemonic<br/>
+              3. Key pair is derived from the m/44'/0'/0'/0/0 path<br/>
+              4. The p2wpkh (pay-to-witness-public-key-hash) address is derived from key pair
+            </p>
+          </Details>
         </div>
         <div
           className={ styles.buttonWrapper }

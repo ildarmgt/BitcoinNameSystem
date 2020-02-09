@@ -3,7 +3,7 @@ import { RoundButton } from '../../general/RoundButton'
 import styles from './P4ActionChoice.module.css'
 import { Store } from '../../../store'
 import { changePageInfoAction, changeChoicesBNSAction } from '../../../store/actions'
-
+import { Details } from './../../general/Details'
 import { runAllActionPermissionChecks, calcBnsState } from './../../../helpers/bns/'
 
 
@@ -27,6 +27,80 @@ export const P4ActionChoice = () => {
   const checkActions = runAllActionPermissionChecks(bns, state.wallet.address)
   console.log(checkActions)
 
+  // list available actions for render
+  const listAvailableActions = () => (
+    checkActions.map(action => {
+      // usable actions only + not displaying actions with warnings
+      if (action.isUsable && !action.warning) {
+        console.log(action.info, 'special tx instructions:', action.special)
+        return (
+        <RoundButton
+          next={ 'true' }
+          onClick={ () => {
+            changeChoicesBNSAction(state, dispatch, {
+              action: {
+                type: action.type,
+                info: action.info,
+                special: action.special
+              }
+            })
+            changePageInfoAction(state, dispatch, 5)
+          }}
+          key={ action.info }
+        >
+          { action.info }
+        </RoundButton>
+        )
+      } else {
+        return ''
+      }
+    })
+  )
+
+  // list unavailable actions for render
+  const listUnavailableActions = () => (
+    checkActions.map(action => {
+      if (!action.isUsable) {
+        return (
+          <div
+            className={
+              styles.unavailableActions__actionList__action
+            }
+            key={ action.info }
+          >
+            <div
+              className={
+                styles.unavailableActions__actionList__action__title
+              }
+            >
+              { action.info }
+            </div>
+            <div
+              className={
+                styles.unavailableActions__actionList__action__permissionList
+              }
+            >
+              { action.permissionList.map((permission: any) => {
+                return (
+                  <div
+                    className={
+                      styles.unavailableActions__actionList__action__permissionList__permission
+                    }
+                    key={permission.info}
+                  >
+                    - { permission.info }
+                  </div>
+                )
+              })}
+            </div>
+          </div>
+        )
+      } else {
+        return ('')
+      }
+    })
+  )
+
   return (
     <div className={ styles.wrapper }>
       <div className={ styles.title }>
@@ -34,82 +108,20 @@ export const P4ActionChoice = () => {
       </div>
       <div className={ styles.availableActions }>
         {
-          checkActions.map(action => {
-            // usable actions only + not displaying actions with warnings
-            if (action.isUsable && !action.warning) {
-              console.log(action.info, 'special tx instructions:', action.special)
-              return (
-              <RoundButton
-                next={ 'true' }
-                onClick={ () => {
-                  changeChoicesBNSAction(state, dispatch, {
-                    action: {
-                      type: action.type,
-                      info: action.info,
-                      special: action.special
-                    }
-                  })
-                  changePageInfoAction(state, dispatch, 5)
-                }}
-                key={ action.info }
-              >
-                { action.info }
-              </RoundButton>
-              )
-            } else {
-              return ''
-            }
-          })
+          listAvailableActions()
         }
       </div>
       <div className={ styles.unavailableActions }>
-        <div className={ styles.unavailableActions__title }>
-          Unavailable actions:
-        </div>
-        <div className={ styles.unavailableActions__actionList }>
-          {
-            checkActions.map(action => {
-              if (!action.isUsable) {
-                return (
-                  <div
-                    className={
-                      styles.unavailableActions__actionList__action
-                    }
-                    key={ action.info }
-                  >
-                    <div
-                      className={
-                        styles.unavailableActions__actionList__action__title
-                      }
-                    >
-                      { action.info }
-                    </div>
-                    <div
-                      className={
-                        styles.unavailableActions__actionList__action__permissionList
-                      }
-                    >
-                      { action.permissionList.map((permission: any) => {
-                        return (
-                          <div
-                            className={
-                              styles.unavailableActions__actionList__action__permissionList__permission
-                            }
-                            key={permission.info}
-                          >
-                            - { permission.info }
-                          </div>
-                        )
-                      })}
-                    </div>
-                  </div>
-                )
-              } else {
-                return ('')
-              }
-            })
-          }
-        </div>
+        <Details
+          description={ 'Show unavailable actions' }
+          className= { styles.unavailableActions__title }
+        >
+          <div className={ styles.unavailableActions__actionList }>
+            {
+              listUnavailableActions()
+            }
+          </div>
+        </Details>
       </div>
       <div className={ styles.buttonWrapper }>
         <RoundButton

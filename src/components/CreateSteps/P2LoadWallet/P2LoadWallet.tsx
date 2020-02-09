@@ -29,7 +29,7 @@ export const P2LoadWallet = () => {
           <img src={qrCode} alt={'QR Code'} />
         </div>
         <div>
-          Fund your wallet to control domain.
+          Fund your wallet to interact with domains.
         </div>
         <div className={ [styles.address, 'selectable'].join(' ') }>
           { state.wallet.address }

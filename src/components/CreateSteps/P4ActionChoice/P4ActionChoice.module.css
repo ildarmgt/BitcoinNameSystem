@@ -129,4 +129,8 @@
   .availableActions {
     align-self: flex-start;
   }
+
+  .unavailableActions {
+    align-self: flex-start;
+  }
 }

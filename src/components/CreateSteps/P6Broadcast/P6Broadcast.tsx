@@ -8,6 +8,7 @@ import { txPush } from './../../../api/blockstream'
 import sanitize from './../../../helpers/sanitize'
 import { getFeeEstimates } from './../../../api/blockstream'
 import { getUnspentSum } from '../../../helpers/bns/bitcoin'
+import { Details } from './../../general/Details'
 
 /**
  * Broadcast tx page.
@@ -49,11 +50,15 @@ export const P6Broadcast = () => {
     , 0)
   )
 
+  // keep track of broadcast
   const [ broadcastStatus, setBroadcastStatus ] = React.useState({
     ok: false,
     txid: '123',
     reason: ''
   })
+
+  // show{ unitBTC } or tBTC based on network
+  const unitBTC = (state.network === 'testnet') ? ' tBTC' : ' BTC'
 
   // get new suggestions if never got them through api
   // otherwise show previous
@@ -154,50 +159,55 @@ export const P6Broadcast = () => {
 
       <div className={ styles.txSummary }>
         { (!!tx) && (
-          <table><tbody>
-            <tr>
-              <th>Action:</th>
-              <th>{ state.choices.action.info }</th>
-            </tr>
-            <tr>
-              <th>Updates:</th>
-              <th>{ numberOfUpdates }</th>
-            </tr>
-            <tr>
-              <th>Inputs:</th>
-              <th>{ tx.nInputs }</th>
-            </tr>
-            <tr>
-              <th>Outputs:</th>
-              <th>{ tx.nOutputs }</th>
-            </tr>
-            <tr>
-              <th>Size:</th>
-              <th>{ tx.thisVirtualSize } vBytes</th>
-            </tr>
-            <tr>
-              <th>Available:</th>
-              <th>{ (getUnspentSum(state.wallet.utxoList) / 1e8).toFixed(8) } BTC</th>
-            </tr>
-            <tr>
-              <th>Burning:</th>
-              <th>
-                { (tx.burnAmount / 1e8).toFixed(8) } BTC
-              </th>
-            </tr>
-            <tr>
-              <th>Miner fee:</th>
-              <th>
-                { (tx.fee / 1e8).toFixed(8) } BTC
-                {' '}
-                ({(tx.fee / tx.valueNeeded * 100.0).toFixed(1)}%)
-              </th>
-            </tr>
-            <tr>
-              <th>Total cost:</th>
-              <th>{ (tx.valueNeeded / 1e8).toFixed(8) } BTC</th>
-            </tr>
-          </tbody></table>
+          <>
+            Total cost: { (tx.valueNeeded / 1e8).toFixed(8) }{ unitBTC }
+            <Details>
+              <table><tbody>
+                <tr>
+                  <th>Action:</th>
+                  <th>{ state.choices.action.info }</th>
+                </tr>
+                <tr>
+                  <th>Updates:</th>
+                  <th>{ numberOfUpdates }</th>
+                </tr>
+                <tr>
+                  <th>Inputs:</th>
+                  <th>{ tx.nInputs }</th>
+                </tr>
+                <tr>
+                  <th>Outputs:</th>
+                  <th>{ tx.nOutputs }</th>
+                </tr>
+                <tr>
+                  <th>Size:</th>
+                  <th>{ tx.thisVirtualSize } vBytes</th>
+                </tr>
+                <tr>
+                  <th>Available:</th>
+                  <th>{ (getUnspentSum(state.wallet.utxoList) / 1e8).toFixed(8) }{ unitBTC }</th>
+                </tr>
+                <tr>
+                  <th>Burning:</th>
+                  <th>
+                    { (tx.burnAmount / 1e8).toFixed(8) }{ unitBTC }
+                  </th>
+                </tr>
+                <tr>
+                  <th>Miner fee:</th>
+                  <th>
+                    { (tx.fee / 1e8).toFixed(8) }{ unitBTC }
+                    {' '}
+                    ({(tx.fee / tx.valueNeeded * 100.0).toFixed(1)}%)
+                  </th>
+                </tr>
+                <tr>
+                  <th>Total cost:</th>
+                  <th>{ (tx.valueNeeded / 1e8).toFixed(8) }{ unitBTC }</th>
+                </tr>
+              </tbody></table>
+            </Details>
+          </>
         )}
         { (!tx) && (
           <div className={ styles.txSummary }>

@@ -1,5 +1,6 @@
 import React, { useEffect } from 'react'
 import { RoundButton } from '../../general/RoundButton'
+import { Details } from './../../general/Details'
 import styles from './P5CustomForwards.module.css'
 import { Store, getOwner } from '../../../store'
 import { changePageInfoAction, changeChoicesBNSAction } from '../../../store/actions'
@@ -181,11 +182,13 @@ export const P5CustomForwards = () => {
         <div
           className={ ['btnCircle', styles.btnAdd, 'canPress', 'addTooltip'].join(' ') }
           onClick={ () => {
-            setPlannedChanges({
-              ...plannedChanges,
-              [textboxContent.network]: textboxContent.address
-            })
-            setTextboxContent({ network: '', address: '' })
+            if (textboxContent.network !== '') {
+              setPlannedChanges({
+                ...plannedChanges,
+                [textboxContent.network]: textboxContent.address
+              })
+              setTextboxContent({ network: '', address: '' })
+            }
           } }
         >
           <span>+</span>
@@ -193,6 +196,19 @@ export const P5CustomForwards = () => {
         </div>
       </div>
       <div className={ styles.pastList } >
+        <Details
+          description={ 'What\'s this?' }
+        >
+          <p>
+            Enter the forwarding addresses you want to use (e.g. long bitcoin address) and specify on which network that address should be used (e.g. btc) when someone wants to reach you after looking up your domain alias.<br />
+            <br />
+            Submit new updates by hitting [+] button. Remove updates by hitting [x] buttons.<br />
+            <br />
+            Below, the currently active forwarding addresses are shown, if any.<br />
+            <br />
+            Edit them by reusing the exact same network or remove by setting forwarding address to nothing or hitting [no address] button under network name text.
+          </p>
+        </Details>
         { pastForwards.map((fw: any, i: number) => {
           return (
             <div
@@ -223,6 +239,7 @@ export const P5CustomForwards = () => {
         </RoundButton>
         <RoundButton
           next='true'
+          show={ bytesOfChanges > BYTES_MAX ? 'false' : 'true' }
           onClick={ () => {
             changePageInfoAction(state, dispatch, 6)
           }}

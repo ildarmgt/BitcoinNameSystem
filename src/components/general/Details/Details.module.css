@@ -1,0 +1,89 @@
+.wrapper {
+  box-sizing: border-box;
+  display: block;
+  font-size: calc(2 * var(--s));
+
+  color: var(--colorBitcoinBlue);
+  /* margin: calc(1 * var(--s)) 0; */
+}
+
+.toggleDetails {
+  cursor: pointer;
+  display: inline-block;
+
+  line-height: calc(2 * var(--s));
+  display: inline-block;
+  text-decoration: none;
+  padding: calc(1 * var(--s)) calc(2 * var(--s));
+  margin-bottom: calc(1 * var(--s));
+  opacity: 0.5;
+  white-space: nowrap;
+  vertical-align: middle;
+}
+
+/* empty arrow div */
+.arrow {
+  width: calc(2 * var(--s));
+  height: calc(2 * var(--s));
+  /* lets the :before element be placed in absolute */
+  position: relative;
+  display: inline-block;
+  vertical-align: middle;
+  line-height: calc(2 * var(--s));
+
+  /* rotation point */
+  transform-origin: 50% 50%;
+  /* animate back and forward */
+  transition: transform 0.1s linear;
+  /* starting position pointing to right when collapsed */
+  transform: rotate(-90deg);
+  margin: 0;
+  margin-left: calc(0.75 * var(--s));
+}
+
+/* actual arrow drawn */
+.arrow:before {
+  content: '';
+  position: absolute;
+  top: calc(0.3 * var(--s));
+  /* left side to top left side of triangle in down position */
+  left: calc(0.3 * var(--s));
+  width: 0;
+  height: 0;
+  border-left: calc(0.7 * var(--s)) solid transparent;
+  border-right: calc(0.7 * var(--s)) solid transparent;
+  border-bottom: 0 solid transparent;
+  vertical-align: middle;
+
+  /* visible arrow part */
+  border-top: calc(1.4 * var(--s)) solid var(--colorBitcoinBlue);
+  margin: 0;
+  /* arrow a bit lighter than text since it's solid */
+  opacity: 0.7;
+}
+
+/* rotate when open */
+.down {
+  transform: rotate(0deg);
+}
+
+/* increase opacity on hover */
+.toggleDetails:hover {
+  opacity: 0.9;
+}
+
+.details {
+  /* just basic block in case styling is custom */
+}
+
+.details > p {
+  text-align: left;
+  display: inline-block;
+  background-color: var(--colorDarker1);
+  border-radius: calc(0.5 * var(--s));
+  padding: calc(2 * var(--s)) calc(2 * var(--s));
+  margin: calc(2 * var(--s));
+  margin-top: 0;
+  white-space: pre-wrap;
+}
+
