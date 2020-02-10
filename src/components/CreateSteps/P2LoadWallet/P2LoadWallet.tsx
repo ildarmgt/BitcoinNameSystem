@@ -56,7 +56,8 @@ export const P2LoadWallet = () => {
           }}
         >
           Ready
-        </RoundButton>        <RoundButton
+        </RoundButton>
+        <RoundButton
           colorbutton={'var(--colorHighlight)'}
           show={ (state.network === 'testnet').toString() }
           onClick={ () => {
