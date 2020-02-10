@@ -1,46 +1,25 @@
 
 ## Short term
 
-- simplest approach to cleaning up utxo
-  - clean up only your own utxo since last tx (simple)
-  - what if utxo were missed? render action failed or allow correction based on current utxo set?
+- `!so <btcaddress>` - Send ownership to btcaddress. Can avoid reusing addresses by including new each time. Must be no owner's ACS, use as inputs (inputs @1+). owner address (input @0). Does not change lease expiration - only burns can extend even if transfered.
 
 - Page 4 allow filling remaining space after action w/ other info
+  can't remove action consumed space, need to differentiate
   (after I have actions that need embedded text)
-
-
-- show expired values with warnings on search
-
-- add previous forwarding info to suggestions even if ownership expired (diff color for active, inactive)
-
-- add commands and interface
-
-  - interface has a selection of all known commands to pick from
-
-  - `!so <btcaddress>` - Send ownership to btcaddress. Can avoid reusing addresses by including new each time. Must be no owner's ACS, use as inputs (inputs @1+). owner address (input @0). Does not change lease expiration - only burns can extend even if transfered.
-
-  - `!a  <# of BTCs>` - Post price to sell (output @0), measured in floating point btc. Owner address (input @0). Similar to challenge period but instead of burning, tx are sent to owner. ~24 hours from time of first bid w/ more left on lease, cannot transfer ownership after first bid. Include notification (output @1) & optional public notification to '':'' address (@output 2). Must be no owner's ACS, use as inputs (inputs @1+). Does not change lease expiration - only burns can extend even if transfered.
-
-  - `!ba <last price in floating BTC>` Bid on auction. Must: 1. State price at point of bid via the !buy command in op_return (output @0). 2. Must consume past ACS inputs at that price height (includes the owners public notification at '':'' if used) (inputs @1+). 3. Refund previous valid bidders (outputs @4+). 4. Pay 1.5x last price requested except for original price (output @3). 5. Create notification (output @1). 6. Use desired ownership/refund adderss as first input (input @0). Winner is derived 24 hours after first bid by highest price that followed all the rules. Does not change lease expiration - only burns can extend even if transfered.
-
 
 - multipage tx scan
 
-- warn of bad entries on selection: e.g. blank network
+
 
 - scan notification address for tx history (search does that) and current utxo (could derive from tx history but still need raw tx)
 
-- sanitization of users custom text when read by other users to avoid unexpected injections
+- `!a  <# of BTCs>` - Post price to sell (output @0), measured in floating point btc. Owner address (input @0). Similar to challenge period but instead of burning, tx are sent to owner. ~24 hours from time of first bid w/ more left on lease, cannot transfer ownership after first bid. Include notification (output @1) & optional public notification to '':'' address (@output 2). Must be no owner's ACS, use as inputs (inputs @1+). Does not change lease expiration - only burns can extend even if transfered.
 
-- Create process
-  1. Create ownership address to create unique tx/wallet not easily done in other clients I know of. The keys for that address become controlling owners of that alias
-  2. Create tx to own alias
-    - put in aliases at same time w/ chars left
-  The rest after this is done
+- `!ba <last price in floating BTC>` Bid on auction. Must: 1. State price at point of bid via the !buy command in op_return (output @0). 2. Must consume past ACS inputs at that price height (includes the owners public notification at '':'' if used) (inputs @1+). 3. Refund previous valid bidders (outputs @4+). 4. Pay 1.5x last price requested except for original price (output @3). 5. Create notification (output @1). 6. Use desired ownership/refund adderss as first input (input @0). Winner is derived 24 hours after first bid by highest price that followed all the rules. Does not change lease expiration - only burns can extend even if transfered.
 
-- alias creation page (basic)
-    - controlling address creation
-    - controlling address broadcasts
+- challenge period rules
+
+- alias creation page
     - backups: mneumonics or WIF or download file (sjcl encrypted)
     - bip47 standards
 
@@ -57,14 +36,9 @@
 - keep updating terminology in readme for consistency
 - write out all rules in readme with extreme detail akin to pseudocode so can be reproduced in any code
 
-- add ownership time rules & display time left
-- add ownership extension rule & new display time left
+- npm library
 
-- alias creation page (w/ bids)
-
-- add challenge rules for ownership & creation
-- add transfer rules for ownership & creation
-
+- npm library implemented with api for non-node usecases
 
 ---
 Long term
