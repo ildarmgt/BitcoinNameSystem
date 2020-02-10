@@ -45,6 +45,13 @@ export const P2LoadWallet = () => {
           Back
         </RoundButton>
         <RoundButton
+          next='true'
+          onClick={ () => {
+            changePageInfoAction(state, dispatch, 3)
+          }}
+        >
+          Ready
+        </RoundButton>        <RoundButton
           colorbutton={'var(--colorHighlight)'}
           show={ (state.network === 'testnet').toString() }
           onClick={ () => {
@@ -68,14 +75,6 @@ export const P2LoadWallet = () => {
           }}
         >
           Open explorer
-        </RoundButton>
-        <RoundButton
-          next='true'
-          onClick={ () => {
-            changePageInfoAction(state, dispatch, 3)
-          }}
-        >
-          Ready
         </RoundButton>
       </div>
     </div>
