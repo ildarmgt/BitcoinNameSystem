@@ -17,9 +17,14 @@ interface I_Tx_Result {
   fee: number
   change: number
   burnAmount: number
+  notifyAmount: number
   totalGathered: number
+  gatheredFromWallet: number
+  gatheredFromOther: number
   nInputs: number
   nOutputs: number
+  nInputsFromWallet: number
+  nInputsFromOther: number
 }
 
 /**
@@ -41,6 +46,10 @@ export const calcTx = (
   vBytes: number = 0
 ): I_Tx_Result => {
 
+  if (wallet.utxoList.length === 0) {
+    throw new Error('Wallet has no funds (utxo) to use')
+  }
+
   // grab fee rate
   const feeRate = choices.feeRate
   // grab user object
@@ -58,6 +67,10 @@ export const calcTx = (
   // gather necessary utxo to use until enough to cover costs
   let totalGathered = 0 // sat
 
+  // track multiple sources for providing detailed information
+  let gatheredFromWallet = 0
+  let gatheredFromOther = 0
+
   // prepare extra inputs from other rules
   // adding these first to totalGathered satoshi since have to add them all anyway
   const isACSRequired = choices.action.special.some(list =>
@@ -73,6 +86,7 @@ export const calcTx = (
       if (utxo.from_scriptpubkey_address === wallet.address) {
         toBeUsedUtxoOfNotifications.push(utxo)
         totalGathered += utxo.value
+        gatheredFromOther += utxo.value
       }
     })
   }
@@ -85,6 +99,7 @@ export const calcTx = (
     if (totalGathered < valueNeeded || toBeUsedUtxoOfUserWallet.length === 0) {
       toBeUsedUtxoOfUserWallet.push(utxo)
       totalGathered += utxo.value
+      gatheredFromWallet += utxo.value
     }
   })
 
@@ -93,7 +108,7 @@ export const calcTx = (
   // if still not enough funds after all possible inputs,
   // there are simply not enough funds to do the tx
   if (totalGathered < valueNeeded) {
-    throw new Error('Not enough funds in all the utxo')
+    throw new Error('Not enough funds available (' + (valueNeeded / 1e8).toFixed(8) + ' sats)')
   }
 
 
@@ -231,7 +246,22 @@ export const calcTx = (
     console.log('getId', tx.getId())
     console.log('hex', tx.toHex())
     console.log('')
-    return { thisVirtualSize, txid, hex, valueNeeded, fee, change, burnAmount, totalGathered, nInputs, nOutputs }
+    return {
+      txid,
+      thisVirtualSize,
+      hex, valueNeeded,
+      fee,
+      change,
+      burnAmount,
+      notifyAmount: MIN_NOTIFY,
+      totalGathered,
+      gatheredFromWallet,
+      gatheredFromOther,
+      nInputs,
+      nOutputs,
+      nInputsFromWallet: toBeUsedUtxoOfUserWallet.length,
+      nInputsFromOther: toBeUsedUtxoOfNotifications.length || 0
+    }
   } else {
     // Redo this tx calculation using the virtual size we just calculated for vByte optional parameter.
     return calcTx(

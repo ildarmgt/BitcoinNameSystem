@@ -1,46 +1,69 @@
 .wrapper {
   box-sizing: border-box;
 
-  margin: 0 calc(2 * var(--s));
+  margin: 0 1%;
   font-size: calc(2.5 * var(--s));
   color: var(--colorBitcoinBlue);
   display: grid;
 
-  grid-template-columns:  auto auto;
-  grid-template-rows:     auto auto auto auto auto;
+  grid-template-columns:  48% 48%;
+  grid-template-rows:     auto auto auto auto auto auto;
 
-  grid-gap: calc(1 * var(--s)) calc(1 * var(--s));
+  grid-gap: calc(1 * var(--s)) 2%;
 
   grid-template-areas:
     "title            title"
     "fees             fees"
-    "txSummary        txSummary"
-    "txid             txid"
+    "totalCost        totalCost"
+    "status           status"
     "buttonWrapper    buttonWrapper"
+    "txSummary        txSummary"
   ;
 
   align-items: center;
+  margin-bottom: calc(2.5 * var(--s));
 }
 
 .title {
   grid-area: title;
+  width: 100%;
   font-size: calc(3 * var(--s));
-  margin-bottom: calc(5 * var(--s));
+  margin-bottom: calc(7 * var(--s));
 }
 
 .fees {
   grid-area: fees;
+  width: 100%;
+  position: relative;
 }
 
 .txSummary {
   grid-area: txSummary;
+  width: 100%;
+
 }
 
-.txid {
-  grid-area: txid;
+.status {
+  grid-area: status;
+  width: 100%;
+
 }
 
-.txid__button {
+.totalCost {
+  grid-area: totalCost;
+  box-sizing: border-box;
+  padding: calc(2 * var(--s)) calc(1 * var(--s));
+  width: 100%;
+
+}
+
+.buttonWrapper {
+  grid-area: buttonWrapper;
+  width: 100%;
+
+}
+
+.status__button {
   display: inline-block;
   background-color: var(--colorBitcoinBlue);
   color: var(--colorBitcoinOrange);
@@ -48,32 +71,24 @@
   margin: calc(1 * var(--s));
   padding: calc(0.75 * var(--s)) calc(2 * var(--s));
 }
-
-.txid__button:hover {
+.status__button:hover {
   color: var(--colorBackground);
 }
-
-.txid__failed {
+.status__failed {
   margin: calc(1 * var(--s));
   padding: calc(0.75 * var(--s)) calc(2 * var(--s));
   color: var(--colorWarning);
 }
 
-.buttonWrapper {
-  grid-area: buttonWrapper;
-}
-
 .fees__rate {
   position: relative;
   display: inline-block;
-}
-
-.fees__rate {
-  width: calc(30 * var(--s));
+  width: calc(20 * var(--s));
   overflow-x: visible;
 }
 
 .fees__rate aside {
+  width: calc(25 * var(--s));
   top: calc(-2.8 * var(--s));
   line-height: calc(2.5 * var(--s));
   left: calc(-2 * var(--s));
@@ -91,48 +106,134 @@
 
 .fees__apicall {
   display: inline-block;
+  position: relative;
 }
 
 .fees__feeSelection {
-  padding: calc(1 * var(--s));
+  position: absolute;
+  top: 100%;
+  right: 0%;
+  width: 200%;
+  padding: calc(2 * var(--s));
+  background-color: var(--colorBitcoinBlue);
+  border-radius: calc(0.5 * var(--s));
+  opacity: 0.97;
+  z-index: 100;
 }
 
 .fees__feeSelection__choice {
   font-size: calc(2 * var(--s));
   margin: calc(1 * var(--s));
   padding: calc(0.75 * var(--s)) calc(1 * var(--s));
-  background-color: var(--colorDarker1);
+  background-color: var(--colorBrighter2);
   border-radius: calc(0.5 * var(--s));
   cursor: pointer;
+  color: var(--colorBackground);
 }
 
 .fees__feeSelection__choice:hover {
-  background-color: var(--colorDarker2);
+  background-color: var(--colorBrighter3);
 }
 
 .fees__feeSelection__choice:active {
   transform: translateY(calc(0.2 * var(--s)));
 }
 
+.txSummary > div {
+  font-size: calc(2.5 * var(--s))
+}
 
+.txSummary table {
+  box-sizing: border-box;
+  width: 100%;
+  vertical-align: top;
+  border-collapse: collapse;
+}
 
-.txSummary th {
-  font-size: calc(2.3 * var(--s));
+.txSummary td {
+  font-size: calc(2.2 * var(--s));
+  /* line-height: calc(2.2 * var(--s)); */
   font-weight: normal;
 }
 
-th:nth-child(1) {
+.txSummary table tr {
+  vertical-align: top;
+  border: calc(2.5 * var(--s)) solid transparent;
+}
+
+.txSummary table td p {
+  display: block;
+  box-sizing: border-box;
+  margin-bottom: calc(0.5 * var(--s));
+  padding: 0;
+  --offset: calc(2 * var(--s));
+  text-indent: calc(-1 * var(--offset));
+  padding-left: var(--offset);
+}
+
+
+
+.txSummary table tr:first-child {
+  border-top: 0 solid transparent;
+}
+
+.txSummary table td:first-child {
+  border-right: calc(3 * var(--s)) solid transparent;
+}
+
+td:nth-child(1) {
+  text-align: right;
+  width: calc(12 * var(--s));
+  /* padding-top: calc(0.5 * var(--s)); */
+}
+
+td:nth-child(2) {
+  text-align: left;
   opacity: 0.7;
 }
 
-.txSummary__total {
-  padding: calc(1 * var(--s)) calc(1 * var(--s));
-}
 
-.txSummary__total > span {
-  display: inline-flex;
+
+
+.balance {
+  box-sizing: border-box;
+  display: inline-block;
   background-color: var(--colorDarker1);
   border-radius: calc(1 * var(--s));
-  padding: calc(0.5 * var(--s)) calc(1 * var(--s));
-  margin: calc(0.5 * var(--s)) calc(0.5 * var(--s));
+  padding: calc(0.25 * var(--s)) calc(1 * var(--s));
+  /* vertical-align: middle; */
+  text-indent: 0;
+  /* margin: calc(0.25 * var(--s)) 0; */
+}
+
+/* wide screen settings */
+@media screen and (min-aspect-ratio: 12/9) {
+  .wrapper {
+    grid-template-columns:  56% 2% 38%;
+    grid-template-rows:     auto auto auto auto auto;
+
+    grid-template-areas:
+      ".              . title"
+      "fees           . buttonWrapper"
+      "txSummary      . totalCost     "
+      "txSummary      . status"
+      "txSummary      . ."
+    ;
+    align-items: flex-start;
+    text-align: right;
+  }
+
+  .title {
+    margin-top: calc(-4 * var(--s))
+  }
+
+  .buttonWrapper {
+    justify-self: right;
+  }
+  .totalCost {
+    justify-self: right;
+  }
+  .txSummary > div {
+    padding: calc(2 * var(--s)) calc(1 * var(--s));
+  }
 }

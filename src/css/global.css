@@ -21,6 +21,7 @@ html {
   --colorBrighter1: rgba(255, 255, 255, 0.1);
   --colorBrighter2: rgba(255, 255, 255, 0.2);
   --colorBrighter3: rgba(255, 255, 255, 0.3);
+  --colorBrighter8: rgba(255, 255, 255, 0.8);
 
   --colorDarker1: rgba(0, 0, 0, 0.1);
   --colorDarker2: rgba(0, 0, 0, 0.2);
@@ -308,19 +309,26 @@ textarea:focus {
 
 table {
   width: 100%;
-  border-spacing: calc(1 * var(--s)) calc(1 * var(--s));
+  /* border-spacing: calc(1 * var(--s)) calc(1 * var(--s)); */
 }
 
-table, tr, th {
+table, tr, td, th {
   font-family: 'Montserrat';
   font-size: calc(2 * var(--s));
   font-weight: normal;
 }
 
-th:nth-child(1) {
+td:nth-child(1), th:nth-child(1) {
   text-align: right;
 }
 
-th:nth-child(2) {
+td:nth-child(2), th:nth-child(2) {
   text-align: left;
+}
+
+p {
+  margin-inline-end: 0;
+  margin-inline-start: 0;
+  margin-block-end: 0;
+  margin-block-start: 0;
 }

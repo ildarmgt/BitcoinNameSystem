@@ -31,6 +31,7 @@ export const P6Broadcast = () => {
 
   // tx calculation
   let tx: any;
+  let txIssue: string = ''
   try {
     tx = calcTx(
       state.wallet,
@@ -38,7 +39,7 @@ export const P6Broadcast = () => {
       state.choices,
       state.network
     )
-  } catch (e) { console.log('tx calc failed:', e) }
+  } catch (e) { txIssue = e.message }
 
   // summarize number of updates in the embeded string
   const numberOfUpdates = (state
@@ -57,8 +58,16 @@ export const P6Broadcast = () => {
     reason: ''
   })
 
-  // show{ unitBTC } or tBTC based on network
-  const unitBTC = (state.network === 'testnet') ? ' tBTC' : ' BTC'
+  // show BTC balance with styling and proper units based on network
+  const unitBTC = (state.network === 'testnet') ? ' tBTC ' : ' BTC '
+  const showBTC = (sats: number = 0): JSX.Element => (
+    <>
+      <span className={ styles.balance }>
+        { (sats / 1e8).toFixed(8) }
+      </span>
+      { unitBTC }
+    </>
+  )
 
   // get new suggestions if never got them through api
   // otherwise show previous
@@ -83,6 +92,12 @@ export const P6Broadcast = () => {
     }
   }
 
+  const finalCost = tx ? (
+    // No point confusing user if the cost is negative.
+    // Possible with enough anyone-can-spend utxo found.
+    Math.max(tx.gatheredFromWallet - tx.change, 0)
+  ) : undefined
+
   return (
     <div className={ styles.wrapper }>
       <div className={ styles.title }>
@@ -90,7 +105,7 @@ export const P6Broadcast = () => {
       </div>
       <div className={ styles.fees }>
         <div className={ styles.fees__rate }>
-          <aside>Fee rate (sat/vByte):</aside>
+          <aside>Fee rate (sat / vByte):</aside>
           <textarea
             spellCheck={ false }
             value={ feeText }
@@ -114,7 +129,6 @@ export const P6Broadcast = () => {
           >
             Check online
           </RoundButton>
-        </div>
           { (feeSuggestions.showSuggestions) && (
             <div className={ styles.fees__feeSelection }>
               <div
@@ -127,7 +141,7 @@ export const P6Broadcast = () => {
                   setFeeSuggestions({...feeSuggestions, showSuggestions: false})
                 } }
               >
-                { '<' }20 min ({ feeSuggestions.min20 } sat/vByte)
+                { '< ' }20 min ( { feeSuggestions.min20.toFixed(3) } sat / vByte )
               </div>
               <div
                 className= { styles.fees__feeSelection__choice }
@@ -139,7 +153,7 @@ export const P6Broadcast = () => {
                   setFeeSuggestions({...feeSuggestions, showSuggestions: false})
                 } }
               >
-                { '<' }40 min ({ feeSuggestions.min40 } sat/vByte)
+                { '< ' }40 min ( { feeSuggestions.min40.toFixed(3) } sat / vByte )
               </div>
               <div
                 className= { styles.fees__feeSelection__choice }
@@ -151,61 +165,75 @@ export const P6Broadcast = () => {
                   setFeeSuggestions({...feeSuggestions, showSuggestions: false})
                 } }
               >
-                { '<' }60 min ({ feeSuggestions.min60 } sat/vByte)
+                { '< ' }60 min ( { feeSuggestions.min60.toFixed(3) } sat / vByte )
               </div>
             </div>
           ) }
+        </div>
       </div>
-
+      <div className={ styles.totalCost }>
+        { (!!tx) ? <>Your final cost: { showBTC(finalCost) }</> : ' ' }
+      </div>
       <div className={ styles.txSummary }>
         { (!!tx) && (
           <>
-            <div className={ styles.txSummary__total }>
-              Total cost: <span>{ (tx.valueNeeded / 1e8).toFixed(8) }</span>{ unitBTC }
-            </div>
             <Details>
               <table><tbody>
                 <tr>
-                  <th>Action:</th>
-                  <th>{ state.choices.action.info }</th>
+                  <td>Action:</td>
+                  <td>{ state.choices.action.info }</td>
                 </tr>
                 <tr>
-                  <th>Updates:</th>
-                  <th>{ numberOfUpdates }</th>
+                  <td>Updates:</td>
+                  <td>{ numberOfUpdates }</td>
                 </tr>
                 <tr>
-                  <th>Inputs:</th>
-                  <th>{ tx.nInputs }</th>
+                  <td>Wallet:</td>
+                  <td>
+                    <p>{ showBTC(getUnspentSum(state.wallet.utxoList)) } total
+                    across { state.wallet.utxoList.length } utxo</p>
+                  </td>
                 </tr>
                 <tr>
-                  <th>Outputs:</th>
-                  <th>{ tx.nOutputs }</th>
+                  <td>Inputs:</td>
+                  <td>
+                    <p>{ showBTC(tx.gatheredFromWallet) } from
+                    {' '}{ tx.nInputsFromWallet } wallet utxo</p>
+                    <p>{ showBTC(tx.gatheredFromOther) } from
+                    {' '}{ tx.nInputsFromOther } notification utxo</p>
+                    <p>{ showBTC(tx.totalGathered) } total</p>
+                  </td>
                 </tr>
                 <tr>
-                  <th>Size:</th>
-                  <th>{ tx.thisVirtualSize } vBytes</th>
+                  <td>Outputs:</td>
+                  <td>
+                    <p>Burning { showBTC(tx.burnAmount) } at #0</p>
+                    <p>Sending { showBTC(tx.notifyAmount) } at #1</p>
+                    <p>Change of { showBTC(tx.change) } sent back at #2</p>
+                    <p>{ tx.nOutputs } total outputs</p>
+                  </td>
                 </tr>
                 <tr>
-                  <th>Available:</th>
-                  <th>{ (getUnspentSum(state.wallet.utxoList) / 1e8).toFixed(8) }{ unitBTC }</th>
+                  <td>Miner fee:</td>
+                  <td>
+                    <p>{ showBTC(tx.fee) }{' '}
+                    ({(tx.fee / tx.valueNeeded * 100.0).toFixed(1)}%)</p>
+                  </td>
                 </tr>
                 <tr>
-                  <th>Burning:</th>
-                  <th>
-                    { (tx.burnAmount / 1e8).toFixed(8) }{ unitBTC }
-                  </th>
+                  <td>Size:</td>
+                  <td>{ tx.thisVirtualSize } vBytes</td>
                 </tr>
                 <tr>
-                  <th>Miner fee:</th>
-                  <th>
-                    { (tx.fee / 1e8).toFixed(8) }{ unitBTC }
-                    {' '}
-                    ({(tx.fee / tx.valueNeeded * 100.0).toFixed(1)}%)
-                  </th>
+                  <td>Cost:</td>
+                  <td>
+                    <p>+ Transaction requires { showBTC(tx.valueNeeded) }</p>
+                    <p>- Using { showBTC(tx.gatheredFromOther) } from anyone-can-spend utxo</p>
+                  </td>
                 </tr>
                 <tr>
-                  <th>Total cost:</th>
-                  <th>{ (tx.valueNeeded / 1e8).toFixed(8) }{ unitBTC }</th>
+                  <td>Net cost:</td>
+                  <td>{ showBTC(tx.gatheredFromWallet - tx.change) }</td>
                 </tr>
               </tbody></table>
             </Details>
@@ -213,16 +241,17 @@ export const P6Broadcast = () => {
         )}
         { (!tx) && (
           <div className={ styles.txSummary }>
-            calculation failed
+            calculation failed <br />
+            { txIssue }
           </div>
         ) }
       </div>
-      <div className={ styles.txid }>
+      <div className={ styles.status }>
         {/* hex here later, only in console now */}
         { (broadcastStatus.ok) ? (
           <>
             <div
-              className={ [styles.txid__button, 'canPress'].join(' ') }
+              className={ [styles.status__button, 'canPress'].join(' ') }
               onClick={ () => {
                 const PATH = `https://blockstream.info/` +
                 `${ state.network === 'testnet' ? 'testnet/' : '' }tx/` +
@@ -234,7 +263,7 @@ export const P6Broadcast = () => {
             </div>
           </>
         ) : (broadcastStatus.reason.length > 0) ? (
-          <div className={ styles.txid__failed }>
+          <div className={ styles.status__failed }>
             { broadcastStatus.reason }
           </div>
         ) : ''

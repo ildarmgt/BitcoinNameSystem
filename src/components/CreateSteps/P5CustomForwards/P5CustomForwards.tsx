@@ -78,10 +78,15 @@ export const P5CustomForwards = () => {
     <div className={ styles.wrapper }>
       <div className={ styles.title }>
         Update forwarding information
+        <div
+          className={ styles.subtitle }
+        >
+          Main action: { state.choices.action.info }
+        </div>
       </div>
       <div className={ styles.changes }>
         {/* bytes info */ }
-        { (Object.keys(plannedChanges).length === 0) && 'Nothing added yet' }
+        { (Object.keys(plannedChanges).length === 0) && 'No forwarding updates' }
         { (bytesOfChanges <= BYTES_MAX) &&
           <div className={ styles.bytesLeft }>
             { BYTES_MAX - bytesOfChanges } Bytes left

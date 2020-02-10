@@ -29,6 +29,12 @@
   margin-bottom: calc(2 * var(--s));
 }
 
+.subtitle {
+  font-size: calc(2 * var(--s));
+  margin: calc(1 * var(--s)) calc(1 * var(--s));
+  opacity: 0.5;
+}
+
 .changes {
   grid-area: changes;
   width: 100%;
@@ -274,11 +280,16 @@
   .title {
     align-self: flex-start;
     justify-self: right;
-    margin-bottom: calc(5 * var(--s));
+    margin-bottom: calc(4 * var(--s));
+    margin-top: calc(1 * var(--s));
+    text-align: right;
+  }
+  .subtitle {
+    margin-right: 0;
   }
   .changes {
     justify-self: right;
-    text-align: left;
+    text-align: right;
   }
   .buttonWrapper {
     justify-self: right;

@@ -4,7 +4,8 @@
   padding-top: 14vh;
   box-sizing: border-box;
   margin: 0 calc(0.2 * var(--s));
-  overflow-y: auto;
+  /* doesn't change measured width if scroll bar appears or not */
+  overflow-y: scroll;
   overflow-x: hidden;
   height: calc(100vh - 7vw - calc(6 * var(--s)));
 }

@@ -14,8 +14,7 @@
   line-height: calc(2 * var(--s));
   display: inline-block;
   text-decoration: none;
-  padding: calc(1 * var(--s)) calc(2 * var(--s));
-  margin-bottom: calc(1 * var(--s));
+  padding: calc(0.75 * var(--s)) calc(2 * var(--s));
   opacity: 0.5;
   white-space: nowrap;
   vertical-align: middle;
@@ -74,6 +73,8 @@
 
 .details {
   /* just basic block in case styling is custom */
+  margin-top: calc(1 * var(--s));
+
 }
 
 .details > p {
