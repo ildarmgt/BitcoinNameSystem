@@ -34,6 +34,7 @@
 .fees {
   grid-area: fees;
   width: 100%;
+  padding: calc(2 * var(--s)) calc(1 * var(--s));
   position: relative;
 }
 
@@ -209,8 +210,8 @@
 
     grid-template-areas:
       ".              . title"
-      "fees           . buttonWrapper"
-      "txSummary      . totalCost     "
+      "fees           . totalCost"
+      "txSummary      . buttonWrapper"
       "txSummary      . status"
       "txSummary      . ."
     ;
