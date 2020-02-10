@@ -24,8 +24,8 @@
   z-index:                100;
 }
 
-/* wrapper of the alias text */
-.wrapper {
+/* wrapper of the domain name / alias text */
+.domain {
   display:                block;
   position:               absolute;
   top:                    0;
@@ -47,7 +47,7 @@
 
 .alias, .ext {
   transform: translateX(calc(2 * var(--s)));
-  cursor: default;
+  cursor: pointer;
 }
 
 .spacer {

@@ -1,10 +1,16 @@
 import React, { useEffect, useState } from 'react'
 import styles from './CreateHeader.module.css'
 import { Store } from './../../../store/'
+import { useHistory } from 'react-router-dom'
 
 // restore backup or create new
 export const CreateHeader = () => {
-  const { state } = React.useContext(Store) // global state
+  // global state
+  const { state } = React.useContext(Store)
+
+  // navigation object
+  const history = useHistory()
+
 
   // Make sure entire alias is always visible on top through
   // resizing based on letter count.
@@ -40,8 +46,11 @@ export const CreateHeader = () => {
         />
       </div>
       <div
-        className={ styles.wrapper }
+        className={ styles.domain }
         style={ aliasMarginTop }
+        onClick={ () => {
+          history.push('/')
+        } }
       >
         <span
           className={ styles.alias }
