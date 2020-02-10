@@ -5,16 +5,15 @@ import { Link } from 'react-router-dom'
 import styles from './SearchResults.module.css'
 import timeDiff from './../../helpers/timediff'
 import { OWNERSHIP_DURATION_BY_BLOCKS, interpretFw, findLatestForwards } from '../../helpers/bns/'
-
+import { Details } from './../general/Details'
 
 export const SearchResults = () => {
   // global state
   const { state } = React.useContext(Store)
 
-  // temp object to keep track of timers
-  let diff = { isExpired: true, dh: '' }
-
   // calc time left in ownership via block heights
+  // temp object to keep track of timers
+  let diff = { isExpired: true, dh: '', msDiff: 0 }
   const owner = getOwner(state)
   if (owner) {
     const heightOfExpiration = owner.winHeight + OWNERSHIP_DURATION_BY_BLOCKS
@@ -23,16 +22,35 @@ export const SearchResults = () => {
     diff = timeDiff(msUntilExpires, 0)
   }
 
-  // account expires or isExpired information
-  const expirationMsg = () => {
+  // ownership information
+  const ownershipInformation = () => {
     // abort if no known ownership history
     if (!owner) return ('')
     return (
-      <div
-        className={ diff.isExpired ? styles.expired : styles.notExpired }
-      >
-        { !diff.isExpired && ('expires in ' + diff.dh) }
-      </div>
+      <>
+        <table><tbody>
+          <tr>
+            <td>Ownership extended</td>
+            <td>
+              <p>{ owner.winHeight } block height</p>
+              <p>{ new Date(owner.winTimestamp * 1000).toUTCString() }</p>
+              <p>{ timeDiff(owner.winTimestamp * 1000).dh } ago</p>
+            </td>
+          </tr>
+          <tr>
+            <td>Expires</td>
+            <td>
+              <p>{ owner.winHeight + OWNERSHIP_DURATION_BY_BLOCKS } block height</p>
+              <p>
+                ≈ { new Date(
+                  (OWNERSHIP_DURATION_BY_BLOCKS * 10.0 * 60.0 + owner.winTimestamp) * 1000
+                ).toUTCString() }
+              </p>
+              <p>in ≈ { diff.dh }</p>
+            </td>
+          </tr>
+        </tbody></table>
+      </>
     )
   }
 
@@ -46,9 +64,17 @@ export const SearchResults = () => {
           className={ styles.describe }
         >
           { latestForwards.length } matches on { state.network } {'  '}
-          { expirationMsg() }
         </div>
+
+
+        {/* <div className={ styles.listContainer } > */}
+
+        {/* </div> */}
+
+        {/* scrollable search results */}
         <div className={ styles.listContainer } >
+
+          {/* show if domain is available */}
           {(diff.isExpired) && (
             <Link
               to='/create'
@@ -57,8 +83,21 @@ export const SearchResults = () => {
               Domain available!
             </Link>
           )}
-        </div>
-        <div className={ styles.listContainer } >
+
+          {/* ownership details */}
+          {(!diff.isExpired) && (
+            <div className={ styles.ownershipDetails }>
+              <Details
+                description={ 'See ownership details' }
+              >
+
+                { ownershipInformation() }
+
+              </Details>
+            </div>
+          )}
+
+          {/* general search results */}
           {
             latestForwards.map((fw: any) => {
               const ifw = interpretFw(fw)
@@ -80,6 +119,7 @@ export const SearchResults = () => {
               }
             })
           }
+
         </div>
       </div>
     </>

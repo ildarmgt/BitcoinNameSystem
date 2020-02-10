@@ -66,9 +66,6 @@ export interface I_Forward {
   updateTimestamp: number
 }
 
-
-
-
 export interface I_TX {
   txid: string
   version: number

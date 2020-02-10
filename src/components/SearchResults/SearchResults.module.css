@@ -12,7 +12,7 @@
 
 
   color: var(--colorDarkText);
-  border-radius: calc(0.5 * var(--s));
+  /* border-radius: calc(0.5 * var(--s)); */
   padding: calc(2.0 * var(--s));
 
   overflow-y: auto;
@@ -104,12 +104,7 @@
 .expired {
   display: inline-block;
   color: var(--colorWarning);
-  margin-bottom: calc(0.5 * var(--s));
-}
-
-.notExpired {
-  display: inline-block;
-  margin-bottom: calc(0.5 * var(--s));
+  /* margin-bottom: calc(0.5 * var(--s)); */
 }
 
 .createLink {
@@ -130,11 +125,21 @@
   color: var(--colorBackground);
 }
 
+.ownershipDetails {
+  flex-basis: 100%;
+  text-align: center;
+  margin-bottom: calc(2 * var(--s));
+}
 
 @media screen and (min-aspect-ratio: 12/9) {
-  .wrapper .listItem {
-    font-size: calc(2 * var(--s));
+  .listContainer,
+  .describe {
+    transform-origin: top;
+    transform: scale(var(--horizontalScale));
   }
+  /* .wrapper .listItem {
+    font-size: calc(2 * var(--s));
+  } */
   .wrapper {
     height: calc(100vh - (13.5vh + (16 * var(--s)) + (6 * var(--s) * var(--horizontalScale))));
   }

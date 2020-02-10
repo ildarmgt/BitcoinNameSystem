@@ -307,28 +307,63 @@ textarea:focus {
   visibility: visible;
 }
 
-table {
-  width: 100%;
-  /* border-spacing: calc(1 * var(--s)) calc(1 * var(--s)); */
-}
-
-table, tr, td, th {
-  font-family: 'Montserrat';
-  font-size: calc(2 * var(--s));
-  font-weight: normal;
-}
-
-td:nth-child(1), th:nth-child(1) {
-  text-align: right;
-}
-
-td:nth-child(2), th:nth-child(2) {
-  text-align: left;
-}
-
+/* remove native p styling */
 p {
   margin-inline-end: 0;
   margin-inline-start: 0;
   margin-block-end: 0;
   margin-block-start: 0;
+}
+
+table {
+  width: 100%;
+  box-sizing: border-box;
+  width: 100%;
+  border-collapse: collapse;
+}
+
+table,
+tr,
+td,
+th {
+  font-family: 'Montserrat';
+  font-size: calc(2 * var(--s));
+  font-weight: normal;
+}
+
+td {
+  box-sizing: border-box;
+  vertical-align: top;
+  border: calc(2 * var(--s)) solid transparent;
+}
+
+/* first row no border */
+tr:nth-child(1) td {
+  border-top: 0 solid transparent;
+}
+
+/* first column right align */
+td:nth-child(1),
+th:nth-child(1) {
+  text-align: right;
+  width: 33%;
+  font-weight: bold;
+}
+
+/* 2nd column left align */
+td:nth-child(2),
+th:nth-child(2) {
+  width: 66%;
+  text-align: left;
+}
+
+/* how to show p inside td inside table */
+table td p {
+  display: block;
+  box-sizing: border-box;
+  margin-bottom: calc(0.5 * var(--s));
+  padding: 0;
+  --offset: calc(2 * var(--s));
+  text-indent: calc(-1 * var(--offset));
+  padding-left: var(--offset);
 }

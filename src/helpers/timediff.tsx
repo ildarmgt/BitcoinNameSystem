@@ -4,7 +4,7 @@
  * Returns days-hours-minutes string, days-hours string, if expired, and ms of difference.
  * @param   {number}  timestampMsec               Timestamp of interest (milliseconds).
  * @param   {number}  [referenceTimestampMsec=]   Reference timestamp (milliseconds).
- * @returns {object}                              { dhm, dh, isExpired, msDiff }.
+ * @returns {object}                              { dhm, dh, isExpired, msDiff, ... }.
  */
 export default function timeDiff(
   timestampMsec: number, referenceTimestampMsec: number = Date.now()
@@ -13,6 +13,8 @@ export default function timeDiff(
   dh: string
   isExpired: boolean
   msDiff: number
+  timestampMsec: number
+  referenceTimestampMsec: number
 } {
   let diff = timestampMsec - referenceTimestampMsec
   // note sign
@@ -30,6 +32,8 @@ export default function timeDiff(
     dhm: `${d} days ${h} hours ${m} min`,
     dh: `${d} days ${h} hours`,
     isExpired,        // time difference is to the past of now? (boolean)
-    msDiff: diff
+    msDiff: diff,
+    timestampMsec,
+    referenceTimestampMsec
   };
 }
