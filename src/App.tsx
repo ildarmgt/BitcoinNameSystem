@@ -4,6 +4,7 @@ import Home from './pages/Home'
 import About from './pages/About'
 import Create from './pages/Create'
 import { Navbar } from './components/Navbar'
+import Wallet from './pages/Wallet'
 
 // using for routing
 const App = (): JSX.Element => {
@@ -22,6 +23,7 @@ const App = (): JSX.Element => {
         <Route exact path='/id/' component={Home} />
         <Route path="/about" component={About} />
         <Route path="/create" component={Create} />
+        <Route path="/wallet" component={Wallet} />
         <Route path='/:noise' component={Home} />
         <Route exact path='/' component={Home} />
       </Switch>

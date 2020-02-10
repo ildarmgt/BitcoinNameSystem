@@ -11,7 +11,8 @@ import { getUnspentSum } from '../../../helpers/bns/bitcoin'
  * Bid on network
  */
 export const P3DomainAndWallet = () => {
-  const { state, dispatch } = React.useContext(Store) // global state
+  // global state
+  const { state, dispatch } = React.useContext(Store)
 
   // Local state: keep track if API is busy
   const [ apiStatus, setApiStatus ] = React.useState('ok')

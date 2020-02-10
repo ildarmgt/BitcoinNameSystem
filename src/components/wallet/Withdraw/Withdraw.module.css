@@ -1,0 +1,38 @@
+.wrapper {
+  box-sizing: border-box;
+  margin: 0 1%;
+  font-size: calc(2.5 * var(--s));
+  color: var(--colorBitcoinBlue);
+}
+
+.title {
+  grid-area: title;
+  width: 100%;
+  font-size: calc(3 * var(--s));
+  padding: calc(2 * var(--s));
+  margin-bottom: calc(7 * var(--s));
+}
+
+.request {
+
+}
+
+.request__total {
+  margin: calc(2 * var(--s));
+}
+
+.balance {
+  box-sizing: border-box;
+  display: inline-block;
+  background-color: var(--colorDarker1);
+  border-radius: calc(1 * var(--s));
+  padding: calc(0.25 * var(--s)) calc(1 * var(--s));
+  /* vertical-align: middle; */
+  text-indent: 0;
+  /* margin: calc(0.25 * var(--s)) 0; */
+}
+
+.fees {
+  box-sizing: border-box;
+  padding: calc(2 * var(--s));
+}

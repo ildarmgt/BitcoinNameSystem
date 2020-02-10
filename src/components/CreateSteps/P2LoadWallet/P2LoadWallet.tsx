@@ -4,6 +4,8 @@ import styles from './P2LoadWallet.module.css'
 import { Store } from '../../../store'
 import { changePageInfoAction } from '../../../store/actions'
 import qr from 'qrcode'
+import { useHistory } from 'react-router-dom'
+
 
 /**
  * Load wallet page, including faucet link for testnet users
@@ -18,6 +20,9 @@ export const P2LoadWallet = () => {
       if (!err) { setQrCode(url) }
     })
   }, [state.wallet.address])
+
+  // url changer
+  const history = useHistory()
 
   return (
     <div className={ styles.wrapper }>
@@ -65,6 +70,15 @@ export const P2LoadWallet = () => {
         >
           Testnet: tBTC faucet
         </RoundButton>
+        <RoundButton
+            show={ (!!state.wallet?.address).toString() }
+            onClick={() => {
+              history.push('/wallet')
+            }}
+            colorbutton={'var(--colorHighlight)'}
+          >
+            Withdraw from wallet
+          </RoundButton>
         <RoundButton
           onClick={ () => {
             // open blockstream explorer for address in new window/tab

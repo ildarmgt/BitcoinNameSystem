@@ -86,7 +86,6 @@ export const P1RestoreOrBackup = () => {
               changePageInfoAction(state, dispatch, 2)
             }}
             next='true'
-            colorbutton={'var(--colorHighlight)'}
           >
             Don't change wallet
           </RoundButton>
