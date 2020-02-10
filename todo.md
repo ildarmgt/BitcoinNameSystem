@@ -9,8 +9,6 @@
 
 - multipage tx scan
 
-
-
 - scan notification address for tx history (search does that) and current utxo (could derive from tx history but still need raw tx)
 
 - `!a  <# of BTCs>` - Post price to sell (output @0), measured in floating point btc. Owner address (input @0). Similar to challenge period but instead of burning, tx are sent to owner. ~24 hours from time of first bid w/ more left on lease, cannot transfer ownership after first bid. Include notification (output @1) & optional public notification to '':'' address (@output 2). Must be no owner's ACS, use as inputs (inputs @1+). Does not change lease expiration - only burns can extend even if transfered.

@@ -213,7 +213,9 @@ export const updateForwardingInfoAction = (
       OUTS_2(args),
       OUT_0(args),
       OUT_1(args),
-      NOTIFIED_MIN(args)
+      NOTIFIED_MIN(args),
+
+      NO_UNSPENT_USER_NOTIFICATIONS_UTXO(args)
     ],
 
     execute: () => {
