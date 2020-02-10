@@ -64,7 +64,7 @@
     flex-basis: 30%;
     flex-direction: column-reverse;
     /* along column, so top */
-    justify-content: space-between;
+    justify-content: flex-end;
     /* perpendicular to column, so left */
     align-items: flex-end;
     margin-right: calc(2 * var(--s));

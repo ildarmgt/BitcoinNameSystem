@@ -42,13 +42,13 @@ export const P1RestoreOrBackup = () => {
         <div>
           <Details>
             <p>
-              <span>This wallet has the built in functionality missing from other wallets to create transactions with custom scripts, inputs, and outputs necessary for this application.</span>
+              <span>This wallet has the built-in unique functionality to create transactions with custom scripts, inputs, and outputs necessary for this application.</span>
 
               <span>The wallet's address is how users and owners of the domains are identified and should only be used for this purpose.</span>
 
               <span>1. BIP39 mnemonic is used from backup or generated</span>
               <span>2. BIP32 master seed is derived from the mnemonic</span>
-              <span>3. Key pair is derived from the m/44'/0'/0'/0/0 path</span>
+              <span>3. Key pair is derived at the m/44'/0'/0'/0/0 path from master seed</span>
               <span>4. The p2wpkh (pay-to-witness-public-key-hash) address is derived from key pair</span>
             </p>
           </Details>
