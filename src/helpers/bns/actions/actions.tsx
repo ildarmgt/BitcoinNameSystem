@@ -125,10 +125,10 @@ export const claimOwnershipAction = (st: I_BnsState, tx: any = undefined): I_BNS
       OUT_0(args),
       OUT_1(args),
       NOTIFIED_MIN(args),
+      NO_UNSPENT_USER_NOTIFICATIONS_UTXO(args),
       USER_ADDRESS_NOT_NOTIFICATION_ADDRESS(args),
 
-      BURNED_MIN(args),
-      NO_UNSPENT_USER_NOTIFICATIONS_UTXO(args)
+      BURNED_MIN(args)
     ],
 
     execute: () => {
@@ -175,11 +175,11 @@ export const currentOwnerRenewAction = (
       OUT_0(args),
       OUT_1(args),
       NOTIFIED_MIN(args),
+      NO_UNSPENT_USER_NOTIFICATIONS_UTXO(args),
       USER_ADDRESS_NOT_NOTIFICATION_ADDRESS(args),
 
       BURNED_MIN(args),
-      BURN_LAST_WIN(args),
-      NO_UNSPENT_USER_NOTIFICATIONS_UTXO(args)
+      BURN_LAST_WIN(args)
     ],
 
     execute: () => {
@@ -214,8 +214,8 @@ export const updateForwardingInfoAction = (
       OUT_0(args),
       OUT_1(args),
       NOTIFIED_MIN(args),
-
-      NO_UNSPENT_USER_NOTIFICATIONS_UTXO(args)
+      NO_UNSPENT_USER_NOTIFICATIONS_UTXO(args),
+      USER_ADDRESS_NOT_NOTIFICATION_ADDRESS(args),
     ],
 
     execute: () => {

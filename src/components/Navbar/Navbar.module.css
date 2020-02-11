@@ -57,7 +57,7 @@
 
 .root .selected {
   background-color: var(--colorDarker1);
-  /* background-color: var(--colorBrighter8); */
+  background-color: var(--colorBrighter8);
 }
 
 .root .selected:hover {
