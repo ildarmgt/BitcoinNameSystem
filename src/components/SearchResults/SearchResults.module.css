@@ -39,19 +39,21 @@
 
 .listItem {
   box-sizing: border-box;
-  font-size: calc(2.5 * var(--s));
+  font-size: calc(2.9 * var(--s));
   color: var(--colorBackground);
   background-color: var(--colorBitcoinBlue);
   border-radius: calc(0.5 * var(--s));
-  padding: calc(0.5 * var(--s)) calc(2 * var(--s));
+  padding: calc(0.75 * var(--s)) calc(2 * var(--s));
   margin: calc(1 * var(--s)) calc(2 * var(--s));
   cursor: pointer;
   height: auto;
+
+  /* -webkit-text-stroke: calc(0.01 * var(--s)) var(--colorBackground); */
 }
 
 .listItem .key {
   color: var(--colorBitcoinOrange);
-
+  /* -webkit-text-stroke: calc(0.01 * var(--s)) var(--colorBitcoinOrange); */
 }
 
 .listItem,
@@ -175,16 +177,4 @@
   .wrapper {
     height: calc(100vh - (13.5vh + (16 * var(--s)) + (6 * var(--s) * var(--horizontalScale))));
   }
-
-  .describe {
-    /* flex-basis: 30%; */
-    /* justify-content: start; */
-  }
-
-  .ownershipDetails {
-    /* align-self: flex-start; */
-    /* flex-basis: 100%; */
-    text-align: left;
-  }
-
 }
