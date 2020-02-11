@@ -58,7 +58,7 @@ export const P2LoadWallet = () => {
           Ready
         </RoundButton>
         <RoundButton
-          colorbutton={'var(--colorHighlight)'}
+          colorbutton={'var(--colorHighlightDark)'}
           show={ (state.network === 'testnet').toString() }
           onClick={ () => {
             // open faucet page in new window
@@ -76,7 +76,7 @@ export const P2LoadWallet = () => {
             onClick={() => {
               history.push('/wallet')
             }}
-            colorbutton={'var(--colorHighlight)'}
+            colorbutton={'var(--colorHighlightDark)'}
           >
             Withdraw from wallet
           </RoundButton>

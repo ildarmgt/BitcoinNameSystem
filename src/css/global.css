@@ -14,7 +14,15 @@ html {
   --horizontalScale: 0.700;
   --verticalScale: 0.999;
 
-  --colorHighlight: rgb(39, 167, 156);
+
+  --colorBitcoinBlue: rgb(17, 17, 51);
+  --colorBitcoinOrange: rgb(255, 155, 0);
+
+  /* derived from tetradic rgb colors with blue/orange as base */
+  --colorHighlightDark: #5599FF;
+  --colorHighlightLight: #FFFF00;
+
+
   --colorButtonText: white;
   --colorBackground: white;
   --colorTransparent: rgba(0, 0, 0, 0);
@@ -30,8 +38,6 @@ html {
   --colorDarker8: rgba(0, 0, 0, 0.8);
   --colorDisabled: rgba(128, 128, 128, 0.5);
   --colorLightText: rgba(17, 17, 51, 0.5);
-  --colorBitcoinOrange: rgb(255, 155, 0);
-  --colorBitcoinBlue: rgb(17, 17, 51);
 
   --colorWarning: rgba(153, 17, 62, 0.75);
 
