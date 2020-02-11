@@ -6,9 +6,6 @@ import {
   updateUtxoFromTxAction
 } from './actions'
 import { I_BnsState, I_TX, I_Condition } from './../types/'
-// import {
-//   getTxInput0SourceUserAddress
-// } from './../formathelpers'
 
 /****************************************************************************************
  * Returns what actions are available for specific user address at current state
@@ -74,7 +71,7 @@ export const runAllActionPermissionChecks = (st: I_BnsState, address: string) =>
  * Executes all actions possible by user that sent tx.
  * Nothing returned.
  */
-export const runAllUserActions = (st: I_BnsState, tx: I_TX) => {
+export const runAllUserActions = (st: I_BnsState, tx: I_TX): void => {
 
   // edit this list
   const allUserActions = [
@@ -102,7 +99,7 @@ export const runAllUserActions = (st: I_BnsState, tx: I_TX) => {
  * Executes non-user actions like ownership expiration over time or deriving new UTXO.
  * Nothing returned.
  */
-export const runAllAutomaticActions = (st: I_BnsState, tx: I_TX | undefined) => {
+export const runAllAutomaticActions = (st: I_BnsState, tx: I_TX | undefined): void => {
 
   // list of all automatic actions
   const allAutoChecks = [

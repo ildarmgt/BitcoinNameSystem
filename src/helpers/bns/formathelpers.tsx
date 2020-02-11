@@ -100,6 +100,7 @@ export const addToUserForwards = (
   user.forwards = [...user.forwards, ...forwardsInThisTx]
 }
 
+// parse embedded data and store in forwards
 export const readEmbeddedData = (st: I_BnsState, tx: I_TX):void => {
   // only go on if there is op_return with embedded data on output 0
   if (!isOpreturnOutput0(tx)) {
