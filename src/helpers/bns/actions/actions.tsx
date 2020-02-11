@@ -176,6 +176,8 @@ export const changeAddressAction = (st: I_BnsState, address: string = '', tx: an
         oldOwner!.winTimestamp = 0
         oldOwner!.burnAmount = 0
         // nonce, forwards (not active now), update height are not touched
+        console.log('ownership transfered from', oldOwner!.address, 'to', newAddress)
+
       }
     },
 
@@ -187,7 +189,7 @@ export const changeAddressAction = (st: I_BnsState, address: string = '', tx: an
 
 /**
  * Send ownership to another address. Forwards are not kept.
- * network: '!sa'
+ * network: '!so'
  * address: 'newaddress'
  */
 export const sendOwnershipAction = (st: I_BnsState, address: string = '', tx: any = undefined): I_BNS_Action => {
@@ -237,6 +239,8 @@ export const sendOwnershipAction = (st: I_BnsState, address: string = '', tx: an
         oldOwner!.winTimestamp = 0
         oldOwner!.burnAmount = 0
         // nonce, forwards (not active now), update height are not touched
+
+        console.log('ownership transfered from', oldOwner!.address, 'to', newAddress)
       }
     },
     suggestions: 'GET_New owner address_' + commandSignal
