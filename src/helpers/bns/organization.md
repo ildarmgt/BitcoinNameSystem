@@ -1,5 +1,12 @@
 # Logic flow
 
+## Basic calling order
+
+```
+calcBnsState -> Batch Calls -> BNS Actions -> BNS Conditions -> State getters/setters
+```
+
+
 ## Deriving BNS State
 
 `calcBnsState` - calculates the state of the Bitcoin Name System from transaction history, followed by final update of current block height.
