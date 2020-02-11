@@ -30,6 +30,22 @@ export const SearchResults = () => {
       <>
         <table><tbody>
           <tr>
+            <td>Owner</td>
+            <td>
+              <p>
+                <span className={ styles.breakable }>{ owner.address }</span>
+              </p>
+            </td>
+          </tr>
+          <tr>
+            <td>Notifications</td>
+            <td>
+              <p>
+                <span className={ styles.breakable }>{ state.domain.notificationAddress }</span>
+              </p>
+            </td>
+          </tr>
+          <tr>
             <td>Ownership extended</td>
             <td>
               <p>{ owner.winHeight } block height</p>
@@ -60,19 +76,15 @@ export const SearchResults = () => {
   return (
     <>
       <div className={ styles.wrapper }>
-        <div
-          className={ styles.describe }
-        >
-          { latestForwards.length } matches on { state.network } {'  '}
-        </div>
-
-
-        {/* <div className={ styles.listContainer } > */}
-
-        {/* </div> */}
 
         {/* scrollable search results */}
         <div className={ styles.listContainer } >
+
+          <div
+            className={ styles.describe }
+          >
+            { latestForwards.length } matches on { state.network } {'  '}
+          </div>
 
           {/* show if domain is available */}
           {(diff.isExpired) && (
@@ -88,7 +100,7 @@ export const SearchResults = () => {
           {(!diff.isExpired) && (
             <div className={ styles.ownershipDetails }>
               <Details
-                description={ 'See ownership details' }
+                description={ 'Ownership details' }
               >
 
                 { ownershipInformation() }
