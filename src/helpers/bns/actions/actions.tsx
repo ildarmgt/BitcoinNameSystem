@@ -198,7 +198,7 @@ export const sendOwnershipAction = (st: I_BnsState, address: string = '', tx: an
   return {
 
     type: SEND_OWNERSHIP,
-    info: 'Send ownership to another address',
+    info: 'Give up ownership to another address',
 
     permissions: [
       USER_IS_OWNER(args)

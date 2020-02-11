@@ -86,6 +86,7 @@ export const runAllUserActions = (st: I_BnsState, tx: I_TX): void => {
     currentOwnerRenewAction(st, undefined, tx),     // renew ownership
     claimOwnershipAction(st, tx),                   // new ownership
 
+    // giving up ownership should go last in case user state needs to be edited first
     sendOwnershipAction(st, undefined, tx),         // give up ownership to another
     changeAddressAction(st, undefined, tx)          // change your ownership address
   ]

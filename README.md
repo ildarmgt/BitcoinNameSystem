@@ -74,7 +74,23 @@ This design cannot be entirely free to prevent domains being captured en masse, 
 
 ## What works
 
-* Searching for domain ownership and forwarding information (with simplified rules)
+(using testnet and short duration testing mode parameters for now)
+
+* Transactions are created and broadcast within the UI based on action chosen and requirements. Tx is summarized on same page as broadcast.
+
+* User action: Changing your own ownership address (keeping forwards, change is sent to new address by default)
+
+* User action: Giving up ownership to another address (no forwarding information kept)
+
+* User action: Claiming unclaimed or expired domain
+
+* User action: Extending ownership of your domain
+
+* User action: Changing forwarding information
+
+* Enforced rules that require clean up of your own notification UTXO
+
+* Searching for domain ownership and forwarding information
 
 * Encryption and decryption of embedded information (AES-256-CTR)
 
@@ -82,9 +98,15 @@ This design cannot be entirely free to prevent domains being captured en masse, 
 
 * Async blockstream.info API calls
 
-* Scanning wallet and notification address for tx history, utxo
+* API requested data for wallet tx history & utxo
+
+* API requested data for notification address tx history, (derived utxo), and raw tx for utxo to feed psbt tx maker
+
+* API requested data for fee suggestions and user choice menu
 
 * Wallet total unspent balance
+
+* Easy to understand description on about page
 
 ## Donations
 
