@@ -14,14 +14,17 @@ html {
   --horizontalScale: 0.700;
   --verticalScale: 0.999;
 
+  --colorBitcoinBlue: #111133;
 
   --colorBitcoinBlue: rgb(17, 17, 51);
   --colorBitcoinOrange: rgb(255, 155, 0);
 
   /* derived from tetradic rgb colors with blue/orange as base */
-  --colorHighlightDark: #5599FF;
+  --colorHighlightDark: rgba(85, 153, 255, 0.89);
   --colorHighlightLight: #FFFF00;
 
+  /* transparent version of blue */
+  --colorLightText: rgba(17, 17, 51, 0.5);
 
   --colorButtonText: white;
   --colorBackground: white;
@@ -31,20 +34,19 @@ html {
   --colorBrighter3: rgba(255, 255, 255, 0.3);
   --colorBrighter8: rgba(255, 255, 255, 0.8);
 
-  --colorDarker05: rgba(0, 0, 0, 0.05);
+  /* use blue tint */
+  --colorDarker0_5: rgba(17, 17, 51, 0.05);
+  --colorDarker1: rgba(17, 17, 51, 0.1);
+  --colorDarker2: rgba(17, 17, 51, 0.2);
+  --colorDarker4: rgba(17, 17, 51, 0.4);
+  --colorDarker5: rgba(17, 17, 51, 0.5);
+  --colorDarker8: rgba(17, 17, 51, 0.8);
+  --colorDisabled: rgba(17, 17, 51, 0.5);
 
-  --colorDarker1: rgba(0, 0, 0, 0.1);
-  --colorDarker2: rgba(0, 0, 0, 0.2);
-  --colorDarker4: rgba(0, 0, 0, 0.4);
-  --colorDarker5: rgba(0, 0, 0, 0.5);
-  --colorDarker8: rgba(0, 0, 0, 0.8);
-  --colorDisabled: rgba(128, 128, 128, 0.5);
-  --colorLightText: rgba(17, 17, 51, 0.5);
 
   --colorWarning: rgba(153, 17, 62, 0.75);
 
   --colorGradientTopLeft: rgba(45, 154, 255, 0.15);
-
   --colorGradientBottomRight: rgba(212, 145, 37, 0.07);
 
   box-sizing: border-box;
@@ -97,13 +99,13 @@ body {
 
 a {
   text-decoration: none;
-  color: var(--colorDarker2);
+  color: var(--colorLightText);
   vertical-align: middle;
 }
 
 a:hover,
 .canHover:hover {
-  background-color: var(--colorDarker1);
+  background-color: var(--colorDarker0_5);
 }
 
 .canPress:hover {

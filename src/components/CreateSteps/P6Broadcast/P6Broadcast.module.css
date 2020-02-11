@@ -176,6 +176,6 @@
     justify-self: right;
   }
   .txSummary > div {
-    /* padding: calc(2 * var(--s)) calc(1 * var(--s)); */
+    padding: calc(1 * var(--s)) calc(1 * var(--s));
   }
 }

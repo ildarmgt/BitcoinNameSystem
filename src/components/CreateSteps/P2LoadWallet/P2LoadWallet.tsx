@@ -16,7 +16,9 @@ export const P2LoadWallet = () => {
   // load QR code into local state
   const [ qrCode, setQrCode] = useState()
   useEffect(() => {
-    qr.toDataURL(state.wallet.address, { type: 'image/jpeg' }, (err: any, url: any) => {
+    qr.toDataURL(state.wallet.address, {
+      type: 'image/jpeg', color: { dark: '#111133ff'}
+    }, (err: any, url: any) => {
       if (!err) { setQrCode(url) }
     })
   }, [state.wallet.address])
@@ -41,25 +43,24 @@ export const P2LoadWallet = () => {
         </div>
       </div>
       <div className={ styles.buttonWrapper }>
-        <div>
-          <RoundButton
-            back='true'
-            onClick={ () => {
-              changePageInfoAction(state, dispatch, 1)
-            }}
-          >
-            Back
-          </RoundButton>
-          
-          <RoundButton
-            next='true'
-            onClick={ () => {
-              changePageInfoAction(state, dispatch, 3)
-            }}
-          >
-            Ready
-          </RoundButton>
-        </div>
+
+        <RoundButton
+          back='true'
+          onClick={ () => {
+            changePageInfoAction(state, dispatch, 1)
+          }}
+        >
+          Back
+        </RoundButton>
+
+        <RoundButton
+          next='true'
+          onClick={ () => {
+            changePageInfoAction(state, dispatch, 3)
+          }}
+        >
+          Ready
+        </RoundButton>
 
         <RoundButton
           show={ (!!state.wallet?.address).toString() }
