@@ -32,7 +32,7 @@ export const AboutContent = () => {
           </p>
 
           <p>
-            All <span>BNS</span> data is stored inside transactions on <span>Bitcoin</span> blockchain. This means that <span>BNS</span> is protected by the most secure, decentralized, permissionless, censorship resistant public network ever created.
+            All <span>BNS</span> data is stored inside transactions on the <span>Bitcoin</span> blockchain. This means that <span>BNS</span> is protected by the most secure, decentralized, permissionless, and censorship resistant public network ever created.
           </p>
 
           <a

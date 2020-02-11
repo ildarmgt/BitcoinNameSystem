@@ -39,7 +39,13 @@ export const P6Broadcast = () => {
       state.choices,
       state.network
     )
-  } catch (e) { txIssue = e.message }
+  } catch (e) {
+    txIssue = String(e.message)
+    if (txIssue.endsWith('has no matching Script')) {
+      txIssue += ' \n(address provided seems invalid)'
+      console.log(txIssue)
+    }
+  }
 
   // summarize number of updates in the embeded string
   const numberOfUpdates = (state

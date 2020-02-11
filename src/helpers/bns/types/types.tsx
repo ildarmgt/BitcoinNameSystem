@@ -26,6 +26,7 @@ export interface I_Action_Choice {
   type: BNSActions
   info: string
   special: Array<any>
+  actionContent: string
 }
 
 export interface I_BnsState {

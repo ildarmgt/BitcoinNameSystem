@@ -65,7 +65,8 @@ export const runAllActionPermissionChecks = (st: I_BnsState, address: string) =>
       isUsable: checkedPermissions.every(permission => permission.isAllowed),
       suggestions: action.suggestions,
       permissionList: checkedPermissions,
-      special: specialTxDirections
+      special: specialTxDirections,
+      actionContent: '' // blank for now, fill in later
     })
   })
 

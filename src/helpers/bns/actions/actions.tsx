@@ -181,7 +181,7 @@ export const changeAddressAction = (st: I_BnsState, address: string = '', tx: an
 
     // change from tx for user could be sent to the new address
     // so there's no need to fund new address or withdraw from old one
-    suggestions: 'SEND_CHANGE_TO_NEW_ADDRESS'
+    suggestions: 'GET_Your new address (change sent there)_' + commandSignal
   }
 }
 
@@ -192,7 +192,7 @@ export const changeAddressAction = (st: I_BnsState, address: string = '', tx: an
  */
 export const sendOwnershipAction = (st: I_BnsState, address: string = '', tx: any = undefined): I_BNS_Action => {
   const args = { st, address, tx }
-  const commandSignal = '!sa'
+  const commandSignal = '!so'
   return {
 
     type: SEND_OWNERSHIP,
@@ -238,7 +238,8 @@ export const sendOwnershipAction = (st: I_BnsState, address: string = '', tx: an
         oldOwner!.burnAmount = 0
         // nonce, forwards (not active now), update height are not touched
       }
-    }
+    },
+    suggestions: 'GET_New owner address_' + commandSignal
   }
 }
 

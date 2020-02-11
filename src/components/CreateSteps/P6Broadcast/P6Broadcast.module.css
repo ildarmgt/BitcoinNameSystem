@@ -41,7 +41,7 @@
 .txSummary {
   grid-area: txSummary;
   width: 100%;
-
+  white-space: pre-wrap;
 }
 
 .status {

@@ -50,8 +50,6 @@ export const calcTx = (
     throw new Error('Wallet has no funds (utxo) to use')
   }
 
-  console.warn('this is calcTx choices', choices)
-
   // grab fee rate
   const feeRate = choices.feeRate
   // grab user object
@@ -170,7 +168,13 @@ export const calcTx = (
   const nonce = user.nonce.toString()
   const encryptionKey =  domain.domainName + wallet.address + nonce
   console.log('nonce used to encrypt', domain.domainName, wallet.address, nonce)
-  const data = encrypt(choices.embedString, encryptionKey)
+  // if there's extra content add it, otherwise just regular string
+  const finalEmbedString = choices.action.actionContent !== ''
+    ? [choices.action.actionContent, choices.embedString].join(' ')
+    : choices.embedString
+  console.log('string embedded is', finalEmbedString)
+
+  const data = encrypt(finalEmbedString, encryptionKey)
   const embed = bitcoin.payments.embed({ data: [data] })
 
   // output[0]: check special tx rules for max amount required to burn among all of them
@@ -189,16 +193,19 @@ export const calcTx = (
   })
   console.log('rules say to burn ', burnAmount)
 
-  // add notification output (always index 1)
+  // output[1] add notification output (always index 1)
   psbt.addOutput({
     address: notificationsAddress, // calculated from domainName provided
     value: MIN_NOTIFY
   })
 
-  // add change output (anything is fine for output[2] or higher)
+  // output[2] add change output (anything is fine for output[2] or higher)
+  const changeAddress = choices.action.type === 'CHANGE_ADDRESS'
+    ? choices.action.actionContent.split(' ')[1] // new address
+    : wallet.address
   const change = totalGathered - valueNeeded
   psbt.addOutput({
-    address: wallet.address,
+    address: changeAddress,
     value: change
   })
 

@@ -48,11 +48,12 @@ export const RoundButton = (props:any): JSX.Element => {
             : `calc(2.5/2.9 * var(--s))`
         ) as React.CSSProperties
       } }
+      {...props}
       className={ [
         styles.roundButtonWrap,
-        props.back ? styles.back : undefined
+        props.back ? styles.back : '',
+        props.className
       ].join(' ') }
-      {...props}
     >
       <div
         className={ [

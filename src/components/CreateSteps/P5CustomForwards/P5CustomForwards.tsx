@@ -63,7 +63,12 @@ export const P5CustomForwards = () => {
     })
     if (forwardsString.length > 0) { forwardsString = forwardsString.slice(0, -1) }
     console.log('string to embed:', '"' + forwardsString + '"')
-    return forwardsString
+
+    // combine the forwards added here with the required action content
+    // that is also using the embedded text
+    return state.choices.action.actionContent !== ''
+      ? [state.choices.action.actionContent, forwardsString].join(' ')
+      : forwardsString
   }
 
 
