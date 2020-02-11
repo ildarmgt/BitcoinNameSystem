@@ -102,6 +102,11 @@
   /* margin-bottom: calc(0.5 * var(--s)); */
 }
 
+.avaiability {
+  width: 100%;
+  text-align: center;
+}
+
 .createLink {
   display: inline-block;
   text-align: center;
@@ -113,6 +118,8 @@
   padding: calc(0.6 * var(--s)) calc(3 * var(--s));
   margin: calc(0.5 * var(--s));
   border-radius: calc(0.5 * var(--s));
+  justify-self: center;
+  align-self: center;
 }
 
 .createLink:hover {
@@ -160,14 +167,14 @@
   }
 
   .describe {
-    flex-basis: 30%;
-    align-self: flex-start;
+    /* flex-basis: 30%; */
+    /* justify-content: start; */
   }
 
   .ownershipDetails {
-    align-self: flex-start;
-    flex-basis: 70%;
-    text-align: right;
+    /* align-self: flex-start; */
+    /* flex-basis: 100%; */
+    text-align: left;
   }
 
 }

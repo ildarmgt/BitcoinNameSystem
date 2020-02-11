@@ -86,16 +86,6 @@ export const SearchResults = () => {
             { latestForwards.length } matches on { state.network } {'  '}
           </div>
 
-          {/* show if domain is available */}
-          {(diff.isExpired) && (
-            <Link
-              to='/create'
-              className={ styles.createLink }
-            >
-              Domain available!
-            </Link>
-          )}
-
           {/* ownership details */}
           {(!diff.isExpired) && (
             <div className={ styles.ownershipDetails }>
@@ -131,6 +121,18 @@ export const SearchResults = () => {
               }
             })
           }
+
+          {/* show if domain is available */}
+          <div className={ styles.avaiability }>
+            {(diff.isExpired) && (
+              <Link
+                to='/create'
+                className={ styles.createLink }
+              >
+                Domain available!
+              </Link>
+            )}
+          </div>
 
         </div>
       </div>
