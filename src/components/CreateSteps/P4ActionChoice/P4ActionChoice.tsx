@@ -25,24 +25,20 @@ export const P4ActionChoice = () => {
   )
   // and get all permissions
   const checkActions = runAllActionPermissionChecks(bns, state.wallet.address)
-  console.log(checkActions)
+  console.log('results of permission scan for all actions', checkActions)
 
   // list available actions for render
   const listAvailableActions = () => (
     checkActions.map(action => {
       // usable actions only + not displaying actions with warnings
-      if (action.isUsable && !action.warning) {
+      if (action.isUsable && !action.suggestions?.startsWith('WARNING')) {
         console.log(action.info, 'special tx instructions:', action.special)
         return (
         <RoundButton
           next={ 'true' }
           onClick={ () => {
             changeChoicesBNSAction(state, dispatch, {
-              action: {
-                type: action.type,
-                info: action.info,
-                special: action.special
-              }
+              action: action
             })
             changePageInfoAction(state, dispatch, 5)
           }}

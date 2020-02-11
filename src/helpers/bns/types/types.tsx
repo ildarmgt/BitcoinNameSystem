@@ -2,7 +2,9 @@
 export enum BNSActions {
   RENEW = 'RENEW',
   ONLY_FORWARDS = 'ONLY_FORWARDS',
-  CLAIM_OWNERSHIP = 'CLAIM_OWNERSHIP'
+  CLAIM_OWNERSHIP = 'CLAIM_OWNERSHIP',
+  SEND_OWNERSHIP = 'SEND_OWNERSHIP',
+  CHANGE_ADDRESS = 'CHANGE_ADDRESS'
 }
 
 export interface I_BNS_Action {
@@ -11,7 +13,7 @@ export interface I_BNS_Action {
   permissions: Array<any>
   conditions: Array<any>
   execute: () => void
-  warning?: string | undefined
+  suggestions?: string | undefined
 }
 
 export interface I_BNS_Auto_Action {

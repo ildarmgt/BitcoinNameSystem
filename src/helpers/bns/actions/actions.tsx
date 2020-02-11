@@ -31,9 +31,13 @@ import {
   isSenderTheCurrentOwner,
   updateUtxoFromTx,
   noUnspentUserNotificationsUtxo,
-  getNotificationAddress
+  getNotificationAddress,
+  isCommandCalled,
+  getCommandCalled,
+  existsUser,
+  createNewUser
 } from './../formathelpers'
-const { RENEW, ONLY_FORWARDS, CLAIM_OWNERSHIP } = BNSActions
+const { RENEW, ONLY_FORWARDS, CLAIM_OWNERSHIP, SEND_OWNERSHIP, CHANGE_ADDRESS } = BNSActions
 
 // =========== CONDITIONS / PERMISSIONS ================
 // Called by the actions for conditions
@@ -105,8 +109,139 @@ const USER_ADDRESS_NOT_NOTIFICATION_ADDRESS = ({ st, tx=undefined }: any): I_Con
   status: () => (getNotificationAddress(st) !== getTxInput0SourceUserAddress(tx))
 })
 
+const IS_COMMAND_CALLED = (
+  { st, tx=undefined }: { st: I_BnsState, tx: I_TX | undefined },
+  command: string
+): I_Condition => ({
+  info: 'Command must be present in forwards at this tx height from tx user',
+  status: () => (isCommandCalled(st, tx as I_TX, command))
+})
+
+
+
 
 // ============ USER ACTIONs ===============
+
+/**
+ * Change address. (similar to send ownership, but keeps forwards)
+ * network: '!ca'
+ * address: 'newaddress'
+ */
+export const changeAddressAction = (st: I_BnsState, address: string = '', tx: any = undefined): I_BNS_Action => {
+  const args = { st, address, tx }
+  const commandSignal = '!ca'
+  return {
+
+    type: CHANGE_ADDRESS,
+    info: 'Update your ownership address',
+
+    permissions: [
+      USER_IS_OWNER(args)
+    ],
+
+    conditions: [
+      OUTS_2(args),
+      OUT_0(args),
+      OUT_1(args),
+      NOTIFIED_MIN(args),
+      NO_UNSPENT_USER_NOTIFICATIONS_UTXO(args),
+      USER_ADDRESS_NOT_NOTIFICATION_ADDRESS(args),
+
+      IS_COMMAND_CALLED(args, commandSignal)
+    ],
+
+    execute: () => {
+      const thisCommand = getCommandCalled(st, tx, commandSignal)
+      const newAddress = thisCommand?.address;
+      if (!newAddress) {
+        console.log('ownership transfer detected, but no address found')
+      } else {
+        // quite possible user doesn't exist so create blank one
+        if (!existsUser(st, newAddress)) createNewUser(st, newAddress)
+
+        // new owner is created and given old owner's ownership data
+
+        const oldOwner = getOwner(st)
+        setOwner(st, newAddress)
+        // one of conditions is USER_IS_OWNER so there is owner
+        getUser(st, newAddress).winHeight = oldOwner!.winHeight
+        getUser(st, newAddress).winTimestamp = oldOwner!.winTimestamp
+        getUser(st, newAddress).burnAmount = oldOwner!.burnAmount
+        // clone forwards
+        getUser(st, newAddress).forwards = JSON.parse(JSON.stringify(oldOwner!.forwards))
+        // for new user, no changes to updateHeight, nonce
+
+        // old owner loses ownership data
+        oldOwner!.winHeight = 0
+        oldOwner!.winTimestamp = 0
+        oldOwner!.burnAmount = 0
+        // nonce, forwards (not active now), update height are not touched
+      }
+    },
+
+    // change from tx for user could be sent to the new address
+    // so there's no need to fund new address or withdraw from old one
+    suggestions: 'SEND_CHANGE_TO_NEW_ADDRESS'
+  }
+}
+
+/**
+ * Send ownership to another address. Forwards are not kept.
+ * network: '!sa'
+ * address: 'newaddress'
+ */
+export const sendOwnershipAction = (st: I_BnsState, address: string = '', tx: any = undefined): I_BNS_Action => {
+  const args = { st, address, tx }
+  const commandSignal = '!sa'
+  return {
+
+    type: SEND_OWNERSHIP,
+    info: 'Send ownership to another address',
+
+    permissions: [
+      USER_IS_OWNER(args)
+    ],
+
+    conditions: [
+      OUTS_2(args),
+      OUT_0(args),
+      OUT_1(args),
+      NOTIFIED_MIN(args),
+      NO_UNSPENT_USER_NOTIFICATIONS_UTXO(args),
+      USER_ADDRESS_NOT_NOTIFICATION_ADDRESS(args),
+
+      IS_COMMAND_CALLED(args, commandSignal)
+    ],
+
+    execute: () => {
+      const thisCommand = getCommandCalled(st, tx, commandSignal)
+      const newAddress = thisCommand?.address;
+      if (!newAddress) {
+        console.log('ownership transfer detected, but no address found')
+      } else {
+        // quite possible user doesn't exist so create blank one
+        if (!existsUser(st, newAddress)) createNewUser(st, newAddress)
+
+        // new owner is created and given old owner's ownership data
+
+        const oldOwner = getOwner(st)
+        setOwner(st, newAddress)
+        // one of conditions is USER_IS_OWNER so there is owner
+        getUser(st, newAddress).winHeight = oldOwner!.winHeight
+        getUser(st, newAddress).winTimestamp = oldOwner!.winTimestamp
+        getUser(st, newAddress).burnAmount = oldOwner!.burnAmount
+        // for new user, no changes to updateHeight, nonce, or forwards
+
+        // old owner loses ownership data
+        oldOwner!.winHeight = 0
+        oldOwner!.winTimestamp = 0
+        oldOwner!.burnAmount = 0
+        // nonce, forwards (not active now), update height are not touched
+      }
+    }
+  }
+}
+
 
 // Describe: If no owner, sender can claim ownership
 export const claimOwnershipAction = (st: I_BnsState, tx: any = undefined): I_BNS_Action => {
@@ -132,12 +267,6 @@ export const claimOwnershipAction = (st: I_BnsState, tx: any = undefined): I_BNS
     ],
 
     execute: () => {
-
-      if (tx.txid === 'a15e75716d9c035a61d4d1597f459d7193719caeccc04828a186db603476276b') {
-        console.log('ownership part of claimOwnershipAction executed for last tx')
-      }
-
-
       // ownership source was already created for sure via updateSourceUserFromTx
       // only have to set owner address to tx address
       const height = getTxHeight(tx)
@@ -225,9 +354,9 @@ export const updateForwardingInfoAction = (
     // Change info to warning when attempting to update forwarding info
     // for domain you do not control.
     // Such a change would be wasted until it's owned.
-    warning:
+    suggestions:
       !USER_IS_OWNER(args).status()
-        ? 'Warning: not your domain yet!'
+        ? 'WARNING_USELESS_IF_NOT_OWNER'
         : undefined
   }
 }

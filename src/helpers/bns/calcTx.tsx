@@ -50,6 +50,8 @@ export const calcTx = (
     throw new Error('Wallet has no funds (utxo) to use')
   }
 
+  console.warn('this is calcTx choices', choices)
+
   // grab fee rate
   const feeRate = choices.feeRate
   // grab user object

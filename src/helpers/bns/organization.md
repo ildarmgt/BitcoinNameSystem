@@ -32,7 +32,7 @@ Each action has
 1. array of permissions (conditions you can check before creating tx)
 2. array of conditions (checked after tx is on chain)
 3. execution logic (in case permissions and conditions are met)
-4. (optional: warning that's only suggestions)
+4. (optional: suggestions - only suggestions)
 
 When each BNS Action is called by a batch process function with current BNS state and, sometimes, transaction as arguments, it
 

@@ -6,6 +6,14 @@ import { decrypt } from './cryptography'
 // ========== helper functions =====================
 
 export const existsCurrentOwner = (st: I_BnsState): boolean => st.domain.currentOwner !== ''
+export const existsUser = (st: I_BnsState, address: string): boolean => !!st.domain.users[address]
+
+export const createNewUser = (st: I_BnsState, address: string): void => {
+  // create new user
+  st.domain.users[address] = JSON.parse(JSON.stringify(newUser))
+  // update its address for easy access
+  st.domain.users[address].address = address
+}
 
 export const getOwnerAddress = (st: I_BnsState): string => st.domain.currentOwner || ''
 
@@ -78,15 +86,15 @@ export const updateSourceUserFromTx = (st: I_BnsState, tx: I_TX): void => {
   const fromAddress = getTxInput0SourceUserAddress(tx)
 
   // create new user if not already one of users
-  if (!(fromAddress in st.domain.users)) {
+  // if (!(fromAddress in st.domain.users)) {
+  if (!existsUser(st, fromAddress)) {
     // create new user object by copying values of newUser object
-    st.domain.users[fromAddress] = JSON.parse(JSON.stringify(newUser))
+    createNewUser(st, fromAddress)
     console.log('new source created:', fromAddress)
   }
 
-  // update user
+  // update user heights/times
   const user = st.domain.users[fromAddress]
-  user.address = fromAddress
   user.nonce = user.updateHeight
   user.updateHeight = getTxHeight(tx)
 }
@@ -190,6 +198,52 @@ export const burnedPreviousRateMin = (st: I_BnsState, tx: I_TX): boolean => (
   getTxOutput0BurnValue(tx) >= getLastOwnerBurnedValue(st)
 )
 
+/**
+ * Checks if this command exists at tx height from tx user.
+ */
+export const isCommandCalled = (
+  st: I_BnsState,
+  tx: I_TX,
+  command: string
+): boolean  => {
+  return !!getCommandCalled(st, tx, command)
+}
+
+/**
+ * Gets command called in most recent forwards from user of tx.
+ */
+export const getCommandCalled = (
+  st: I_BnsState,
+  tx: I_TX,
+  command: string
+): I_Forward | undefined  => {
+
+  // get tx height (only current height is relevant for commands)
+  const txHeight = getTxHeight(tx)
+  // who sent the tx
+  const fromAddress = getTxInput0SourceUserAddress(tx)
+  // get user object of the tx sender
+  const user = getUser(st, fromAddress)
+  // array of forwards
+  const forwards = user.forwards
+
+
+  // scan height and name of each forward
+  for (const thisForward of forwards) {
+    const network = thisForward.network
+    const forwardHeight = thisForward.updateHeight
+    if (forwardHeight === txHeight) {
+      // commands are identified via a string (starts with !)
+      if (network.startsWith(command)) {
+        // found it so return in
+        return thisForward
+      }
+    }
+  }
+
+  return undefined
+}
+
 // Describe: update current derivedUtxoList from tx
 // Since utxo in question are the notificaiton address utxo,
 // they will always be part of txHistory
@@ -228,7 +282,9 @@ export const updateUtxoFromTx = (st: I_BnsState, tx: I_TX): void => {
   })
 }
 
-// returns true only if there are no utxo (at notification address) where the sender address (input[0] in the past) is the same as the sender address of this tx (input[0])
+// returns true only if there are no utxo (at notification address)
+// where the sender address (input[0] in the past) is the same as
+// the sender address of this tx (input[0])
 export const noUnspentUserNotificationsUtxo = (st: I_BnsState, tx: I_TX): boolean => {
   // sender address of this tx
   const userOfTxAddress = getTxInput0SourceUserAddress(tx)

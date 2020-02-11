@@ -3,7 +3,9 @@ import {
   claimOwnershipAction,
   autoCheckForOwnerExpiredAction,
   updateForwardingInfoAction,
-  updateUtxoFromTxAction
+  updateUtxoFromTxAction,
+  sendOwnershipAction,
+  changeAddressAction
 } from './actions'
 import { I_BnsState, I_TX, I_Condition } from './../types/'
 
@@ -14,10 +16,14 @@ export const runAllActionPermissionChecks = (st: I_BnsState, address: string) =>
   console.log('currentOwnerRenewAction running:')
 
   // Edit this list to include more actions for checks
+  // (address here, tx not necessary)
   const allActions = [
     updateForwardingInfoAction(st, address),
     currentOwnerRenewAction(st, address),
-    claimOwnershipAction(st)
+    claimOwnershipAction(st),
+
+    sendOwnershipAction(st, address),
+    changeAddressAction(st, address)
   ]
 
   // check which actions are doable
@@ -57,7 +63,7 @@ export const runAllActionPermissionChecks = (st: I_BnsState, address: string) =>
       type: action.type,
       info: action.info,
       isUsable: checkedPermissions.every(permission => permission.isAllowed),
-      warning: action.warning,
+      suggestions: action.suggestions,
       permissionList: checkedPermissions,
       special: specialTxDirections
     })
@@ -73,11 +79,14 @@ export const runAllActionPermissionChecks = (st: I_BnsState, address: string) =>
  */
 export const runAllUserActions = (st: I_BnsState, tx: I_TX): void => {
 
-  // edit this list
+  // edit this list (tx here, address not necessary)
   const allUserActions = [
-    updateForwardingInfoAction(st, undefined, tx),
-    currentOwnerRenewAction(st, undefined, tx),
-    claimOwnershipAction(st, tx)
+    updateForwardingInfoAction(st, undefined, tx),  // reads embedded data
+    currentOwnerRenewAction(st, undefined, tx),     // renew ownership
+    claimOwnershipAction(st, tx),                   // new ownership
+
+    sendOwnershipAction(st, undefined, tx),         // give up ownership to another
+    changeAddressAction(st, undefined, tx)          // change your ownership address
   ]
 
   allUserActions.forEach((action: any) => {
