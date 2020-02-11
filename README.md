@@ -4,7 +4,7 @@ On-chain DNS where easy to read domain name (i.e. alias) can be looked up or cre
 
 Used: React (Hooks), TypeScript, Node.js, JavaScript, CSS, HTML.
 
-![pic](https://i.imgur.com/KQtiSHn.png)
+![pic](https://i.imgur.com/37uMiO6.png)
 
 This readme and all else is work in progress. I'm open to collaborations.
 
