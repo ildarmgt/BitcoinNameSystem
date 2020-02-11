@@ -54,14 +54,22 @@
 }
 
 .drawing {
-  /* border: 1px solid blue; */
   display: block;
-  width: 80vw;
-  /* height: auto; */
+
+  width: 90vw;
+  max-width: calc(70 * var(--s));
+
   margin: 0 auto;
   margin-bottom: calc(2 * var(--s));
 
-  max-width: calc(70 * var(--s));
+  /* text-shadow: var(--colorDarker1) 0px 1px 1px; */
+  /* -webkit-text-stroke: 1px; */
+  /* force quality render */
+  /* transform: rotateX(0.1deg); */
+  /* filter: blur(0.001vw); */
+
+  /* this fixes svg text in firefox!!! */
+  stroke: transparent;
 
 }
 

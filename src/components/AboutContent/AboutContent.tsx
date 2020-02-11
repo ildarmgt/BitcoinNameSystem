@@ -22,7 +22,6 @@ export const AboutContent = () => {
 
         <div className={ styles.contentWrapper }>
 
-
           <Drawing
             className={ styles.drawing }
           />
