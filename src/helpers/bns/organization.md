@@ -45,7 +45,7 @@ Conditions in BNS Actions and logic inside action's execute function call on sta
 
 Permissions are type of conditions that can be checked before creating a transaction.
 
-Conditions are described in `bns/actions/actions/tsx`
+Conditions are described in `bns/actions/actions.tsx`
 
 Each condition has
 
@@ -59,7 +59,7 @@ State setters and getters that deal with the specific state format are described
 
 This is where the complexity is placed in dealing with parsing and changing BNS state's format.
 
-The formats are typed with enums and interfaces described in `bns/types/ypes.tsx`
+The formats are typed with enums and interfaces described in `bns/types/types.tsx`
 
 
 
