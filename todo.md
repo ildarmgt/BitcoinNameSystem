@@ -69,6 +69,8 @@ Tests
 
 Uncertain ideas
 
+- messages, warnings to addresses
+
 - who should initiate sales?
   - owner could post requested price in satoshi & duration in blocks
     if a tx paying to controller address with equal or more bitcoin appears (that notifies the alias address) ownership can be considered transfered. if less, nothing happens. they shouldn't send less.

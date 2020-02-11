@@ -11,9 +11,13 @@ export const AboutContent = () => {
     <>
       <div className={ [styles.wrapper, 'scrollbar'].join(' ') }>
         <div className={ styles.title }>
-          Your <span>Bitcoin</span> domain
-          &nbsp;&nbsp;=&nbsp;&nbsp;
-          infinite forwarding addresses
+          <div>
+            Your <span>Bitcoin</span> domain
+            &nbsp;=&nbsp;
+          </div>
+          <div>
+            &nbsp;infinite forwarding addresses
+          </div>
         </div>
 
         <div className={ styles.contentWrapper }>
@@ -24,18 +28,20 @@ export const AboutContent = () => {
           />
 
           <p>
-            <span>Bitcoin</span> Domain System (<b>BNS</b>): On-Bitcoin-chain DNS where easy to read domain name (i.e. alias) can be looked up or created to forward to very long alphanumeric Bitcoin addresses or other types of addreses (e.g. ipfs, https, twitter) on the most secure public permissionless network ever created.
+            <span>Bitcoin</span> Domain System (<span>BNS</span>): easy to read custom domain names (i.e. aliases) that can store unlimited forwarding information to long alphanumeric btc addresses or any other types of addreses (e.g. ipfs, https, twitter, ...).
+          </p>
 
+          <p>
+            All <span>BNS</span> data is stored inside transactions on <span>Bitcoin</span> blockchain. This means that <span>BNS</span> is protected by the most secure, decentralized, permissionless, censorship resistant public network ever created.
+          </p>
 
           <a
             href="https://github.com/ildarmgt/BitcoinNameSystem/blob/master/README.md"
             target="_blank"
             rel="noopener noreferrer"
           >
-            README.md on github
+            README on github
           </a>
-          </p>
-
 
         </div>
 

@@ -1,17 +1,47 @@
 .wrapper {
   box-sizing: border-box;
   color: var(--colorBitcoinBlue);
-  font-size: calc(2 * var(--s));
+  font-size: calc(2.5 * var(--s));
 
   margin: 0 calc(1.5 * var(--s));
-  overflow-y: auto;
+  overflow-y: scroll;
+  overflow-x: hidden;
   height: calc(100vh - (6 * var(--s)));
 }
 
 .title {
   font-size: calc(3 * var(--s));
   margin: calc(2 * var(--s));
+  margin-top: calc(4 * var(--s));
+  margin-bottom: calc(2 * var(--s));
+
+
 }
+
+.contentWrapper {
+  box-sizing: border-box;
+
+  text-align: center;
+  padding: calc(0.3 * var(--s)) calc(2 * var(--s));
+}
+
+.contentWrapper p {
+  display: block;
+  box-sizing: border-box;
+  margin: 0 auto;
+  margin-bottom: calc(2 * var(--s));
+  line-height: calc(3.3 * var(--s));
+
+  --offset: calc(2 * var(--s));
+  text-indent: calc(-1 * var(--offset));
+
+  padding: 0;
+  padding-left: var(--offset);
+
+  width: 66vw;
+  text-align: left;
+}
+
 
 .title span,
 .contentWrapper p span {
@@ -19,39 +49,34 @@
   font-weight: bold;
 }
 
+.title div {
+  display: inline-block;
+}
+
 .drawing {
   /* border: 1px solid blue; */
   display: block;
-  width: 66%;
+  width: 80vw;
   /* height: auto; */
   margin: 0 auto;
+  margin-bottom: calc(2 * var(--s));
+
+  max-width: calc(70 * var(--s));
 
 }
 
-.contentWrapper {
-  box-sizing: border-box;
 
-  text-align: left;
-  padding: calc(0.3 * var(--s)) calc(1 * var(--s));
-}
 
-.contentWrapper p {
-  display: block;
-  box-sizing: border-box;
-  margin: calc(0.5 * var(--s)) 0;
-  padding: 0;
 
-  --offset: calc(2 * var(--s));
-  text-indent: calc(-1 * var(--offset));
-  padding-left: var(--offset);
-}
 
 .contentWrapper a {
   box-sizing: border-box;
   display: inline-block;
+  margin: calc(0.5 * var(--s)) auto;
+
 
   color: var(--colorBitcoinOrange);
-  margin-left: calc(1 * var(--s));
+  /* margin-left: calc(1 * var(--s)); */
   padding: calc(0.1 * var(--s)) calc(1 * var(--s));
   border-radius: calc(0.5 * var(--s));
   text-indent: 0;
@@ -77,9 +102,16 @@
   user-select: text;
 }
 
-
+/* wide screen settings */
 @media screen and (min-aspect-ratio: 12/9) {
+  .contentWrapper {
+    transform-origin: top;
+    transform: scale(var(--horizontalScale));
+  }
+
   .wrapper {
     height: calc(100vh - (6 * var(--s) * var(--horizontalScale)));
   }
+
+
 }
