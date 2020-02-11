@@ -83,7 +83,7 @@ export const SearchResults = () => {
           <div
             className={ styles.describe }
           >
-            <div>
+            <div className={ styles.describe__matches } >
               { latestForwards.length } matches on { state.network } {'  '}
             </div>
 

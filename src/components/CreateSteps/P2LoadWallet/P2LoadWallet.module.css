@@ -49,6 +49,7 @@
 .imgQr img {
   height: calc(20 * var(--s));
   width: calc(20 * var(--s));
+  image-rendering: pixelated;
 }
 
 @media screen and (min-aspect-ratio: 12/9) {

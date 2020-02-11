@@ -15,7 +15,8 @@
   /* border-radius: calc(0.5 * var(--s)); */
   padding: calc(2.0 * var(--s));
 
-  overflow-y: auto;
+  overflow-x: hidden;
+  overflow-y: scroll;
 }
 
 .breakable {
@@ -32,7 +33,7 @@
   flex-direction: row;
   flex-wrap: wrap;
   align-items: center;
-  margin: calc(0.1 * var(--s));
+  /* margin: calc(0.1 * var(--s)); */
   margin-bottom: calc(1 * var(--s));
 }
 
@@ -105,6 +106,7 @@
 .avaiability {
   width: 100%;
   text-align: center;
+  margin-top: calc(1 * var(--s));
 }
 
 .createLink {
@@ -128,7 +130,6 @@
 }
 
 .describe {
-  padding: calc(0.75 * var(--s)) calc(2 * var(--s));
   color: var(--colorLightText);
   /* margin-bottom: calc(2 * var(--s)); */
   text-align: left;
@@ -138,13 +139,18 @@
 }
 
 .describe > div {
+
   display: block;
+}
+
+.describe__matches {
+  padding: calc(0.75 * var(--s)) 0;
 }
 
 .ownershipDetails {
   /* flex-basis: 100%; */
   text-align: center;
-  margin-bottom: calc(2 * var(--s));
+  margin-bottom: calc(1 * var(--s));
   box-sizing: border-box;
   text-align: left;
 }
