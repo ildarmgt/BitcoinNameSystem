@@ -50,12 +50,19 @@
   vertical-align: middle;
 }
 
+.root a:hover {
+  background-color: var(--colorBrighter8);
+
+}
+
 .root .selected {
   background-color: var(--colorDarker1);
+  /* background-color: var(--colorBrighter8); */
 }
 
 .root .selected:hover {
   background-color: var(--colorDarker1);
+  background-color: var(--colorBrighter8);
 }
 
 /* wide screen settings */

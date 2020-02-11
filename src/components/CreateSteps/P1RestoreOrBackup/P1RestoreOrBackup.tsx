@@ -40,7 +40,9 @@ export const P1RestoreOrBackup = () => {
           </>) }
         </div>
         <div>
-          <Details>
+          <Details
+            description={ 'Explanation' }
+          >
             <p>
               <span>This wallet has the built-in unique functionality to create transactions with custom scripts, inputs, and outputs necessary for this application.</span>
 
