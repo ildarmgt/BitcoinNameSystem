@@ -73,7 +73,7 @@ export const P1RestoreOrBackup = () => {
               setPage(pages.NEW_WALLET)
             }}
           >
-            Current backup
+            Current mnemonic
           </RoundButton>
           <RoundButton
             onClick={() => {

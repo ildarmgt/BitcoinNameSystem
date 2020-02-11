@@ -42,7 +42,7 @@
   width: 100%;
   padding: calc(1 * var(--s));
   padding-bottom: calc(4 * var(--s));
-  padding-top: 0;
+  padding-top: calc(1 * var(--s));
 
   border-radius: calc(0.5 * var(--s));
 }

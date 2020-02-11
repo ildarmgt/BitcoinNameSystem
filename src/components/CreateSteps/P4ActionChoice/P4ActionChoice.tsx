@@ -71,6 +71,7 @@ export const P4ActionChoice = () => {
               }}
             >
               { action.info }
+              { action.suggestions?.startsWith('GET') ? ' ...' : '' }
             </RoundButton>
             { (dataExtraForm && dataExtraForm[action.info].show) && (
               <InputForm

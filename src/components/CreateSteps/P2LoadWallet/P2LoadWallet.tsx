@@ -41,22 +41,36 @@ export const P2LoadWallet = () => {
         </div>
       </div>
       <div className={ styles.buttonWrapper }>
+        <div>
+          <RoundButton
+            back='true'
+            onClick={ () => {
+              changePageInfoAction(state, dispatch, 1)
+            }}
+          >
+            Back
+          </RoundButton>
+          
+          <RoundButton
+            next='true'
+            onClick={ () => {
+              changePageInfoAction(state, dispatch, 3)
+            }}
+          >
+            Ready
+          </RoundButton>
+        </div>
+
         <RoundButton
-          back='true'
-          onClick={ () => {
-            changePageInfoAction(state, dispatch, 1)
+          show={ (!!state.wallet?.address).toString() }
+          onClick={() => {
+            history.push('/wallet')
           }}
+          colorbutton={'var(--colorHighlightDark)'}
         >
-          Back
+          Withdraw from wallet
         </RoundButton>
-        <RoundButton
-          next='true'
-          onClick={ () => {
-            changePageInfoAction(state, dispatch, 3)
-          }}
-        >
-          Ready
-        </RoundButton>
+
         <RoundButton
           colorbutton={'var(--colorHighlightDark)'}
           show={ (state.network === 'testnet').toString() }
@@ -71,16 +85,9 @@ export const P2LoadWallet = () => {
         >
           Testnet: tBTC faucet
         </RoundButton>
+
         <RoundButton
-            show={ (!!state.wallet?.address).toString() }
-            onClick={() => {
-              history.push('/wallet')
-            }}
-            colorbutton={'var(--colorHighlightDark)'}
-          >
-            Withdraw from wallet
-          </RoundButton>
-        <RoundButton
+          colorbutton={'var(--colorHighlightDark)'}
           onClick={ () => {
             // open blockstream explorer for address in new window/tab
             const pathEdit = (state.network === 'testnet') ? 'testnet/' : ''
@@ -91,6 +98,7 @@ export const P2LoadWallet = () => {
         >
           Open explorer
         </RoundButton>
+
       </div>
     </div>
   )

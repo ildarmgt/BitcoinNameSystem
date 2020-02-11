@@ -8,6 +8,10 @@ import {
 } from './../../../store/actions'
 import { getFeeEstimates } from './../../../api/blockstream'
 
+/**
+ * Fees selection dialogue.
+ * Modifies global state.choices.feeRate.
+ */
 export const FeesSelection = () => {
   // global state
   const { state, dispatch } = React.useContext(Store)
