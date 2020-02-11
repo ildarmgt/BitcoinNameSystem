@@ -80,7 +80,7 @@
 .details > p {
   text-align: left;
   display: inline-block;
-  background-color: var(--colorDarker1);
+  background-color: var(--colorDarker05);
   border-radius: calc(0.5 * var(--s));
   padding: calc(2 * var(--s));
   /* padding-left: calc(4 * var(--s)); */

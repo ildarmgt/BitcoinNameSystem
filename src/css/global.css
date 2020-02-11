@@ -31,6 +31,8 @@ html {
   --colorBrighter3: rgba(255, 255, 255, 0.3);
   --colorBrighter8: rgba(255, 255, 255, 0.8);
 
+  --colorDarker05: rgba(0, 0, 0, 0.05);
+
   --colorDarker1: rgba(0, 0, 0, 0.1);
   --colorDarker2: rgba(0, 0, 0, 0.2);
   --colorDarker4: rgba(0, 0, 0, 0.4);
