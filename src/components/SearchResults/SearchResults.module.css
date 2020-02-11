@@ -137,8 +137,12 @@
 
 }
 
+.describe > div {
+  display: block;
+}
+
 .ownershipDetails {
-  flex-basis: 100%;
+  /* flex-basis: 100%; */
   text-align: center;
   margin-bottom: calc(2 * var(--s));
   box-sizing: border-box;

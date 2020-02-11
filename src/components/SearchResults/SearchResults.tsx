@@ -83,21 +83,23 @@ export const SearchResults = () => {
           <div
             className={ styles.describe }
           >
-            { latestForwards.length } matches on { state.network } {'  '}
-          </div>
-
-          {/* ownership details */}
-          {(!diff.isExpired) && (
-            <div className={ styles.ownershipDetails }>
-              <Details
-                description={ 'Ownership details' }
-              >
-
-                { ownershipInformation() }
-
-              </Details>
+            <div>
+              { latestForwards.length } matches on { state.network } {'  '}
             </div>
-          )}
+
+            {/* ownership details */}
+            {(!diff.isExpired) && (
+              <div className={ styles.ownershipDetails }>
+                <Details
+                  description={ 'Ownership details' }
+                >
+
+                  { ownershipInformation() }
+
+                </Details>
+              </div>
+            )}
+          </div>
 
           {/* general search results */}
           {
