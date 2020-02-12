@@ -39,7 +39,7 @@ export const AboutContent = () => {
             target="_blank"
             rel="noopener noreferrer"
           >
-            README on github
+            more on github
           </a>
 
         </div>

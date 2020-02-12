@@ -24,6 +24,8 @@ export const P1RestoreOrBackup = () => {
   return (
     <div className={ styles.wrapper }>
 
+
+
       {/* ROOT PAGE */}
       <div
         style={{ display: page === pages.ROOT ? 'block' : 'none' }}
@@ -41,7 +43,7 @@ export const P1RestoreOrBackup = () => {
         </div>
         <div>
           <Details
-            description={ 'Explain' }
+            description={ 'why' }
           >
             <p>
               <span>This wallet has the built-in unique functionality to create transactions with custom scripts, inputs, and outputs necessary for this application.</span>

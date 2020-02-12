@@ -1,6 +1,29 @@
+/* ubuntu-300 - latin */
+/* @font-face {
+  font-family: 'Ubuntu';
+  font-style: normal;
+  font-weight: 300;
+  src: url('./../assets/fonts/Ubuntu/ubuntu-v14-latin-300.eot');
+  src: local('Ubuntu Light'), local('Ubuntu-Light'),
+       url('./../assets/fonts/Ubuntu/ubuntu-v14-latin-300.eot?#iefix') format('embedded-opentype'),
+       url('./../assets/fonts/Ubuntu/ubuntu-v14-latin-300.woff2') format('woff2'),
+       url('./../assets/fonts/Ubuntu/ubuntu-v14-latin-300.woff') format('woff'),
+       url('./../assets/fonts/Ubuntu/ubuntu-v14-latin-300.ttf') format('truetype'),
+       url('./../assets/fonts/Ubuntu/ubuntu-v14-latin-300.svg#Ubuntu') format('svg');
+} */
+
+/* montserrat-300 - latin */
 @font-face {
   font-family: 'Montserrat';
-  src: url('./../assets/fonts/Montserrat-Light.ttf');
+  font-style: normal;
+  font-weight: 300;
+  src: url('./../assets/fonts/Monstserrat/montserrat-v14-latin-300.eot'); /* IE9 Compat Modes */
+  src: local('Montserrat Light'), local('Montserrat-Light'),
+       url('./../assets/fonts/Monstserrat/montserrat-v14-latin-300.eot?#iefix') format('embedded-opentype'), /* IE6-IE8 */
+       url('./../assets/fonts/Monstserrat/montserrat-v14-latin-300.woff2') format('woff2'), /* Super Modern Browsers */
+       url('./../assets/fonts/Monstserrat/montserrat-v14-latin-300.woff') format('woff'), /* Modern Browsers */
+       url('./../assets/fonts/Monstserrat/montserrat-v14-latin-300.ttf') format('truetype'), /* Safari, Android, iOS */
+       url('./../assets/fonts/Monstserrat/montserrat-v14-latin-300.svg#Montserrat') format('svg'); /* Legacy iOS */
 }
 
 html {
@@ -24,7 +47,7 @@ html {
   --colorHighlightLight: #FFFF00;
 
   /* transparent version of blue */
-  --colorLightText: rgba(17, 17, 51, 0.5);
+  --colorLightText: rgba(17, 17, 51, 0.4);
 
   --colorButtonText: white;
   --colorBackground: white;
@@ -74,7 +97,7 @@ body {
   text-rendering: geometricPrecision; /* firefox improvement */
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  text-shadow: var(--colorDarker1) 0px 0.3px 0.3px;
+  /* text-shadow: var(--colorDarker1) 0px 0.3px 0.3px; */
 
   /* -webkit-text-stroke: 0.2px; */
   /* transform: scale(0.9999); */

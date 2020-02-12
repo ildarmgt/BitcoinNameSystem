@@ -26,6 +26,26 @@
   border-radius: calc(0.5 * var(--s));
 }
 
+.root a:hover {
+  /* background-color: var(--colorBrighter8); */
+  background-color: var(--colorDarker0_5);
+}
+
+.root .selected {
+  background-color: var(--colorDarker0_5);
+  /* border-top: calc(0.3 * var(--s)) solid var(--colorDarker1); */
+  /* border-top-left-radius: 0; */
+  /* border-top-right-radius: 0; */
+  /* border-left: calc(0.25 * var(--s)) solid var(--colorDarker1); */
+
+  /* background-color: var(--colorBrighter8); */
+}
+
+.root .selected:hover {
+  background-color: var(--colorDarker0_5);
+  /* background-color: var(--colorBrighter8); */
+}
+
 .warning {
   /* padding: calc(1 * var(--s)); */
   display: inline-block;
@@ -50,25 +70,7 @@
   vertical-align: middle;
 }
 
-.root a:hover {
-  /* background-color: var(--colorBrighter8); */
-  background-color: var(--colorDarker0_5);
-}
 
-.root .selected {
-  background-color: var(--colorDarker0_5);
-  /* border-top: calc(0.3 * var(--s)) solid var(--colorDarker1); */
-  /* border-top-left-radius: 0; */
-  /* border-top-right-radius: 0; */
-  /* border-left: calc(0.25 * var(--s)) solid var(--colorDarker1); */
-
-  /* background-color: var(--colorBrighter8); */
-}
-
-.root .selected:hover {
-  background-color: var(--colorDarker0_5);
-  /* background-color: var(--colorBrighter8); */
-}
 
 /* wide screen settings */
 @media screen and (min-aspect-ratio: 12/9) {

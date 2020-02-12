@@ -1,18 +1,20 @@
 .wrapper {
   box-sizing: border-box;
-  display: block;
+  /* display: inline-block; */
   font-size: calc(2 * var(--s));
 
   color: var(--colorBitcoinBlue);
   /* margin: calc(1 * var(--s)) 0; */
 
-  /* fixes bluriness during animation */
-  -webkit-backface-visibility: hidden;
-  -webkit-transform: translateZ(0) scale(1.0, 1.0);
-  transform: translateZ(0);
+
+}
+
+.buttonWrapper {
+  display: inline-block;
 }
 
 .toggleDetails {
+
   cursor: pointer;
   /* display: inline-block; */
 
@@ -22,6 +24,16 @@
   opacity: 0.5;
   white-space: nowrap;
   vertical-align: middle;
+
+  /* fixes bluriness during animation */
+  /* -webkit-backface-visibility: hidden; */
+  /* -webkit-transform: translateZ(0) scale(1.0, 1.0); */
+  /* transform: translateZ(0); */
+}
+
+/* increase opacity on hover */
+.toggleDetails:hover {
+  opacity: 1;
 }
 
 /* empty arrow div */
@@ -38,6 +50,7 @@
   transform-origin: 50% 50%;
   /* animate back and forward */
   transition: transform 0.1s linear;
+
   /* starting position pointing to right when collapsed */
   transform: rotate(-90deg);
   margin: 0;
@@ -68,11 +81,6 @@
 /* rotate when open */
 .down {
   transform: rotate(0deg);
-}
-
-/* increase opacity on hover */
-.toggleDetails:hover {
-  opacity: 0.9;
 }
 
 .details {
