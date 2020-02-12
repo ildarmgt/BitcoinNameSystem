@@ -1,6 +1,6 @@
-import { newUser } from './initialState'
-import { OWNERSHIP_DURATION_BY_BLOCKS, MIN_BURN, MIN_NOTIFY } from './constants'
-import { I_User, I_Forward, I_BnsState, I_TX, I_UTXO } from './types/'
+import { newUser, newState } from './initialState'
+import { OWNERSHIP_DURATION_BY_BLOCKS, MIN_BURN, MIN_NOTIFY, CHALLENGE_PERIOD_DURATION_BY_BLOCKS } from './constants'
+import { I_User, I_Forward, I_BnsState, I_TX, I_UTXO, I_Bid, BnsBidType } from './types/'
 import { decrypt } from './cryptography'
 
 // ========== helper functions =====================
@@ -126,6 +126,7 @@ export const readEmbeddedData = (st: I_BnsState, tx: I_TX):void => {
 
   const decryptionKey = st.domain.domainName + user.address + nonce
   console.log(
+    '',
     getTxHeight(tx),
     ': decryption key: ',
     st.domain.domainName,
@@ -133,7 +134,7 @@ export const readEmbeddedData = (st: I_BnsState, tx: I_TX):void => {
     nonce
   )
   const embeddedDataUtf8 = decrypt(embeddedDataBuffer, decryptionKey)
-  console.log(getTxHeight(tx), ': found embedded data:', embeddedDataUtf8)
+  console.log('', getTxHeight(tx), ': found embedded data:', embeddedDataUtf8)
 
   // split by spaces into array
   const embeddedDataUtf8Array = embeddedDataUtf8.split(' ')
@@ -314,4 +315,111 @@ export const noUnspentUserNotificationsUtxo = (st: I_BnsState, tx: I_TX): boolea
 
   // only gets this far if no utxo creators match our current tx user
   return true
+}
+
+
+/**
+ * Reset bidding.
+ */
+export const resetBidding = (st: I_BnsState): void => {
+  st.domain.bidding = { ...JSON.parse(JSON.stringify(newState.domain.bidding)) }
+}
+
+/**
+ * Start bidding period.
+ */
+export const startBidding = (st: I_BnsState, tx: I_TX, type: BnsBidType) => {
+  const txHeight = getTxHeight(tx)
+
+  // reset bidding object just in case
+  resetBidding(st)
+
+  // start bidding pediod and set type
+  st.domain.bidding.startHeight = txHeight
+  st.domain.bidding.endHeight = txHeight + CHALLENGE_PERIOD_DURATION_BY_BLOCKS
+  st.domain.bidding.type = type
+
+  console.log('Bidding period started at height', txHeight, 'until', txHeight + CHALLENGE_PERIOD_DURATION_BY_BLOCKS)
+}
+
+
+/**
+ * Add new bid
+ */
+export const addBid = (st: I_BnsState, tx: I_TX, type: BnsBidType): void => {
+  const userAddress = getTxInput0SourceUserAddress(tx);
+  const txHeight = getTxHeight(tx)
+  const burnValue = getTxOutput0BurnValue(tx)
+
+  // if bidding hasn't started
+  if (txHeight > st.domain.bidding.endHeight) {
+    startBidding(st, tx, type)
+  }
+
+  // add this new bid to bids
+  const bids = st.domain.bidding.bids
+  const bid: I_Bid = {
+    height: txHeight,
+    timestamp: getTxTimestamp(tx),
+    address: userAddress,
+    value: burnValue,
+    notificationsLeft: [],
+    refundsLeft: []
+  }
+  bids.push(bid)
+
+  console.log('New bid from', userAddress, 'for', burnValue)
+}
+
+/**
+ * Set new owner from bidding period.
+ * Note: can be called unknown number of blocks after bidding period ended.
+ */
+export const endBidding = (st: I_BnsState): void => {
+
+  let winner = {
+    address: '',
+    height: 0,
+    timestamp: 0,
+    value: 0
+  }
+
+  // for now very simple rule of whoever bid most wins (temp)
+  st.domain.bidding.bids.forEach(thisBid => {
+    if (thisBid.value > winner.value) {
+      winner = {
+        address: thisBid.address,
+        height: thisBid.height,
+        timestamp: thisBid.timestamp,
+        value: thisBid.value
+      }
+    }
+  })
+
+  // set winner to owner
+  setOwner(st, winner.address)
+  getOwner(st)!.burnAmount = winner.value
+  getOwner(st)!.winHeight = winner.height
+  getOwner(st)!.winTimestamp = winner.timestamp
+  console.log('', winner.height, 'Bidding winner and new owner is', winner.address)
+
+  // remove active bidding info
+  resetBidding(st)
+}
+
+/**
+ * Return true only if bidding was happening and hasn't been resolved yet into a winner.
+ */
+export const isBiddingOver = (st: I_BnsState): boolean => {
+  // current parsed height (updated elsewhere)
+  const parsedHeight = st.chain!.parsedHeight
+
+  const biddingType = st.domain.bidding.type
+  const endHeight = st.domain.bidding.endHeight
+
+  // real bidding type still assigned but height is at or above end height for bidding
+  if ((biddingType !== BnsBidType.NULL) && (endHeight <= parsedHeight)) {
+    return true
+  }
+  return false
 }

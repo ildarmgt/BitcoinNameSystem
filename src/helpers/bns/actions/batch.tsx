@@ -1,11 +1,12 @@
 import {
   currentOwnerRenewAction,
-  claimOwnershipAction,
+  bidForOwnershipAction,
   autoCheckForOwnerExpiredAction,
   updateForwardingInfoAction,
   updateUtxoFromTxAction,
   sendOwnershipAction,
-  changeAddressAction
+  changeAddressAction,
+  autoCheckForBiddingWinnerNewOwnerAction
 } from './actions'
 import { I_BnsState, I_TX, I_Condition } from './../types/'
 
@@ -20,7 +21,7 @@ export const runAllActionPermissionChecks = (st: I_BnsState, address: string) =>
   const allActions = [
     updateForwardingInfoAction(st, address),
     currentOwnerRenewAction(st, address),
-    claimOwnershipAction(st),
+    bidForOwnershipAction(st),
 
     sendOwnershipAction(st, address),
     changeAddressAction(st, address)
@@ -84,7 +85,7 @@ export const runAllUserActions = (st: I_BnsState, tx: I_TX): void => {
   const allUserActions = [
     updateForwardingInfoAction(st, undefined, tx),  // reads embedded data
     currentOwnerRenewAction(st, undefined, tx),     // renew ownership
-    claimOwnershipAction(st, tx),                   // new ownership
+    bidForOwnershipAction(st, tx),                   // new ownership
 
     // giving up ownership should go last in case user state needs to be edited first
     sendOwnershipAction(st, undefined, tx),         // give up ownership to another
@@ -115,7 +116,8 @@ export const runAllAutomaticActions = (st: I_BnsState, tx: I_TX | undefined): vo
   // list of all automatic actions
   const allAutoChecks = [
     autoCheckForOwnerExpiredAction(st),
-    tx ? updateUtxoFromTxAction(st, tx) : undefined
+    tx ? updateUtxoFromTxAction(st, tx) : undefined,
+    autoCheckForBiddingWinnerNewOwnerAction(st)
   ]
 
   allAutoChecks.forEach(action => {

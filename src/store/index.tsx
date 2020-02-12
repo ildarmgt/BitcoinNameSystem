@@ -1,6 +1,7 @@
 import React from 'react'
 import { I_State } from '../interfaces'
 import reducer from './reducers/Reducer'
+import { newState } from './../helpers/bns/initialState'
 
 // Change state process:
 // 1. Component calls action from src/store/actions/
@@ -13,17 +14,7 @@ export const initialState: I_State = {
   network: 'testnet',             // 'testnet' or 'bitcoin'
   alias: 'satoshi',               // first half of domain name
   extension: '.btc',              // last half of domain name
-  domain: {                       // domain info from notifications
-    domainName: '',
-    notificationAddress: '',      // p2wsh address for this domain name (alias + extension)
-    txHistory: [],                // array of all tx for this address (old addressHistory)
-    derivedUtxoList: [],          // calculated utxo set from txHistory parse
-    utxoList: [],                 // array of all real time utxo for this address
-    users: {},                    // object with all interacting users
-    currentOwner: '',             // address of user that controls domain
-    bidding: {},                  // bidding info
-    ownersHistory: []             // history of ownership
-  },
+  domain: newState.domain,
   wallet: {                       // wallet information & utxo for controlling domain names
     address: '',                  // public address (p2wpkh)
     mnemonic: '',                 // mnemonic for private key derivation

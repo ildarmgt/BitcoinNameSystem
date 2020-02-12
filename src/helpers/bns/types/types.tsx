@@ -64,6 +64,7 @@ export interface I_Domain {             // notification info for this domain nam
 
 export interface I_Bid {
   height: number                        // height the bid was confirmed
+  timestamp: number                     // timestamp when bid was confirmed
   address: string                       // address doing the bidding
   value: number                         // amount bid
   notificationsLeft: [                  // notif. utxo to remove to count valid
@@ -72,14 +73,14 @@ export interface I_Bid {
       txid: string                      // txid of notif. utxo
       vout: number                      // vout of notif. utxo
     }
-  ]
+  ] | []
   refundsLeft: [                        // unrefunded bids to refund to count valid
                                         // from startHeight  to this bid's height - 1
     {
       address: string                   // address of previous bidder
       amount: number                    // min amount to refund
     }
-  ]
+  ] | []
 }
 
 export interface I_User {
