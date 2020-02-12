@@ -1,7 +1,9 @@
 
 ## Short term
 
-- bid challenges
+- (HIGH PRIORITY)
+
+- bid challenges (kept generic so can be reused for non-burns)
   - bid is placed on available domain
   - if only bid in 144 blocks, becomes owner
   - how to handle?
@@ -19,13 +21,10 @@
     - (notification can be used for CPFP)
     - notifications are always used with notification utxo, but not necessarily with refunds. Only refunds with notifications count.
 
-- if notification is on input, shouldn't be necessary to include it on output! Conditions could check for either, and thus cut down in notification utxo use! (modify)
+- (HIGH PRIORITY) if notification is on input, shouldn't be necessary to include it on output! Conditions could check for either, and thus cut down in notification utxo use and smaller/cheaper tx  (modify)
 
 - multipage tx scan
 
-
-
-- scan notification address for tx history (search does that) and current utxo (could derive from tx history but still need raw tx)
 
 - `!a  <# of BTCs>` - Post price to sell (output @0), measured in floating point btc. Owner address (input @0). Similar to challenge period but instead of burning, tx are sent to owner. ~24 hours from time of first bid w/ more left on lease, cannot transfer ownership after first bid. Include notification (output @1) & optional public notification to '':'' address (@output 2). Must be no owner's ACS, use as inputs (inputs @1+). Does not change lease expiration - only burns can extend even if transfered.
 

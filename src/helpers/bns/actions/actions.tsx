@@ -1,6 +1,6 @@
 import {
   I_BnsState,
-  BNSActions,
+  BnsActionType,
   I_BNS_Action,
   I_BNS_Auto_Action,
   I_Condition,
@@ -37,7 +37,7 @@ import {
   existsUser,
   createNewUser
 } from './../formathelpers'
-const { RENEW, ONLY_FORWARDS, CLAIM_OWNERSHIP, SEND_OWNERSHIP, CHANGE_ADDRESS } = BNSActions
+const { RENEW, ONLY_FORWARDS, CLAIM_OWNERSHIP, SEND_OWNERSHIP, CHANGE_ADDRESS } = BnsActionType
 
 // =========== CONDITIONS / PERMISSIONS ================
 // Called by the actions for conditions
@@ -248,7 +248,7 @@ export const sendOwnershipAction = (st: I_BnsState, address: string = '', tx: an
 }
 
 
-// Describe: If no owner, sender can claim ownership
+// Describe: If no owner, sender can start process to claim ownership
 export const claimOwnershipAction = (st: I_BnsState, tx: any = undefined): I_BNS_Action => {
   const args = { st, tx }
   return {
@@ -272,6 +272,12 @@ export const claimOwnershipAction = (st: I_BnsState, tx: any = undefined): I_BNS
     ],
 
     execute: () => {
+      // have to start bidding period
+
+      // startClaimBid(st, senderAddress)
+
+      // old
+
       // ownership source was already created for sure via updateSourceUserFromTx
       // only have to set owner address to tx address
       const height = getTxHeight(tx)

@@ -1,5 +1,5 @@
-// for BNS
-export enum BNSActions {
+// types of user BNS actions
+export enum BnsActionType {
   RENEW = 'RENEW',
   ONLY_FORWARDS = 'ONLY_FORWARDS',
   CLAIM_OWNERSHIP = 'CLAIM_OWNERSHIP',
@@ -7,8 +7,13 @@ export enum BNSActions {
   CHANGE_ADDRESS = 'CHANGE_ADDRESS'
 }
 
+export enum BnsBidType {
+  BURN = 'BURN',
+  NULL = 'NULL'
+}
+
 export interface I_BNS_Action {
-  type: BNSActions
+  type: BnsActionType
   info: string
   permissions: Array<any>
   conditions: Array<any>
@@ -23,7 +28,7 @@ export interface I_BNS_Auto_Action {
 }
 
 export interface I_Action_Choice {
-  type: BNSActions
+  type: BnsActionType
   info: string
   special: Array<any>
   actionContent: string
@@ -47,8 +52,33 @@ export interface I_Domain {
     [key: string]: I_User
   }
   currentOwner: string
-  bidding: {}
+  bidding: {
+    startHeight: number                 // auction/challenge start height
+    endHeight: number                   // " end height
+    type: BnsBidType                    // type of bidding - e.g. BURN / NULL
+    bids: Array<I_Bid>                  // array of bids
+  }
   ownersHistory: Array<I_User>
+}
+
+export interface I_Bid {
+  height: number                        // height the bid was confirmed
+  address: string                       // address doing the bidding
+  value: number                         // amount bid
+  notificationsLeft: [                  // notif. utxo to remove to count valid
+                                        // from startHeight  to this bid's height - 1
+    {
+      txid: string                      // txid of notif. utxo
+      vout: number                      // vout of notif. utxo
+    }
+  ]
+  refundsLeft: [                        // unrefunded bids to refund to count valid
+                                        // from startHeight  to this bid's height - 1
+    {
+      address: string                   // address of previous bidder
+      amount: number                    // min amount to refund
+    }
+  ]
 }
 
 export interface I_User {

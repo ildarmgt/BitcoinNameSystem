@@ -1,7 +1,8 @@
-import { I_User, I_BnsState } from './types/'
+import { I_User, I_BnsState, BnsBidType } from './types/'
 
-// Initializing values
-
+/**
+ * Initial values for BNS state
+ */
 export const newState: I_BnsState = {
   domain: {                                     // notification info for this domain name
     domainName:                   '',           // domain name
@@ -11,7 +12,12 @@ export const newState: I_BnsState = {
     utxoList:                     [],           // array of all real time utxo at address
     users:                        {},           // keeps track of interacting users / source addresses with addresses as keys
     currentOwner:                 '',           // points to a source address or blank string
-    bidding:                      {},           // bidding
+    bidding: {                                  // bidding
+      startHeight:                0,
+      endHeight:                  0,
+      type:                       BnsBidType.NULL,
+      bids:                       []
+    },
     ownersHistory:                []            // owner history log
   },
   chain: {

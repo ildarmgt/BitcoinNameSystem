@@ -12,7 +12,7 @@ import {
 
 export * from './../helpers/bns/types/'
 
-// for global state action creators
+// for global state "Store" action creators
 export enum ActionTypes {
   STORE_SEARCH_RESULTS = 'STORE_SEARCH_RESULTS',
   STORE_SEARCH_RESULTS_FAIL = 'STORE_SEARCH_RESULTS_FAIL',
