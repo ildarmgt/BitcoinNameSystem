@@ -2,8 +2,28 @@
 ## Short term
 
 - bid challenges
+  - bid is placed on available domain
+  - if only bid in 144 blocks, becomes owner
+  - how to handle?
+    - shouldn't use ownership time so that renewals don't trigger challenge period
+    - bids are property of domain shared by all users so should use bid state within domain state directly.
+    - first bid height should be logged after which point upgrade to owner happens through automatic actions like expirations.
+    - bids only relevant if no owner
+    - bids must be cleared after winner found so not confusing in future
+    - each bid only counts if all bids before it are refunded at end of challenge period
+    - since bids can take variable time to place, "before" is not easily determined until confirmation occurs. so anytime within challenge period, must allow to meet condition with follow up tx, and also scanning the pending tx
+    - bids are only responsible for refunding the bids that confirmed at lower height than bid confirmed
+    - while using up your own notification utxo is required for each user, bids are also responsible for removing all utxo created during challenge period by anyone below its height.
+    - the ownership derivation takes place at height of challenge period end via only confirmed tx
+    - each bid has to at least double burn amount of next runner up to win
+    - (notification can be used for CPFP)
+    - notifications are always used with notification utxo, but not necessarily with refunds. Only refunds with notifications count.
+
+- if notification is on input, shouldn't be necessary to include it on output! Conditions could check for either, and thus cut down in notification utxo use! (modify)
 
 - multipage tx scan
+
+
 
 - scan notification address for tx history (search does that) and current utxo (could derive from tx history but still need raw tx)
 
@@ -11,10 +31,8 @@
 
 - `!ba <last price in floating BTC>` Bid on auction. Must: 1. State price at point of bid via the !buy command in op_return (output @0). 2. Must consume past ACS inputs at that price height (includes the owners public notification at '':'' if used) (inputs @1+). 3. Refund previous valid bidders (outputs @4+). 4. Pay 1.5x last price requested except for original price (output @3). 5. Create notification (output @1). 6. Use desired ownership/refund adderss as first input (input @0). Winner is derived 24 hours after first bid by highest price that followed all the rules. Does not change lease expiration - only burns can extend even if transfered.
 
-- challenge period rules
-
 - alias creation page
-    - backups: mneumonics or WIF or download file (sjcl encrypted)
+    - download/read generated file (sjcl encrypted)
     - bip47 standards
 
 - originally use timestamp to approximate how long this owner has been in control. (only relevant if new owner)
@@ -102,3 +120,20 @@ Uncertain ideas
   Could add logic to allow cold keys to undo hot keys actions for 24 hours so they can transfer ownership to address they do control.
 
   - option 2: - transfer ownership every tx to new owner address with a flag signifying same owner?
+
+- private tx (that is not xmr or bip47)
+  0. target shares xpub (like via domain)
+  1. use a generic notification address on one output or input no matter who sender/target is
+  2. encrypt used address secret path using targets public key at known path + validation that decryption was successful (2^31 values per derivation step max, so maybe 24bits () 10 times)
+  3. sender sends to the address derived from the xpub and path
+  4. target can scan notifications for embed they can decrypt with private key up to x height.
+  5. they can apply the clear text to derive the wallet path with received funds
+
+  - Attackers can know xpub so know pub key
+  - attacker can't decrypt without private key
+  - attacker can try to encrypt every possible secret path, but not probable with long enough random path of 240 bits
+  - anon set limited to notification address or users have to scan too many tx
+  - notification address used could be combined with more general
+  - attacker could poison the tx by sending to a targets address and then following outputs. this could be avoided by immidiately doing submarine swap from each utxo to your LN node (https://submarineswaps.org/) or used in various coinjoin-type scenarios.
+
+  and can't decrypt every notified text, but can encrypt with public key until match found.  as well until finding result of a path
