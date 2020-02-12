@@ -37,28 +37,29 @@ export interface I_Action_Choice {
 export interface I_BnsState {
   domain: I_Domain
   chain?: {
-    parsedHeight: number
-    currentHeight: number
+    parsedHeight: number                // parsed height for derivation
+    currentHeight: number               // real world block height (for final update)
   }
 }
 
-export interface I_Domain {
-  domainName: string
-  notificationAddress: string
-  txHistory: Array<I_TX>
-  derivedUtxoList: Array<I_UTXO>
-  utxoList: Array<I_UTXO>
-  users: {
+export interface I_Domain {             // notification info for this domain name
+  domainName: string                    // domain name
+  notificationAddress: string           // p2wsh address for this domain name (alias + extension)
+  txHistory: Array<I_TX>                // array of all tx for this address (old addressHistory)
+  derivedUtxoList: Array<I_UTXO>        // derived utxo set from tx history parse
+  utxoList: Array<I_UTXO>               // array of all real time utxo at address
+  users: {                              // keeps track of interacting users / source addresses
+                                        // with addresses as keys
     [key: string]: I_User
   }
-  currentOwner: string
-  bidding: {
+  currentOwner: string                  // points to a source address or blank string
+  bidding: {                            // bidding
     startHeight: number                 // auction/challenge start height
     endHeight: number                   // " end height
     type: BnsBidType                    // type of bidding - e.g. BURN / NULL
     bids: Array<I_Bid>                  // array of bids
   }
-  ownersHistory: Array<I_User>
+  ownersHistory: Array<I_User>          // owner history log
 }
 
 export interface I_Bid {
@@ -82,13 +83,15 @@ export interface I_Bid {
 }
 
 export interface I_User {
-  address:      string
-  forwards:     Array<I_Forward>
-  burnAmount:   number
-  winHeight:    number
-  winTimestamp: number
-  nonce:        number
-  updateHeight: number
+  address:      string                  // address in control
+  forwards:     Array<I_Forward>        // for forwards later
+  burnAmount:   number                  // burned to get ownership
+  winHeight:    number                  // blockheight winning bid
+  winTimestamp: number                  // winHeight in block's timestamp
+  nonce:        number                  // for counting previous notification
+                                        // height from this address, no matter good/bad/type
+  updateHeight: number                  // the height of most current parsed update, created
+                                        // after nonce height & therefore using it
 }
 
   // each forward object has the following data
