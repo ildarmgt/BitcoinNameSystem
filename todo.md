@@ -1,11 +1,7 @@
 
 ## Short term
 
-- `!so <btcaddress>` - Send ownership to btcaddress. Can avoid reusing addresses by including new each time. Must be no owner's ACS, use as inputs (inputs @1+). owner address (input @0). Does not change lease expiration - only burns can extend even if transfered.
-
-- Page 4 allow filling remaining space after action w/ other info
-  can't remove action consumed space, need to differentiate
-  (after I have actions that need embedded text)
+- bid challenges
 
 - multipage tx scan
 
