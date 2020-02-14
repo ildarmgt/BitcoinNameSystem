@@ -32,7 +32,7 @@ export const HomeContent = (props: any): JSX.Element => {
   }, [])
 
   return (
-    <>
+    <div className={ styles.wrapper }>
       <div className={
         !isSearchDone()
           ? [styles.lblMainTitle].join(' ')
@@ -67,6 +67,6 @@ export const HomeContent = (props: any): JSX.Element => {
       <div style={{ display: isSearchDone() ? 'block' : 'none' }}>
         <SearchResults />
       </div>
-    </>
+    </div>
   )
 }

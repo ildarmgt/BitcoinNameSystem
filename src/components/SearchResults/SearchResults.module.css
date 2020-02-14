@@ -169,12 +169,14 @@
 
 @media screen and (min-aspect-ratio: 12/9) {
   .listContainer {
-    transform-origin: top;
-    transform: scale(var(--horizontalScale));
+    /* transform-origin: top; */
+    /* transform: scale(var(--horizontalScale)); */
     justify-content: space-evenly;
   }
 
   .wrapper {
-    height: calc(100vh - (13.5vh + (16 * var(--s)) + (6 * var(--s) * var(--horizontalScale))));
+    /* height: calc(100vh - (13.5vh + (16 * var(--s)) + (6 * var(--s) * var(--horizontalScale)))); */
+    height: calc(((100vh - 12.5vh)/ var(--horizontalScale)) - ((22.5 * var(--s))));
+
   }
 }
