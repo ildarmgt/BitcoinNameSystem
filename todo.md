@@ -1,9 +1,15 @@
 
 ## Short term
 
-- (HIGH PRIORITY)
+
 
 - bid challenges (kept generic so can be reused for non-burns)
+
+  - works: bid period start, end, and ownership assigned, require your own utxo clean up
+  - left: minimum amounts
+
+  - minimum amounts: starts with MIN_BURN constant. It's very hard to force minimum based on previous payments because those payments might not follow all the rules, payment might come in after other higher payments. What is possible is requiring all payments to be 2x of original burn, and then 2x of your own previous burn.
+
   - bid is placed on available domain
   - if only bid in 144 blocks, becomes owner
   - how to handle?
@@ -15,7 +21,7 @@
     - each bid only counts if all bids before it are refunded at end of challenge period
     - since bids can take variable time to place, "before" is not easily determined until confirmation occurs. so anytime within challenge period, must allow to meet condition with follow up tx, and also scanning the pending tx
     - bids are only responsible for refunding the bids that confirmed at lower height than bid confirmed
-    - while using up your own notification utxo is required for each user, bids are also responsible for removing all utxo created during challenge period by anyone below its height.
+    - while using up your own notification utxo is required for each user, ~~bids are also responsible for removing all utxo created during challenge period by anyone below its height.~~ (since soon allowing notifications as inputs & thus useful, can ignore this rule)
     - the ownership derivation takes place at height of challenge period end via only confirmed tx
     - each bid has to at least double burn amount of next runner up to win
     - (notification can be used for CPFP)

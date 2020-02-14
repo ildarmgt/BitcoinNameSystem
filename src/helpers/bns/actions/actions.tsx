@@ -130,7 +130,7 @@ const IS_COMMAND_CALLED = (
 const IS_BIDDING_OVER = (
   { st }: { st: I_BnsState }
 ): I_Condition => ({
-  info: 'Command must be present in forwards at this tx height from tx user',
+  info: 'The bidding period must be over but not resolved',
   status: () => (isBiddingOver(st))
 })
 
@@ -265,6 +265,8 @@ export const sendOwnershipAction = (st: I_BnsState, address: string = '', tx: an
 
 
 // Describe: If no owner, sender can start process to claim ownership
+// Since autoChecks run before user action checks in calcBnsState,
+// after bidding ends owner will be set by time this is checked.
 export const bidForOwnershipAction = (st: I_BnsState, tx: any = undefined): I_BNS_Action => {
   const args = { st, tx }
   return {
@@ -273,10 +275,12 @@ export const bidForOwnershipAction = (st: I_BnsState, tx: any = undefined): I_BN
     info: 'Bid for ownership of an available domain',
 
     permissions: [
+      // this means no more bids when there's a winner
       NO_OWNER(args)
     ],
 
     conditions: [
+      // minimum rules to counting tx still apply for bids
       OUTS_2(args),
       OUT_0(args),
       OUT_1(args),
@@ -284,6 +288,7 @@ export const bidForOwnershipAction = (st: I_BnsState, tx: any = undefined): I_BN
       NO_UNSPENT_USER_NOTIFICATIONS_UTXO(args),
       USER_ADDRESS_NOT_NOTIFICATION_ADDRESS(args),
 
+      // at very least minimum is burnt, the rest is derived
       BURNED_MIN(args)
     ],
 

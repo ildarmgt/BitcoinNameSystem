@@ -53,12 +53,14 @@ export interface I_Domain {             // notification info for this domain nam
     [key: string]: I_User
   }
   currentOwner: string                  // points to a source address or blank string
+
   bidding: {                            // bidding
     startHeight: number                 // auction/challenge start height
     endHeight: number                   // " end height
     type: BnsBidType                    // type of bidding - e.g. BURN / NULL
     bids: Array<I_Bid>                  // array of bids
   }
+
   ownersHistory: Array<I_User>          // owner history log
 }
 
@@ -67,20 +69,8 @@ export interface I_Bid {
   timestamp: number                     // timestamp when bid was confirmed
   address: string                       // address doing the bidding
   value: number                         // amount bid
-  notificationsLeft: [                  // notif. utxo to remove to count valid
-                                        // from startHeight  to this bid's height - 1
-    {
-      txid: string                      // txid of notif. utxo
-      vout: number                      // vout of notif. utxo
-    }
-  ] | []
-  refundsLeft: [                        // unrefunded bids to refund to count valid
-                                        // from startHeight  to this bid's height - 1
-    {
-      address: string                   // address of previous bidder
-      amount: number                    // min amount to refund
-    }
-  ] | []
+  valueLeftToRefund: number             // amount of bid left to refund
+  blockHash: string                     // block hash of block where tx was confirmed
 }
 
 export interface I_User {

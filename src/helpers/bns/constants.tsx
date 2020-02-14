@@ -32,6 +32,10 @@ const OWNERSHIP_DURATION_BY_BLOCKS = !TESTING ? 52560 : 1000
 // ~1 day
 const CHALLENGE_PERIOD_DURATION_BY_BLOCKS = 144
 
+// Multiplier required on burn amount for new bid to beat
+// a previous (lower height) winning bid (assuming meets other conditions by deadline).
+// sets a minimum treshhold for trying to outbid someone else
+const CHALLENGE_MIN_MULTIPLY = 2
 
 export {
   TESTING,
@@ -39,5 +43,6 @@ export {
   MIN_NOTIFY,
   OWNERSHIP_DURATION_BY_BLOCKS,
   BYTES_MAX,
-  CHALLENGE_PERIOD_DURATION_BY_BLOCKS
+  CHALLENGE_PERIOD_DURATION_BY_BLOCKS,
+  CHALLENGE_MIN_MULTIPLY
 }

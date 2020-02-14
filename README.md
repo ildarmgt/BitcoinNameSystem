@@ -76,6 +76,8 @@ This design cannot be entirely free to prevent domains being captured en masse, 
 
 (using testnet and short duration testing mode parameters for now)
 
+* Bidding period for domains works
+
 * Transactions are created and broadcast within the UI based on action chosen and requirements. Tx is summarized on same page as broadcast.
 
 * User action: Changing your own ownership address (keeping forwards, change is sent to new address by default)
@@ -92,7 +94,7 @@ This design cannot be entirely free to prevent domains being captured en masse, 
 
 * Searching for domain ownership and forwarding information
 
-* Encryption and decryption of embedded information (AES-256-CTR)
+* Encryption and decryption of embedded information (AES-256-CTR) + hashed aliases = one-way look up
 
 * Creating or importing wallet from bip39 backup
 
@@ -107,6 +109,20 @@ This design cannot be entirely free to prevent domains being captured en masse, 
 * Wallet total unspent balance
 
 * Easy to understand description on about page
+
+## Security ideas
+
+* hosted on github to give confidence of source code used
+
+* API requests should only happen on button presses
+
+* Nothing is saved
+
+## Privacy ideas
+
+* No clear way to know who's using BNS
+
+* Look ups are in one direction: from alias to forwarding information
 
 ## Donations
 
