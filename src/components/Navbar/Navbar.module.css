@@ -6,7 +6,7 @@
   bottom: calc(0 * var(--s));
   right: calc(0 * var(--s));
   text-align: right;
-  color: var(--colorDarker4);
+  color: var(--colorLightText);
   vertical-align: middle;
   word-wrap: normal;
   overflow-x: hidden;
@@ -16,7 +16,7 @@
 }
 
 .root a {
-  color: var(--colorDarker5);
+  color: var(--colorLightText);
   display: inline-block;
   vertical-align: middle;
   font-size: calc(2.5 * var(--s));
@@ -26,37 +26,13 @@
   border-radius: calc(0.5 * var(--s));
 }
 
-.warning {
-  /* padding: calc(1 * var(--s)); */
-  display: inline-block;
-  position: absolute;
-  bottom: calc(6 * var(--s));
-  left: calc(0.1 * var(--s));
-  color: red;
-  font-size: calc(2 * var(--s));
-  margin-left: calc(1 * var(--s));
-  vertical-align: middle;
-  z-index: 1000;
-}
-
-.pageNum {
-  color: var(--colorDarker5);
-  display: inline-block;
-  font-size: calc(2.3 * var(--s));
-  line-height: calc(2.5 * var(--s));
-  float: left;
-  margin: 0 calc(0.25 * var(--s));
-  padding: calc(0.75 * var(--s)) calc(1 * var(--s));
-  vertical-align: middle;
-}
-
 .root a:hover {
-  background-color: var(--colorBrighter8);
-  background-color: var(--colorDarker1);
+  /* background-color: var(--colorBrighter8); */
+  background-color: var(--colorDarker0_5);
 }
 
 .root .selected {
-  background-color: var(--colorDarker1);
+  background-color: var(--colorDarker0_5);
   /* border-top: calc(0.3 * var(--s)) solid var(--colorDarker1); */
   /* border-top-left-radius: 0; */
   /* border-top-right-radius: 0; */
@@ -66,9 +42,35 @@
 }
 
 .root .selected:hover {
-  background-color: var(--colorDarker1);
+  background-color: var(--colorDarker0_5);
   /* background-color: var(--colorBrighter8); */
 }
+
+.warning {
+  /* padding: calc(1 * var(--s)); */
+  display: inline-block;
+  position: absolute;
+  bottom: calc(6 * var(--s));
+  left: calc(0.1 * var(--s));
+  color: rgba(180, 12, 12, 0.685);
+  font-size: calc(2 * var(--s));
+  margin-left: calc(1 * var(--s));
+  vertical-align: middle;
+  z-index: 1000;
+}
+
+.pageNum {
+  color: var(--colorLightText);
+  display: inline-block;
+  font-size: calc(2.3 * var(--s));
+  line-height: calc(2.5 * var(--s));
+  float: left;
+  margin: 0 calc(0.25 * var(--s));
+  padding: calc(0.75 * var(--s)) calc(1 * var(--s));
+  vertical-align: middle;
+}
+
+
 
 /* wide screen settings */
 @media screen and (min-aspect-ratio: 12/9) {

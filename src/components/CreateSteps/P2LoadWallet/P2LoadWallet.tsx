@@ -16,7 +16,9 @@ export const P2LoadWallet = () => {
   // load QR code into local state
   const [ qrCode, setQrCode] = useState()
   useEffect(() => {
-    qr.toDataURL(state.wallet.address, { type: 'image/jpeg' }, (err: any, url: any) => {
+    qr.toDataURL(state.wallet.address, {
+      type: 'image/jpeg', color: { dark: '#111133ff'}
+    }, (err: any, url: any) => {
       if (!err) { setQrCode(url) }
     })
   }, [state.wallet.address])
@@ -41,6 +43,7 @@ export const P2LoadWallet = () => {
         </div>
       </div>
       <div className={ styles.buttonWrapper }>
+
         <RoundButton
           back='true'
           onClick={ () => {
@@ -49,6 +52,7 @@ export const P2LoadWallet = () => {
         >
           Back
         </RoundButton>
+
         <RoundButton
           next='true'
           onClick={ () => {
@@ -57,8 +61,19 @@ export const P2LoadWallet = () => {
         >
           Ready
         </RoundButton>
+
         <RoundButton
-          colorbutton={'var(--colorHighlight)'}
+          show={ (!!state.wallet?.address).toString() }
+          onClick={() => {
+            history.push('/wallet')
+          }}
+          colorbutton={'var(--colorHighlightDark)'}
+        >
+          Withdraw from wallet
+        </RoundButton>
+
+        <RoundButton
+          colorbutton={'var(--colorHighlightDark)'}
           show={ (state.network === 'testnet').toString() }
           onClick={ () => {
             // open faucet page in new window
@@ -71,16 +86,9 @@ export const P2LoadWallet = () => {
         >
           Testnet: tBTC faucet
         </RoundButton>
+
         <RoundButton
-            show={ (!!state.wallet?.address).toString() }
-            onClick={() => {
-              history.push('/wallet')
-            }}
-            colorbutton={'var(--colorHighlight)'}
-          >
-            Withdraw from wallet
-          </RoundButton>
-        <RoundButton
+          colorbutton={'var(--colorHighlightDark)'}
           onClick={ () => {
             // open blockstream explorer for address in new window/tab
             const pathEdit = (state.network === 'testnet') ? 'testnet/' : ''
@@ -91,6 +99,7 @@ export const P2LoadWallet = () => {
         >
           Open explorer
         </RoundButton>
+
       </div>
     </div>
   )

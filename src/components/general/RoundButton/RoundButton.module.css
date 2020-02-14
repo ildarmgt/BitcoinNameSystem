@@ -48,7 +48,7 @@
 }
 
 .overhead:hover {
-  background-color: var(--colorDarker1);
+  background-color: var(--colorDarker0_5);
 }
 
 .roundButton:hover {

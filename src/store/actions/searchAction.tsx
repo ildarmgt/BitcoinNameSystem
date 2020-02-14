@@ -57,6 +57,11 @@ export const searchAction = async (state: I_State, dispatch: Dispatch, router: a
 
   } catch (e) {
     console.log(e)
+
+    // if navigated via url id, use router to navigate home w/o id in url
+    // even if api call failed, should navigate away or will be stuck in a loop
+    if (router) { router?.push('/') }
+
     // still updating the notification address
     return dispatch({
       type: STORE_SEARCH_RESULTS_FAIL,

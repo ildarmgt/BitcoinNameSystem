@@ -1,0 +1,26 @@
+.wrapper {
+  display: inline-block;
+  margin: 0;
+  padding: 0;
+}
+
+.logo {
+  align-items: center;
+  background: var(--colorBitcoinOrange);
+  border-radius: 50%;
+  box-sizing: border-box;
+  color: var(--colorBackground);
+  display: flex;
+  font-family: sans-serif;
+  font-style: normal;
+  font-weight: bold;
+  justify-content: center;
+  padding: calc(1.613 * var(--s));
+}
+
+.logo span {
+  font-size: calc(10 * var(--s));
+  line-height: calc(10 * var(--s));
+  width: calc(10 * var(--s));
+  transform: rotate(20deg);
+}

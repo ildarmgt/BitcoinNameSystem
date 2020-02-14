@@ -85,14 +85,14 @@
   ;
   justify-items: center;
   align-items: center;
-  background-color: var(--colorDarker1);
+  background-color: var(--colorDarker0_5);
   border-radius: calc(0.5 * var(--s));
   margin-top: calc(1 * var(--s));
   padding: calc(0.5 * var(--s)) calc(1 * var(--s));
   cursor: pointer;
 }
 .updateItem:hover {
-  background-color: var(--colorDarker2);
+  background-color: var(--colorDarker1);
 }
 
 .updateCancel {
@@ -188,7 +188,7 @@
   font-size: calc(2 * var(--s));
   cursor: pointer;
   border-radius: calc(1.5 * var(--s));
-  background-color: var(--colorDarker2);
+  background-color: var(--colorDarker1);
   padding: calc(0.3 * var(--s)) calc(1 * var(--s));
   color: var(--colorBackground);
 }

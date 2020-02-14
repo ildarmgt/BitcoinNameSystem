@@ -70,11 +70,13 @@ Wasn't sure what's better: Bitcoin Name Service, Bitcoin Name System, Bitcoin Na
 
 ## Payments
 
-This design cannot be entirely free to prevent domains being captured en masse, especially over a challenged domain. Having non zero burn costs, typical fee market costs, limited ownership duration of ~ 1 year, challenge period for ownership ~ 24 hours, & extensions costs equal to winning bid costs should minimize multiple domain squatting, even for miners. Nothing is required to go to me in any way, my costs are same as everyone elses. Miners could try to put their transaction
+This design cannot be entirely free to prevent domains being captured en masse, especially over a contested domain name. Having non zero burn costs, typical fee market costs, limited ownership duration of ~ 1 year, challenge period for ownership ~ 24 hours, & extensions costs equal to winning bid costs should minimize multiple domain squatting, even for miners. Nothing is required to go to me in any way, my costs are same as everyone elses. Miners could try to put their transactions for free but would displace fee paying transactions and cannot get a discount on burn.
 
 ## What works
 
 (using testnet and short duration testing mode parameters for now)
+
+* Bidding period for domains works
 
 * Transactions are created and broadcast within the UI based on action chosen and requirements. Tx is summarized on same page as broadcast.
 
@@ -92,7 +94,7 @@ This design cannot be entirely free to prevent domains being captured en masse, 
 
 * Searching for domain ownership and forwarding information
 
-* Encryption and decryption of embedded information (AES-256-CTR)
+* Encryption and decryption of embedded information (AES-256-CTR) + hashed aliases = one-way look up
 
 * Creating or importing wallet from bip39 backup
 
@@ -107,6 +109,20 @@ This design cannot be entirely free to prevent domains being captured en masse, 
 * Wallet total unspent balance
 
 * Easy to understand description on about page
+
+## Security ideas
+
+* hosted on github to give confidence of source code used
+
+* API requests should only happen on button presses
+
+* Nothing is saved
+
+## Privacy ideas
+
+* No clear way to know who's using BNS
+
+* Look ups are in one direction: from alias to forwarding information
 
 ## Donations
 

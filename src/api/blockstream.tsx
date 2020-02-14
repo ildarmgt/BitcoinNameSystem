@@ -144,7 +144,8 @@ export async function getUTXOList (address: string, strNetwork: string) {
 
     await rateLimit()
 
-    return res.data
+    // for now lets filter out the unconfirmed tx
+    return res.data.filter((utxo: any) => utxo.status.confirmed)
 
   } catch (e) {
 

@@ -8,6 +8,10 @@ import {
 } from './../../../store/actions'
 import { getFeeEstimates } from './../../../api/blockstream'
 
+/**
+ * Fees selection dialogue.
+ * Modifies global state.choices.feeRate.
+ */
 export const FeesSelection = () => {
   // global state
   const { state, dispatch } = React.useContext(Store)
@@ -26,8 +30,10 @@ export const FeesSelection = () => {
   // get new suggestions if never got them through api
   // otherwise show previous
   const tryFees = async () => {
+    // if haven't already got api results
     if (!feeSuggestions.apiSuccess) {
       try {
+        // get fee estimates from API
         const apiSuggest = await getFeeEstimates(state.network)
         setFeeSuggestions({
           min20: apiSuggest['2'],
@@ -39,9 +45,10 @@ export const FeesSelection = () => {
 
       } catch (e) {}
     } else {
+      // show the previous values
       setFeeSuggestions({
         ...feeSuggestions,
-        showSuggestions: true
+        showSuggestions: !feeSuggestions.showSuggestions
       })
     }
   }

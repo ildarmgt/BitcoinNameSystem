@@ -12,7 +12,6 @@
 
 
   color: var(--colorDarkText);
-  /* border-radius: calc(0.5 * var(--s)); */
   padding: calc(2.0 * var(--s));
 
   overflow-x: hidden;
@@ -20,7 +19,6 @@
 }
 
 .breakable {
-  /* width: 100%; */
   overflow-wrap: break-word;
   word-wrap: break-word;
   word-break: break-all;
@@ -33,7 +31,6 @@
   flex-direction: row;
   flex-wrap: wrap;
   align-items: center;
-  /* margin: calc(0.1 * var(--s)); */
   margin-bottom: calc(1 * var(--s));
 }
 
@@ -47,13 +44,10 @@
   margin: calc(1 * var(--s)) calc(2 * var(--s));
   cursor: pointer;
   height: auto;
-
-  /* -webkit-text-stroke: calc(0.01 * var(--s)) var(--colorBackground); */
 }
 
 .listItem .key {
   color: var(--colorBitcoinOrange);
-  /* -webkit-text-stroke: calc(0.01 * var(--s)) var(--colorBitcoinOrange); */
 }
 
 .listItem,
@@ -102,7 +96,6 @@
 .expired {
   display: inline-block;
   color: var(--colorWarning);
-  /* margin-bottom: calc(0.5 * var(--s)); */
 }
 
 .avaiability {
@@ -133,7 +126,6 @@
 
 .describe {
   color: var(--colorLightText);
-  /* margin-bottom: calc(2 * var(--s)); */
   text-align: left;
   flex-basis: 100%;
   box-sizing: border-box;
@@ -169,12 +161,11 @@
 
 @media screen and (min-aspect-ratio: 12/9) {
   .listContainer {
-    transform-origin: top;
-    transform: scale(var(--horizontalScale));
     justify-content: space-evenly;
   }
 
   .wrapper {
-    height: calc(100vh - (13.5vh + (16 * var(--s)) + (6 * var(--s) * var(--horizontalScale))));
+    height: calc(((100vh - 12.5vh)/ var(--horizontalScale)) - ((22.5 * var(--s))));
+
   }
 }

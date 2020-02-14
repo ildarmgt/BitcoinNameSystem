@@ -3,7 +3,7 @@
   color: var(--colorBitcoinBlue);
   font-size: calc(2.5 * var(--s));
 
-  margin: 0 calc(1.5 * var(--s));
+  margin: 0 calc(0.1 * var(--s));
   overflow-y: scroll;
   overflow-x: hidden;
   height: calc(100vh - (6 * var(--s)));
@@ -83,15 +83,15 @@
   margin: calc(0.5 * var(--s)) auto;
 
 
-  color: var(--colorBitcoinOrange);
+  color: var(--colorLightText);
   /* margin-left: calc(1 * var(--s)); */
-  padding: calc(0.1 * var(--s)) calc(1 * var(--s));
+  padding: calc(0.5 * var(--s)) calc(2 * var(--s));
   border-radius: calc(0.5 * var(--s));
   text-indent: 0;
 }
 
 .contentWrapper a:hover {
-  background-color: var(--colorBrighter8);
+  background-color: var(--colorDarker0_5);
 }
 
 

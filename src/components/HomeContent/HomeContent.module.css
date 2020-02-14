@@ -20,7 +20,6 @@
 
 .divSearchAfter {
   margin-top: 3vh;
-  /* margin-bottom: 2vh; */
 }
 
 .txtSearch {
@@ -35,4 +34,11 @@
 
 .txtSearch::placeholder {
   color: var(--colorBitcoinOrange);
+}
+
+@media screen and (min-aspect-ratio: 12/9) {
+  .wrapper {
+    transform-origin: top;
+    transform: scale(var(--horizontalScale));
+  }
 }

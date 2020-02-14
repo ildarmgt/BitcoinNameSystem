@@ -1,10 +1,11 @@
 import {
   I_BnsState,
-  BNSActions,
+  BnsActionType,
   I_BNS_Action,
   I_BNS_Auto_Action,
   I_Condition,
-  I_TX
+  I_TX,
+  BnsBidType
 } from './../types/'
 import { MIN_NOTIFY, MIN_BURN } from './../constants'
 import {
@@ -23,7 +24,7 @@ import {
   getTxInput0SourceUserAddress,
   getTxHeight,
   getTxTimestamp,
-  getTxOutput0BurnValue,
+  // getTxOutput0BurnValue,
   isAddressTheCurrentOwner,
   burnedPreviousRateMin,
   readEmbeddedData,
@@ -35,9 +36,18 @@ import {
   isCommandCalled,
   getCommandCalled,
   existsUser,
-  createNewUser
+  createNewUser,
+  addBid,
+  isBiddingOver,
+  endBidding
 } from './../formathelpers'
-const { RENEW, ONLY_FORWARDS, CLAIM_OWNERSHIP, SEND_OWNERSHIP, CHANGE_ADDRESS } = BNSActions
+const {
+  RENEW,
+  ONLY_FORWARDS,
+  CLAIM_OWNERSHIP,
+  SEND_OWNERSHIP,
+  CHANGE_ADDRESS
+} = BnsActionType
 
 // =========== CONDITIONS / PERMISSIONS ================
 // Called by the actions for conditions
@@ -117,6 +127,12 @@ const IS_COMMAND_CALLED = (
   status: () => (isCommandCalled(st, tx as I_TX, command))
 })
 
+const IS_BIDDING_OVER = (
+  { st }: { st: I_BnsState }
+): I_Condition => ({
+  info: 'The bidding period must be over but not resolved',
+  status: () => (isBiddingOver(st))
+})
 
 
 
@@ -248,19 +264,23 @@ export const sendOwnershipAction = (st: I_BnsState, address: string = '', tx: an
 }
 
 
-// Describe: If no owner, sender can claim ownership
-export const claimOwnershipAction = (st: I_BnsState, tx: any = undefined): I_BNS_Action => {
+// Describe: If no owner, sender can start process to claim ownership
+// Since autoChecks run before user action checks in calcBnsState,
+// after bidding ends owner will be set by time this is checked.
+export const bidForOwnershipAction = (st: I_BnsState, tx: any = undefined): I_BNS_Action => {
   const args = { st, tx }
   return {
 
     type: CLAIM_OWNERSHIP,
-    info: 'Claim ownership of an available domain',
+    info: 'Bid for ownership of an available domain',
 
     permissions: [
+      // this means no more bids when there's a winner
       NO_OWNER(args)
     ],
 
     conditions: [
+      // minimum rules to counting tx still apply for bids
       OUTS_2(args),
       OUT_0(args),
       OUT_1(args),
@@ -268,21 +288,15 @@ export const claimOwnershipAction = (st: I_BnsState, tx: any = undefined): I_BNS
       NO_UNSPENT_USER_NOTIFICATIONS_UTXO(args),
       USER_ADDRESS_NOT_NOTIFICATION_ADDRESS(args),
 
+      // at very least minimum is burnt, the rest is derived
       BURNED_MIN(args)
     ],
 
     execute: () => {
-      // ownership source was already created for sure via updateSourceUserFromTx
-      // only have to set owner address to tx address
-      const height = getTxHeight(tx)
-      const senderAddress =  getTxInput0SourceUserAddress(tx)
-      setOwner(st, senderAddress)
-      getUser(st, senderAddress).winHeight = height
-      getUser(st, senderAddress).winTimestamp = getTxTimestamp(tx)
-      getUser(st, senderAddress).burnAmount = getTxOutput0BurnValue(tx)
-      console.log(
-        `${ st.domain.domainName } : ${ getTxHeight(tx) } height: new owner is ${ getUser(st, senderAddress).address }`
-      )
+      // have to start or add to bidding
+      // ownership will be derived through automatic check based on bidding started here
+
+      addBid(st, tx, BnsBidType.BURN)
     }
   }
 }
@@ -395,6 +409,25 @@ export const updateUtxoFromTxAction = (st: I_BnsState, tx: I_TX): I_BNS_Auto_Act
 
     execute: () => {
       updateUtxoFromTx(st, tx)
+    }
+  }
+}
+
+// Describe: update bidding winner and owner
+export const autoCheckForBiddingWinnerNewOwnerAction = (st: I_BnsState): I_BNS_Auto_Action => {
+  const args = { st }
+  return {
+    info: 'Derive the new owner from bidding period',
+
+    conditions: [
+      NO_OWNER(args),
+      IS_BIDDING_OVER(args)
+    ],
+
+    execute: () => {
+      endBidding(st)
+
+      console.log('bidding period is over')
     }
   }
 }
