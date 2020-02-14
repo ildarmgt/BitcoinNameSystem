@@ -270,7 +270,7 @@ export const bidForOwnershipAction = (st: I_BnsState, tx: any = undefined): I_BN
   return {
 
     type: CLAIM_OWNERSHIP,
-    info: 'Attempt to claim ownership of an available domain',
+    info: 'Bid for ownership of an available domain',
 
     permissions: [
       NO_OWNER(args)
@@ -288,25 +288,10 @@ export const bidForOwnershipAction = (st: I_BnsState, tx: any = undefined): I_BN
     ],
 
     execute: () => {
-      // have to start bidding period
+      // have to start or add to bidding
       // ownership will be derived through automatic check based on bidding started here
 
-
       addBid(st, tx, BnsBidType.BURN)
-
-      // old
-
-      // ownership source was already created for sure via updateSourceUserFromTx
-      // only have to set owner address to tx address
-      // const height = getTxHeight(tx)
-      // const senderAddress =  getTxInput0SourceUserAddress(tx)
-      // setOwner(st, senderAddress)
-      // getUser(st, senderAddress).winHeight = height
-      // getUser(st, senderAddress).winTimestamp = getTxTimestamp(tx)
-      // getUser(st, senderAddress).burnAmount = getTxOutput0BurnValue(tx)
-      // console.log(
-      //   `${ st.domain.domainName } : ${ getTxHeight(tx) } height: new owner is ${ getUser(st, senderAddress).address }`
-      // )
     }
   }
 }
