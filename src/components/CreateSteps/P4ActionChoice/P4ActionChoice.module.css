@@ -104,6 +104,7 @@
 .unavailableActions__actionList__action__permissionList {
   box-sizing: border-box;
   padding-left: calc(1 * var(--s));
+  padding-bottom: calc(1 * var(--s));
   overflow-x: hidden;
   width: 100%;
 }
