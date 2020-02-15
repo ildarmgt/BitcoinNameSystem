@@ -46,6 +46,9 @@ export const getOwner = (st: I_State) => {
   return st.domain.users[ownerAddress]
 }
 
+/**
+ * Undefined if no user, otherwise existing user.
+ */
 export const getUser = (st: I_State, address: string) => {
   return st.domain.users[address]
 }

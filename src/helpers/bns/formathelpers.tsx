@@ -28,7 +28,13 @@ export const setOwner = (st: I_BnsState, newOwnerAddress: string) => {
   st.domain.currentOwner = newOwnerAddress
 }
 
-export const getUser = (st: I_BnsState, address: string): I_User => st.domain.users[address]
+
+export const getUser = (st: I_BnsState, address: string): I_User => {
+  if (!existsUser(st, address)) {
+    console.warn('You called', getUser, 'without checking if user exists via existsUser()')
+  }
+  return st.domain.users[address]
+}
 
 export const getOwner = (st: I_BnsState) => {
   const ownerAddress = getOwnerAddress(st)
@@ -62,6 +68,21 @@ export const isOwnerExpired = (st: I_BnsState): boolean => {
   const blocksSinceUpdate = getParsedHeight(st) - owner.winHeight
   return blocksSinceUpdate > OWNERSHIP_DURATION_BY_BLOCKS
 }
+
+/**
+ * Returns nonce of user based on address.
+ * If no previous user history for domain, nonce is 0, otherwise last tx height.
+ */
+export const getNonce = (st: I_BnsState, address: string): number => {
+  const doesExist = existsUser(st, address)
+  if (!doesExist) {
+    return 0
+  } else {
+    const user = getUser(st, address)
+    return user.nonce
+  }
+}
+
 
 // ===== tx functions (getters) =====================
 
@@ -126,7 +147,7 @@ export const readEmbeddedData = (st: I_BnsState, tx: I_TX):void => {
   // get useful object references
   const fromAddress = getTxInput0SourceUserAddress(tx)
   const user = getUser(st, fromAddress)
-  const nonce = user.nonce.toString()
+  const nonce = getNonce(st, fromAddress).toString()
 
   const embeddedDataHex = getTxOutput0Data(tx)
   const embeddedDataBuffer = Buffer.from(embeddedDataHex, 'hex')
@@ -612,6 +633,6 @@ function wereAllBidsRefunded (
   }
 
   // if the check doesn't fail after every bid scan, can return true
-  console.log('all known predecesors are refunded. bid considered is from', ignoreAddress)
+  console.log('all known predecesors are refunded. bid considered is from', ignoreAddress, '& checked for heights <=', maxHeight)
   return true
 }

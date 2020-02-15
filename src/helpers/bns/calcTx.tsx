@@ -3,7 +3,7 @@ import { calcP2WSH } from './calcP2WSH'
 import { MIN_BURN, MIN_NOTIFY } from './constants'
 import { encrypt } from './cryptography'
 import { I_Domain, I_Action_Choice } from './types/'
-import { getUser } from './formathelpers'
+import { getNonce } from './formathelpers'
 import { getFinalScripts } from './bitcoin'
 
 const hash160 = bitcoin.crypto.hash160
@@ -52,8 +52,7 @@ export const calcTx = (
 
   // grab fee rate
   const feeRate = choices.feeRate
-  // grab user object
-  const user = getUser({ domain }, wallet.address)
+
   // grab network object
   const network = bitcoin.networks[networkChoice]
 
@@ -165,7 +164,7 @@ export const calcTx = (
   // add the op_return output (always index 0)
   // if first time sending, nonce is '0', otherwise the last blockheight when this user has sent ANY tx to that notification address
   // TODO calculate nonce in case this owner has unspent acs utxo left at notification address
-  const nonce = user.nonce.toString()
+  const nonce = getNonce({ domain }, wallet.address).toString()
   const encryptionKey =  domain.domainName + wallet.address + nonce
   console.log('nonce used to encrypt', domain.domainName, wallet.address, nonce)
   // if there's extra content add it, otherwise just regular string

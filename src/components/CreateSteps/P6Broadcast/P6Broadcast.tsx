@@ -32,8 +32,8 @@ export const P6Broadcast = () => {
     txIssue = String(e.message)
     if (txIssue.endsWith('has no matching Script')) {
       txIssue += ' \n(address provided seems invalid)'
-      console.log(txIssue)
     }
+    console.log('error details if necessary:', e)
   }
 
   // summarize number of updates in the embeded string

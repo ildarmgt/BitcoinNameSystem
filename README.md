@@ -6,11 +6,13 @@ Used: React (Hooks), TypeScript, Node.js, JavaScript, CSS, HTML.
 
 ![pic](https://i.imgur.com/CNdY1Iq.png)
 
-This readme and all else is work in progress. I'm open to collaborations.
+This readme and all else is work in progress. I'm open to teaming up.
 
-[Github pages demo (testnet only now)](https://ildarmgt.github.io/BitcoinNameSystem/)
+[Github pages demo](https://ildarmgt.github.io/BitcoinNameSystem/)
 
 Can also open by domain name alias. e.g. `/BitcoinNameSystem/#/id/satoshi` to [autofill & search](https://ildarmgt.github.io/BitcoinNameSystem/#/id/satoshi).
+
+Or with a shorter URL: [http://onbtc.me/?satoshi](http://onbtc.me/?satoshi) .
 
 ## To build project from scratch
 
@@ -60,23 +62,23 @@ Until I copy all rules here, basic premise is:
 
 Tons more stuff to list here and do in the app.
 
-Wasn't sure what's better: Bitcoin Name Service, Bitcoin Name System, Bitcoin Name System Service.
+Wasn't sure what's better: Bitcoin Name Service, Bitcoin Name System, Bitcoin Name System Service, Bitcoin Domains
 
 ## Terminology and definitions
 
   Located here: [Terminology and definitions](Definitions.md)
 
-  Example: `satoshi.btc` domain name alias could have multiple entries for forwarding information including one where for `twitter` network `halfin` is provided for forwarding address to make it easy to find his twitter account, one where for `https` network `bitcoin.org` is provided as forwarding address to make it easy to find his home page on the world wide web, and `btc!p2wsh` network has a provided forwarding bitcoin address of `bc1q_FAKE_ADDRESS_e2`.
+  Example: `satoshi.btc` domain name alias could have multiple entries for forwarding information. One such entry could be of `twitter` network where `halfin` is provided for a forwarding address to find a twitter account. Another possibility is to have `https` network show `bitcoin.org` provided as a forwarding address to locate a home page on the world wide web, and `btc` network key can be matched with a long forwarding bitcoin address of `bc1q_FAKE_ADDRESS_e2_FAKE_ADDRESS_e2_FAKE_ADDRESS_e2_FAKE_ADDRESS_e2`.
 
 ## Payments
 
-This design cannot be entirely free to prevent domains being captured en masse, especially over a contested domain name. Having non zero burn costs, typical fee market costs, limited ownership duration of ~ 1 year, challenge period for ownership ~ 24 hours, & extensions costs equal to winning bid costs should minimize multiple domain squatting, even for miners. Nothing is required to go to me in any way, my costs are same as everyone elses. Miners could try to put their transactions for free but would displace fee paying transactions and cannot get a discount on burn.
+This design has neutral costs to prevent domains from being captured en masse, especially over a contested domain name. First layer of protection are burn costs where the coins are destroyed, which means they cannot be sent to oneself to get an unfair advantage. Bitcoin's fee market that secures the network creates significant barrier to sybil attack spam. Proof of key ownership and upkeep burns are required periodaically through time-limited ownership duration of ~1 year. Every domain ownership bid can be challenged for first ~24 hours to give interested parties a chance to get domain they want. Only people watching specific domain names will be able to see which domains are bid on to prevent griefing.  Ownership extensions costs are equal to winning bid costs, so for challenged domains upkeep is higher, equal to that of the winning bid every year. These measures combined should minimize domain squatting, even for miners. Nobody gets a significant advantage over others. For exampe, miners could try to put their transactions in without fees but would still cost them income from displacing other fee paying transactions. Additionally, they, nor anyone else, can get any discount on burning costs.
 
 ## What works
 
 (using testnet and short duration testing mode parameters for now)
 
-* Bidding period for domains works
+* Bidding period for domains operational. Refunds on previous bids and minimum increases enforced for validity. Tie breaking at same height via pseudo-random deterministic function based on transaction's block height gives nobody an advantage.
 
 * Transactions are created and broadcast within the UI based on action chosen and requirements. Tx is summarized on same page as broadcast.
 
@@ -110,17 +112,45 @@ This design cannot be entirely free to prevent domains being captured en masse, 
 
 * Easy to understand description on about page
 
+## What is the back end?
+
+BNS can be read with help of any Bitcoin full node, with early demo implementations relying on 3rd party node with API explorer interface, but can be replaced by personal full nodes to accomplish same thing. The goal is to provide multiple options ranging fast 3rd party API to implementations relying solely on your own Bitcoin full node to use BNS.
+
+* Proof of concept with integrated front end is done via API calls to blockstream.info
+
+* Explorer format used ([esplora](https://github.com/Blockstream/esplora/tree/esplora_v2.00)) could be ran privately by anyone following their instructions with open source code.
+
+* (TODO) Options for custom API location + multi source comparison options
+
+* (TODO) Options for merkle inclusion proofs for each tx
+
+* (TODO) Proof of concept deployed as an npm library for use with node or browser clients
+
+* (TODO) Proof of concept of single command docker deployment for full node or SPV implementations of private backends
+
+* Small amount of generic fetched data allows the design to be used fast with any generic API, SPV, and Neutrino nodes, after easily filtering for only a single unique to domain name address.
+
 ## Security ideas
 
-* hosted on github to give confidence of source code used
+* Client hosted on github to give confidence in source code used
 
-* API requests should only happen on button presses
+* Outgoing connections should be limited to requested API requests on button presses
 
-* Nothing is saved
+* Nothing is saved outside your client without permission (UX suffers but security is priority)
+
+* Air gapped signatures (TODO)
+
+* No obvious method to track usage
+
+* (TODO) Allow display of ownership history for each domain and forwarding information that includes warnings about any recent changes. BNS can provide unique transparency in changes.
+
+## Taking care of Bitcoin
+
+Design was created by
 
 ## Privacy ideas
 
-* No clear way to know who's using BNS
+* No clear way to tell which domain user is using BNS
 
 * Look ups are in one direction: from alias to forwarding information
 
