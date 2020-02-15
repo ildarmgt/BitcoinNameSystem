@@ -7,19 +7,31 @@ export const Navbar = (): JSX.Element => {
   // global state
   const { state } = React.useContext(Store)
 
+  // local state for showing collapsed menu
+  const [ menu, setMenu ] = React.useState({ show: false })
+
+
   const isCreatePage = useHistory().location.pathname === '/create'
   const isHomePage = useHistory().location.pathname === '/'
   const isAboutPage = useHistory().location.pathname === '/about'
+  const isSettingsPage = useHistory().location.pathname === '/settings'
+  const isWalletPage = useHistory().location.pathname === '/wallet'
+
+
+
+
+
 
   return (
     <>
       <div
         className={ styles.warning }
       >
-        FOR TESTING, DO NOT USE
+        not reviewed for use
       </div>
+
       <div
-        className={ styles.root }
+        className={ styles.nav }
       >
         {/* only show page number in create path */}
         { isCreatePage && (
@@ -27,25 +39,68 @@ export const Navbar = (): JSX.Element => {
             { state.pageInfo.current }/6
           </div>
         ) }
-        <a
-          href="https://github.com/ildarmgt/BitcoinNameSystem"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          { 'source' }
-        </a>
-        <Link
-          className={ isAboutPage ? styles.selected : '' }
-          to='/about'
-        >about</Link>
-        <Link
-          className={ isCreatePage ? styles.selected : '' }
-          to='/create'
-        >owners</Link>
-        <Link
-          className={ isHomePage ? styles.selected : '' }
-          to='/'
-        >search</Link>
+
+        <div className={ styles.rightButtonsWrapper }>
+
+          <div
+            className={ [
+              styles.collapsitron,
+              styles.button,
+              menu.show ? styles.menuShown : ''
+            ].join(' ') }
+            onClick={ () => {
+              setMenu({ ...menu, show: !menu.show })
+            } }
+          >
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+            <div className={ styles.dots }><div /></div>
+          </div>
+
+
+          <Link
+            className={ isWalletPage ? styles.selected : '' }
+            to='/wallet'
+          >
+            wallet
+          </Link>
+
+
+          <Link
+            className={ isSettingsPage ? styles.selected : '' }
+            to='/settings'
+          >
+            settings
+          </Link>
+
+          <a
+            href="https://github.com/ildarmgt/BitcoinNameSystem"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            &lt;{ 'source' }&gt;
+          </a>
+
+          <Link
+            className={ isAboutPage ? styles.selected : '' }
+            to='/about'
+          >
+            about
+          </Link>
+
+          <Link
+            className={ isCreatePage ? styles.selected : '' }
+            to='/create'
+          >
+            owners
+          </Link>
+
+          <Link
+            className={ isHomePage ? styles.selected : '' }
+            to='/'
+          >
+            search
+          </Link>
+        </div>
       </div>
     </>
   )

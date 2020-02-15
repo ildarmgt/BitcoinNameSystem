@@ -78,10 +78,10 @@
   margin-bottom: calc(1 * var(--s));
   overflow-wrap: normal;
   word-wrap: normal;
-  width: 100%;
+  /* width: 100%; */
 }
 .unavailableActions__actionList {
-
+  opacity: 0.8;
 }
 .unavailableActions__actionList__action {
   box-sizing: border-box;
@@ -89,9 +89,10 @@
   padding-left: calc(1 * var(--s));
   overflow-wrap: normal;
   word-wrap: normal;
-  width: 100%;
+  /* width: 100%; */
 }
 .unavailableActions__actionList__action__title {
+  display: inline-block;
   box-sizing: border-box;
   background-color: var(--colorDarker1);
   margin-bottom: calc(1 * var(--s));
@@ -99,7 +100,7 @@
   padding: calc(0.5 * var(--s)) calc(1 * var(--s));
   overflow-wrap: normal;
   word-wrap: normal;
-  width: 100%;
+  /* width: 100%; */
 }
 .unavailableActions__actionList__action__permissionList {
   box-sizing: border-box;
@@ -117,6 +118,7 @@
   word-break: normal;
   overflow-wrap: normal;
   font-size: calc(2 * var(--s));
+  color: var(--colorWarning);
 }
 
 

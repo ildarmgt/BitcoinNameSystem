@@ -9,7 +9,6 @@ import {
  * All the interfaces & enums
  */
 
-
 export * from './../helpers/bns/types/'
 
 // for global state "Store" action creators
@@ -26,8 +25,10 @@ export enum ActionTypes {
   CHOICES_BNS_ACTION = 'CHOICES_BNS_ACTION'
 }
 
+// for global state reducer
 export type Dispatch = React.Dispatch<I_Action>
 
+// for global state "Store" actions
 export interface I_Action {
   type: ActionTypes
   payload: any

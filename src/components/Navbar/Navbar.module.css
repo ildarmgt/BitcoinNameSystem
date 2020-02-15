@@ -1,5 +1,5 @@
  /* total height: padding 2s, 2.5s a text line, 2s a padding = 6.0s */
-.root {
+.nav {
   box-sizing: border-box;
   display: inline-block;
   position: absolute;
@@ -13,9 +13,17 @@
   white-space: nowrap;
   width: 100%;
   padding: calc(1 * var(--s));
+  overflow-x: hidden;
+  overflow-y: hidden;
 }
 
-.root a {
+/* element to keep track of combined button widths */
+.rightButtonsWrapper {
+  display: inline-block;
+}
+
+.nav a,
+.button {
   color: var(--colorLightText);
   display: inline-block;
   vertical-align: middle;
@@ -24,30 +32,23 @@
   margin: 0 calc(0.25 * var(--s));
   padding: calc(0.75 * var(--s)) calc(3 * var(--s));
   border-radius: calc(0.5 * var(--s));
+  cursor: pointer;
 }
 
-.root a:hover {
-  /* background-color: var(--colorBrighter8); */
+.nav a:hover,
+.nav .button:hover {
   background-color: var(--colorDarker0_5);
 }
 
-.root .selected {
+.nav .selected {
   background-color: var(--colorDarker0_5);
-  /* border-top: calc(0.3 * var(--s)) solid var(--colorDarker1); */
-  /* border-top-left-radius: 0; */
-  /* border-top-right-radius: 0; */
-  /* border-left: calc(0.25 * var(--s)) solid var(--colorDarker1); */
-
-  /* background-color: var(--colorBrighter8); */
 }
 
-.root .selected:hover {
+.nav .selected:hover {
   background-color: var(--colorDarker0_5);
-  /* background-color: var(--colorBrighter8); */
 }
 
 .warning {
-  /* padding: calc(1 * var(--s)); */
   display: inline-block;
   position: absolute;
   bottom: calc(6 * var(--s));
@@ -70,11 +71,115 @@
   vertical-align: middle;
 }
 
+/* ... for handling menu options outside visible range */
+/* sets variables for animation */
+.collapsitron {
+  display: inline-block;
+  position: relative;
+}
 
+/* menu button */
+
+.dots {
+  display: block;
+  position: absolute;
+  /* width: 100%; */
+  width:0;
+  height: 0;
+  top: 50%;
+  left: 50%;
+
+  /* text size based */
+  --iconSize: calc(2.5 * var(--s));
+
+  /* smallest unit */
+  --radius: calc(0.07 * var(--iconSize));
+
+  /* only for centering */
+  --centerX: calc(50% - var(--radius));
+  --centerY: calc(50% - var(--radius));
+
+  --offsetsXY: calc(4 * var(--radius));
+
+  /* risky filters */
+  filter: opacity(0.4) brightness(300%) saturate(0.7) hue-rotate(0deg);
+
+  /* animation */
+  transition: all 0.3s;
+}
+
+/* active */
+.menuShown .dots {
+  filter: opacity(0.7) brightness(300%) saturate(0.7) hue-rotate(95deg);
+}
+
+.dots > div,
+.dots > div:before,
+.dots > div:after {
+  display: block;
+  position: absolute;
+  width: 0;
+  height: 0;
+  padding: var(--radius);
+  border-radius: var(--radius);
+  background-color: transparent;
+  transform:rotate(0deg);
+
+  box-shadow: 0 0 0 calc(0.5 * var(--radius)) var(--colorBitcoinBlue);
+
+
+  /* animation */
+  transition: all 0.3s;
+}
+
+.menuShown .dots > div,
+.menuShown .dots > div:before,
+.menuShown .dots > div:after {
+  /* background-color: var(--colorBitcoinBlue); */
+  box-shadow: inset 0 0 0 var(--radius) var(--colorBitcoinBlue);
+}
+
+.dots > div {
+  top: var(--centerY);
+  left: var(--centerX);
+}
+
+/* these are positioned relative to .dots */
+.dots > div:before,
+.dots > div:after {
+  content:"";
+  top: 0;
+  left: 0;
+}
+
+.dots > div:before {
+  left: calc(var(--centerX) - var(--offsetsXY));
+}
+
+.dots > div:after {
+  left: calc(var(--centerX) + var(--offsetsXY));
+}
+
+.menuShown .dots {
+  transform-origin: center;
+  transform: rotate(180deg);
+}
+
+.menuShown .dots > div:before {
+  transform-origin: center;
+  transform: translate(calc(-2 * var(--radius)), calc(0 * var(--radius))) rotate(135deg);
+  width: calc(2.82 * var(--offsetsXY));
+}
+
+.menuShown .dots > div:after {
+  transform-origin: center;
+  transform: translate(calc(-2 * var(--offsetsXY) - 2 * var(--radius)), calc(0 * var(--radius))) rotate(45deg);
+  width: calc(2.82 * var(--offsetsXY));
+}
 
 /* wide screen settings */
 @media screen and (min-aspect-ratio: 12/9) {
-  .root {
+  .nav {
     transform-origin: bottom right;
     transform: scale(var(--horizontalScale));
     width: calc(100% / var(--horizontalScale));

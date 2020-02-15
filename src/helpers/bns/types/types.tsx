@@ -34,6 +34,34 @@ export interface I_Action_Choice {
   actionContent: string
 }
 
+// (TODO): this might need further generalization and simplification
+// this is checked to know what user options are
+export interface I_Checked_Guidance {
+  type: BnsActionType                   // pass each action type to user attempting to create tx
+  info: string                          // describe each action type
+  isUsable: boolean                     // summarize if it meets all permissions for user to do
+  suggestions?: string                  // the optional suggestion of I_BNS_Action - string instructions
+                                        // 'GET_(easy to read description)_(optional storage in embed string)'
+                                        // 'WARNING_' is used to warn about allowed actions user probably shouldn't do
+                                        //    like waste coins on editing forwarding states on domains that aren't theirs
+  permissionList: [                     // every permission checked for this action>
+    {
+      isAllowed: boolean                // if permission passed check
+      info: string                      // description of permission
+    }
+  ]
+
+  special: Array<{                      // suggestion/guidance array from ea condition AND permission,
+                                        // new special array item is only added if .special object of I_Condition is found in any of them
+    info: string                        // info is description string of each I_Condition condition AND permission
+    rules: {                            // rules are the guidance from each condition or permission
+      [key: string]: string | number    // rules come as key value pair
+    }
+  }>
+  actionContent: string                 // holds a string if it needs to be added to embedded string for action to work.
+                                        // is derived from user input via a form based on suggestion string with 'GET_' start
+}
+
 export interface I_BnsState {
   domain: I_Domain
   chain?: {

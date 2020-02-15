@@ -1,0 +1,18 @@
+.content {
+  position: absolute;
+  /* background-color: rgba(0, 0, 255, 0.226); */
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: calc(6 * var(--s));
+}
+
+/* wide screen settings */
+@media screen and (min-aspect-ratio: 12/9) {
+  .content {
+    /* transform-origin: bottom right; */
+    /* transform: scale(var(--horizontalScale)); */
+    bottom: calc(6 * var(--s) * var(--horizontalScale));
+  }
+
+}

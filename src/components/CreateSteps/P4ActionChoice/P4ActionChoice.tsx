@@ -95,15 +95,25 @@ export const P4ActionChoice = () => {
 
                   if (dataExtraForm[action.info].value !== '') {
                     const actionCommandText = action.suggestions.split('_')[2]
-
-                    // set this action as the chosen action in global state
-                    // add onto it the command (e.g. '!ca'), space, and then form value
-                    changeChoicesBNSAction(state, dispatch, {
-                      action: {
-                        ...action,
-                        actionContent: actionCommandText + ' ' + dataExtraForm[action.info].value
-                      }
-                    })
+                    // if there's a 3rd parameter in suggestion, place it into the the action content
+                    if (actionCommandText) {
+                      // set this action as the chosen action in global state
+                      // add onto it the command (e.g. '!ca'), space, and then form value
+                      changeChoicesBNSAction(state, dispatch, {
+                        action: {
+                          ...action,
+                          actionContent: actionCommandText + ' ' + dataExtraForm[action.info].value
+                        }
+                      })
+                    } else {
+                      // otherwise leave action content blank
+                      changeChoicesBNSAction(state, dispatch, {
+                        action: {
+                          ...action,
+                          actionContent: actionCommandText + ' ' + dataExtraForm[action.info].value
+                        }
+                      })
+                    }
                     // change page
                     changePageInfoAction(state, dispatch, 5)
                   }

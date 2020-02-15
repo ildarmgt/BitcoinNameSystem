@@ -44,6 +44,8 @@ export const runAllActionPermissionChecks = (st: I_BnsState, address: string) =>
     })
 
     // grab every special rule so can put together tx based on them
+    // special rules can come from both permissions (we can check)
+    // and conditions (we can't check yet but may offer guidance)
     const specialTxDirections: any[] = []
     action.permissions.forEach((permission: any) => {
       if ('special' in permission) specialTxDirections.push({

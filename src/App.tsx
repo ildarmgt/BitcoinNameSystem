@@ -5,6 +5,7 @@ import About from './pages/About'
 import Create from './pages/Create'
 import { Navbar } from './components/Navbar'
 import Wallet from './pages/Wallet'
+import './css/app.css'
 
 // using for routing
 const App = (): JSX.Element => {
@@ -18,15 +19,17 @@ const App = (): JSX.Element => {
   return (
     <>
       {/* switch only renders first match instead of all matches */}
-      <Switch>
-        <Route path='/id/:alias' component={Home} />
-        <Route exact path='/id/' component={Home} />
-        <Route path="/about" component={About} />
-        <Route path="/create" component={Create} />
-        <Route path="/wallet" component={Wallet} />
-        <Route path='/:noise' component={Home} />
-        <Route exact path='/' component={Home} />
-      </Switch>
+      <div className={ 'content' }>
+        <Switch>
+          <Route path='/id/:alias' component={Home} />
+          <Route exact path='/id/' component={Home} />
+          <Route path="/about" component={About} />
+          <Route path="/create" component={Create} />
+          <Route path="/wallet" component={Wallet} />
+          <Route path='/:noise' component={Home} />
+          <Route exact path='/' component={Home} />
+        </Switch>
+      </div>
       <Navbar />
       {/* <Route exact path="/" render={() => <Home />} /> */}
     </>

@@ -24,7 +24,6 @@ import {
   getTxInput0SourceUserAddress,
   getTxHeight,
   getTxTimestamp,
-  // getTxOutput0BurnValue,
   isAddressTheCurrentOwner,
   burnedPreviousRateMin,
   readEmbeddedData,
@@ -138,6 +137,44 @@ const IS_BIDDING_OVER = (
 
 // ============ USER ACTIONs ===============
 
+// Describe: If no owner, sender can start process to claim ownership
+// Since autoChecks run before user action checks in calcBnsState,
+// after bidding ends owner will be set by time this is checked.
+export const bidForOwnershipAction = (st: I_BnsState, tx: any = undefined): I_BNS_Action => {
+  const args = { st, tx }
+  return {
+
+    type: CLAIM_OWNERSHIP,
+    info: 'Bid for ownership of an available domain',
+
+    permissions: [
+      // this means no more bids when there's a winner
+      NO_OWNER(args)
+    ],
+
+    conditions: [
+      // minimum rules to counting tx still apply for bids
+      OUTS_2(args),
+      OUT_0(args),
+      OUT_1(args),
+      NOTIFIED_MIN(args),
+      NO_UNSPENT_USER_NOTIFICATIONS_UTXO(args),
+      USER_ADDRESS_NOT_NOTIFICATION_ADDRESS(args),
+
+      // at very least minimum is burnt, the rest is derived
+      BURNED_MIN(args)
+    ],
+
+    execute: () => {
+      // have to start or add to bidding
+      // ownership will be derived through automatic check based on bidding started here
+      addBid(st, tx, BnsBidType.BURN)
+    }
+  }
+  // need to get user input on burn amount possible minimum (general action guidance)
+  // also needs some guidance for refunds necessary to win (general action guidance)
+}
+
 /**
  * Change address. (similar to send ownership, but keeps forwards)
  * network: '!ca'
@@ -199,6 +236,10 @@ export const changeAddressAction = (st: I_BnsState, address: string = '', tx: an
 
     // change from tx for user could be sent to the new address
     // so there's no need to fund new address or withdraw from old one
+    // 'GET_' - requires additional variable
+    // 2nd phrase separated by _ - description
+    // 3rd phrase separated by _ is the command that will be placed in forward
+    //    info as key and put in value as "forwards" value.
     suggestions: 'GET_Your new address (change sent there)_' + commandSignal
   }
 }
@@ -260,44 +301,6 @@ export const sendOwnershipAction = (st: I_BnsState, address: string = '', tx: an
       }
     },
     suggestions: 'GET_New owner address_' + commandSignal
-  }
-}
-
-
-// Describe: If no owner, sender can start process to claim ownership
-// Since autoChecks run before user action checks in calcBnsState,
-// after bidding ends owner will be set by time this is checked.
-export const bidForOwnershipAction = (st: I_BnsState, tx: any = undefined): I_BNS_Action => {
-  const args = { st, tx }
-  return {
-
-    type: CLAIM_OWNERSHIP,
-    info: 'Bid for ownership of an available domain',
-
-    permissions: [
-      // this means no more bids when there's a winner
-      NO_OWNER(args)
-    ],
-
-    conditions: [
-      // minimum rules to counting tx still apply for bids
-      OUTS_2(args),
-      OUT_0(args),
-      OUT_1(args),
-      NOTIFIED_MIN(args),
-      NO_UNSPENT_USER_NOTIFICATIONS_UTXO(args),
-      USER_ADDRESS_NOT_NOTIFICATION_ADDRESS(args),
-
-      // at very least minimum is burnt, the rest is derived
-      BURNED_MIN(args)
-    ],
-
-    execute: () => {
-      // have to start or add to bidding
-      // ownership will be derived through automatic check based on bidding started here
-
-      addBid(st, tx, BnsBidType.BURN)
-    }
   }
 }
 
