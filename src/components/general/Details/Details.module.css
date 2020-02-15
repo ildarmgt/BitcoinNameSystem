@@ -24,11 +24,6 @@
   opacity: 0.5;
   white-space: nowrap;
   vertical-align: middle;
-
-  /* fixes bluriness during animation */
-  /* -webkit-backface-visibility: hidden; */
-  /* -webkit-transform: translateZ(0) scale(1.0, 1.0); */
-  /* transform: translateZ(0); */
 }
 
 /* increase opacity on hover */

@@ -58,6 +58,8 @@ html {
   --colorBrighter1: rgba(255, 255, 255, 0.1);
   --colorBrighter2: rgba(255, 255, 255, 0.2);
   --colorBrighter3: rgba(255, 255, 255, 0.3);
+  --colorBrighter4: rgba(255, 255, 255, 0.4);
+
   --colorBrighter8: rgba(255, 255, 255, 0.8);
 
   /* use blue tint */
@@ -68,7 +70,6 @@ html {
   --colorDarker5: rgba(17, 17, 51, 0.5);
   --colorDarker8: rgba(17, 17, 51, 0.8);
   --colorDisabled: rgba(17, 17, 51, 0.5);
-
 
   --colorWarning: rgba(153, 17, 62, 0.75);
 
@@ -125,6 +126,11 @@ a {
   text-decoration: none;
   color: var(--colorLightText);
   vertical-align: middle;
+
+  -webkit-user-drag: none;
+  -ms-user-drag: none;
+  -moz-user-drag: none;
+  user-drag: none;
 }
 
 a:hover,
@@ -421,6 +427,7 @@ td:nth-child(2),
 th:nth-child(2) {
   width: 66%;
   text-align: left;
+  opacity: 0.8;
 }
 
 /* how to show p inside td inside table */
@@ -432,4 +439,17 @@ table td p {
   --offset: calc(2 * var(--s));
   text-indent: calc(-1 * var(--offset));
   padding-left: var(--offset);
+}
+
+/* stops animations on resize */
+.resize-animation-stopper *,
+.resize-animation-stopper :before,
+.resize-animation-stopper :after {
+  -webkit-transition: none !important;
+  -moz-transition: none !important;
+  -o-transition: color 0 ease-in !important;
+  -ms-transition: none !important;
+  transition: none !important;
+  animation: none !important;
+  transition-property: none !important;
 }

@@ -15,15 +15,39 @@
   padding: calc(1 * var(--s));
   overflow-x: hidden;
   overflow-y: hidden;
+
 }
 
-/* element to keep track of combined button widths */
-.rightButtonsWrapper {
-  display: inline-block;
+.overflowMenu {
+  flex-basis: 100%;
+  flex-wrap: wrap;
+  position: fixed;
+  background-color: var(--colorBackground);
+  border-radius: calc(0.5 * var(--s));
+  opacity: 0.75;
+  filter: brightness(1.1);
 }
 
+.overflowMenu > div {
+  box-sizing: border-box;
+  display: flex;
+  text-align: center;
+  flex-direction: column;
+  padding: calc(2 * var(--s)) calc(2 * var(--s));
+  border-radius: calc(0.5 * var(--s));
+  background-color: var(--colorDarker2);
+
+}
+
+.overflowMenu > div > a {
+  margin: calc(0.5 * var(--s));
+  color: var(--colorDarker5);
+}
+
+.overflowMenu a,
 .nav a,
 .button {
+  text-align: center;
   color: var(--colorLightText);
   display: inline-block;
   vertical-align: middle;
@@ -40,13 +64,23 @@
   background-color: var(--colorDarker0_5);
 }
 
+.overflowMenu a:hover {
+  background-color: var(--colorBrighter4);
+}
+
+
 .nav .selected {
   background-color: var(--colorDarker0_5);
 }
 
+.overflowMenu .selected {
+  background-color: var(--colorBrighter4);
+}
+
+/* .overflowMenu .selected:hover,
 .nav .selected:hover {
   background-color: var(--colorDarker0_5);
-}
+} */
 
 .warning {
   display: inline-block;
@@ -57,7 +91,7 @@
   font-size: calc(2 * var(--s));
   margin-left: calc(1 * var(--s));
   vertical-align: middle;
-  z-index: 1000;
+
 }
 
 .pageNum {
@@ -76,24 +110,31 @@
 .collapsitron {
   display: inline-block;
   position: relative;
+  text-align: center;
+  cursor: pointer;
+  padding: calc(0.5 * var(--s)) calc(1.5 * var(--s));
+  vertical-align: middle;
 }
 
-/* menu button */
+/* -------------------------------------------------------------------------- */
+/*                                 menu button                                */
+/* -------------------------------------------------------------------------- */
+
+/* dots wrapper */
 
 .dots {
   display: block;
   position: absolute;
-  /* width: 100%; */
-  width:0;
-  height: 0;
-  top: 50%;
-  left: 50%;
+  width: 100%;
+  height: 100%;
+  top: 0;
+  left: 0;
 
   /* text size based */
-  --iconSize: calc(2.5 * var(--s));
+  --iconSize: calc(2.2 * var(--s));
 
   /* smallest unit */
-  --radius: calc(0.07 * var(--iconSize));
+  --radius: calc(0.10 * var(--iconSize));
 
   /* only for centering */
   --centerX: calc(50% - var(--radius));
@@ -101,17 +142,30 @@
 
   --offsetsXY: calc(4 * var(--radius));
 
+  /* various animation fixes */
+  -webkit-backface-visibility: hidden;
+  backface-visibility: hidden;
+  -webkit-filter: blur(0);
+  filter: blur(0);
+
+  image-rendering: optimizeSpeed;             /*                     */
+  image-rendering: -moz-crisp-edges;          /* Firefox             */
+  image-rendering: -o-crisp-edges;            /* Opera               */
+  image-rendering: -webkit-optimize-contrast; /* Chrome (and Safari) */
+  image-rendering: optimize-contrast;         /* CSS3 Proposed       */
+  -ms-interpolation-mode: nearest-neighbor;   /* IE8+                */
+  font-smoothing: antialiased !important;
+
+
   /* risky filters */
-  filter: opacity(0.4) brightness(300%) saturate(0.7) hue-rotate(0deg);
+  filter: blur(0.0) opacity(0.3) brightness(300%) hue-rotate(0deg);
 
   /* animation */
-  transition: all 0.3s;
+  transform: translateZ(0.0) scale(1.00, 1.00) rotate(0.001deg) ;
+  transition: transform 0.3s;
 }
 
-/* active */
-.menuShown .dots {
-  filter: opacity(0.7) brightness(300%) saturate(0.7) hue-rotate(95deg);
-}
+/* positioned inside dots */
 
 .dots > div,
 .dots > div:before,
@@ -122,21 +176,14 @@
   height: 0;
   padding: var(--radius);
   border-radius: var(--radius);
-  background-color: transparent;
-  transform:rotate(0deg);
+  background-color: var(--colorBitcoinBlue);
 
-  box-shadow: 0 0 0 calc(0.5 * var(--radius)) var(--colorBitcoinBlue);
+  transform-origin: center;
 
+  transform: translateZ(0.0) scale(1.00, 1.00) translate(0.0, 0.0) rotate(0.01deg);
 
   /* animation */
-  transition: all 0.3s;
-}
-
-.menuShown .dots > div,
-.menuShown .dots > div:before,
-.menuShown .dots > div:after {
-  /* background-color: var(--colorBitcoinBlue); */
-  box-shadow: inset 0 0 0 var(--radius) var(--colorBitcoinBlue);
+  transition: transform 0.3s, width 0.3s,
 }
 
 .dots > div {
@@ -144,10 +191,9 @@
   left: var(--centerX);
 }
 
-/* these are positioned relative to .dots */
 .dots > div:before,
 .dots > div:after {
-  content:"";
+  content: "";
   top: 0;
   left: 0;
 }
@@ -160,21 +206,49 @@
   left: calc(var(--centerX) + var(--offsetsXY));
 }
 
+/* once active */
+
 .menuShown .dots {
-  transform-origin: center;
-  transform: rotate(180deg);
+  transform: translateZ(0.0) scale(1.00, 1.00) translate(0, 0) rotate(179deg);
+  filter: blur(0.0) opacity(0.3) brightness(300%) hue-rotate(90deg);
 }
 
+.menuShown .dots > div,
+.menuShown .dots > div:before,
+.menuShown .dots > div:after {
+
+}
+
+.menuShown .dots > div {
+  transform: translateZ(0.0) scale(1.00, 1.00) translate(0, 0) rotate(0deg);
+}
+
+
 .menuShown .dots > div:before {
-  transform-origin: center;
-  transform: translate(calc(-2 * var(--radius)), calc(0 * var(--radius))) rotate(135deg);
+
+  transform: translateZ(0.0) scale(1.00, 1.00) translate(calc(-2 * var(--radius)), calc(0 * var(--radius))) rotate(135deg);
   width: calc(2.82 * var(--offsetsXY));
 }
 
 .menuShown .dots > div:after {
-  transform-origin: center;
-  transform: translate(calc(-2 * var(--offsetsXY) - 2 * var(--radius)), calc(0 * var(--radius))) rotate(45deg);
+  transform: translateZ(0.0) scale(1.00, 1.00) translate(calc(-2 * var(--offsetsXY) - 2 * var(--radius)), calc(0 * var(--radius))) rotate(45deg);
   width: calc(2.82 * var(--offsetsXY));
+}
+
+.menuShown .dots:not(:active) {
+  animation: blurme 0.3s forwards;
+}
+
+@keyframes blurme {
+  %0 {
+    filter: blur(0.0) opacity(0.3) brightness(300%) hue-rotate(0deg);
+  }
+  50% {
+    filter: blur(calc(0.7 * var(--radius))) opacity(0.3) brightness(300%) hue-rotate(45deg);
+  }
+  100% {
+    filter: blur(0.0) opacity(0.3) brightness(300%) hue-rotate(90deg);
+  }
 }
 
 /* wide screen settings */
@@ -186,3 +260,8 @@
   }
 
 }
+
+
+
+
+

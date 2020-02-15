@@ -8,9 +8,10 @@ export const CreateHeader = () => {
   // global state
   const { state } = React.useContext(Store)
 
+  const domainName = state.alias + state.extension
+
   // navigation object
   const history = useHistory()
-
 
   // Make sure entire alias is always visible on top through
   // resizing based on letter count.
@@ -23,7 +24,7 @@ export const CreateHeader = () => {
     window.addEventListener('resize', resize);
     return () => window.removeEventListener('resize', resize);
   }, [])
-  const domainName = state.alias + state.extension
+
   // enforces max size to font size so 1 letter alias has same font as 19 letter alias
   const fontScale = Math.min(
       Math.floor(1.1 * width / domainName.length),
