@@ -12,7 +12,7 @@ This readme and all else is work in progress. I'm open to teaming up.
 
 Can also open by domain name alias. e.g. `/BitcoinNameSystem/#/id/satoshi` to [autofill & search](https://ildarmgt.github.io/BitcoinNameSystem/#/id/satoshi).
 
-Or with a shorter URL: [http://onbtc.me/?satoshi](http://onbtc.me/?satoshi) .
+Or with a shorter URL scheme: [http://onbtc.me/?satoshi](http://onbtc.me/?satoshi) .
 
 ## To build project from scratch
 
@@ -114,7 +114,7 @@ This design has neutral costs to prevent domains from being captured en masse, e
 
 ## What is the back end?
 
-BNS can be read with help of any Bitcoin full node, with early demo implementations relying on 3rd party node with API explorer interface, but can be replaced by personal full nodes to accomplish same thing. The goal is to provide multiple options ranging fast 3rd party API to implementations relying solely on your own Bitcoin full node to use BNS.
+Decentralization works on the principle of not having to trust back ends. BNS can be read with help of any Bitcoin full node, with early demo implementations relying on open source 3rd party API explorer interface, but can be replaced by personal full nodes to accomplish same thing. The goal is to provide multiple options ranging fast 3rd party API to implementations relying solely on your own Bitcoin full node to use BNS.
 
 * Proof of concept with integrated front end is done via API calls to blockstream.info
 
@@ -127,8 +127,6 @@ BNS can be read with help of any Bitcoin full node, with early demo implementati
 * (TODO) Proof of concept deployed as an npm library for use with node or browser clients
 
 * (TODO) Proof of concept of single command docker deployment for full node or SPV implementations of private backends
-
-* Small amount of generic fetched data allows the design to be used fast with any generic API, SPV, and Neutrino nodes, after easily filtering for only a single unique to domain name address.
 
 ## Security ideas
 
@@ -157,6 +155,10 @@ Design was created with intention to not make Bitcoin worse.
 * Notification UTXO are also "anyone can spend" to allow different users to spend and even provides some incentive to consume via minimum balance.
 * Segwit and combining inputs/outputs is encouraged,  multi-transaction methods are discouraged to minimize block space use.
 * Give Bitcoin and other users the option of custom domains/aliases on Bitcoin without compromises in censorship resistance.
+
+## Why not layer 2?
+
+* Domains and forwards are the one usecase that specifically does greatly benefit from persistent and easily accessible data. It might also be used for simplifying LN addresses or invoices, with possible ipfs step for better cost efficiency.
 
 ## Privacy ideas
 

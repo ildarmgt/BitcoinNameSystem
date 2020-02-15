@@ -1,5 +1,5 @@
-// types of user BNS actions
-export enum BnsActionType {
+
+export enum BnsActionType {             // types of user BNS actions that match use in actions.tsx
   RENEW = 'RENEW',
   ONLY_FORWARDS = 'ONLY_FORWARDS',
   CLAIM_OWNERSHIP = 'CLAIM_OWNERSHIP',
@@ -8,8 +8,8 @@ export enum BnsActionType {
 }
 
 export enum BnsBidType {
-  BURN = 'BURN',
-  NULL = 'NULL'
+  BURN = 'BURN',            // ownership bidding in progress taht requires burns
+  NULL = 'NULL'             // no bidding in progress
 }
 
 export interface I_BNS_Action {
@@ -50,7 +50,7 @@ export interface I_Domain {             // notification info for this domain nam
   utxoList: Array<I_UTXO>               // array of all real time utxo at address
   users: {                              // keeps track of interacting users / source addresses
                                         // with addresses as keys
-    [key: string]: I_User
+    [address: string]: I_User
   }
   currentOwner: string                  // points to a source address or blank string
 

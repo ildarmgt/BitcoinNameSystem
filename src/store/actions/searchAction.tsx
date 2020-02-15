@@ -9,17 +9,15 @@ const { STORE_SEARCH_RESULTS_FAIL, STORE_SEARCH_RESULTS } = ActionTypes;
  * calculate owner,
  * find current owner's forwarding info,
  * send/dispatch to reducer to store important data found
- * (No UTXO nor raw TX scan for speed in front page search)
+ * (No UTXO nor raw TX scan for speed in front page search necessary yet)
  */
 export const searchAction = async (state: I_State, dispatch: Dispatch, router: any = undefined) => {
   const domainName = state.alias + state.extension
   // stop if no alias submitted, nothing to save to state
-  if (!state.alias) { return undefined }
+  if (!state.alias) return undefined
 
   // find address for this alias
   const { notificationsAddress } = calcP2WSH(domainName, state.network)
-
-  // (TODO) should check if max length for API reached to know if to use pages & append value (25?)
 
   try {
 
@@ -56,7 +54,7 @@ export const searchAction = async (state: I_State, dispatch: Dispatch, router: a
     })
 
   } catch (e) {
-    console.log(e)
+    console.log('searchAction issue found:', e)
 
     // if navigated via url id, use router to navigate home w/o id in url
     // even if api call failed, should navigate away or will be stuck in a loop
@@ -73,7 +71,3 @@ export const searchAction = async (state: I_State, dispatch: Dispatch, router: a
     });
   }
 }
-
-// test address tb1qprkzdaqt5jkxrhy57ngvra8k0rvq63ulksz8cx85qwke3myhjrtq9s6nj3
-// has mixture of tx sent to it on testnet
-// https://blockstream.info/testnet/address/tb1qprkzdaqt5jkxrhy57ngvra8k0rvq63ulksz8cx85qwke3myhjrtq9s6nj3

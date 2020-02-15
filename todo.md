@@ -1,51 +1,36 @@
 
 ## Short term
 
+- (PRIORITY 1) display bidding information on search
 
+- (PRIORITY 2) accurately allow creation of bidding tx with helpful information and risks shown
 
-- bid challenges (kept generic so can be reused for non-burns)
+  - need to allow customization of amount burnt
+  
+  - need to show confirmed burn amounts
+  - need to show unconfirmed burn amounts
+  - need to show refunds left to do
+  - need to show time left to do it
 
-  - should winner of bids at same height have to refund losing bids?
-    - decided on NO - minimize required tx
-    - refunds are a way to increase costs for challenges but also help those outbid
-    - competing for ownership shouldn't be easy or cheap as that could cause greifing.
-    - minimum multiplier over previous bid is another example of forcing increased costs per bid to avoid minor annoyances
-    - not only is it safer to surpass minimum multiplier in bid amount significantly, it also gives much higher weight of winning bid on rare chance tx ends up in same block.
+- (PRIORITY 3) if notification is on input, shouldn't be necessary to include it on output! Conditions could check for either, and thus cut down in notification utxo use and smaller/cheaper tx  (modify)
 
-  - works: bid period start, end, and ownership assigned, require your own utxo clean up
-  - left: minimum amounts
+- (PRIORITY 4) stealth addresses proof of concept to send, receive, UI
 
-  - minimum amounts: starts with MIN_BURN constant. It's very hard to force minimum based on previous payments because those payments might not follow all the rules, payment might come in after other higher payments. What is possible is requiring all payments to be 2x of original burn, and then 2x of your own previous burn.
+- multipage tx scan (setting up test cases on testnet)
 
-  - bid is placed on available domain
-  - if only bid in 144 blocks, becomes owner
-  - how to handle?
-    - shouldn't use ownership time so that renewals don't trigger challenge period
-    - bids are property of domain shared by all users so should use bid state within domain state directly.
-    - first bid height should be logged after which point upgrade to owner happens through automatic actions like expirations.
-    - bids only relevant if no owner
-    - bids must be cleared after winner found so not confusing in future
-    - each bid only counts if all bids before it are refunded at end of challenge period
-    - since bids can take variable time to place, "before" is not easily determined until confirmation occurs. so anytime within challenge period, must allow to meet condition with follow up tx, and also scanning the pending tx
-    - bids are only responsible for refunding the bids that confirmed at lower height than bid confirmed
-    - while using up your own notification utxo is required for each user, ~~bids are also responsible for removing all utxo created during challenge period by anyone below its height.~~ (since soon allowing notifications as inputs & thus useful, can ignore this rule)
-    - the ownership derivation takes place at height of challenge period end via only confirmed tx
-    - each bid has to at least double burn amount of next runner up to win
-    - (notification can be used for CPFP)
-    - notifications are always used with notification utxo, but not necessarily with refunds. Only refunds with notifications count.
+- more generic & user customizable interpretation logic
+- multi-tx addresses interpretations
+- encoding interpretations
 
-- (HIGH PRIORITY) if notification is on input, shouldn't be necessary to include it on output! Conditions could check for either, and thus cut down in notification utxo use and smaller/cheaper tx  (modify)
-
-- multipage tx scan
-
+- settings page
+- page navigation improved for hopping and checks
 
 - `!a  <# of BTCs>` - Post price to sell (output @0), measured in floating point btc. Owner address (input @0). Similar to challenge period but instead of burning, tx are sent to owner. ~24 hours from time of first bid w/ more left on lease, cannot transfer ownership after first bid. Include notification (output @1) & optional public notification to '':'' address (@output 2). Must be no owner's ACS, use as inputs (inputs @1+). Does not change lease expiration - only burns can extend even if transfered.
 
 - `!ba <last price in floating BTC>` Bid on auction. Must: 1. State price at point of bid via the !buy command in op_return (output @0). 2. Must consume past ACS inputs at that price height (includes the owners public notification at '':'' if used) (inputs @1+). 3. Refund previous valid bidders (outputs @4+). 4. Pay 1.5x last price requested except for original price (output @3). 5. Create notification (output @1). 6. Use desired ownership/refund adderss as first input (input @0). Winner is derived 24 hours after first bid by highest price that followed all the rules. Does not change lease expiration - only burns can extend even if transfered.
 
-- alias creation page
-    - download/read generated file (sjcl encrypted)
-    - bip47 standards
+
+- download/read backup file option (sjcl encrypted)
 
 - originally use timestamp to approximate how long this owner has been in control. (only relevant if new owner)
   (doesn't require additional API call for current blockheight)
@@ -57,12 +42,11 @@
     - full history view option
     - days since update for each network/value shown (users can be warned if very new change)
 
-- keep updating terminology in readme for consistency
 - write out all rules in readme with extreme detail akin to pseudocode so can be reproduced in any code
 
 - npm library
 
-- npm library implemented with api for non-node usecases
+- npm library implemented with api/docker
 
 ---
 Long term
@@ -149,3 +133,30 @@ Uncertain ideas
   - attacker could poison the tx by sending to a targets address and then following outputs. this could be avoided by immidiately doing submarine swap from each utxo to your LN node (https://submarineswaps.org/) or used in various coinjoin-type scenarios.
 
   and can't decrypt every notified text, but can encrypt with public key until match found.  as well until finding result of a path
+
+  - bid challenges (kept generic so can be reused for non-burns)
+
+  - should winner of bids at same height have to refund losing bids?
+    - decided on NO - minimize required tx
+    - refunds are a way to increase costs for challenges but also help those outbid
+    - competing for ownership shouldn't be easy or cheap as that could cause greifing.
+    - minimum multiplier over previous bid is another example of forcing increased costs per bid to avoid minor annoyances
+    - not only is it safer to surpass minimum multiplier in bid amount significantly, it also gives much higher weight of winning bid on rare chance tx ends up in same block.
+
+  - minimums and refunds: at some time during bidding period, there could be a mix of confirmed and unconfirmed tx bidding. most effective bids that accept the cost to win would be encouraged to significantly outbid everyone else. There are no obvious reasons to allow fighting over minor fractions for ownership and only makes the domains less appealing. However, if there is a demand for a specific domain that only has a lowball bid on it, a significant increase (like x10) should be worth it. Minimize pointless tx span and griefing. For most cases, 24 hours waiting period is only a formality as nobody will know that domain is bid on without extensive monitoring that only gets tougher as aliases get longer. 24 hours is shortest amount of time that gives everyone around the world chance to check the status during regular awake hours to allow oportunity to challenge but keep delay small if not. Even non-owners can be adding forwarding info to the domain in same tx or after the bids to save on fees. As burn amounts get significant, the reimbersement requirement should the losing parties significantly but it's always a risk and not a guarantee. Refunds could be held off until near the end to see if they are worth it.
+
+- address reuse avoidance
+  - owner could be updated via nonced script or hd wallet (would need xpub stored) or changing address
+  - unlikely to help enough given the op_return output on all
+
+- notification tx could also be nonced
+  - would have to request significantly more address data
+  - spending it reveals script as anyone can spend
+  - could add random noise to tx amount to avoid round numbers
+
+
+- maybe better approach is to assume domains are not private once domain is known
+- store information there that allows some privacy (ln, stealth addresses)
+- in browser submarine swaps could load LN coins
+
+api submarine swaps for an option: https://docs.boltz.exchange/en/latest/lifecycle/
