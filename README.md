@@ -140,19 +140,31 @@ BNS can be read with help of any Bitcoin full node, with early demo implementati
 
 * Air gapped signatures (TODO)
 
-* No obvious method to track usage
+* No obvious method to track domains used or searched
 
-* (TODO) Allow display of ownership history for each domain and forwarding information that includes warnings about any recent changes. BNS can provide unique transparency in changes.
+* (TODO) Allow display of ownership history for each domain and forwarding information that includes warnings about any recent changes. BNS can provide unique transparency in changes
+
+* Change address command allows minimizing address reuse without giving up ownership
 
 ## Taking care of Bitcoin
 
-Design was created by
+Design was created with intention to not make Bitcoin worse.
+
+* Contributes to fee market.
+* Neutral costs, minimum asymetric advantages.
+* Burns do not create UTXO (via OP_RETURN).
+* Notification UTXO are forced to be consumed to not contribute to growing UTXO set.
+* Notification UTXO are also "anyone can spend" to allow different users to spend and even provides some incentive to consume via minimum balance.
+* Segwit and combining inputs/outputs is encouraged,  multi-transaction methods are discouraged to minimize block space use.
+* Give Bitcoin and other users the option of custom domains/aliases on Bitcoin without compromises in censorship resistance.
 
 ## Privacy ideas
 
 * No clear way to tell which domain user is using BNS
 
-* Look ups are in one direction: from alias to forwarding information
+* Search only easy in one direction: from alias to forwarding information, especially with long aliases.
+
+* Stealth address implementation (using slightly modified BIP47 principles for more entropy, single tx implementation, and no notification traceability to recepient nor to possibly public forwarding information)
 
 ## Donations
 

@@ -5,6 +5,13 @@
 
 - bid challenges (kept generic so can be reused for non-burns)
 
+  - should winner of bids at same height have to refund losing bids?
+    - decided on NO - minimize required tx
+    - refunds are a way to increase costs for challenges but also help those outbid
+    - competing for ownership shouldn't be easy or cheap as that could cause greifing.
+    - minimum multiplier over previous bid is another example of forcing increased costs per bid to avoid minor annoyances
+    - not only is it safer to surpass minimum multiplier in bid amount significantly, it also gives much higher weight of winning bid on rare chance tx ends up in same block.
+
   - works: bid period start, end, and ownership assigned, require your own utxo clean up
   - left: minimum amounts
 

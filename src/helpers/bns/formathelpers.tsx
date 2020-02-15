@@ -413,29 +413,12 @@ export const endBidding = (st: I_BnsState): void => {
     ((thisTx.status.block_height >= startHeight) && (thisTx.status.block_height < endHeight))
   )
 
-  // v1. for now very simple rule of whoever bid most wins (temp)
-  // st.domain.bidding.bids.forEach(thisBid => {
-  //   if (thisBid.value > winner.value) {
-  //     winner = {
-  //       address: thisBid.address,
-  //       height: thisBid.height,
-  //       timestamp: thisBid.timestamp,
-  //       value: thisBid.value
-  //     }
-  //   }
-  // })
-
-  // v2. more useful rules for who wins bidding:
-  // - must have all previous bids (that got far enough to add to bids) refunded by anyone before deadline of end height
-  // - refunds have to notify to count (so only need to scan notification tx)
-  // - out of remaining bids, highest burn wins. must burn 2x of previously confirmed bid to win
-
-  // plan
+  // Rules for who wins bidding:
   // 1. list of all bids and how much they paid - have that in domain.bidding.bids!
   // 2. check all bids at bidding start height to this specific bid height - 1 and see if they were refunded (except bids by your own address)
   // 3. add this bid to list of valid bids if so
-  // 4. parse through valid bids, replace running winner only if burn amount is 2x previous winner at lower height
-  // 5. tie break same height valid winners by pseudo random number weighted by burn amounts (this will need tests)
+  // 4. parse through valid bids, replace running winner only if burn amount is *CHALLENGE_MIN_MULTIPLY previous winner at last height
+  // 5. tie break same height valid winners by pseudo random number weighted by burn amounts
   // 6. once done parsing, parse winner is new owner
 
   // in general it's more expensive to create bids than to refund them - helps limit spam. only output[0] bids count.
