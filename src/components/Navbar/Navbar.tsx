@@ -30,15 +30,20 @@ export const Navbar = (): JSX.Element => {
 
   React.useEffect(() => {
     // place overflow menu
-    if (toggleMenuButtonDiv.current && overflowMenuDiv.current) {
-      const menu = overflowMenuDiv.current.getBoundingClientRect()
-      const button = toggleMenuButtonDiv.current.getBoundingClientRect()
+    const updateMenuPosition = () => {
+      if (toggleMenuButtonDiv.current && overflowMenuDiv.current) {
+        const menu = overflowMenuDiv.current.getBoundingClientRect()
+        const button = toggleMenuButtonDiv.current.getBoundingClientRect()
 
-      const menuLeft = Math.round(button.left + (0.5 * button.width) - (0.5 * menu.width))
-      const menuTop = Math.round(button.top - menu.height - button.height * 0.3)
-      overflowMenuDiv.current!.style.top = menuTop + 'px'
-      overflowMenuDiv.current!.style.left = menuLeft + 'px'
+        const menuLeft = Math.round(button.left + (0.5 * button.width) - (0.5 * menu.width))
+        const menuTop = Math.round(button.top - menu.height - button.height * 0.3)
+        overflowMenuDiv.current!.style.top = menuTop + 'px'
+        overflowMenuDiv.current!.style.left = menuLeft + 'px'
+        overflowMenuDiv.current!.style.opacity = '0.75'
+      }
     }
+    updateMenuPosition();
+    window.setInterval(updateMenuPosition, 400);
 
     // resize event
     const onResize = () => {

@@ -24,7 +24,8 @@
   position: fixed;
   background-color: var(--colorBackground);
   border-radius: calc(0.5 * var(--s));
-  opacity: 0.75;
+  opacity: 0;
+  /* opacity: 0.75; */
   filter: brightness(1.1);
 }
 
@@ -91,7 +92,7 @@
   font-size: calc(2 * var(--s));
   margin-left: calc(1 * var(--s));
   vertical-align: middle;
-
+  opacity: 0.7;
 }
 
 .pageNum {
@@ -158,7 +159,7 @@
 
 
   /* risky filters */
-  filter: blur(0.0) opacity(0.3) brightness(300%) hue-rotate(0deg);
+  filter: blur(0.0) opacity(0.2) brightness(100%) hue-rotate(0deg);
 
   /* animation */
   transform: translateZ(0.0) scale(1.00, 1.00) rotate(0.001deg) ;
@@ -210,7 +211,7 @@
 
 .menuShown .dots {
   transform: translateZ(0.0) scale(1.00, 1.00) translate(0, 0) rotate(179deg);
-  filter: blur(0.0) opacity(0.3) brightness(300%) hue-rotate(90deg);
+  filter: blur(0.0) opacity(0.2) brightness(100%) ;
 }
 
 .menuShown .dots > div,
@@ -241,13 +242,13 @@
 
 @keyframes blurme {
   %0 {
-    filter: blur(0.0) opacity(0.3) brightness(300%) hue-rotate(0deg);
+    filter: blur(0.0) opacity(0.2) brightness(100%) ;
   }
   50% {
-    filter: blur(calc(0.7 * var(--radius))) opacity(0.3) brightness(300%) hue-rotate(45deg);
+    filter: blur(calc(0.7 * var(--radius))) opacity(0.2) brightness(100%) ;
   }
   100% {
-    filter: blur(0.0) opacity(0.3) brightness(300%) hue-rotate(90deg);
+    filter: blur(0.0) opacity(0.2) brightness(100%) ;
   }
 }
 
