@@ -1,12 +1,20 @@
 
 ## Short term
 
-- (PRIORITY 1) display bidding information on search
+- ok, new plan, generalize all guidance in same way in same place in same format instead of hacky solutions so far.
+  - permissions have guidance regardless (e.g. do this, do that bc they check for it)
+  - remove suggestions from actions and replace with...
+  - instead use dummy permissions that always pass but give guidance
+  - need 2 variables from user? use 2 dummy permissions
+  - their instances can come with properly named variables within them to feed data or use  in the tx maker or app
+  - the condition.special should be renamed  into condition.suggestion for clarity
+  - start dummy conditions with SUGGEST_ and then describe e.g. SUGGEST_GET_BURN_AMOUNT, provide max or min if known, plain english input guidance for user, if it needs to go into the string embed, and other stuff if needed. entire object joins all others on action scan by user and can be used, changed, displayed.
+
 
 - (PRIORITY 2) accurately allow creation of bidding tx with helpful information and risks shown
 
   - need to allow customization of amount burnt
-  
+
   - need to show confirmed burn amounts
   - need to show unconfirmed burn amounts
   - need to show refunds left to do

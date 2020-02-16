@@ -10,14 +10,17 @@ import {
 } from './actions'
 import { I_BnsState, I_TX, I_Condition } from './../types/'
 
-/****************************************************************************************
- * Returns what actions are available for specific user address at current state
+
+
+
+/**
+ * Returns what actions are available for specific user address at current state.
  */
 export const runAllActionPermissionChecks = (st: I_BnsState, address: string) => {
   console.log('currentOwnerRenewAction running:')
 
   // Edit this list to include more actions for checks
-  // (address here, tx not necessary)
+  // (address here only at best, tx not necessary or possible)
   const allActions = [
     updateForwardingInfoAction(st, address),
     currentOwnerRenewAction(st, address),
@@ -39,25 +42,17 @@ export const runAllActionPermissionChecks = (st: I_BnsState, address: string) =>
       // add to list of permissions checked in this action & their display info
       checkedPermissions.push({
         isAllowed,
-        info: permission.info
+        ...permission
       })
     })
 
-    // grab every special rule so can put together tx based on them
-    // special rules can come from both permissions (we can check)
-    // and conditions (we can't check yet but may offer guidance)
-    const specialTxDirections: any[] = []
+    // grab every condition (for info)
+    const actionSuggestions: any[] = []
     action.permissions.forEach((permission: any) => {
-      if ('special' in permission) specialTxDirections.push({
-        info: permission.info,
-        rules: permission.special
-      })
+      actionSuggestions.push(permission)
     })
     action.conditions.forEach((condition: any) => {
-      if ('special' in condition) specialTxDirections.push({
-        info: condition.info,
-        rules: condition.special
-      })
+      actionSuggestions.push(condition)
     })
 
 
@@ -66,10 +61,8 @@ export const runAllActionPermissionChecks = (st: I_BnsState, address: string) =>
       type: action.type,
       info: action.info,
       isUsable: checkedPermissions.every(permission => permission.isAllowed),
-      suggestions: action.suggestions,
       permissionList: checkedPermissions,
-      special: specialTxDirections,
-      actionContent: '' // blank for now, fill in later
+      suggestions: actionSuggestions
     })
   })
 

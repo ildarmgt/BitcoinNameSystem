@@ -14,6 +14,11 @@ export const P4ActionChoice = () => {
   // global state
   const { state, dispatch } = React.useContext(Store)
 
+  // local state for special cases where form is attempting to get data from user
+  const [extraFormData, setExtraFormData] = React.useState()
+  // local state for permission scan so can be used directly and becomes reactive
+  const [checkActions, setCheckActions] = React.useState()
+
   // simulate bns state once again just in case
   // up to current block height
   const bns = calcBnsState(
@@ -22,103 +27,104 @@ export const P4ActionChoice = () => {
     state.chain.height,
     state.network
   )
-  // and get all permissions
-  const checkActions = runAllActionPermissionChecks(bns, state.wallet.address)
-  console.log('results of permission scan for all actions', checkActions)
 
-  // local state for special cases where form needs to be shown for extra data
-  const [dataExtraForm, setDataExtraForm] = React.useState()
-  // only runs when available actions change
+  // and get all permissions (once)
+  if (!checkActions) {
+    setCheckActions(runAllActionPermissionChecks(bns, state.wallet.address))
+    console.log('results of permission scan for all actions:', checkActions)
+  }
+
+  ///initializes extra form status from permission checks
   React.useEffect(() => {
     // only do if undefined local state (once)
-    if (!dataExtraForm) {
+    if (!extraFormData) {
       // go through each action, set key to .info and set show status to false
-      let showStatus: { [key: string]: {show: boolean, value: string} } = {}
-      checkActions.forEach(action => {
-        showStatus[action.info] = { show: false, value: '' }
+      const showStatus: { [key: string]: { show: boolean } } = {}
+      checkActions.forEach((action: any) => {
+        showStatus[action.info] = { show: false }
       })
-      setDataExtraForm(showStatus)
+      setExtraFormData(showStatus)
     }
-  }, [checkActions, dataExtraForm])
+  }, [checkActions, extraFormData])
 
   // list available actions for render
   const listAvailableActions = () => (
-    checkActions.map(action => {
-      // usable actions only + not displaying actions with warnings
-      if (action.isUsable && !action.suggestions?.startsWith('WARNING')) {
-        console.log(action.info, 'special tx instructions:', action.special)
-        return (
-          <div key={ action.info }>
-            <RoundButton
-              next={ !action.suggestions?.startsWith('GET') ? 'true' : undefined }
-              onClick={ () => {
-                if (!action.suggestions?.startsWith('GET')) {
-                  // if regular action without extra data needed
+    !!checkActions && checkActions.map((action: any) => {
+      // usable actions only
+      if (action.isUsable) {
+        // abort if it has even 1 warning as well
+        if (action.suggestions.some((suggestion: any) => suggestion.info.warning)) return ''
+        // check if there's data needed from user for this action
+        const suggestionsToGet = action.suggestions.filter((suggestion: any) => ('get' in suggestion.info)) || []
 
+        return (
+          // action div start
+          <div key={ action.info }>
+            {/* change what action button does based on if there's data to get */}
+            <RoundButton
+              next={ suggestionsToGet.length > 0 ? 'true' : undefined }
+              onClick={ () => {
+                if (suggestionsToGet.length === 0) {
+
+                  // if regular action without extra data needed
                   // set this action as the chosen action
                   changeChoicesBNSAction(state, dispatch, {
                     action: JSON.parse(JSON.stringify(action))
                   })
                   // change page
                   changePageInfoAction(state, dispatch, 5)
+
                 } else {
-                  // if special action with extra data needed, toggle showing form instead
-                  if (dataExtraForm) {
-                    const { show, value } = dataExtraForm[action.info]
-                    setDataExtraForm({ ...dataExtraForm, [action.info]: { show: !show, value } })
+
+                  // if special action with extra data needed,
+                  // toggle form showing instead based on action info as key
+                  if (extraFormData) {
+                    const { show } = extraFormData[action.info]
+                    setExtraFormData({ ...extraFormData, [action.info]: { show: !show } })
                   }
+
                 }
               }}
             >
-              { action.info }
-              { action.suggestions?.startsWith('GET') ? ' ...' : '' }
+              { action.info }{ suggestionsToGet.length > 0 ? ' ...' : '' }
             </RoundButton>
-            { (dataExtraForm && dataExtraForm[action.info].show) && (
-              <InputForm
-                className={ styles.inputForms }
-                // label title comes from 3rd substring separarted by _
-                thisInputLabel={ action.suggestions.split('_')[1] }
-                // parameter name comes from 2nd word separated by _
-                thisInputValue={ dataExtraForm[action.info].value }
-                thisInputOnChange={ (e: any) => {
-                  // add changed value to extra form state
-                  setDataExtraForm({
-                    ...dataExtraForm,
-                    [action.info]: {
-                      ...dataExtraForm[action.info],
-                      value: e.target.value
-                    }
-                  })
-                } }
-                thisSubmitButtonOnClick={ () => {
 
-                  if (dataExtraForm[action.info].value !== '') {
-                    const actionCommandText = action.suggestions.split('_')[2]
-                    // if there's a 3rd parameter in suggestion, place it into the the action content
-                    if (actionCommandText) {
-                      // set this action as the chosen action in global state
-                      // add onto it the command (e.g. '!ca'), space, and then form value
-                      changeChoicesBNSAction(state, dispatch, {
-                        action: {
-                          ...action,
-                          actionContent: actionCommandText + ' ' + dataExtraForm[action.info].value
-                        }
-                      })
-                    } else {
-                      // otherwise leave action content blank
-                      changeChoicesBNSAction(state, dispatch, {
-                        action: {
-                          ...action,
-                          actionContent: actionCommandText + ' ' + dataExtraForm[action.info].value
-                        }
-                      })
-                    }
+            {/* create input forms if shown */}
+
+            { (extraFormData && extraFormData[action.info].show) && (
+              suggestionsToGet.map((suggestionToGet: any) => (
+                <InputForm
+                  className={ styles.inputForms }
+
+                  thisInputLabel={ suggestionToGet.info.describe }
+
+                  thisInputValue={ suggestionToGet.info.get.value }
+
+                  thisInputOnChange={ (e: any) => {
+                    // add changed value to extra form state
+                    // find and edit the value I need to get
+                    checkActions
+                      .find((thisAction: any) => thisAction.type === action.type )
+                      .suggestions((thisSuggestion: any) =>
+                        thisSuggestion.info.describe === suggestionToGet.info.describe
+                      ).info.get.value = e.target.value
+                    // notify local state about changes with clone
+                    setCheckActions([...checkActions])
+                  } }
+
+                  thisSubmitButtonOnClick={ () => {
+
+                    // place the action object entirely into the global state
+                    changeChoicesBNSAction(state, dispatch, {
+                      action: JSON.parse(JSON.stringify(action))
+                    })
+
                     // change page
                     changePageInfoAction(state, dispatch, 5)
-                  }
-                } }
-              />
-            ) }
+                  } }
+                />
+              ))
+            )}
           </div>
         )
       } else {
@@ -129,7 +135,7 @@ export const P4ActionChoice = () => {
 
   // list unavailable actions for render
   const listUnavailableActions = () => (
-    checkActions.map(action => {
+    !!checkActions && checkActions.map((action: any) => {
       if (!action.isUsable) {
         return (
           <div
@@ -151,22 +157,24 @@ export const P4ActionChoice = () => {
               }
             >
               { action.permissionList.map((permission: any) => {
-                return (
-                  <div
-                    className={
-                      styles.unavailableActions__actionList__action__permissionList__permission
-                    }
-                    key={permission.info}
-                  >
-                    - { permission.info }
-                  </div>
-                )
+                if (!permission.isAllowed) {
+                  return (
+                    <div
+                      className={
+                        styles.unavailableActions__actionList__action__permissionList__permission
+                      }
+                      key={ permission.info.describe }
+                    >
+                      - { permission.info.describe }
+                    </div>
+                  )
+                } else { return '' }
               })}
             </div>
           </div>
         )
       } else {
-        return ('')
+        return ''
       }
     })
   )

@@ -48,94 +48,133 @@ const {
   CHANGE_ADDRESS
 } = BnsActionType
 
-// =========== CONDITIONS / PERMISSIONS ================
+
+/* -------------------------------------------------------------------------- */
+/*                          Conditoins / Permissions                          */
+/* -------------------------------------------------------------------------- */
+
 // Called by the actions for conditions
 // Return object with "info": describing condition (accessible w/o tx),
 // "status" to check conditoin (accessible w/o tx),
 // and optional "special" to give transaction forming specifications (accessible w/o tx)
 
 const OUTS_2 = ({ tx=undefined }: any): I_Condition => ({
-  info: 'Tx must have 2+ outputs',
-  status: () => atLeastTwoOutputs(tx)
+  status: () => atLeastTwoOutputs(tx),
+  info: { describe: 'Tx must have 2+ outputs' }
 })
 
 const OUT_0 = ({ tx=undefined }: any): I_Condition => ({
-  info: 'Tx must have OP_RETURN @ output[0]',
-  status: () => isOpreturnOutput0(tx)
+  status: () => isOpreturnOutput0(tx),
+  info: { describe: 'Tx must have OP_RETURN @ output[0]' }
 })
 
 const OUT_1 = ({ st, tx=undefined }: any): I_Condition => ({
-  info: 'Tx must have notification address @ output[1]' ,
-  status: () => isNotify(st, tx)
+  status: () => isNotify(st, tx),
+  info: { describe: 'Tx must have notification address @ output[1]' }
 })
 
 const NOTIFIED_MIN = ({ tx=undefined }: any): I_Condition => ({
-  info: `Tx must have minimum ${MIN_NOTIFY} @ output[1]`,
-  status: () => didNotifyMin(tx)
+  status: () => didNotifyMin(tx),
+  info: { describe: `Tx must have minimum ${MIN_NOTIFY} @ output[1]` }
 })
 
 const BURNED_MIN = ({ tx=undefined }: any): I_Condition => ({
-  info: `Tx must burn ${MIN_BURN} @ output[0]`,
   status: () => didBurnMin(tx),
-  special: { output0value: MIN_BURN }
+  info: {
+    describe: `Tx must burn ${MIN_BURN} @ output[0]`,
+    set: { name: 'output 0 value', value: MIN_BURN }
+  }
 })
 
 const NO_OWNER = ({ st }: any): I_Condition => ({
-  info: 'There must not be an existing owner',
-  status: () => !existsCurrentOwner(st)
+  status: () => !existsCurrentOwner(st),
+  info: { describe: 'There must not be an existing owner' }
 })
 
 const EXISTS_OWNER = ({ st }: any): I_Condition => ({
-  info: 'There must be existing owner',
-  status: () => existsCurrentOwner(st)
+  status: () => existsCurrentOwner(st),
+  info: { describe: 'There must be existing owner' }
 })
 
 const BURN_LAST_WIN = ({ st, tx=undefined }: any): I_Condition => ({
-  info: 'Tx must burn the last ownership winning burn amount',
   status: () => burnedPreviousRateMin(st, tx),
-  special: { output0value: getLastOwnerBurnedValue(st) }
+  info: {
+    describe: 'Tx must burn the last ownership winning burn amount',
+    set: { value: getLastOwnerBurnedValue(st), name: 'output 0 value' }
+  }
 })
 
 // calculated based on tx if available, otherwise address
 const USER_IS_OWNER = ({ st, address, tx=undefined }: any): I_Condition => ({
-  info: `User's address must match owner's address`,
-  status: () => tx ? isSenderTheCurrentOwner(st, tx) : isAddressTheCurrentOwner(st, address)
+  status: () => tx ? isSenderTheCurrentOwner(st, tx) : isAddressTheCurrentOwner(st, address),
+  info: { describe: `User's address must match owner's address` }
+
 })
 
 const IS_OWNER_EXPIRED = ({ st }: any): I_Condition => ({
-  info: 'Ownership must be expired at current parsed height',
-  status: () => isOwnerExpired(st)
+  status: () => isOwnerExpired(st),
+  info: { describe: 'Ownership must be expired at current parsed height' }
+
 })
 
 const NO_UNSPENT_USER_NOTIFICATIONS_UTXO = ({ st, tx=undefined }: any): I_Condition => ({
-  info: 'There must not be any remaining notification address utxo created by sender',
   status: () => noUnspentUserNotificationsUtxo(st, tx),
-  special: { inputs: 'NO_USER_NOTIFICATION_UTXO' }
+  info: { describe: 'There must not be any remaining notification address utxo created by sender' }
 })
 
 const USER_ADDRESS_NOT_NOTIFICATION_ADDRESS = ({ st, tx=undefined }: any): I_Condition => ({
-  info: 'Do not accidentally send from notification address at input[0]',
-  status: () => (getNotificationAddress(st) !== getTxInput0SourceUserAddress(tx))
+  status: () => (getNotificationAddress(st) !== getTxInput0SourceUserAddress(tx)),
+  info: { describe: 'Do not accidentally send from notification address at input[0]' }
 })
 
 const IS_COMMAND_CALLED = (
   { st, tx=undefined }: { st: I_BnsState, tx: I_TX | undefined },
   command: string
 ): I_Condition => ({
-  info: 'Command must be present in forwards at this tx height from tx user',
-  status: () => (isCommandCalled(st, tx as I_TX, command))
+  status: () => (isCommandCalled(st, tx as I_TX, command)),
+  info: { describe: 'Command must be present in forwards at this tx height from tx user' }
 })
 
 const IS_BIDDING_OVER = (
   { st }: { st: I_BnsState }
 ): I_Condition => ({
-  info: 'The bidding period must be over but not resolved',
-  status: () => (isBiddingOver(st))
+  status: () => (isBiddingOver(st)),
+  info: { describe: 'The bidding period must be over but not resolved' }
 })
 
+/* -------------------------------------------------------------------------- */
+/*                         Suggestions (and warnings)                         */
+/* -------------------------------------------------------------------------- */
 
+const SUGGESTION_SUBMIT_NEW_ADDRESS = ({ command }: { command: string }): I_Condition => ({
+  status: () => true,
+  info: {
+    describe: 'Submit your new address (forwards kept)',
+    get: { value: '', name: 'newAddress' },
+    command
+  }
+})
 
-// ============ USER ACTIONs ===============
+const SUGGESTION_SUBMIT_NEW_OWNER_ADDRESS = ({ command }: { command: string }): I_Condition => ({
+  status: () => true,
+  info: {
+    describe: 'Submit new owner\'s address (forwards not copied)',
+    get: { value: '', name: 'newOwnerAddress' },
+    command
+  }
+})
+
+const WARNING_POINTLESS_IF_NOT_OWNER = (): I_Condition => ({
+  status: () => true,
+  info: {
+    describe: 'Action not recommended for non-owners',
+    warning: 'Useless unless you are the owner or will be owner in future'
+  }
+})
+
+/* -------------------------------------------------------------------------- */
+/*                           User's possible actions                          */
+/* -------------------------------------------------------------------------- */
 
 // Describe: If no owner, sender can start process to claim ownership
 // Since autoChecks run before user action checks in calcBnsState,
@@ -181,15 +220,18 @@ export const bidForOwnershipAction = (st: I_BnsState, tx: any = undefined): I_BN
  * address: 'newaddress'
  */
 export const changeAddressAction = (st: I_BnsState, address: string = '', tx: any = undefined): I_BNS_Action => {
-  const args = { st, address, tx }
-  const commandSignal = '!ca'
+  const command = '!ca'
+  const args = { st, address, tx, command }
   return {
 
     type: CHANGE_ADDRESS,
     info: 'Update your ownership address',
 
     permissions: [
-      USER_IS_OWNER(args)
+      USER_IS_OWNER(args),
+
+      // suggestions
+      SUGGESTION_SUBMIT_NEW_ADDRESS(args)
     ],
 
     conditions: [
@@ -200,11 +242,11 @@ export const changeAddressAction = (st: I_BnsState, address: string = '', tx: an
       NO_UNSPENT_USER_NOTIFICATIONS_UTXO(args),
       USER_ADDRESS_NOT_NOTIFICATION_ADDRESS(args),
 
-      IS_COMMAND_CALLED(args, commandSignal)
+      IS_COMMAND_CALLED(args, command)
     ],
 
     execute: () => {
-      const thisCommand = getCommandCalled(st, tx, commandSignal)
+      const thisCommand = getCommandCalled(st, tx, command)
       const newAddress = thisCommand?.address;
       if (!newAddress) {
         console.log('ownership transfer detected, but no address found')
@@ -232,15 +274,7 @@ export const changeAddressAction = (st: I_BnsState, address: string = '', tx: an
         console.log('ownership transfered from', oldOwner!.address, 'to', newAddress)
 
       }
-    },
-
-    // change from tx for user could be sent to the new address
-    // so there's no need to fund new address or withdraw from old one
-    // 'GET_' - requires additional variable
-    // 2nd phrase separated by _ - description
-    // 3rd phrase separated by _ is the command that will be placed in forward
-    //    info as key and put in value as "forwards" value.
-    suggestions: 'GET_Your new address (change sent there)_' + commandSignal
+    }
   }
 }
 
@@ -250,15 +284,18 @@ export const changeAddressAction = (st: I_BnsState, address: string = '', tx: an
  * address: 'newaddress'
  */
 export const sendOwnershipAction = (st: I_BnsState, address: string = '', tx: any = undefined): I_BNS_Action => {
-  const args = { st, address, tx }
-  const commandSignal = '!so'
+  const command = '!so'
+  const args = { st, address, tx, command }
   return {
 
     type: SEND_OWNERSHIP,
     info: 'Give up ownership to another address',
 
     permissions: [
-      USER_IS_OWNER(args)
+      USER_IS_OWNER(args),
+
+      // suggestions
+      SUGGESTION_SUBMIT_NEW_OWNER_ADDRESS(args)
     ],
 
     conditions: [
@@ -269,11 +306,11 @@ export const sendOwnershipAction = (st: I_BnsState, address: string = '', tx: an
       NO_UNSPENT_USER_NOTIFICATIONS_UTXO(args),
       USER_ADDRESS_NOT_NOTIFICATION_ADDRESS(args),
 
-      IS_COMMAND_CALLED(args, commandSignal)
+      IS_COMMAND_CALLED(args, command)
     ],
 
     execute: () => {
-      const thisCommand = getCommandCalled(st, tx, commandSignal)
+      const thisCommand = getCommandCalled(st, tx, command)
       const newAddress = thisCommand?.address;
       if (!newAddress) {
         console.log('ownership transfer detected, but no address found')
@@ -299,8 +336,7 @@ export const sendOwnershipAction = (st: I_BnsState, address: string = '', tx: an
 
         console.log('ownership transfered from', oldOwner!.address, 'to', newAddress)
       }
-    },
-    suggestions: 'GET_New owner address_' + commandSignal
+    }
   }
 }
 
@@ -358,7 +394,10 @@ export const updateForwardingInfoAction = (
 
     info: 'Only update forwarding information',
 
-    permissions: [],
+    permissions: [
+      // suggestions
+      WARNING_POINTLESS_IF_NOT_OWNER()
+    ],
 
     conditions: [
       OUTS_2(args),
@@ -371,19 +410,13 @@ export const updateForwardingInfoAction = (
 
     execute: () => {
       readEmbeddedData(st, tx)
-    },
-
-    // Change info to warning when attempting to update forwarding info
-    // for domain you do not control.
-    // Such a change would be wasted until it's owned.
-    suggestions:
-      !USER_IS_OWNER(args).status()
-        ? 'WARNING_USELESS_IF_NOT_OWNER'
-        : undefined
+    }
   }
 }
 
-// =========== AUTOMATIC PARSED ACTIONS NOT BY USERS (e.g. TIME BASED) ===========
+/* -------------------------------------------------------------------------- */
+/*                              Automatic Actions                             */
+/* -------------------------------------------------------------------------- */
 
 // Describe: if OWNERSHIP_DURATION_BY_BLOCKS blocks since ownership update, no owner again
 export const autoCheckForOwnerExpiredAction = (st: I_BnsState): I_BNS_Auto_Action => {

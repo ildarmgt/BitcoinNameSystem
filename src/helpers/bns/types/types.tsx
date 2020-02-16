@@ -18,7 +18,6 @@ export interface I_BNS_Action {
   permissions: Array<any>
   conditions: Array<any>
   execute: () => void
-  suggestions?: string | undefined
 }
 
 export interface I_BNS_Auto_Action {
@@ -30,36 +29,8 @@ export interface I_BNS_Auto_Action {
 export interface I_Action_Choice {
   type: BnsActionType
   info: string
-  special: Array<any>
+  suggestions: Array<any>
   actionContent: string
-}
-
-// (TODO): this might need further generalization and simplification
-// this is checked to know what user options are
-export interface I_Checked_Guidance {
-  type: BnsActionType                   // pass each action type to user attempting to create tx
-  info: string                          // describe each action type
-  isUsable: boolean                     // summarize if it meets all permissions for user to do
-  suggestions?: string                  // the optional suggestion of I_BNS_Action - string instructions
-                                        // 'GET_(easy to read description)_(optional storage in embed string)'
-                                        // 'WARNING_' is used to warn about allowed actions user probably shouldn't do
-                                        //    like waste coins on editing forwarding states on domains that aren't theirs
-  permissionList: [                     // every permission checked for this action>
-    {
-      isAllowed: boolean                // if permission passed check
-      info: string                      // description of permission
-    }
-  ]
-
-  special: Array<{                      // suggestion/guidance array from ea condition AND permission,
-                                        // new special array item is only added if .special object of I_Condition is found in any of them
-    info: string                        // info is description string of each I_Condition condition AND permission
-    rules: {                            // rules are the guidance from each condition or permission
-      [key: string]: string | number    // rules come as key value pair
-    }
-  }>
-  actionContent: string                 // holds a string if it needs to be added to embedded string for action to work.
-                                        // is derived from user input via a form based on suggestion string with 'GET_' start
 }
 
 export interface I_BnsState {
@@ -175,7 +146,36 @@ export interface I_UTXO {
 }
 
 export interface I_Condition {
-  info: string
   status: () => boolean
-  special?: { [key: string]: string | number }
+  info: {
+    describe: string                    // string containing explanation for user
+    set?: {                             // object suggesting user sets something to a value
+      value: number | string            // value to set it to (if exact value unknown better to .get it from user)
+      name: string                      // what the value is for
+    }
+    get?: {                             // object of suggested variable to get from user
+      value: number | string            // rules come as key value pair
+      name: string                      // name of variable getting
+      min?: number | null               // possible min value
+      max?: number | null               // possible max value
+    }
+    command?: string                    // command if this is a command to be embedded (value in get/set)
+    warning?: string                    // warn if this is possible but terrible idea
+  }
+}
+
+export interface I_Evaluated_Condition extends I_Condition {
+  isAllowed: boolean                // if permission passed check
+}
+
+
+// this is checked to know what user options are PER ACTION
+export interface I_Checked_Action {
+  type: BnsActionType                   // pass each action type to user attempting to create tx
+  info: string                          // describe each action type
+  isUsable: boolean                     // summarize if it meets all permissions for user to do
+  permissionList: [                     // ONLY permissiond checked for this action (all can do before tx)
+    I_Evaluated_Condition
+  ]
+  suggestions: Array<I_Condition>      // info from ALL action's conditions
 }

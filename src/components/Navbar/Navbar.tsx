@@ -7,7 +7,7 @@ export const Navbar = (): JSX.Element => {
   // global state
   const { state } = React.useContext(Store)
 
-  // resizing events
+  // references for objects of interest
   const searchButton = React.useRef<HTMLDivElement>(null)
   const toggleMenuButtonDiv = React.useRef<HTMLDivElement>(null)
   const overflowMenuDiv = React.useRef<HTMLDivElement>(null)
@@ -138,7 +138,7 @@ export const Navbar = (): JSX.Element => {
   // using search button as metric, estimate how many buttons to show
   const windowWidth = window.innerWidth
   const stdSizer = 0.005 * (window.innerWidth + window.innerHeight)
-  const safeWidthFraction = 0.7;
+  const safeWidthFraction = 0.8;
   const howManyButtonsFitSafely = nav.buttonWidth ? Math.max(
     Math.floor(
       (windowWidth - 18 * stdSizer) * safeWidthFraction / ( nav.buttonWidth + stdSizer)

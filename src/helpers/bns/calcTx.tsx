@@ -72,23 +72,18 @@ export const calcTx = (
 
   // prepare extra inputs from other rules
   // adding these first to totalGathered satoshi since have to add them all anyway
-  const isACSRequired = choices.action.special.some(list =>
-    list.rules.inputs && (list.rules.inputs === 'NO_USER_NOTIFICATION_UTXO')
-  )
-  isACSRequired && console.log('spending user\'s previous acs utxo appears required')
   let toBeUsedUtxoOfNotifications: Array<any> = []
-  if (isACSRequired) {
-    // must consume all ACS utxo wallet.address has created
-    // get all utxo for notification address
-    domain.derivedUtxoList.forEach(utxo => {
-      // use only utxo created from this wallet's address
-      if (utxo.from_scriptpubkey_address === wallet.address) {
-        toBeUsedUtxoOfNotifications.push(utxo)
-        totalGathered += utxo.value
-        gatheredFromOther += utxo.value
-      }
-    })
-  }
+  // must consume all ACS utxo wallet.address has created
+  // get all utxo for notification address
+  domain.derivedUtxoList.forEach(utxo => {
+    // use only utxo created from this wallet's address
+    if (utxo.from_scriptpubkey_address === wallet.address) {
+      toBeUsedUtxoOfNotifications.push(utxo)
+      totalGathered += utxo.value
+      gatheredFromOther += utxo.value
+    }
+  })
+
 
   // Adding remaining funds from user's wallet to total Gathered
   // Must always add at least 1 user utxo @ index 0 to indicate ownership
@@ -139,23 +134,21 @@ export const calcTx = (
 
   const inputScript = bitcoin.script.compile([op.OP_TRUE])
 
-  if (isACSRequired) {
-
-    // add each utxo to inputs
-    toBeUsedUtxoOfNotifications.forEach(utxo => {
-      if (!utxo.hex) {
-        // abort if missing raw hex
-        throw new Error(`Utxo is missing hex, txid: ${utxo.txid}, vout:${utxo.vout}`)
-      }
-      psbt.addInput({
-        hash: utxo.txid,
-        index: utxo.vout,
-        sequence: 0xfffffffe,
-        nonWitnessUtxo: Buffer.from(utxo.hex, 'hex'),
-        witnessScript: witnessScript
-      })
+  // add each utxo to inputs
+  toBeUsedUtxoOfNotifications.forEach(utxo => {
+    if (!utxo.hex) {
+      // abort if missing raw hex
+      throw new Error(`Utxo is missing hex, txid: ${utxo.txid}, vout:${utxo.vout}`)
+    }
+    psbt.addInput({
+      hash: utxo.txid,
+      index: utxo.vout,
+      sequence: 0xfffffffe,
+      nonWitnessUtxo: Buffer.from(utxo.hex, 'hex'),
+      witnessScript: witnessScript
     })
-  }
+  })
+
 
   // inputs done
 
@@ -177,12 +170,12 @@ export const calcTx = (
   const embed = bitcoin.payments.embed({ data: [data] })
 
   // output[0]: check special tx rules for max amount required to burn among all of them
-  const burnAmount = choices.action.special.reduce((maxBurn: number, list: any) => {
-    console.log('choices.action.special each item:', list)
+  const burnAmount = choices.action.suggestions.reduce((maxBurn: number, thisSuggestion: any) => {
+    console.log('choices.action.suggestions each item:', thisSuggestion)
     return (
       // if there's another burn rule, use the highest value
-      ('output0value' in list.rules)
-        ? Math.max(maxBurn, list.rules.output0value)
+      (thisSuggestion.info.set.name === 'output 0 value')
+        ? Math.max(maxBurn, thisSuggestion.info.set.value)
         : maxBurn
     )
   }, 0)
