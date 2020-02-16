@@ -12,15 +12,23 @@ export const Navbar = (): JSX.Element => {
   const toggleMenuButtonDiv = React.useRef<HTMLDivElement>(null)
   const overflowMenuDiv = React.useRef<HTMLDivElement>(null)
 
-  // local state for navbaru
+  // local state for navbar
   const [ nav, setNav ] = React.useState({
     buttonWidth: (!!searchButton.current)
       ? searchButton.current.offsetWidth
-      : 0.2 * window.innerWidth,
+      : undefined,
     showCollapsed: false,
     resizeTimer: 0
   })
 
+  // initialize nav bar measurements
+  if (!nav.buttonWidth) {
+    window.setTimeout(() => {
+      window.dispatchEvent(new Event('resize'));
+    }, 200);
+  }
+
+  // selection rules for buttons
   const isCreatePage = useHistory().location.pathname === '/create'
   const isHomePage = useHistory().location.pathname === '/'
   const isAboutPage = useHistory().location.pathname === '/about'
@@ -29,7 +37,7 @@ export const Navbar = (): JSX.Element => {
 
 
   React.useEffect(() => {
-    // place overflow menu
+    // place overflow menu and show it
     const updateMenuPosition = () => {
       if (toggleMenuButtonDiv.current && overflowMenuDiv.current) {
         const menu = overflowMenuDiv.current.getBoundingClientRect()
@@ -42,8 +50,7 @@ export const Navbar = (): JSX.Element => {
         overflowMenuDiv.current!.style.opacity = '0.75'
       }
     }
-    updateMenuPosition();
-    window.setInterval(updateMenuPosition, 400);
+    window.setTimeout(updateMenuPosition, 200);
 
     // resize event
     const onResize = () => {
@@ -132,17 +139,17 @@ export const Navbar = (): JSX.Element => {
   const windowWidth = window.innerWidth
   const stdSizer = 0.005 * (window.innerWidth + window.innerHeight)
   const safeWidthFraction = 0.7;
-  const howManyButtonsFitSafely = Math.max(
+  const howManyButtonsFitSafely = nav.buttonWidth ? Math.max(
     Math.floor(
       (windowWidth - 18 * stdSizer) * safeWidthFraction / ( nav.buttonWidth + stdSizer)
     ),
     1
+  ) : 1
+  const buttonsOnNavbar = buttonsArray.filter((btn: any, i: number) =>
+    (i <= howManyButtonsFitSafely - 1)
   )
-  const buttonsOnNavbar = buttonsArray.filter((btn: any, i: number) => (
-    i <= howManyButtonsFitSafely)
-  )
-  const buttonsOverflow = buttonsArray.filter((btn: any, i: number) => (
-    i > howManyButtonsFitSafely)
+  const buttonsOverflow = buttonsArray.filter((btn: any, i: number) =>
+    (i > howManyButtonsFitSafely - 1)
   ) || []
 
   return (

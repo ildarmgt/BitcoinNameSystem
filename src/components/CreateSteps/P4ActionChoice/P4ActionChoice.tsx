@@ -75,7 +75,6 @@ export const P4ActionChoice = () => {
             </RoundButton>
             { (dataExtraForm && dataExtraForm[action.info].show) && (
               <InputForm
-                // style={ { width: '50%' } }
                 className={ styles.inputForms }
                 // label title comes from 3rd substring separarted by _
                 thisInputLabel={ action.suggestions.split('_')[1] }

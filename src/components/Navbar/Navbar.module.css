@@ -24,6 +24,7 @@
   position: fixed;
   background-color: var(--colorBackground);
   border-radius: calc(0.5 * var(--s));
+  transition: opacity 0.3s;
   opacity: 0;
   /* opacity: 0.75; */
   filter: brightness(1.1);
@@ -42,7 +43,7 @@
 
 .overflowMenu > div > a {
   margin: calc(0.5 * var(--s));
-  color: var(--colorDarker5);
+  color: var(--colorDarker6);
 }
 
 .overflowMenu a,
