@@ -41,4 +41,11 @@
     transform-origin: top;
     transform: scale(var(--horizontalScale));
   }
+  /* search bar could use a bit less scaling  */
+  .lblMainTitle {
+    transform: scale(1.1);
+  }
+  .divSearch {
+    transform: scale(1.2);
+  }
 }

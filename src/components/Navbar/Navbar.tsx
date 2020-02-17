@@ -50,7 +50,7 @@ export const Navbar = (): JSX.Element => {
         const menuTop = Math.round(button.top - menu.height - button.height * 0.3)
         overflowMenuDiv.current!.style.top = menuTop + 'px'
         overflowMenuDiv.current!.style.left = menuLeft + 'px'
-        overflowMenuDiv.current!.style.opacity = '0.95'
+        overflowMenuDiv.current!.style.opacity = '0.98'
       }
     }
     window.setTimeout(updateMenuPosition, 200);
