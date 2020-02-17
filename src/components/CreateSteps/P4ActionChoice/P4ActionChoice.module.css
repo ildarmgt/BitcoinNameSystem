@@ -39,7 +39,7 @@
 }
 
 .inputForms {
-  width: 100%;
+  width: 80%;
   padding: calc(1 * var(--s));
   padding-bottom: calc(4 * var(--s));
   padding-top: calc(1 * var(--s));
@@ -146,5 +146,9 @@
 
   .unavailableActions {
     align-self: flex-start;
+  }
+
+  .inputForms {
+    width: 100%;
   }
 }

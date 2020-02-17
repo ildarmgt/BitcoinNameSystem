@@ -72,8 +72,11 @@ html {
   --colorBrighter2: rgba(255, 255, 255, 0.2);
   --colorBrighter3: rgba(255, 255, 255, 0.3);
   --colorBrighter4: rgba(255, 255, 255, 0.4);
+  --colorBrighter5: rgba(255, 255, 255, 0.5);
 
   --colorBrighter8: rgba(255, 255, 255, 0.8);
+  --colorBrighter9: rgba(255, 255, 255, 0.9);
+
 
   /* use blue tint */
   --colorDarker0_5: rgba(17, 17, 51, 0.05);

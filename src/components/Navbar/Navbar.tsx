@@ -47,10 +47,10 @@ export const Navbar = (): JSX.Element => {
         const button = toggleMenuButtonDiv.current.getBoundingClientRect()
 
         const menuLeft = Math.round(button.left + (0.5 * button.width) - (0.5 * menu.width))
-        const menuTop = Math.round(button.top - menu.height - button.height * 0.3)
+        const menuTop = Math.round(button.top - menu.height - button.height * 0.4)
         overflowMenuDiv.current!.style.top = menuTop + 'px'
         overflowMenuDiv.current!.style.left = menuLeft + 'px'
-        overflowMenuDiv.current!.style.opacity = '0.98'
+        overflowMenuDiv.current!.style.opacity = 'var(--finalOpacity)'
       }
     }
     window.setTimeout(updateMenuPosition, 200);

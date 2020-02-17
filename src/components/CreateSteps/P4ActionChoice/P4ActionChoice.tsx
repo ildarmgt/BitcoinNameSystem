@@ -4,7 +4,8 @@ import styles from './P4ActionChoice.module.css'
 import { Store } from '../../../store'
 import { changePageInfoAction, changeChoicesBNSAction } from '../../../store/actions'
 import { Details } from './../../general/Details'
-import { runAllActionPermissionChecks, calcBnsState } from './../../../helpers/bns/'
+import { runAllActionPermissionChecks, calcBnsState, getGetters, getSetters } from './../../../helpers/bns/'
+import { I_Checked_Action } from './../../../helpers/bns/types'
 import { InputForm } from './../../general/InputForm'
 import sanitize from '../../../helpers/sanitize'
 
@@ -30,7 +31,7 @@ export const P4ActionChoice = () => {
       state.chain.height,
       state.network
     )
-    setCheckActions(runAllActionPermissionChecks(bns, state.wallet.address))
+    setCheckActions(runAllActionPermissionChecks(bns, state.wallet.address) as Array<I_Checked_Action>)
   }
 
   // help with understanding a get suggestion
@@ -96,10 +97,16 @@ export const P4ActionChoice = () => {
         // check if there's data needed from user for this action
         const suggestionsToGet = action.suggestions.filter((suggestion: any) => ('get' in suggestion.info)) || []
 
+        console.log('action:', action.info)
+        console.log('getters:', getGetters(action))
+        console.log('setters:', getSetters(action))
+
         return (
+
           // action div start
           <div key={ action.info }>
             {/* change what action button does based on if there's data to get */}
+            {/* missing data (~ get suggestion) means it has to be requested first before moving on */}
             <RoundButton
               next={ suggestionsToGet.length === 0 ? 'true' : undefined }
               onClick={ () => {
@@ -263,6 +270,9 @@ export const P4ActionChoice = () => {
       }
     })
   )
+
+
+
 
   return (
     <div className={ styles.wrapper }>
