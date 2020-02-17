@@ -34,6 +34,22 @@ export const SearchResults = () => {
     </>
   )
 
+  const notificationLink = (
+    <span
+      className={ [styles.breakable, styles.linkable].join(' ') }
+      key={'notify1'}
+      onClick={ ()=> {
+        const pathEdit = (state.network === 'testnet') ? 'testnet/' : ''
+        window.open(
+          `https://blockstream.info/${pathEdit}address/${state.domain.notificationAddress}`
+          , '_blank'
+        )
+      } }
+    >
+      { state.domain.notificationAddress }
+    </span>
+  )
+
   // get ownership info
   const tabledOwnershipData = owner ? [
     [['Owner'],               [[
@@ -46,12 +62,7 @@ export const SearchResults = () => {
                               ]]
     ],
     [['Notifications'],       [[
-                                <span
-                                  className={ styles.breakable }
-                                  key={'notify1'}
-                                >
-                                  { state.domain.notificationAddress }
-                                </span>
+                                notificationLink
                               ]]
     ],
     [['Ownership extended'],  [
@@ -84,12 +95,7 @@ export const SearchResults = () => {
   const tabledBiddingData = isBurn ? [
     [['Owner'],             [['Owner will be determined when bidding period ends']]],
     [['Notifications'],    [[
-                              <span
-                                className={ styles.breakable }
-                                key={ 'notify1' }
-                              >
-                                { state.domain.notificationAddress }
-                              </span>
+                              notificationLink
                             ]]
     ],
     [['Bidding start'],     [
@@ -132,12 +138,7 @@ export const SearchResults = () => {
   const tabledAvailableDomainData = [
     [['Owner'],             [['No owner. No bids.']]],
     [['Notifications'],     [[
-                              <span
-                                className={ styles.breakable }
-                                key={ state.domain.notificationAddress }
-                              >
-                                { state.domain.notificationAddress }
-                              </span>
+                              notificationLink
                             ]]
     ]
   ]
