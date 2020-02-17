@@ -46,6 +46,10 @@
   white-space: pre-wrap;
   padding: calc(2 * var(--s)) 0;
 
+  overflow-wrap: break-word;
+  word-wrap: break-word;
+  word-break: break-all;
+
 }
 
 .status {
@@ -70,21 +74,21 @@
 
 .status__button {
   display: inline-block;
-  background-color: var(--colorBitcoinBlue);
-  color: var(--colorBitcoinOrange);
+  background-color: var(--colorHighlightDark);
+  color: var(--colorBackground);
   border-radius: calc(0.5 * var(--s));
   margin: calc(1 * var(--s));
   padding: calc(0.75 * var(--s)) calc(2 * var(--s));
 }
 .status__button:hover {
-  color: var(--colorBackground);
+  background-color: var(--colorBitcoinBlue);
 }
+
 .status__failed {
   margin: calc(1 * var(--s));
   padding: calc(0.75 * var(--s)) calc(2 * var(--s));
   color: var(--colorWarning);
 }
-
 
 .txSummary > div {
   font-size: calc(2.5 * var(--s))

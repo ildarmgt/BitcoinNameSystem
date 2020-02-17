@@ -1,6 +1,9 @@
 
 ## Short term
 
+- redone : actions, batch, p4
+- next: p5, p6, calctx
+
 - ok, new plan, generalize all guidance in same way in same place in same format instead of hacky solutions so far.
   - permissions have guidance regardless (e.g. do this, do that bc they check for it)
   - remove suggestions from actions and replace with...
@@ -19,6 +22,9 @@
   - need to show unconfirmed burn amounts
   - need to show refunds left to do
   - need to show time left to do it
+
+
+  - when changing yoru own address, should require cleaning up your old utxo from new address. could use an array under user state to track old addresses that can be checked in utxo rule scan.
 
 - (PRIORITY 3) if notification is on input, shouldn't be necessary to include it on output! Conditions could check for either, and thus cut down in notification utxo use and smaller/cheaper tx  (modify)
 
@@ -168,3 +174,37 @@ Uncertain ideas
 - in browser submarine swaps could load LN coins
 
 api submarine swaps for an option: https://docs.boltz.exchange/en/latest/lifecycle/
+
+can connect to LN? spending-only channel creation and sending is safe (?) from loss since there's no older channel state to broadcast where user spends more than what's already spent.
+
+- how cheap are k=1/2 signatures to use vs script acs.
+  choosing k=1/2 allows everyone to compute the private key but that's the point of acs.
+  R = k*G
+  r = x coordinate of R
+
+- minimum output amounts for notification might need to include considerations of the fee necessary to spend them rather
+  to keep values practical.
+
+  test:
+  - create 2 dummy tx with and without the notification as an input
+  - difference in vBytes between them is the minNoticationSizeBasis
+  - at any fee rate (sat/vBytes) the minNotificationSpendingCost = minNoticationSizeBasis * feeRate
+  - any amounts larger than minNotificationSpendingCost in output mean they incentivize spending if network feeRate is same as before
+  - any amounts smaller than minNotificationSpendingCost should not be allowed
+
+
+  when checking tx:
+  - calculate tx fee used (fees that are included in blockchain means they were high enough to use practically)
+  - get/calculate vBytes of the tx
+  - back calculate feeRate (sat/vByte) used
+  - apply that fee Rate on dummy tx with and without the notification as an input
+  - the difference is the minimum amount of value when spending from that notification costs as much as it provides
+  - amount in notification must be greater or equal to difference in cost of the above test to make them free to spend.
+
+  when making tx with notification as output:
+  - use the test's minNoticationSizeBasis and multiply by feeRate chosen by user to get value to put into them
+
+  problem: if original tx is not accepted and has to be pushed via CPFP, it could pay significantly smaller original fee and thus amount in notification. CPFP could be used to create smaller notification outputs but CPFP rules require paying new fee rate for both parent and child, which means sender will still pay same or higher fees. if CPFP is done via notification output spending, it solves the problem it created, but could also be done with another output leaving bad utxo behind - saves purely on # of sats not placed into notification utxo. most rules require cleaning up your own utxo so not too dangerous.
+  CPFP effective fee rate calculations miners do: minerFeeRate = (sum of fees from all tx)/(sum of all sizes of all tx (in vBytes))
+
+- dust limits are currently calculated on mainnet at 3 sat/byte which is easier for witness tx but still very low if fees are 30 sat/vByte. 

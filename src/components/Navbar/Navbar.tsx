@@ -3,6 +3,9 @@ import { Store } from './../../store'
 import { Link, useHistory } from 'react-router-dom'
 import styles from './Navbar.module.css'
 
+
+const MAX_BUTTONS_TO_SHOW_UNCOLLAPSED = 4
+
 export const Navbar = (): JSX.Element => {
   // global state
   const { state } = React.useContext(Store)
@@ -47,7 +50,7 @@ export const Navbar = (): JSX.Element => {
         const menuTop = Math.round(button.top - menu.height - button.height * 0.3)
         overflowMenuDiv.current!.style.top = menuTop + 'px'
         overflowMenuDiv.current!.style.left = menuLeft + 'px'
-        overflowMenuDiv.current!.style.opacity = '0.75'
+        overflowMenuDiv.current!.style.opacity = '0.95'
       }
     }
     window.setTimeout(updateMenuPosition, 200);
@@ -139,12 +142,16 @@ export const Navbar = (): JSX.Element => {
   const windowWidth = window.innerWidth
   const stdSizer = 0.005 * (window.innerWidth + window.innerHeight)
   const safeWidthFraction = 0.8;
-  const howManyButtonsFitSafely = nav.buttonWidth ? Math.max(
-    Math.floor(
-      (windowWidth - 18 * stdSizer) * safeWidthFraction / ( nav.buttonWidth + stdSizer)
-    ),
-    1
+  const howManyButtonsFitSafely = nav.buttonWidth ? Math.min(
+    Math.max(
+      Math.floor(
+        (windowWidth - 18 * stdSizer) * safeWidthFraction / ( nav.buttonWidth + stdSizer)
+      ),
+      1
+    )
+    , MAX_BUTTONS_TO_SHOW_UNCOLLAPSED
   ) : 1
+
   const buttonsOnNavbar = buttonsArray.filter((btn: any, i: number) =>
     (i <= howManyButtonsFitSafely - 1)
   )

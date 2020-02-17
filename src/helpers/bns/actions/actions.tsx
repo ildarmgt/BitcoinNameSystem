@@ -58,27 +58,27 @@ const {
 // "status" to check conditoin (accessible w/o tx),
 // and optional "special" to give transaction forming specifications (accessible w/o tx)
 
-const OUTS_2 = ({ tx=undefined }: any): I_Condition => ({
+const OUTS_2 = ({ tx=undefined }: any = {}): I_Condition => ({
   status: () => atLeastTwoOutputs(tx),
   info: { describe: 'Tx must have 2+ outputs' }
 })
 
-const OUT_0 = ({ tx=undefined }: any): I_Condition => ({
+const OUT_0 = ({ tx=undefined }: any = {}): I_Condition => ({
   status: () => isOpreturnOutput0(tx),
   info: { describe: 'Tx must have OP_RETURN @ output[0]' }
 })
 
-const OUT_1 = ({ st, tx=undefined }: any): I_Condition => ({
+const OUT_1 = ({ st, tx=undefined }: any = {}): I_Condition => ({
   status: () => isNotify(st, tx),
   info: { describe: 'Tx must have notification address @ output[1]' }
 })
 
-const NOTIFIED_MIN = ({ tx=undefined }: any): I_Condition => ({
+const NOTIFIED_MIN = ({ tx=undefined }: any = {}): I_Condition => ({
   status: () => didNotifyMin(tx),
   info: { describe: `Tx must have minimum ${MIN_NOTIFY} @ output[1]` }
 })
 
-const BURNED_MIN = ({ tx=undefined }: any): I_Condition => ({
+const BURNED_MIN = ({ tx=undefined }: any = {}): I_Condition => ({
   status: () => didBurnMin(tx),
   info: {
     describe: `Tx must burn ${MIN_BURN} @ output[0]`,
@@ -86,17 +86,17 @@ const BURNED_MIN = ({ tx=undefined }: any): I_Condition => ({
   }
 })
 
-const NO_OWNER = ({ st }: any): I_Condition => ({
+const NO_OWNER = ({ st }: any = {}): I_Condition => ({
   status: () => !existsCurrentOwner(st),
   info: { describe: 'There must not be an existing owner' }
 })
 
-const EXISTS_OWNER = ({ st }: any): I_Condition => ({
+const EXISTS_OWNER = ({ st }: any = {}): I_Condition => ({
   status: () => existsCurrentOwner(st),
   info: { describe: 'There must be existing owner' }
 })
 
-const BURN_LAST_WIN = ({ st, tx=undefined }: any): I_Condition => ({
+const BURN_LAST_WIN = ({ st, tx=undefined }: any = {}): I_Condition => ({
   status: () => burnedPreviousRateMin(st, tx),
   info: {
     describe: 'Tx must burn the last ownership winning burn amount',
@@ -105,39 +105,34 @@ const BURN_LAST_WIN = ({ st, tx=undefined }: any): I_Condition => ({
 })
 
 // calculated based on tx if available, otherwise address
-const USER_IS_OWNER = ({ st, address, tx=undefined }: any): I_Condition => ({
+const USER_IS_OWNER = ({ st, address, tx=undefined }: any = {}): I_Condition => ({
   status: () => tx ? isSenderTheCurrentOwner(st, tx) : isAddressTheCurrentOwner(st, address),
   info: { describe: `User's address must match owner's address` }
 
 })
 
-const IS_OWNER_EXPIRED = ({ st }: any): I_Condition => ({
+const IS_OWNER_EXPIRED = ({ st }: any = {}): I_Condition => ({
   status: () => isOwnerExpired(st),
   info: { describe: 'Ownership must be expired at current parsed height' }
 
 })
 
-const NO_UNSPENT_USER_NOTIFICATIONS_UTXO = ({ st, tx=undefined }: any): I_Condition => ({
+const NO_UNSPENT_USER_NOTIFICATIONS_UTXO = ({ st, tx=undefined }: any = {}): I_Condition => ({
   status: () => noUnspentUserNotificationsUtxo(st, tx),
   info: { describe: 'There must not be any remaining notification address utxo created by sender' }
 })
 
-const USER_ADDRESS_NOT_NOTIFICATION_ADDRESS = ({ st, tx=undefined }: any): I_Condition => ({
+const USER_ADDRESS_NOT_NOTIFICATION_ADDRESS = ({ st, tx=undefined }: any = {}): I_Condition => ({
   status: () => (getNotificationAddress(st) !== getTxInput0SourceUserAddress(tx)),
   info: { describe: 'Do not accidentally send from notification address at input[0]' }
 })
 
-const IS_COMMAND_CALLED = (
-  { st, tx=undefined }: { st: I_BnsState, tx: I_TX | undefined },
-  command: string
-): I_Condition => ({
+const IS_COMMAND_CALLED = ({ st, command, tx=undefined }: any = {}): I_Condition => ({
   status: () => (isCommandCalled(st, tx as I_TX, command)),
   info: { describe: 'Command must be present in forwards at this tx height from tx user' }
 })
 
-const IS_BIDDING_OVER = (
-  { st }: { st: I_BnsState }
-): I_Condition => ({
+const IS_BIDDING_OVER = ({ st }: any = {}): I_Condition => ({
   status: () => (isBiddingOver(st)),
   info: { describe: 'The bidding period must be over but not resolved' }
 })
@@ -146,29 +141,29 @@ const IS_BIDDING_OVER = (
 /*                         Suggestions (and warnings)                         */
 /* -------------------------------------------------------------------------- */
 
-const SUGGESTION_SUBMIT_NEW_ADDRESS = ({ command }: { command: string }): I_Condition => ({
+const SUGGESTION_SUBMIT_NEW_ADDRESS = ({ command }: any = {}): I_Condition => ({
   status: () => true,
   info: {
-    describe: 'Submit your new address (forwards kept)',
-    get: { value: '', name: 'newAddress' },
+    describe: 'Submit your new address (forwards are kept)',
+    get: { value: '', name: 'Your new address' },
     command
   }
 })
 
-const SUGGESTION_SUBMIT_NEW_OWNER_ADDRESS = ({ command }: { command: string }): I_Condition => ({
+const SUGGESTION_SUBMIT_NEW_OWNER_ADDRESS = ({ command }: any = {}): I_Condition => ({
   status: () => true,
   info: {
-    describe: 'Submit new owner\'s address (forwards not copied)',
-    get: { value: '', name: 'newOwnerAddress' },
+    describe: 'Submit new owner\'s address (forwards are not copied)',
+    get: { value: '', name: 'New owner\'s address' },
     command
   }
 })
 
-const WARNING_POINTLESS_IF_NOT_OWNER = (): I_Condition => ({
+const WARNING_POINTLESS_IF_NOT_OWNER = (args: any): I_Condition => ({
   status: () => true,
   info: {
     describe: 'Action not recommended for non-owners',
-    warning: 'Useless unless you are the owner or will be owner in future'
+    warning: USER_IS_OWNER(args) ? undefined : 'Useless unless you are the owner or will be owner in future'
   }
 })
 
@@ -179,39 +174,47 @@ const WARNING_POINTLESS_IF_NOT_OWNER = (): I_Condition => ({
 // Describe: If no owner, sender can start process to claim ownership
 // Since autoChecks run before user action checks in calcBnsState,
 // after bidding ends owner will be set by time this is checked.
-export const bidForOwnershipAction = (st: I_BnsState, tx: any = undefined): I_BNS_Action => {
+export const bidForOwnershipAction = (st: I_BnsState | null, tx: any = undefined): I_BNS_Action => {
+
   const args = { st, tx }
-  return {
 
-    type: CLAIM_OWNERSHIP,
-    info: 'Bid for ownership of an available domain',
+  const type = CLAIM_OWNERSHIP
 
-    permissions: [
-      // this means no more bids when there's a winner
-      NO_OWNER(args)
-    ],
+  const info = 'Bid for ownership of an available domain'
 
-    conditions: [
-      // minimum rules to counting tx still apply for bids
-      OUTS_2(args),
-      OUT_0(args),
-      OUT_1(args),
-      NOTIFIED_MIN(args),
-      NO_UNSPENT_USER_NOTIFICATIONS_UTXO(args),
-      USER_ADDRESS_NOT_NOTIFICATION_ADDRESS(args),
+  const permissions = [
+    // this means no more bids when there's a winner
+    NO_OWNER
+  ]
 
-      // at very least minimum is burnt, the rest is derived
-      BURNED_MIN(args)
-    ],
+  const conditions = [
+    // minimum rules to counting tx still apply for bids
+    OUTS_2,
+    OUT_0,
+    OUT_1,
+    NOTIFIED_MIN,
+    NO_UNSPENT_USER_NOTIFICATIONS_UTXO,
+    USER_ADDRESS_NOT_NOTIFICATION_ADDRESS,
 
-    execute: () => {
-      // have to start or add to bidding
-      // ownership will be derived through automatic check based on bidding started here
-      addBid(st, tx, BnsBidType.BURN)
-    }
+    // at very least minimum is burnt, the rest is derived
+    BURNED_MIN
+  ]
+
+  const execute = !st ? () => {} : () => {
+    // have to start or add to bidding
+    // ownership will be derived through automatic check based on bidding started here
+    addBid(st, tx, BnsBidType.BURN)
   }
+
+  return {
+    permissions: st ? permissions.map(permission => permission(args)) : permissions,
+    conditions: st ? conditions.map(condition => condition(args)) : conditions,
+    args, info, type, execute
+  }
+
   // need to get user input on burn amount possible minimum (general action guidance)
   // also needs some guidance for refunds necessary to win (general action guidance)
+
 }
 
 /**
@@ -219,62 +222,68 @@ export const bidForOwnershipAction = (st: I_BnsState, tx: any = undefined): I_BN
  * network: '!ca'
  * address: 'newaddress'
  */
-export const changeAddressAction = (st: I_BnsState, address: string = '', tx: any = undefined): I_BNS_Action => {
+export const changeAddressAction = (st: I_BnsState | null, address: string = '', tx: any = undefined): I_BNS_Action => {
+
   const command = '!ca'
+
   const args = { st, address, tx, command }
-  return {
 
-    type: CHANGE_ADDRESS,
-    info: 'Update your ownership address',
+  const type = CHANGE_ADDRESS
 
-    permissions: [
-      USER_IS_OWNER(args),
+  const info = 'Update your ownership address'
 
-      // suggestions
-      SUGGESTION_SUBMIT_NEW_ADDRESS(args)
-    ],
+  const permissions = [
+    USER_IS_OWNER,
 
-    conditions: [
-      OUTS_2(args),
-      OUT_0(args),
-      OUT_1(args),
-      NOTIFIED_MIN(args),
-      NO_UNSPENT_USER_NOTIFICATIONS_UTXO(args),
-      USER_ADDRESS_NOT_NOTIFICATION_ADDRESS(args),
+    // suggestions
+    SUGGESTION_SUBMIT_NEW_ADDRESS
+  ]
 
-      IS_COMMAND_CALLED(args, command)
-    ],
+  const conditions = [
+    OUTS_2,
+    OUT_0,
+    OUT_1,
+    NOTIFIED_MIN,
+    NO_UNSPENT_USER_NOTIFICATIONS_UTXO,
+    USER_ADDRESS_NOT_NOTIFICATION_ADDRESS,
 
-    execute: () => {
-      const thisCommand = getCommandCalled(st, tx, command)
-      const newAddress = thisCommand?.address;
-      if (!newAddress) {
-        console.log('ownership transfer detected, but no address found')
-      } else {
-        // quite possible user doesn't exist so create blank one
-        if (!existsUser(st, newAddress)) createNewUser(st, newAddress)
+    IS_COMMAND_CALLED
+  ]
 
-        // new owner is created and given old owner's ownership data
+  const execute = !st ? () => {} : () => {
+    const thisCommand = getCommandCalled(st, tx, command)
+    const newAddress = thisCommand?.address;
+    if (!newAddress) {
+      console.log('ownership transfer detected, but no address found')
+    } else {
+      // quite possible user doesn't exist so create blank one
+      if (!existsUser(st, newAddress)) createNewUser(st, newAddress)
 
-        const oldOwner = getOwner(st)
-        setOwner(st, newAddress)
-        // one of conditions is USER_IS_OWNER so there is owner
-        getUser(st, newAddress).winHeight = oldOwner!.winHeight
-        getUser(st, newAddress).winTimestamp = oldOwner!.winTimestamp
-        getUser(st, newAddress).burnAmount = oldOwner!.burnAmount
-        // clone forwards
-        getUser(st, newAddress).forwards = JSON.parse(JSON.stringify(oldOwner!.forwards))
-        // for new user, no changes to updateHeight, nonce
+      // new owner is created and given old owner's ownership data
 
-        // old owner loses ownership data
-        oldOwner!.winHeight = 0
-        oldOwner!.winTimestamp = 0
-        oldOwner!.burnAmount = 0
-        // nonce, forwards (not active now), update height are not touched
-        console.log('ownership transfered from', oldOwner!.address, 'to', newAddress)
+      const oldOwner = getOwner(st)
+      setOwner(st, newAddress)
+      // one of conditions is USER_IS_OWNER so there is owner
+      getUser(st, newAddress).winHeight = oldOwner!.winHeight
+      getUser(st, newAddress).winTimestamp = oldOwner!.winTimestamp
+      getUser(st, newAddress).burnAmount = oldOwner!.burnAmount
+      // clone forwards
+      getUser(st, newAddress).forwards = JSON.parse(JSON.stringify(oldOwner!.forwards))
+      // for new user, no changes to updateHeight, nonce
 
-      }
+      // old owner loses ownership data
+      oldOwner!.winHeight = 0
+      oldOwner!.winTimestamp = 0
+      oldOwner!.burnAmount = 0
+      // nonce, forwards (not active now), update height are not touched
+      console.log('ownership transfered from', oldOwner!.address, 'to', newAddress)
     }
+  }
+
+  return {
+    permissions: st ? permissions.map(permission => permission(args)) : permissions,
+    conditions: st ? conditions.map(condition => condition(args)) : conditions,
+    args, info, type, execute
   }
 }
 
@@ -283,134 +292,153 @@ export const changeAddressAction = (st: I_BnsState, address: string = '', tx: an
  * network: '!so'
  * address: 'newaddress'
  */
-export const sendOwnershipAction = (st: I_BnsState, address: string = '', tx: any = undefined): I_BNS_Action => {
+export const sendOwnershipAction = (st: I_BnsState | null, address: string = '', tx: any = undefined): I_BNS_Action => {
+
   const command = '!so'
+
   const args = { st, address, tx, command }
-  return {
 
-    type: SEND_OWNERSHIP,
-    info: 'Give up ownership to another address',
+  const type = SEND_OWNERSHIP
 
-    permissions: [
-      USER_IS_OWNER(args),
+  const info = 'Give up ownership to another address'
 
-      // suggestions
-      SUGGESTION_SUBMIT_NEW_OWNER_ADDRESS(args)
-    ],
+  const permissions = [
+    USER_IS_OWNER,
 
-    conditions: [
-      OUTS_2(args),
-      OUT_0(args),
-      OUT_1(args),
-      NOTIFIED_MIN(args),
-      NO_UNSPENT_USER_NOTIFICATIONS_UTXO(args),
-      USER_ADDRESS_NOT_NOTIFICATION_ADDRESS(args),
+    // suggestions
+    SUGGESTION_SUBMIT_NEW_OWNER_ADDRESS,
+  ]
 
-      IS_COMMAND_CALLED(args, command)
-    ],
+  const conditions = [
+    OUTS_2,
+    OUT_0,
+    OUT_1,
+    NOTIFIED_MIN,
+    NO_UNSPENT_USER_NOTIFICATIONS_UTXO,
+    USER_ADDRESS_NOT_NOTIFICATION_ADDRESS,
 
-    execute: () => {
-      const thisCommand = getCommandCalled(st, tx, command)
-      const newAddress = thisCommand?.address;
-      if (!newAddress) {
-        console.log('ownership transfer detected, but no address found')
-      } else {
-        // quite possible user doesn't exist so create blank one
-        if (!existsUser(st, newAddress)) createNewUser(st, newAddress)
+    IS_COMMAND_CALLED
+  ]
 
-        // new owner is created and given old owner's ownership data
+  const execute = !st ? () => {} : () => {
+    const thisCommand = getCommandCalled(st, tx, command)
+    const newAddress = thisCommand?.address;
+    if (!newAddress) {
+      console.log('ownership transfer detected, but no address found')
+    } else {
+      // quite possible user doesn't exist so create blank one
+      if (!existsUser(st, newAddress)) createNewUser(st, newAddress)
 
-        const oldOwner = getOwner(st)
-        setOwner(st, newAddress)
-        // one of conditions is USER_IS_OWNER so there is owner
-        getUser(st, newAddress).winHeight = oldOwner!.winHeight
-        getUser(st, newAddress).winTimestamp = oldOwner!.winTimestamp
-        getUser(st, newAddress).burnAmount = oldOwner!.burnAmount
-        // for new user, no changes to updateHeight, nonce, or forwards
+      // new owner is created and given old owner's ownership data
 
-        // old owner loses ownership data
-        oldOwner!.winHeight = 0
-        oldOwner!.winTimestamp = 0
-        oldOwner!.burnAmount = 0
-        // nonce, forwards (not active now), update height are not touched
+      const oldOwner = getOwner(st)
+      setOwner(st, newAddress)
+      // one of conditions is USER_IS_OWNER so there is owner
+      getUser(st, newAddress).winHeight = oldOwner!.winHeight
+      getUser(st, newAddress).winTimestamp = oldOwner!.winTimestamp
+      getUser(st, newAddress).burnAmount = oldOwner!.burnAmount
+      // for new user, no changes to updateHeight, nonce, or forwards
 
-        console.log('ownership transfered from', oldOwner!.address, 'to', newAddress)
-      }
+      // old owner loses ownership data
+      oldOwner!.winHeight = 0
+      oldOwner!.winTimestamp = 0
+      oldOwner!.burnAmount = 0
+      // nonce, forwards (not active now), update height are not touched
+
+      console.log('ownership transfered from', oldOwner!.address, 'to', newAddress)
     }
   }
+
+  return {
+    permissions: st ? permissions.map(permission => permission(args)) : permissions,
+    conditions: st ? conditions.map(condition => condition(args)) : conditions,
+    args, info, type, execute
+  }
+
 }
 
 
 // Describe: If from current owner & burned past winning minimum, extend ownership.
 export const currentOwnerRenewAction = (
-  st: I_BnsState,
+  st: I_BnsState | null,
   address: string = '',
   tx: any = undefined
 ): I_BNS_Action => {
+
   const args = { st, address, tx }
+
+  const type = RENEW
+
+  const info = 'Extend ownership of this domain'
+
+  const permissions = [
+    USER_IS_OWNER
+  ]
+
+  const conditions = [
+    OUTS_2,
+    OUT_0,
+    OUT_1,
+    NOTIFIED_MIN,
+    NO_UNSPENT_USER_NOTIFICATIONS_UTXO,
+    USER_ADDRESS_NOT_NOTIFICATION_ADDRESS,
+
+    BURNED_MIN,
+    BURN_LAST_WIN
+  ]
+
+  const execute = !st ? () => {} : () => {
+    const owner = getOwner(st)
+    // set owner's win height to current tx height therefore updating ownership
+    owner && (owner.winHeight = getTxHeight(tx))
+    owner && (owner.winTimestamp = getTxTimestamp(tx))
+    console.log(
+      `${ st.domain.domainName } : ${ getTxHeight(tx) } height: owner extended ownership ${ owner?.address }`
+    )
+  }
+
   return {
-
-    type: RENEW,
-    info: 'Extend ownership of this domain',
-
-    permissions: [
-      USER_IS_OWNER(args)
-    ],
-
-    conditions: [
-      OUTS_2(args),
-      OUT_0(args),
-      OUT_1(args),
-      NOTIFIED_MIN(args),
-      NO_UNSPENT_USER_NOTIFICATIONS_UTXO(args),
-      USER_ADDRESS_NOT_NOTIFICATION_ADDRESS(args),
-
-      BURNED_MIN(args),
-      BURN_LAST_WIN(args)
-    ],
-
-    execute: () => {
-      const owner = getOwner(st)
-      // set owner's win height to current tx height therefore updating ownership
-      owner && (owner.winHeight = getTxHeight(tx))
-      owner && (owner.winTimestamp = getTxTimestamp(tx))
-      console.log(
-        `${ st.domain.domainName } : ${ getTxHeight(tx) } height: owner extended ownership ${ owner?.address }`
-      )
-    }
+    permissions: st ? permissions.map(permission => permission(args)) : permissions,
+    conditions: st ? conditions.map(condition => condition(args)) : conditions,
+    args, info, type, execute
   }
 }
 
 // Describe: update forwarding information.
 export const updateForwardingInfoAction = (
-  st: I_BnsState,
+  st: I_BnsState | null,
   address: string = '',
   tx: any = undefined
 ): I_BNS_Action => {
+
   const args = { st, address, tx }
+
+  const type = ONLY_FORWARDS
+
+  const info = 'Only update forwarding information'
+
+  const permissions = [
+    // suggestions
+    WARNING_POINTLESS_IF_NOT_OWNER
+  ]
+
+  const conditions = [
+    OUTS_2,
+    OUT_0,
+    OUT_1,
+    NOTIFIED_MIN,
+    NO_UNSPENT_USER_NOTIFICATIONS_UTXO,
+    USER_ADDRESS_NOT_NOTIFICATION_ADDRESS
+  ]
+
+  const execute = !st ? () => {} : () => {
+    readEmbeddedData(st, tx)
+  }
+
   return {
-
-    type: ONLY_FORWARDS,
-
-    info: 'Only update forwarding information',
-
-    permissions: [
-      // suggestions
-      WARNING_POINTLESS_IF_NOT_OWNER()
-    ],
-
-    conditions: [
-      OUTS_2(args),
-      OUT_0(args),
-      OUT_1(args),
-      NOTIFIED_MIN(args),
-      NO_UNSPENT_USER_NOTIFICATIONS_UTXO(args),
-      USER_ADDRESS_NOT_NOTIFICATION_ADDRESS(args),
-    ],
-
-    execute: () => {
-      readEmbeddedData(st, tx)
-    }
+    permissions: st ? permissions.map(permission => permission(args)) : permissions,
+    conditions: st ? conditions.map(condition => condition(args)) : conditions,
+    args, info, type, execute
   }
 }
 

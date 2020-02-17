@@ -27,7 +27,7 @@
   transition: opacity 0.3s;
   opacity: 0;
   /* opacity: 0.75; */
-  filter: brightness(1.1);
+  filter: brightness(1.15);
   box-shadow: inset 0 0 calc(0.25 * var(--s)) 0 var(--colorDarker1);
 
 }
@@ -117,6 +117,8 @@
   text-align: center;
   cursor: pointer;
   padding: calc(0.5 * var(--s)) calc(1.5 * var(--s));
+  margin: calc(0 * var(--s)) calc(2 * var(--s));
+
   vertical-align: middle;
   border-radius: calc(0.5 * var(--s));
 }
@@ -167,7 +169,7 @@
 
 
   /* risky filters */
-  filter: blur(0.0) opacity(0.2) brightness(100%) hue-rotate(0deg);
+  filter: blur(0.0) opacity(0.2) brightness(100%);
 
   /* animation */
   transform: translateZ(0.0) scale(1.00, 1.00) rotate(0.001deg) ;
@@ -268,6 +270,10 @@
     width: calc(100% / var(--horizontalScale));
   }
 
+  .overflowMenu {
+    transform: scale(var(--horizontalScale));
+    transform-origin: top;
+  }
 }
 
 

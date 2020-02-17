@@ -6,9 +6,10 @@ import { changePageInfoAction, changeChoicesBNSAction } from '../../../store/act
 import { Details } from './../../general/Details'
 import { runAllActionPermissionChecks, calcBnsState } from './../../../helpers/bns/'
 import { InputForm } from './../../general/InputForm'
+import sanitize from '../../../helpers/sanitize'
 
 /**
- * Bid on network
+ * Bid on network.
  */
 export const P4ActionChoice = () => {
   // global state
@@ -19,22 +20,22 @@ export const P4ActionChoice = () => {
   // local state for permission scan so can be used directly and becomes reactive
   const [checkActions, setCheckActions] = React.useState()
 
-  // simulate bns state once again just in case
-  // up to current block height
-  const bns = calcBnsState(
-    state.domain.txHistory,
-    state.domain.domainName,
-    state.chain.height,
-    state.network
-  )
-
-  // and get all permissions (once)
+  // calculate and get all permissions (once)
   if (!checkActions) {
+    // simulate bns state once again just in case
+    // up to current block height
+    const bns = calcBnsState(
+      state.domain.txHistory,
+      state.domain.domainName,
+      state.chain.height,
+      state.network
+    )
     setCheckActions(runAllActionPermissionChecks(bns, state.wallet.address))
-    console.log('results of permission scan for all actions:', checkActions)
   }
 
-  ///initializes extra form status from permission checks
+  console.log('checkActions', checkActions)
+
+  // initializes extra form status from permission checks
   React.useEffect(() => {
     // only do if undefined local state (once)
     if (!extraFormData) {
@@ -62,7 +63,7 @@ export const P4ActionChoice = () => {
           <div key={ action.info }>
             {/* change what action button does based on if there's data to get */}
             <RoundButton
-              next={ suggestionsToGet.length > 0 ? 'true' : undefined }
+              next={ suggestionsToGet.length === 0 ? 'true' : undefined }
               onClick={ () => {
                 if (suggestionsToGet.length === 0) {
 
@@ -94,6 +95,9 @@ export const P4ActionChoice = () => {
             { (extraFormData && extraFormData[action.info].show) && (
               suggestionsToGet.map((suggestionToGet: any) => (
                 <InputForm
+
+                  key={ suggestionToGet.info.describe }
+
                   className={ styles.inputForms }
 
                   thisInputLabel={ suggestionToGet.info.describe }
@@ -101,26 +105,34 @@ export const P4ActionChoice = () => {
                   thisInputValue={ suggestionToGet.info.get.value }
 
                   thisInputOnChange={ (e: any) => {
-                    // add changed value to extra form state
+                    // sanitize text
+                    const cleanText = sanitize(e.target.value, ['oneline', 'no_spaces'])
+
+                    // add changed value to checkActions object
                     // find and edit the value I need to get
                     checkActions
                       .find((thisAction: any) => thisAction.type === action.type )
-                      .suggestions((thisSuggestion: any) =>
+                      .suggestions
+                      .find((thisSuggestion: any) =>
                         thisSuggestion.info.describe === suggestionToGet.info.describe
-                      ).info.get.value = e.target.value
+                      ).info.get.value = cleanText
                     // notify local state about changes with clone
                     setCheckActions([...checkActions])
                   } }
 
                   thisSubmitButtonOnClick={ () => {
 
-                    // place the action object entirely into the global state
-                    changeChoicesBNSAction(state, dispatch, {
-                      action: JSON.parse(JSON.stringify(action))
-                    })
+                    // if input is not blank
+                    if (suggestionToGet.info.get.value !== '') {
+                      // place the customized action object entirely into the global state
+                      changeChoicesBNSAction(state, dispatch, {
+                        action: JSON.parse(JSON.stringify(action))
+                      })
 
-                    // change page
-                    changePageInfoAction(state, dispatch, 5)
+                      // change page
+                      changePageInfoAction(state, dispatch, 5)
+                    }
+
                   } }
                 />
               ))

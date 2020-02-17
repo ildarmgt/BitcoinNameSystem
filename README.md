@@ -41,11 +41,11 @@ https://bitcoinfaucet.uo1.net/send.php (segwit compatible)
 
 ## Method used for BNS
 
-Majority of rules will be implemented in this file (possibly future npm library if interest).
+Majority of rules will be implemented here (future npm library):
 
-`src/helpers/bns.tsx`
+`src/helpers/bns/`
 
-Not all rules in code are yet in final version as more complicated rules are introduced.
+Not all rules in code are yet in final version as more complicated rules are introduced and lifecycle logic flow is in flux while searching for most effective and generalized ways to implement those rules.
 
 Until I copy all rules here, basic premise is:
 

@@ -174,7 +174,7 @@ export const calcTx = (
     console.log('choices.action.suggestions each item:', thisSuggestion)
     return (
       // if there's another burn rule, use the highest value
-      (thisSuggestion.info.set.name === 'output 0 value')
+      (('set' in thisSuggestion.info) && (thisSuggestion.info.set.name === 'output 0 value'))
         ? Math.max(maxBurn, thisSuggestion.info.set.value)
         : maxBurn
     )

@@ -26,9 +26,22 @@
        url('./../assets/fonts/Monstserrat/montserrat-v14-latin-300.svg#Montserrat') format('svg'); /* Legacy iOS */
 }
 
-* {
+
+/* defaults rset */
+body, html, table, i, p, tr,
+td, th, a, span, div, aside {
+  /* not selectable by default */
+  -webkit-user-select: none;
+  -moz-user-select: -moz-none;
+  -ms-user-select: none;
+  user-select: none;
+  /* remove default styling */
   padding:0;
   margin:0;
+  border: 0;
+  font-size: 100%;
+  font: inherit;
+  vertical-align: baseline;
 }
 
 html {
@@ -147,14 +160,6 @@ a:hover,
 a:active,
 .canPress:active {
   transform: translateY(calc(0.2 * var(--s)));
-}
-
-/* not selectable by default */
-* {
-  -webkit-user-select: none;
-  -moz-user-select: -moz-none;
-  -ms-user-select: none;
-  user-select: none;
 }
 
 /* mark selectable where necessary */

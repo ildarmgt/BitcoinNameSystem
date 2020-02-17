@@ -127,4 +127,20 @@ export const runAllAutomaticActions = (st: I_BnsState, tx: I_TX | undefined): vo
   })
 }
 
+/****************************************************************************************
+ * Simply returns all user actions without any fed parameters
+ */
+export const scanEveryActionForCommand = () => {
+  // list of all actions to check
+  const actions = [
+    updateForwardingInfoAction(null),
+    currentOwnerRenewAction(null),
+    bidForOwnershipAction(null),
 
+    sendOwnershipAction(null),
+    changeAddressAction(null)
+  ]
+  return actions
+}
+
+// (TODO) rewrite so don't have to list same user actiosn 5 times w/ diff arguments, more generalized

@@ -18,6 +18,7 @@ export interface I_BNS_Action {
   permissions: Array<any>
   conditions: Array<any>
   execute: () => void
+  args: any
 }
 
 export interface I_BNS_Auto_Action {
@@ -165,6 +166,7 @@ export interface I_Condition {
 }
 
 export interface I_Evaluated_Condition extends I_Condition {
+                                    // all I_Conditions parameters extended
   isAllowed: boolean                // if permission passed check
 }
 
