@@ -76,17 +76,9 @@ export function interpretFw (fw: I_Forward) {
     }
   }
 
-  // if unknown forward network, no link, and the rest is shown as is
-  console.log({
-    originawhere: fw.network,
-    where: onNetwork,
-    what: fw.address,
-    link: undefined,
-    render: true
-  })
   return {
-    where: onNetwork,
-    what: fw.address,
+    where: onNetwork + ' :',
+    what: ' ' + fw.address,
     link: undefined,
     render: true
   }

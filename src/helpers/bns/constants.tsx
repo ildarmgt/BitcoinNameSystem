@@ -37,6 +37,11 @@ const CHALLENGE_PERIOD_DURATION_BY_BLOCKS = 144
 // sets a minimum treshhold for trying to outbid someone else
 const CHALLENGE_MIN_MULTIPLY = 2
 
+// BNS did not really exist before this point (for notifications only, wallets can go further)
+// this might be used to feed to nodes to speed up fetching of notification data to only after this height
+const EARLIEST_NOTIFICATION_HEIGHT =  1662000
+
+
 export {
   TESTING,
   MIN_BURN,
@@ -44,5 +49,6 @@ export {
   OWNERSHIP_DURATION_BY_BLOCKS,
   BYTES_MAX,
   CHALLENGE_PERIOD_DURATION_BY_BLOCKS,
-  CHALLENGE_MIN_MULTIPLY
+  CHALLENGE_MIN_MULTIPLY,
+  EARLIEST_NOTIFICATION_HEIGHT
 }

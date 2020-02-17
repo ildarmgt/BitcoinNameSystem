@@ -1,6 +1,7 @@
 import { calcP2WSH } from './calcP2WSH'
 import { newState } from './initialState'
 import * as actions from './actions'
+import { EARLIEST_NOTIFICATION_HEIGHT } from './constants'
 import { I_BnsState } from './types'
 import {
   setParsedHeight,
@@ -34,11 +35,13 @@ export const calcBnsState = (
   // reversing should speed it up if not complete it
   st.domain.txHistory = (notificationsHistory
     .slice().reverse()
+    .filter((tx: any) => getTxHeight(tx) >= EARLIEST_NOTIFICATION_HEIGHT)
     .sort((prev, next) => {
       const prevBlockHeight = prev.status.block_height
       const nextBlockHeight = next.status.block_height
       return prevBlockHeight - nextBlockHeight
     })
+
   )
 
   // iterate with blockheights of relevant tx to derive st state
