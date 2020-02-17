@@ -69,7 +69,7 @@ export const P2LoadWallet = () => {
           }}
           colorbutton={'var(--colorHighlightDark)'}
         >
-          Withdraw from wallet
+          Withdraw
         </RoundButton>
 
         <RoundButton
@@ -77,14 +77,22 @@ export const P2LoadWallet = () => {
           show={ (state.network === 'testnet').toString() }
           onClick={ () => {
             // open faucet page in new window
-            // segwit compatible:
-            // 1) https://testnet-faucet.mempool.co/
-            // 2) https://bitcoinfaucet.uo1.net/
             window.open('https://bitcoinfaucet.uo1.net/', '_blank')
-            // window.open('https://testnet-faucet.mempool.co/', '_blank')
           }}
         >
-          Testnet: tBTC faucet
+          Testnet faucet #1
+        </RoundButton>
+
+        <RoundButton
+          colorbutton={'var(--colorHighlightDark)'}
+          show={ (state.network === 'testnet').toString() }
+          onClick={ () => {
+            // open faucet page in new window
+            window.open('https://testnet-faucet.mempool.co/', '_blank')
+
+          }}
+        >
+          Testnet faucet #2
         </RoundButton>
 
         <RoundButton

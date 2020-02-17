@@ -159,6 +159,7 @@ export interface I_Condition {
       name: string                      // name of variable getting
       min?: number | null               // possible min value
       max?: number | null               // possible max value
+      units?: string                    // units if necessary
     }
     command?: string                    // command if this is a command to be embedded (value in get/set)
     warning?: string                    // warn if this is possible but terrible idea

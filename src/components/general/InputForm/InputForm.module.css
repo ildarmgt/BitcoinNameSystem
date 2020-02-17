@@ -34,6 +34,9 @@
   color: var(--colorBitcoinBlue);
   opacity: 0.7;
   text-align: left;
+
+  /* so next line character works */
+  white-space: pre-wrap;
 }
 
 .textarea {

@@ -26,6 +26,9 @@ export default function  sanitize (inputString, stringOrArray) {
     if (choice === 'numbers') {
       filter += '0123456789';
     }
+    if (choice === 'fractions') {
+      filter += '0123456789.';
+    }
     if (choice === 'decimal_point') {
       filter += '.';
     }

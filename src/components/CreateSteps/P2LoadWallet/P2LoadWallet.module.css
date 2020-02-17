@@ -33,6 +33,7 @@
 .buttonWrapper > div,
 .contentWrapper > div {
   margin: calc(1 * var(--s)) calc(3 * var(--s));
+  text-align: right;
 }
 
 .address {

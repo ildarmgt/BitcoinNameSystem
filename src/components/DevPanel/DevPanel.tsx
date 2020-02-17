@@ -13,7 +13,7 @@ export const DevPanel = (props: any): JSX.Element => {
   const { state, dispatch } = React.useContext(Store) // global state
 
   // store if DevPanel is hidden
-  const [hidden, setHidden] = useState<boolean>(false);
+  const [hidden, setHidden] = useState<boolean>(false)
 
   // reruns to reattach keyup event to toggle hidden class
   useEffect(() => {
@@ -35,8 +35,8 @@ export const DevPanel = (props: any): JSX.Element => {
   }, [hidden])
 
   const onOutlineClick = () => {
-    const id: string = 'outliner';
-    const sheet: HTMLElement | null = document.getElementById(id);
+    const id: string = 'outliner'
+    const sheet: HTMLElement | null = document.getElementById(id)
     if (!sheet) {
       const outlineCss = '* {box-shadow: 0 0 0 1px red;}'
       const style = document.createElement('style')
@@ -70,29 +70,50 @@ export const DevPanel = (props: any): JSX.Element => {
       { ...props }
     >
       <div><b>DevPanel</b></div>
+
       <div
         className={ styles.button }
         onClick={ () => {
           dlState()
         } }
       >
-        Save State
+        Save File State
       </div>
+
+      <div
+        className={ styles.button }
+        onClick={ () => {
+          console.log(json)
+          dispatch({ type: ActionTypes.LOAD_STATE, payload: json })
+        } }
+      >
+        Load File State
+      </div>
+
       <div
         className={ [styles.btnOutline, styles.button].join(' ') }
         onClick={ onOutlineClick }
       >
         Outline
       </div>
+
       <div
-        className={ styles.button }
+        className={ [styles.button].join(' ') }
+        onClick={ () => { localStorage.setItem('state', JSON.stringify(state)) } }
+      >
+        Save localStorage
+      </div>
+
+      <div
+        className={ [styles.button].join(' ') }
         onClick={ () => {
-          console.log(json);
-          dispatch({ type: ActionTypes.LOAD_STATE, payload: json });
+          const state = localStorage.getItem('state')
+          if (state) { dispatch({ type: ActionTypes.LOAD_STATE, payload: JSON.parse(state) }) }
         } }
       >
-        Load State
+        Load localStorage
       </div>
+
       <div
         className={ styles.button }
         onClick={ () => {

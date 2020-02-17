@@ -33,7 +33,45 @@ export const P4ActionChoice = () => {
     setCheckActions(runAllActionPermissionChecks(bns, state.wallet.address))
   }
 
-  console.log('checkActions', checkActions)
+  // help with understanding a get suggestion
+  const getSuggestInfo = (getSuggestion: any) => {
+    const get = getSuggestion.info.get
+    const network = state.network
+    const units = get.units
+    const min = get.min
+    const type = min ? 'number' : 'string'
+
+    // min suggestions it's a number
+    if (min) {
+
+      // if satoshi, convert to btc
+      const finalMin = units === 'satoshi' ? min / 1.0e8 : min
+      const finalUnitsName = network === 'testnet' ? 'tBTC' : 'BTC'
+
+      return {
+        value: '' + get.value, // raw value as string
+        finalMin: finalMin.toFixed(8), // min in BTC
+        type,
+        units: finalUnitsName,
+        // always entering in BTC
+        // so convert to satoshi if units are satoshi
+        // otherwise leave alone
+        // store as string
+        finalValue: () => {
+          if (units === 'satoshi') {
+            const sanitizeValue = sanitize(get.value, ['decimal_point', 'numbers'])
+            return String(Math.round(parseFloat(sanitizeValue) * 1.0e8)) // to sats
+          }
+          return get.value // sats
+        }
+      }
+    }
+
+    return {
+      type,
+      value: get.value
+    }
+  }
 
   // initializes extra form status from permission checks
   React.useEffect(() => {
@@ -94,19 +132,38 @@ export const P4ActionChoice = () => {
 
             { (extraFormData && extraFormData[action.info].show) && (
               suggestionsToGet.map((suggestionToGet: any) => (
-                <InputForm
 
+                <InputForm
                   key={ suggestionToGet.info.describe }
 
                   className={ styles.inputForms }
 
-                  thisInputLabel={ suggestionToGet.info.describe }
+                  thisInputLabel={
+                    suggestionToGet.info.describe + (
+                      !suggestionToGet.info.get.min ? '' : (
+                        '\n' +
+                        '(at least ' +
+                        getSuggestInfo(suggestionToGet).finalMin + ' ' +
+                        getSuggestInfo(suggestionToGet).units + ' to get ' +
+                         'a winning valid bid )'.replace(/ /g, '\xa0')
+                      )
+                    )
+                  }
 
-                  thisInputValue={ suggestionToGet.info.get.value }
+                  thisInputValue={ getSuggestInfo(suggestionToGet).value }
 
                   thisInputOnChange={ (e: any) => {
                     // sanitize text
-                    const cleanText = sanitize(e.target.value, ['oneline', 'no_spaces'])
+                    let cleanText
+
+                    if (suggestionToGet.info.get.min) {
+                      cleanText = sanitize(e.target.value, ['no_spaces', 'fractions'])
+                    } else {
+                      cleanText = sanitize(e.target.value, ['oneline', 'no_spaces'])
+                    }
+
+                    console.log('onchange clean text', cleanText)
+
 
                     // add changed value to checkActions object
                     // find and edit the value I need to get
@@ -116,11 +173,27 @@ export const P4ActionChoice = () => {
                       .find((thisSuggestion: any) =>
                         thisSuggestion.info.describe === suggestionToGet.info.describe
                       ).info.get.value = cleanText
+
                     // notify local state about changes with clone
                     setCheckActions([...checkActions])
                   } }
 
                   thisSubmitButtonOnClick={ () => {
+
+                    // if number do one last update
+                    if (suggestionToGet.info.get.min) {
+                      const finalize = getSuggestInfo(suggestionToGet).finalValue
+                      if (finalize) {
+                        const cleanText = finalize()
+                        console.log('final clean text', cleanText)
+                        checkActions
+                        .find((thisAction: any) => thisAction.type === action.type )
+                        .suggestions
+                        .find((thisSuggestion: any) =>
+                          thisSuggestion.info.describe === suggestionToGet.info.describe
+                        ).info.get.value = cleanText
+                      }
+                    }
 
                     // if input is not blank
                     if (suggestionToGet.info.get.value !== '') {

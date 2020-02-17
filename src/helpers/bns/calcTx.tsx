@@ -1,6 +1,6 @@
 import * as bitcoin from 'bitcoinjs-lib'
 import { calcP2WSH } from './calcP2WSH'
-import { MIN_BURN, MIN_NOTIFY } from './constants'
+import { MIN_NOTIFY } from './constants'
 import { encrypt } from './cryptography'
 import { I_Domain, I_Checked_Action } from './types/'
 import { getNonce } from './formathelpers'
@@ -43,7 +43,7 @@ export const calcTx = (
   domain: I_Domain,
   choices: { action: I_Checked_Action, feeRate: number, embedString: string, [key: string]: any },
   networkChoice: string,
-  vBytes: number = 0
+  vBytes: number = 1
 ): I_Tx_Result => {
 
   if (wallet.utxoList.length === 0) {
@@ -61,7 +61,26 @@ export const calcTx = (
 
   // calculate funds necessary for this tx, round up sat for more better than being below minimum.
   const fee = Math.ceil(vBytes * feeRate)
-  const valueNeeded = MIN_BURN + MIN_NOTIFY + fee; // sat
+
+
+  // output[0]: check special tx rules for max amount required to burn among all of them
+  const burnAmounts = choices.action.suggestions.reduce((allBurnAmounts: any, thisSuggestion: any) => {
+    console.log('choices.action.suggestions each item:', thisSuggestion)
+    let burnAmountsHere: any = []
+      // if there's a set burn rule, add to list
+      if (('set' in thisSuggestion.info) && (thisSuggestion.info.set.name === 'output 0 value')) {
+        burnAmountsHere = [...burnAmountsHere, thisSuggestion.info.set.value]
+      }
+      // if there's a user provided get value, add to list
+      if (('get' in thisSuggestion.info) && (thisSuggestion.info.get.name === 'Bid burn amount')) {
+        burnAmountsHere = [...burnAmountsHere, parseInt(thisSuggestion.info.get.value, 10)]
+      }
+    return [...allBurnAmounts, ...burnAmountsHere]
+  }, [])
+  const burnAmount = Math.max(...burnAmounts)
+
+
+  const valueNeeded = burnAmount + MIN_NOTIFY + fee; // sat
 
   // gather necessary utxo to use until enough to cover costs
   let totalGathered = 0 // sat
@@ -152,7 +171,9 @@ export const calcTx = (
 
   // inputs done
 
-  // outputs now
+  /* -------------------------------------------------------------------------- */
+  /*                              creating outputs                              */
+  /* -------------------------------------------------------------------------- */
 
   // add the op_return output (always index 0)
   // if first time notifying, nonce is '0', otherwise the last blockheight when this user has sent ANY tx to that notification address
@@ -165,16 +186,8 @@ export const calcTx = (
   const data = encrypt(finalEmbedString, encryptionKey)
   const embed = bitcoin.payments.embed({ data: [data] })
 
-  // output[0]: check special tx rules for max amount required to burn among all of them
-  const burnAmount = choices.action.suggestions.reduce((maxBurn: number, thisSuggestion: any) => {
-    console.log('choices.action.suggestions each item:', thisSuggestion)
-    return (
-      // if there's another burn rule, use the highest value
-      (('set' in thisSuggestion.info) && (thisSuggestion.info.set.name === 'output 0 value'))
-        ? Math.max(maxBurn, thisSuggestion.info.set.value)
-        : maxBurn
-    )
-  }, 0)
+
+
   psbt.addOutput({
     script: embed.output,
     value: burnAmount,
@@ -190,9 +203,6 @@ export const calcTx = (
   // output[2] add change output (anything is fine for output[2] or higher)
   // here we can set an address change where user keeps control as the
   // address to receive the remaining change from this tx
-
-  // choices.action.permissionList[1].info.get.value
-  // suggestions.find((suggestion: any) => ('get' in suggestion.info)).info.get.value // new address
   const changeAddress = choices.action.type === 'CHANGE_ADDRESS'
     ? (choices.action.suggestions.find((suggestion: any) => ('get' in suggestion.info))!.info.get!.value)
     : wallet.address
@@ -202,7 +212,10 @@ export const calcTx = (
     value: change
   })
 
-  // at this point all inputs & outputs added so ready to sign
+
+  /* -------------------------------------------------------------------------- */
+  /*          at this point all inputs & outputs added so ready to sign         */
+  /* -------------------------------------------------------------------------- */
 
   toBeUsedUtxoOfUserWallet.forEach((utxo, index) => {
     // sign p2wpkh of controlling

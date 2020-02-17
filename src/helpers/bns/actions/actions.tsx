@@ -7,7 +7,11 @@ import {
   I_TX,
   BnsBidType
 } from './../types/'
-import { MIN_NOTIFY, MIN_BURN } from './../constants'
+import {
+  MIN_NOTIFY,
+  MIN_BURN,
+  CHALLENGE_MIN_MULTIPLY
+} from './../constants'
 import {
   existsCurrentOwner,
   isOwnerExpired,
@@ -159,6 +163,23 @@ const SUGGESTION_SUBMIT_NEW_OWNER_ADDRESS = ({ command }: any = {}): I_Condition
   }
 })
 
+const SUGGESTION_SUBMIT_BURN_AMOUNT = ({ st }: any = {}): I_Condition => ({
+  status: () => true,
+  info: {
+    describe: 'Submit your bid amount',
+    get: {
+      value: '',
+      name: 'Bid burn amount' ,
+      // good guess for min next bid is CHALLENGE_MIN_MULTIPLY x (highest known bid)
+      // assuming they all meet the rules  by end of bidding
+      min: !st ? undefined :
+        st.domain.bidding.bids.length > 0 ? Math.max(...st.domain.bidding.bids.map((bid: any) => bid.value)) * CHALLENGE_MIN_MULTIPLY :
+          MIN_BURN,
+      units: 'satoshi'
+    }
+  }
+})
+
 const WARNING_POINTLESS_IF_NOT_OWNER = (args: any): I_Condition => ({
   status: () => true,
   info: {
@@ -184,7 +205,10 @@ export const bidForOwnershipAction = (st: I_BnsState | null, tx: any = undefined
 
   const permissions = [
     // this means no more bids when there's a winner
-    NO_OWNER
+    NO_OWNER,
+
+    // suggestions
+    SUGGESTION_SUBMIT_BURN_AMOUNT
   ]
 
   const conditions = [
