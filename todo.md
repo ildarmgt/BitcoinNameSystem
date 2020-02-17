@@ -1,18 +1,7 @@
 
 ## Short term
 
-- redone : actions, batch, p4
-- next: p5, p6, calctx
-
-- ok, new plan, generalize all guidance in same way in same place in same format instead of hacky solutions so far.
-  - permissions have guidance regardless (e.g. do this, do that bc they check for it)
-  - remove suggestions from actions and replace with...
-  - instead use dummy permissions that always pass but give guidance
-  - need 2 variables from user? use 2 dummy permissions
-  - their instances can come with properly named variables within them to feed data or use  in the tx maker or app
-  - the condition.special should be renamed  into condition.suggestion for clarity
-  - start dummy conditions with SUGGEST_ and then describe e.g. SUGGEST_GET_BURN_AMOUNT, provide max or min if known, plain english input guidance for user, if it needs to go into the string embed, and other stuff if needed. entire object joins all others on action scan by user and can be used, changed, displayed.
-
+- next: p6, calctx
 
 - (PRIORITY 2) accurately allow creation of bidding tx with helpful information and risks shown
 
@@ -207,4 +196,4 @@ can connect to LN? spending-only channel creation and sending is safe (?) from l
   problem: if original tx is not accepted and has to be pushed via CPFP, it could pay significantly smaller original fee and thus amount in notification. CPFP could be used to create smaller notification outputs but CPFP rules require paying new fee rate for both parent and child, which means sender will still pay same or higher fees. if CPFP is done via notification output spending, it solves the problem it created, but could also be done with another output leaving bad utxo behind - saves purely on # of sats not placed into notification utxo. most rules require cleaning up your own utxo so not too dangerous.
   CPFP effective fee rate calculations miners do: minerFeeRate = (sum of fees from all tx)/(sum of all sizes of all tx (in vBytes))
 
-- dust limits are currently calculated on mainnet at 3 sat/byte which is easier for witness tx but still very low if fees are 30 sat/vByte. 
+- dust limits are currently calculated on mainnet at 3 sat/byte which is easier for witness tx but still very low if fees are 30 sat/vByte.
