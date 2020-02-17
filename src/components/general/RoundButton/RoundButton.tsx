@@ -58,14 +58,28 @@ export const RoundButton = (props:any): JSX.Element => {
       <div
         className={ [
           styles.roundButton,
-          props.back ? styles.backArrow : undefined,
-          props.next ? styles.nextArrow : undefined,
+          props.back ? styles.backArrowPad : undefined,
+          props.next ? styles.nextArrowPad : undefined,
         ].join(' ') }
       >
+
+        { (props.back) && (
+          <div
+            className={ styles.backArrow }
+          />
+        ) }
+
         { props.children }
+
+        { (props.next) && (
+          <div
+            className={ styles.nextArrow }
+          />
+        ) }
+
         <div
           className={ styles.overhead }
-        ></div>
+        />
       </div>
     </div>
   )

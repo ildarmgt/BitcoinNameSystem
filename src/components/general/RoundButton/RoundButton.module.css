@@ -30,7 +30,7 @@
   /* was sized as 2.9 but js code resizes it using params to 2.5 default */
   font-size: calc(2.9 * var(--sizeButton));
   vertical-align: middle;
-  white-space: nowrap;
+  /* white-space: nowrap; */
 }
 
 .roundButtonWrap:active {
@@ -55,11 +55,12 @@
   /* background-color: var(--colorDarker1); */
 }
 
-.nextArrow {
+
+.nextArrowPad {
   /* prevents arrow from wrapping by placing it inside padding */
   padding-right: calc(5 * var(--sizeButton));
 }
-.nextArrow:after {
+.nextArrow {
   display: block;
   white-space: nowrap;
   content: "";
@@ -76,13 +77,15 @@
   border-bottom: calc(0.75 * var(--sizeButton)) solid transparent;
 }
 
-.backArrow {
+.backArrowPad {
+  /* back button color change */
   color: var(--colorThisButton);
+
   /* prevents arrow from wrapping */
   padding-left: calc(5 * var(--sizeButton));
 }
 
-.backArrow:before {
+.backArrow {
   display: inline-block;
   content: "";
   float: left;
@@ -109,7 +112,7 @@
   /* box-shadow: 0 0 0 calc(0.2 * var(--sizeButton)) var(--colorTransparent) inset; */
 }
 
-.backArrow:hover:before {
+.backArrow:hover {
   /* border-right: calc(1.5 * var(--sizeButton)) solid var(--colorThisButtonText); */
 }
 

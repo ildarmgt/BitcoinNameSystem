@@ -24,7 +24,7 @@
   position: fixed;
   background-color: var(--colorBackground);
   border-radius: calc(0.5 * var(--s));
-  transition: opacity 0.3s;
+  transition: opacity 0.15s;
   opacity: 0;
   /* opacity: 0.75; */
   filter: brightness(1.15);

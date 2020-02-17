@@ -87,7 +87,7 @@ export const P4ActionChoice = () => {
                 }
               }}
             >
-              { action.info }{ suggestionsToGet.length > 0 ? ' ...' : '' }
+              { action.info }{ suggestionsToGet.length > 0 ? (<>&nbsp;...</>) : '' }
             </RoundButton>
 
             {/* create input forms if shown */}
