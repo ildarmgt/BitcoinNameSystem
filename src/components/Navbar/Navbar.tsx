@@ -164,7 +164,8 @@ export const Navbar = (): JSX.Element => {
       <div
         className={ styles.warning }
       >
-        not reviewed for use
+        not reviewed for use<br />
+        { state.network }
       </div>
 
       <div

@@ -172,9 +172,17 @@ const SUGGESTION_SUBMIT_BURN_AMOUNT = ({ st }: any = {}): I_Condition => ({
       name: 'Bid burn amount' ,
       // good guess for min next bid is CHALLENGE_MIN_MULTIPLY x (highest known bid)
       // assuming they all meet the rules  by end of bidding
-      min: !st ? undefined :
-        st.domain.bidding.bids.length > 0 ? Math.max(...st.domain.bidding.bids.map((bid: any) => bid.value)) * CHALLENGE_MIN_MULTIPLY :
-          MIN_BURN,
+      min: !st
+        ? undefined
+        // when state provided
+        : (
+            // and there are existing bids
+            st.domain.bidding.bids.length > 0
+              // return the highest of the bids
+              ? Math.max(...st.domain.bidding.bids.map((bid: any) => bid.value)) * CHALLENGE_MIN_MULTIPLY
+              // otherwise return burn minimum
+              : MIN_BURN
+        ),
       units: 'satoshi'
     }
   }

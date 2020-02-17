@@ -4,17 +4,6 @@ const varuint = require('varuint-bitcoin');
 
 
 /**
- * Scans the address for utxo on a given network.
- * (In BNS would be useful for wallet and notification address)
- */
-// export const scanAddress = async (address: string, strNetwork: string) => {
-  // create array of utxo
-
-
-  // add full tx hex to that array (might take time)
-// }
-
-/**
  * Make new mnemonic for p2wpkh m/44'/0'/0'/0/0 address and WIF.
  * @param     {string}    strNetwork    String describing network ('bitcoin', 'testnet').
  * @returns   {object}                  Object { mnemonic, WIF, address } - all strings.
