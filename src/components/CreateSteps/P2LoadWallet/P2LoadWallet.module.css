@@ -30,10 +30,9 @@
   margin-left: calc(7 * var(--s));
 }
 
-.buttonWrapper > div,
-.contentWrapper > div {
+.contentWrapper > div,
+.buttonWrapper > div {
   margin: calc(1 * var(--s)) calc(3 * var(--s));
-  text-align: right;
 }
 
 .address {
@@ -42,6 +41,7 @@
   word-wrap: break-word;
   word-break: break-all;
   width: 50%;
+  text-align: center;
 }
 
 

@@ -3,25 +3,17 @@
 
 - (PRIORITY 2) accurately allow creation of bidding tx with helpful information and risks shown
 
-  - need to allow customization of amount burnt
-
-  - need to show confirmed burn amounts
-  - need to show unconfirmed burn amounts
   - need to show refunds left to do
-  - need to show time left to do it
+  - tell / warn user how many refunds left to do (next to bid amount)
+  - need to add refunds to outputs
+  - need to show unconfirmed burn amounts
 
-
-  - when changing yoru own address, should require cleaning up your old utxo from new address. could use an array under user state to track old addresses that can be checked in utxo rule scan.
 
 - (PRIORITY 3) if notification is on input, shouldn't be necessary to include it on output! Conditions could check for either, and thus cut down in notification utxo use and smaller/cheaper tx  (modify)
 
 - (PRIORITY 4) stealth addresses proof of concept to send, receive, UI
 
-- multipage tx scan (setting up test cases on testnet)
 
-- more generic & user customizable interpretation logic
-- multi-tx addresses interpretations
-- encoding interpretations
 
 - settings page
 - page navigation improved for hopping and checks
@@ -29,6 +21,11 @@
 - `!a  <# of BTCs>` - Post price to sell (output @0), measured in floating point btc. Owner address (input @0). Similar to challenge period but instead of burning, tx are sent to owner. ~24 hours from time of first bid w/ more left on lease, cannot transfer ownership after first bid. Include notification (output @1) & optional public notification to '':'' address (@output 2). Must be no owner's ACS, use as inputs (inputs @1+). Does not change lease expiration - only burns can extend even if transfered.
 
 - `!ba <last price in floating BTC>` Bid on auction. Must: 1. State price at point of bid via the !buy command in op_return (output @0). 2. Must consume past ACS inputs at that price height (includes the owners public notification at '':'' if used) (inputs @1+). 3. Refund previous valid bidders (outputs @4+). 4. Pay 1.5x last price requested except for original price (output @3). 5. Create notification (output @1). 6. Use desired ownership/refund adderss as first input (input @0). Winner is derived 24 hours after first bid by highest price that followed all the rules. Does not change lease expiration - only burns can extend even if transfered.
+
+
+- when changing yoru own address, should require cleaning up your old utxo from new address. could use an array under user state to track old addresses that can be checked in utxo rule scan.
+
+- multipage tx scan (setting up test cases on testnet)
 
 
 - download/read backup file option (sjcl encrypted)
@@ -48,6 +45,13 @@
 - npm library
 
 - npm library implemented with api/docker
+
+- multi-tx addresses interpretations (breaking them into pages)
+
+- more generic & user customizable interpretation logic
+
+- encoding interpretations
+
 
 ---
 Long term
