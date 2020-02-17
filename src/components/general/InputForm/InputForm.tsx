@@ -35,6 +35,9 @@ export const InputForm = (props: any) => {
         >
           OK
         </RoundButton>
+        <div className={ styles.bonusInformation }>
+          { props.children }
+        </div>
       </div>
     </div>
   )

@@ -183,7 +183,7 @@ export const SearchResults = () => {
 
   return (
     <>
-      <div className={ styles.wrapper }>
+      <div className={ [styles.wrapper, 'scrollbar'].join(' ') }>
 
         {/* scrollable search results */}
         <div className={ styles.listContainer } >

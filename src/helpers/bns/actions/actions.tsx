@@ -85,8 +85,8 @@ const NOTIFIED_MIN = ({ tx=undefined }: any = {}): I_Condition => ({
 const BURNED_MIN = ({ tx=undefined }: any = {}): I_Condition => ({
   status: () => didBurnMin(tx),
   info: {
-    describe: `Tx must burn ${MIN_BURN} @ output[0]`,
-    set: { name: 'output 0 value', value: MIN_BURN }
+    describe: `Tx must burn (bid) at least the minimum amount`,
+    set: { name: 'output 0 value', value: MIN_BURN, units: 'satoshi' }
   }
 })
 
@@ -166,7 +166,7 @@ const SUGGESTION_SUBMIT_NEW_OWNER_ADDRESS = ({ command }: any = {}): I_Condition
 const SUGGESTION_SUBMIT_BURN_AMOUNT = ({ st }: any = {}): I_Condition => ({
   status: () => true,
   info: {
-    describe: 'Submit your bid amount',
+    describe: 'Submit your bid burn amount',
     get: {
       value: '',
       name: 'Bid burn amount' ,
@@ -209,7 +209,7 @@ export const bidForOwnershipAction = (st: I_BnsState | null, tx: any = undefined
 
   const type = CLAIM_OWNERSHIP
 
-  const info = 'Bid for ownership of an available domain'
+  const info = 'Bid for ownership of a domain'
 
   const permissions = [
     // this means no more bids when there's a winner

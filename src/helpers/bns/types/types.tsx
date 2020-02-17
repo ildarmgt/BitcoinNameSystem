@@ -151,8 +151,9 @@ export interface I_Condition {
   info: {
     describe: string                    // string containing explanation for user
     set?: {                             // object suggesting user sets something to a value
-      value: number | string            // value to set it to (if exact value unknown better to .get it from user)
+      value: any                        // value to set it to (if exact value unknown better to .get it from user)
       name: string                      // what the value is for
+      units?: string                    // units if necessary
     }
     get?: {                             // object of suggested variable to get from user
       value: number | string            // rules come as key value pair

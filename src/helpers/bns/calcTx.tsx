@@ -121,7 +121,12 @@ export const calcTx = (
   // if still not enough funds after all possible inputs,
   // there are simply not enough funds to do the tx
   if (totalGathered < valueNeeded) {
-    throw new Error('Not enough funds available (' + (valueNeeded / 1e8).toFixed(8) + ' BTC)')
+    throw new Error(
+      'Not enough funds available (need: '
+      + (valueNeeded / 1e8).toFixed(8)
+      + ' BTC, have: '
+      + (totalGathered / 1e8).toFixed(8) + ' BTC)'
+    )
   }
 
 

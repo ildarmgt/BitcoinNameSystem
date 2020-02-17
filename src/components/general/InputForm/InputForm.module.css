@@ -40,9 +40,15 @@
 }
 
 .textarea {
-
+  display: inline-block;
+  width: calc(100% - calc(15 * var(--s)));
 }
 
 .button {
+  display: inline-block;
   margin-right: 0;
+}
+
+.bonusInformation {
+  margin: calc(1 * var(--s));
 }

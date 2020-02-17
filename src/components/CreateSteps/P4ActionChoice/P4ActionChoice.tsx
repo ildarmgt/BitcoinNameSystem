@@ -151,8 +151,8 @@ export const P4ActionChoice = () => {
                         '\n' +
                         '(at least ' +
                         getSuggestInfo(suggestionToGet).finalMin + ' ' +
-                        getSuggestInfo(suggestionToGet).units + ' to get ' +
-                         'a winning valid bid )'.replace(/ /g, '\xa0')
+                        getSuggestInfo(suggestionToGet).units + ' to get a winning ' +
+                         'valid bid )'.replace(/ /g, '\xa0')
                       )
                     )
                   }
@@ -214,7 +214,25 @@ export const P4ActionChoice = () => {
                     }
 
                   } }
-                />
+                >
+                  { (getSetters(action).length > 0) &&
+                    <Details description={ 'Fixed value action requirements' } show={ 'true' }>
+                    <p>
+                      { getSetters(action).map((thisAction: any, index: number) => {
+                        const setDescription = thisAction.info.describe || ''
+                        const setName = thisAction.info.set.name || ''
+                        const setValue = thisAction.info.set.value || ''
+                        const setUnits = thisAction.info.set.units || ''
+                        return (
+                          <span key={ setDescription }>
+                            { index + 1 }. { setDescription } : { (setValue + ' ' + setUnits).replace(/ /g, '\xa0') } ({ setName })
+                          </span>
+                        )
+                      }) }
+                    </p>
+                    </Details>
+                   }
+                </InputForm>
               ))
             )}
           </div>
