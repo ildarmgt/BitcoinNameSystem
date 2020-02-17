@@ -2,7 +2,7 @@ import {
   I_Domain,
   I_TX,
   I_UTXO,
-  I_Action_Choice
+  I_Checked_Action
 } from './../helpers/bns/types/'
 
 /**
@@ -50,7 +50,7 @@ export interface I_State {
     height: number
   }
   choices: {
-    action: I_Action_Choice | {}
+    action: I_Checked_Action | {}
     feeRate: number
     txHex: string
     embedString: string

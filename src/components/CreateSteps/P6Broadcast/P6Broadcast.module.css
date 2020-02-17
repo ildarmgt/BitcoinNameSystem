@@ -43,13 +43,12 @@
 
   grid-area: txSummary;
   width: 100%;
-  white-space: pre-wrap;
   padding: calc(2 * var(--s)) 0;
+  white-space: pre-wrap;
 
   overflow-wrap: break-word;
   word-wrap: break-word;
   word-break: break-all;
-
 }
 
 .status {
@@ -99,6 +98,10 @@
   width: 100%;
   vertical-align: top;
   border-collapse: collapse;
+
+  overflow-wrap: normal;
+  word-wrap: normal;
+  word-break: normal;
 }
 
 .txSummary td {

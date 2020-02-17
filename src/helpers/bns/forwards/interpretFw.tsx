@@ -7,7 +7,7 @@ import { I_Forward } from '../types'
 export function interpretFw (fw: I_Forward) {
   // blank address means it was removed
   // ! at start means it's a command, not a network
-  if (fw.address === '' || fw.network.startsWith('!')) {
+  if (fw.network === '' || fw.address === '' || fw.network.startsWith('!')) {
     return {
       render: false
     }
@@ -77,6 +77,13 @@ export function interpretFw (fw: I_Forward) {
   }
 
   // if unknown forward network, no link, and the rest is shown as is
+  console.log({
+    originawhere: fw.network,
+    where: onNetwork,
+    what: fw.address,
+    link: undefined,
+    render: true
+  })
   return {
     where: onNetwork,
     what: fw.address,

@@ -1,8 +1,6 @@
 
 ## Short term
 
-- next: p6, calctx
-
 - (PRIORITY 2) accurately allow creation of bidding tx with helpful information and risks shown
 
   - need to allow customization of amount burnt

@@ -2,7 +2,7 @@ import * as bitcoin from 'bitcoinjs-lib'
 import { calcP2WSH } from './calcP2WSH'
 import { MIN_BURN, MIN_NOTIFY } from './constants'
 import { encrypt } from './cryptography'
-import { I_Domain, I_Action_Choice } from './types/'
+import { I_Domain, I_Checked_Action } from './types/'
 import { getNonce } from './formathelpers'
 import { getFinalScripts } from './bitcoin'
 
@@ -41,7 +41,7 @@ interface I_Tx_Result {
 export const calcTx = (
   wallet: any,
   domain: I_Domain,
-  choices: { action: I_Action_Choice, feeRate: number, embedString: string, [key: string]: any },
+  choices: { action: I_Checked_Action, feeRate: number, embedString: string, [key: string]: any },
   networkChoice: string,
   vBytes: number = 0
 ): I_Tx_Result => {
@@ -155,17 +155,13 @@ export const calcTx = (
   // outputs now
 
   // add the op_return output (always index 0)
-  // if first time sending, nonce is '0', otherwise the last blockheight when this user has sent ANY tx to that notification address
-  // TODO calculate nonce in case this owner has unspent acs utxo left at notification address
+  // if first time notifying, nonce is '0', otherwise the last blockheight when this user has sent ANY tx to that notification address
   const nonce = getNonce({ domain }, wallet.address).toString()
   const encryptionKey =  domain.domainName + wallet.address + nonce
   console.log('nonce used to encrypt', domain.domainName, wallet.address, nonce)
-  // if there's extra content add it, otherwise just regular string
-  const finalEmbedString = choices.action.actionContent !== ''
-    ? [choices.action.actionContent, choices.embedString].join(' ')
-    : choices.embedString
-  console.log('string embedded is', finalEmbedString)
 
+  const finalEmbedString = choices.embedString
+  console.log('string embedded is', '"' + finalEmbedString + '"')
   const data = encrypt(finalEmbedString, encryptionKey)
   const embed = bitcoin.payments.embed({ data: [data] })
 
@@ -192,8 +188,13 @@ export const calcTx = (
   })
 
   // output[2] add change output (anything is fine for output[2] or higher)
+  // here we can set an address change where user keeps control as the
+  // address to receive the remaining change from this tx
+
+  // choices.action.permissionList[1].info.get.value
+  // suggestions.find((suggestion: any) => ('get' in suggestion.info)).info.get.value // new address
   const changeAddress = choices.action.type === 'CHANGE_ADDRESS'
-    ? choices.action.actionContent.split(' ')[1] // new address
+    ? (choices.action.suggestions.find((suggestion: any) => ('get' in suggestion.info))!.info.get!.value)
     : wallet.address
   const change = totalGathered - valueNeeded
   psbt.addOutput({

@@ -27,12 +27,12 @@ export interface I_BNS_Auto_Action {
   execute: () => void
 }
 
-export interface I_Action_Choice {
-  type: BnsActionType
-  info: string
-  suggestions: Array<any>
-  actionContent: string
-}
+// export interface I_Action_Choice {
+//   type: BnsActionType
+//   info: string
+//   suggestions: Array<any>
+//   actionContent: string
+// }
 
 export interface I_BnsState {
   domain: I_Domain

@@ -163,7 +163,7 @@ const WARNING_POINTLESS_IF_NOT_OWNER = (args: any): I_Condition => ({
   status: () => true,
   info: {
     describe: 'Action not recommended for non-owners',
-    warning: USER_IS_OWNER(args) ? undefined : 'Useless unless you are the owner or will be owner in future'
+    warning: !USER_IS_OWNER(args)?.status() ? 'Useless unless you are the owner or will be owner in future' : undefined
   }
 })
 
