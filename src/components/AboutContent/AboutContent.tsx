@@ -1,7 +1,7 @@
 import React from 'react'
 // import { Store } from './../../store/'
 import styles from './AboutContent.module.css'
-import { ReactComponent as Drawing } from './graphic.svg'
+import image from './graphic.png'
 
 
 export const AboutContent = () => {
@@ -22,8 +22,10 @@ export const AboutContent = () => {
 
         <div className={ styles.contentWrapper }>
 
-          <Drawing
-            className={ styles.drawing }
+          <img
+            className = { styles.drawing }
+            src={ image }
+            alt='graphic'
           />
 
           <p>
