@@ -86,7 +86,9 @@
   display: inline-block;
   background-color: var(--colorDarker0_5);
   border-radius: calc(0.5 * var(--s));
-  padding: calc(1 * var(--s)) calc(2 * var(--s));
+  padding: calc(2 * var(--s)) calc(3 * var(--s));
+  padding-right: calc(2 * var(--s));
+
   /* padding-left: calc(4 * var(--s)); */
   margin: calc(1 * var(--s)) calc(2 * var(--s));
   margin-top: 0;

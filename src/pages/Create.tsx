@@ -1,7 +1,7 @@
 import React from 'react'
 import { CreateNavigator } from './../components/CreateNavigator'
 
-export default function Create () {
+export function Create () {
   return (
     <>
       <CreateNavigator />

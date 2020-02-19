@@ -1,15 +1,16 @@
 import React from 'react';
 import { Route, Switch } from 'react-router-dom'
-import Home from './pages/Home'
-import About from './pages/About'
-import Create from './pages/Create'
+import { Home, About, Create, Wallet, Settings } from './pages/'
 import { Navbar } from './components/Navbar'
-import Wallet from './pages/Wallet'
 import './css/app.css'
 
 // using for routing
 const App = (): JSX.Element => {
+
+  // forwarding from url?name:
+
   // onbtc.me?satoshi can now forward to onbtc.me/#/id/satoshi which resets to onbtc.me after search
+
   // redirect to auto searching path routed in return and remove query from url
   const searchParam = (new URLSearchParams(window.location.search)).keys().next().value
   searchParam && console.log('search param detected after ?', searchParam)
@@ -26,6 +27,7 @@ const App = (): JSX.Element => {
           <Route path="/about" component={About} />
           <Route path="/create" component={Create} />
           <Route path="/wallet" component={Wallet} />
+          <Route path="/settings" component={Settings} />
           <Route path='/:noise' component={Home} />
           <Route exact path='/' component={Home} />
         </Switch>

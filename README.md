@@ -112,9 +112,19 @@ This design has neutral costs to prevent domains from being captured en masse, e
 
 * Easy to understand description on about page
 
-## What is the back end?
+## What is the backend?
 
-Decentralization works on the principle of not having to trust back ends. BNS can be read with help of any Bitcoin full node, with early demo implementations relying on open source 3rd party API explorer interface, but can be replaced by personal full nodes to accomplish same thing. The goal is to provide multiple options ranging fast 3rd party API to implementations relying solely on your own Bitcoin full node to use BNS.
+All data is on the Bitcoin blockchain. You choose how to fetch that data depending on convinience or security you want.
+
+* rely on generic public bitcoin explorers via API interface (in demo)
+
+* compare between many public API's
+
+* neutrino or spv light clients with merkle tree proofs
+
+* run your own full bitcoin node (and even your own open source API interface matching what demo uses)
+
+Decentralization works on the principle of not being forced to trust backends. BNS can be read with help of any Bitcoin full node, with early demo implementations relying on open source 3rd party API explorer interface, but can be replaced by personal full nodes to accomplish same thing. The goal is to provide multiple options ranging fast 3rd party API to implementations relying solely on your own Bitcoin full node to use BNS.
 
 * Proof of concept with integrated front end is done via API calls to blockstream.info
 
@@ -144,6 +154,14 @@ Decentralization works on the principle of not having to trust back ends. BNS ca
 
 * Change address command allows minimizing address reuse without giving up ownership
 
+## Privacy ideas
+
+* No clear way to tell which domain user is using BNS
+
+* Search only easy in one direction: from alias to forwarding information, especially with long aliases.
+
+* Stealth address implementation (using slightly modified BIP47 principles for more entropy, single tx implementation, and no notification traceability to recepient nor to possibly public forwarding information)
+
 ## Taking care of Bitcoin
 
 Design was created with intention to not make Bitcoin worse.
@@ -158,15 +176,11 @@ Design was created with intention to not make Bitcoin worse.
 
 ## Why not layer 2?
 
-* Domains and forwards are the one usecase that specifically does greatly benefit from persistent and easily accessible data. It might also be used for simplifying LN addresses or invoices, with possible ipfs step for better cost efficiency.
+* Domains and forwards are the one usecase that specifically does greatly benefit from persistent and easily accessible data. It might, however, be used for simplifying LN addresses or invoices, optionally even linking to ipfs if cheaper data needed.
 
-## Privacy ideas
+## How is it different?
 
-* No clear way to tell which domain user is using BNS
-
-* Search only easy in one direction: from alias to forwarding information, especially with long aliases.
-
-* Stealth address implementation (using slightly modified BIP47 principles for more entropy, single tx implementation, and no notification traceability to recepient nor to possibly public forwarding information)
+I am not aware of any other solutions without compromises that are pure Bitcoin based. It works through derivation entirely from always available public [replicated](http://luke.dashjr.org/programs/bitcoin/files/charts/services.html) Bitcoin blockchain data. There's no specialized indexing service needed (or possible) to scan every transaction with embedded messages to derive specific domain's state, only a small domain-unique subset of transactions are relevant using generic indexing of addresses already available in probably all standard Bitcoin node and explorer implementations.
 
 ## Donations
 
