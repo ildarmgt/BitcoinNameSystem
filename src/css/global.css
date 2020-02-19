@@ -59,11 +59,14 @@ html {
   --colorBitcoinOrange: rgb(255, 155, 0);
 
   /* derived from tetradic rgb colors with blue/orange as base */
-  --colorHighlightDark: rgba(85, 153, 255, 0.89);
+  --colorHighlightDark: rgba(85, 153, 255, 0.75);
   --colorHighlightLight: #FFFF00;
 
   /* transparent version of blue */
   --colorLightText: rgba(17, 17, 51, 0.3);
+  --colorMediumText: rgba(17, 17, 51, 0.5);
+  --colorHeavyText: rgba(17, 17, 51, 0.8);
+
 
   --colorButtonText: white;
   --colorBackground: white;

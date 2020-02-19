@@ -20,6 +20,7 @@ export const InputForm = (props: any) => {
         <textarea
           className={ styles.textarea }
           spellCheck={ false }
+          defaultValue={ props.thisDefaultValue || '' }
           value={ props.thisInputValue || '' }
           placeholder={ props.thisInputPlaceholder || '' }
           onChange={ (e?: any) => {

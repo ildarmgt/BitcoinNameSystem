@@ -10,7 +10,8 @@ interface I_State {
 }
 
 export const DevPanel = (props: any): JSX.Element => {
-  const { state, dispatch } = React.useContext(Store) // global state
+  // global state
+  const { state, dispatch } = React.useContext(Store)
 
   // store if DevPanel is hidden
   const [hidden, setHidden] = useState<boolean>(false)

@@ -79,7 +79,10 @@ const OUT_1 = ({ st, tx=undefined }: any = {}): I_Condition => ({
 
 const NOTIFIED_MIN = ({ tx=undefined }: any = {}): I_Condition => ({
   status: () => didNotifyMin(tx),
-  info: { describe: `Tx must have minimum ${MIN_NOTIFY} @ output[1]` }
+  info: {
+    describe: `Notification output amount must not be lower than the minimum`,
+    set: { name: 'Notification minimum', value: MIN_NOTIFY, units: 'satoshi' }
+  }
 })
 
 const BURNED_MIN = ({ tx=undefined }: any = {}): I_Condition => ({
@@ -126,6 +129,7 @@ const NO_UNSPENT_USER_NOTIFICATIONS_UTXO = ({ st, tx=undefined }: any = {}): I_C
   info: { describe: 'There must not be any remaining notification address utxo created by sender' }
 })
 
+// easy mistake to make
 const USER_ADDRESS_NOT_NOTIFICATION_ADDRESS = ({ st, tx=undefined }: any = {}): I_Condition => ({
   status: () => (getNotificationAddress(st) !== getTxInput0SourceUserAddress(tx)),
   info: { describe: 'Do not accidentally send from notification address at input[0]' }
@@ -133,7 +137,7 @@ const USER_ADDRESS_NOT_NOTIFICATION_ADDRESS = ({ st, tx=undefined }: any = {}): 
 
 const IS_COMMAND_CALLED = ({ st, command, tx=undefined }: any = {}): I_Condition => ({
   status: () => (isCommandCalled(st, tx as I_TX, command)),
-  info: { describe: 'Command must be present in forwards at this tx height from tx user' }
+  info: { describe: 'Checks forwards for a specific command issued at this height' }
 })
 
 const IS_BIDDING_OVER = ({ st }: any = {}): I_Condition => ({
@@ -187,6 +191,14 @@ const SUGGESTION_SUBMIT_BURN_AMOUNT = ({ st }: any = {}): I_Condition => ({
     }
   }
 })
+
+/**
+ * Need a way to suggest refunds and how much but not force it.
+ */
+// const SUGGESTION_REFUND_PAST_BIDDERS = ({ st }: any = {}): I_Condition => ({
+
+// })
+
 
 const WARNING_POINTLESS_IF_NOT_OWNER = (args: any): I_Condition => ({
   status: () => true,

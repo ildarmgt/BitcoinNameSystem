@@ -45,18 +45,13 @@
 
   box-shadow: inset 0 0 calc(0.25 * var(--s)) 0 var(--colorDarker1);
   background-color: var(--colorBrighter4);
+
+  /* --col1: rgba(255,255,255, 0.1); */
+  /* --col2: rgba(255,255,255, 0.7); */
+
+  /* background: linear-gradient(-45deg,  var(--col1) 0%, var(--col2) 33%, var(--col1) 66%, var(--col2) 100%); */
   /* filter: opacity(0.9); */
 
-}
-
-@supports (-moz-appearance:none) {
-  /* firefox doesn't support backdrop filters unless manually turned on... */
-  .overflowMenu {
-    background-color: rgba(199, 206, 218, 0.97);
-  }
-  .overflowMenu > div {
-    background-color: var(--colorBrighter8);
-  }
 }
 
 .overflowMenu > div > a {
@@ -145,6 +140,28 @@
 .collapsitron:hover {
   box-shadow: inset 0 0 0 calc(0.25 * var(--s)) var(--colorDarker1);
 }
+
+
+@supports not (backdrop-filter: blur(1px)) {
+  /* firefox doesn't support backdrop filters unless manually turned on... */
+  .overflowMenu {
+    background-color: rgba(199, 206, 218, 0.91);
+    --col1: rgba(255,255,255, 0.7);
+    --col2: rgba(255,255,255, 0.9);
+    background: linear-gradient(-45deg,  var(--col1) 0%, var(--col2) 33%, var(--col1) 66%, var(--col2) 100%);
+
+  }
+  .overflowMenu > div {
+    background-color: var(--colorBrighter8);
+  }
+  .overflowMenu > div > a:hover {
+    background-color: var(--colorDarker0_5);
+  }
+  .overflowMenu .selected {
+    background-color: var(--colorDarker0_5);
+  }
+}
+
 
 /* -------------------------------------------------------------------------- */
 /*                                 menu button                                */

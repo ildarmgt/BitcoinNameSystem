@@ -52,6 +52,7 @@ export const Store = React.createContext<any>(initialState)
 // creates wrapping element for global state
 export function StoreProvider ({ children }: JSX.ElementChildrenAttribute): JSX.Element {
   const [state, dispatch] = React.useReducer(reducer, initialState)
+  console.log('state changed:\n', state);
   return (
     <Store.Provider value={{ state, dispatch }}>
       { children }
