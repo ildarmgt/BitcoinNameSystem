@@ -22,7 +22,7 @@ export async function getFeeEstimates (strNetwork: string) {
   try {
 
     const res = await axios.get(API_PATH)
-    console.log('getFeeEstimates', res.data)
+    console.log('Blockstream.info API getFeeEstimates', res.data)
 
     // await rateLimit()
 
@@ -49,7 +49,7 @@ export async function getHeight (strNetwork: string) {
   try {
 
     const res = await axios.get(API_PATH)
-    console.log('getHeight', res.data)
+    console.log('Blockstream.info API getHeight', res.data)
 
     // await rateLimit()
 
@@ -98,8 +98,7 @@ export async function addRawTxToArray (utxoList: Array<any>, strNetwork: string)
         console.log(API_PATH)
 
         const res = await axios.get(API_PATH)
-
-        console.log(index, 'index utxo has raw hex of', res.data)
+        console.log('Blockstream.info API addRawTxToArray:', index, 'index utxo has raw hex of', res.data)
 
         // add hex data into cloned utxo array
         utxoList[index].hex = res.data
@@ -139,8 +138,7 @@ export async function getUTXOList (address: string, strNetwork: string) {
 
   try {
     const res = await axios.get(API_PATH)
-
-    console.log('getUTXOList', res.data)
+    console.log('Blockstream.info API getUTXOList', res.data)
 
     await rateLimit()
 
@@ -179,8 +177,8 @@ export async function getAddressHistory (address: string, network: string) {
 
   try {
     const res = await axios.get(API_PATH)
+    console.log('blockstream.info API getAddressHistory', res)
 
-    console.log('blockstream.info API address history request', res)
     return res.data
 
   } catch (e) {
@@ -211,7 +209,7 @@ export async function txPush (content: string, network: string) {
     })
 
     // console.log(res)
-    console.log('Broadcasted on', network)
+    console.log('blockstream.info API txPush', res, ' Broadcasted on', network)
 
     // returns txid on success
     return { txid: res.data }
