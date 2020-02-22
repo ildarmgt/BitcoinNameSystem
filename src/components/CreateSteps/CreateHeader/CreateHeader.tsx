@@ -31,7 +31,7 @@ export const CreateHeader = () => {
       Math.floor(1.1 * width / 15)
   )
 
-  const barHeight = { height: (0.12 * width + 0.4 * fontScale).toString() + 'px' }
+  const barHeight = { height: (0.13 * width + 0.4 * fontScale).toString() + 'px' }
   const aliasMarginTop = { marginTop: (0.02 * width - 0.1 * fontScale).toString() + 'px' }
   const aliasFontSize = { fontSize: fontScale.toString() + 'px' }
 

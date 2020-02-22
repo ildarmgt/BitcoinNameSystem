@@ -121,6 +121,12 @@
   color: var(--colorWarning);
 }
 
+.breakable {
+  overflow-wrap: break-word;
+  word-wrap: break-word;
+  word-break: break-all;
+}
+
 
 @media screen and (min-aspect-ratio: 12/9) {
   .wrapper {

@@ -26,7 +26,7 @@ export default function  sanitize (inputString, stringOrArray) {
     if (choice === 'numbers') {
       filter += '0123456789';
     }
-    if (choice === 'fractions') {
+    if (choice === 'fractions' || choice === 'number') {
       filter += '0123456789.';
     }
     if (choice === 'decimal_point') {
@@ -137,33 +137,3 @@ export default function  sanitize (inputString, stringOrArray) {
   return outputString;
 }
 
-
-// function sanitizeOld (inString, type) {
-//   let filter;
-//   if (type === 'base58') {
-//     // https://en.wikipedia.org/wiki/Base58#cite_note-3
-//     filter = '123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz';
-//   } else if (type === 'hex') {
-//     filter = '0123456789abcdef';
-//   } else if (type === 'basic') {
-//     filter = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
-//   } else if (type === 'numbers') {
-//     filter = '0123456789';
-//   } else if (type === 'fractions') {
-//     filter = '0123456789.';
-//   } else if (type === 'oneline') {
-//     filter = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ,./-_!`~[]{}|@#%^&()-=?$';
-//   } else if (type === 'url') {
-//     filter = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ./-_';
-//   } else {
-//     console.log('sanitize: valid type not provided');
-//     return undefined;
-//   }
-
-//   const res = inString
-//     .split('')
-//     .filter(letter => filter.indexOf(letter) > -1)
-//     .join('');
-
-//   return res;
-// }

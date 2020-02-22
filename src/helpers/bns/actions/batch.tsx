@@ -24,7 +24,7 @@ export const runAllActionPermissionChecks = (st: I_BnsState, address: string) =>
   const allActions = [
     updateForwardingInfoAction(st, address),
     currentOwnerRenewAction(st, address),
-    bidForOwnershipAction(st),
+    bidForOwnershipAction(st, address),
 
     sendOwnershipAction(st, address),
     changeAddressAction(st, address)
@@ -80,7 +80,7 @@ export const runAllUserActions = (st: I_BnsState, tx: I_TX): void => {
   const allUserActions = [
     updateForwardingInfoAction(st, undefined, tx),  // reads embedded data
     currentOwnerRenewAction(st, undefined, tx),     // renew ownership
-    bidForOwnershipAction(st, tx),                   // new ownership
+    bidForOwnershipAction(st, undefined, tx),                   // new ownership
 
     // giving up ownership should go last in case user state needs to be edited first
     sendOwnershipAction(st, undefined, tx),         // give up ownership to another

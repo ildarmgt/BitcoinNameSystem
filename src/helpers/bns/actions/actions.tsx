@@ -5,7 +5,8 @@ import {
   I_BNS_Auto_Action,
   I_Condition,
   I_TX,
-  BnsBidType
+  BnsBidType,
+  BnsSuggestionType
 } from './../types/'
 import {
   MIN_NOTIFY,
@@ -42,54 +43,53 @@ import {
   createNewUser,
   addBid,
   isBiddingOver,
-  endBidding
+  endBidding,
+  isBiddingOngoing,
+  isSenderACurrentBidder,
+  isAddressACurrentBidder,
+  subtractRefunds,
+  unrefundedAmounts
 } from './../formathelpers'
-const {
-  RENEW,
-  ONLY_FORWARDS,
-  CLAIM_OWNERSHIP,
-  SEND_OWNERSHIP,
-  CHANGE_ADDRESS
-} = BnsActionType
+
 
 
 /* -------------------------------------------------------------------------- */
 /*                          Conditoins / Permissions                          */
 /* -------------------------------------------------------------------------- */
 
-// Called by the actions for conditions
-// Return object with "info": describing condition (accessible w/o tx),
-// "status" to check conditoin (accessible w/o tx),
-// and optional "special" to give transaction forming specifications (accessible w/o tx)
+// const NONE = (args: any): I_Condition => ({
+//   status: () => true,
+//   info: { describe: 'No requirements', warning: 'Placeholder only' }
+// })
 
 const OUTS_2 = ({ tx=undefined }: any = {}): I_Condition => ({
   status: () => atLeastTwoOutputs(tx),
-  info: { describe: 'Tx must have 2+ outputs' }
+  info: { describe: 'Must have 2+ outputs' }
 })
 
 const OUT_0 = ({ tx=undefined }: any = {}): I_Condition => ({
   status: () => isOpreturnOutput0(tx),
-  info: { describe: 'Tx must have OP_RETURN @ output[0]' }
+  info: { describe: 'Must have OP_RETURN @ output[0]' }
 })
 
 const OUT_1 = ({ st, tx=undefined }: any = {}): I_Condition => ({
   status: () => isNotify(st, tx),
-  info: { describe: 'Tx must have notification address @ output[1]' }
+  info: { describe: 'Must have notification address @ output[1]' }
 })
 
 const NOTIFIED_MIN = ({ tx=undefined }: any = {}): I_Condition => ({
   status: () => didNotifyMin(tx),
   info: {
-    describe: `Notification output amount must not be lower than the minimum`,
-    set: { name: 'Notification minimum', value: MIN_NOTIFY, units: 'satoshi' }
+    describe: `Notification output amount must not be lower than the BNS minimum`,
+    set: { value: MIN_NOTIFY, name: 'Notification minimum', units: 'satoshi' }
   }
 })
 
 const BURNED_MIN = ({ tx=undefined }: any = {}): I_Condition => ({
   status: () => didBurnMin(tx),
   info: {
-    describe: `Tx must burn (bid) at least the minimum amount`,
-    set: { name: 'output 0 value', value: MIN_BURN, units: 'satoshi' }
+    describe: `Must burn (i.e. bid) at least the BNS minimum amount`,
+    set: { value: MIN_BURN, units: 'satoshi', name: 'Bid burn amount' }
   }
 })
 
@@ -107,7 +107,7 @@ const BURN_LAST_WIN = ({ st, tx=undefined }: any = {}): I_Condition => ({
   status: () => burnedPreviousRateMin(st, tx),
   info: {
     describe: 'Tx must burn the last ownership winning burn amount',
-    set: { value: getLastOwnerBurnedValue(st), name: 'output 0 value' }
+    set: { value: getLastOwnerBurnedValue(st), name: 'Bid burn amount', units: 'satoshi' }
   }
 })
 
@@ -115,6 +115,12 @@ const BURN_LAST_WIN = ({ st, tx=undefined }: any = {}): I_Condition => ({
 const USER_IS_OWNER = ({ st, address, tx=undefined }: any = {}): I_Condition => ({
   status: () => tx ? isSenderTheCurrentOwner(st, tx) : isAddressTheCurrentOwner(st, address),
   info: { describe: `User's address must match owner's address` }
+
+})
+
+const USER_IS_BIDDER = ({ st, address, tx=undefined }: any = {}): I_Condition => ({
+  status: () => tx ? isSenderACurrentBidder(st, tx) : isAddressACurrentBidder(st, address),
+  info: { describe: `User's address must match one of bidder's addresses` }
 
 })
 
@@ -140,13 +146,18 @@ const IS_COMMAND_CALLED = ({ st, command, tx=undefined }: any = {}): I_Condition
   info: { describe: 'Checks forwards for a specific command issued at this height' }
 })
 
+const IS_BIDDING_ONGOING = ({ st }: any = {}): I_Condition => ({
+  status: () => (isBiddingOngoing(st)),
+  info: { describe: 'The domain is undergoing a bidding period' }
+})
+
 const IS_BIDDING_OVER = ({ st }: any = {}): I_Condition => ({
   status: () => (isBiddingOver(st)),
   info: { describe: 'The bidding period must be over but not resolved' }
 })
 
 /* -------------------------------------------------------------------------- */
-/*                         Suggestions (and warnings)                         */
+/*              Suggestions (e.g. values to set or get from user)             */
 /* -------------------------------------------------------------------------- */
 
 const SUGGESTION_SUBMIT_NEW_ADDRESS = ({ command }: any = {}): I_Condition => ({
@@ -167,37 +178,90 @@ const SUGGESTION_SUBMIT_NEW_OWNER_ADDRESS = ({ command }: any = {}): I_Condition
   }
 })
 
-const SUGGESTION_SUBMIT_BURN_AMOUNT = ({ st }: any = {}): I_Condition => ({
-  status: () => true,
-  info: {
-    describe: 'Submit your bid burn amount',
-    get: {
-      value: '',
-      name: 'Bid burn amount' ,
-      // good guess for min next bid is CHALLENGE_MIN_MULTIPLY x (highest known bid)
-      // assuming they all meet the rules  by end of bidding
-      min: !st
-        ? undefined
-        // when state provided
-        : (
-            // and there are existing bids
-            st.domain.bidding.bids.length > 0
-              // return the highest of the bids
-              ? Math.max(...st.domain.bidding.bids.map((bid: any) => bid.value)) * CHALLENGE_MIN_MULTIPLY
-              // otherwise return burn minimum
-              : MIN_BURN
-        ),
-      units: 'satoshi'
+const SUGGESTION_SUBMIT_BURN_AMOUNT = ({ st }: any = {}): I_Condition => {
+  const calcMin = (!st
+    // default
+    ? undefined
+    // but when state provided:
+    : (
+        // and there are existing bids
+        st.domain.bidding.bids.length > 0
+          // return the highest of the bids
+          ? Math.ceil(Math.max(...st.domain.bidding.bids.map((bid: any) => bid.value)) * CHALLENGE_MIN_MULTIPLY)
+          // otherwise return burn minimum
+          : MIN_BURN
+    )
+  )
+
+  return {
+    status: () => true,
+    info: {
+      describe: 'Submit your bid burn amount',
+      get: {
+        value: calcMin || 0,
+        name: 'Bid burn amount' ,
+        // good guess for min next bid is CHALLENGE_MIN_MULTIPLY x (highest known bid)
+        // assuming they all meet the rules  by end of bidding
+        min: calcMin,
+        units: 'satoshi'
+      }
     }
   }
-})
+}
 
 /**
- * Need a way to suggest refunds and how much but not force it.
+ * Need a way to suggest refunds and how much but not force it. Only suggests to set or get values if there are refunds to do.
  */
-// const SUGGESTION_REFUND_PAST_BIDDERS = ({ st }: any = {}): I_Condition => ({
+const SUGGESTION_REFUND_PAST_BIDDERS = ({ st, address=undefined }: any = {}): I_Condition => {
 
-// })
+  const describe = 'Must refund all prior bids for bid to count as valid at the end of the bidding period. Refunds can be done separately or during the bid'
+
+  let refunds = ''
+
+  if (st) {
+    const ignoreAddress = address // if provided, can ignore for refund suggestions
+
+    const leftAmounts = unrefundedAmounts(st)
+    for (let toAddress in leftAmounts) {
+      if (ignoreAddress && toAddress !== ignoreAddress) {
+        refunds += leftAmounts[toAddress] + ' ' + toAddress + '\n'
+      }
+    }
+    refunds = refunds.slice(0, -1)
+  }
+
+  if (refunds === '') {
+
+    return {
+      status: () => true,
+      info: { describe }
+    }
+
+  } else {
+
+    return {
+      status: () => true,
+      info: {
+        describe,
+        type: BnsSuggestionType.REFUND_BIDDERS,
+        get: {
+          value: false,
+          name: 'Refund now?'
+        },
+        set: {
+          value: refunds,
+          name: 'Amount & address to refund',
+          units: 'satoshi address'
+        }
+      }
+    }
+  }
+}
+
+
+/* -------------------------------------------------------------------------- */
+/*               Warnings (if action is a bad idea but possible)              */
+/* -------------------------------------------------------------------------- */
 
 
 const WARNING_POINTLESS_IF_NOT_OWNER = (args: any): I_Condition => ({
@@ -208,18 +272,63 @@ const WARNING_POINTLESS_IF_NOT_OWNER = (args: any): I_Condition => ({
   }
 })
 
+const WARN_IF_NOT_BIDDER = (args: any): I_Condition => ({
+  status: () => true,
+  info: {
+    describe: 'Action not recommended for non-bidders',
+    warning: !USER_IS_BIDDER(args)?.status() ? 'Useless unless you are a bidder or will be bidder in this period later' : undefined
+  }
+})
+
 /* -------------------------------------------------------------------------- */
 /*                           User's possible actions                          */
 /* -------------------------------------------------------------------------- */
 
+/**
+ * One of requirements for bids is to refund past bidders by the time bidding period is over. This action allows doing that separately.
+ */
+export const refundOtherBidders = (st: I_BnsState | null, address: string = '', tx: any = undefined): I_BNS_Action => {
+
+  const args = { st, tx, address }
+
+  const type = BnsActionType.REFUND_OTHER_BIDS
+
+  const info = 'Refund other bidders for bids to count.'
+
+  const permissions = [
+    IS_BIDDING_ONGOING,
+
+    // suggestions
+    WARN_IF_NOT_BIDDER
+  ]
+
+  const conditions = [
+    NOTIFIED_MIN,
+    NO_UNSPENT_USER_NOTIFICATIONS_UTXO,
+    USER_ADDRESS_NOT_NOTIFICATION_ADDRESS
+  ]
+
+  const execute = !st ? () => {} : () => {
+    console.assert(!!tx, 'Must not execute action without tx')
+    subtractRefunds(st, tx)
+  }
+
+  return {
+    permissions: st ? permissions.map(permission => permission(args)) : permissions,
+    conditions: st ? conditions.map(condition => condition(args)) : conditions,
+    args, info, type, execute
+  }
+}
+
+
 // Describe: If no owner, sender can start process to claim ownership
 // Since autoChecks run before user action checks in calcBnsState,
 // after bidding ends owner will be set by time this is checked.
-export const bidForOwnershipAction = (st: I_BnsState | null, tx: any = undefined): I_BNS_Action => {
+export const bidForOwnershipAction = (st: I_BnsState | null, address: string = '', tx: any = undefined): I_BNS_Action => {
 
-  const args = { st, tx }
+  const args = { st, tx, address }
 
-  const type = CLAIM_OWNERSHIP
+  const type = BnsActionType.BID_FOR_OWNERSHIP
 
   const info = 'Bid for ownership of a domain'
 
@@ -228,7 +337,8 @@ export const bidForOwnershipAction = (st: I_BnsState | null, tx: any = undefined
     NO_OWNER,
 
     // suggestions
-    SUGGESTION_SUBMIT_BURN_AMOUNT
+    SUGGESTION_SUBMIT_BURN_AMOUNT,
+    SUGGESTION_REFUND_PAST_BIDDERS
   ]
 
   const conditions = [
@@ -272,7 +382,7 @@ export const changeAddressAction = (st: I_BnsState | null, address: string = '',
 
   const args = { st, address, tx, command }
 
-  const type = CHANGE_ADDRESS
+  const type = BnsActionType.CHANGE_ADDRESS
 
   const info = 'Update your ownership address'
 
@@ -342,7 +452,7 @@ export const sendOwnershipAction = (st: I_BnsState | null, address: string = '',
 
   const args = { st, address, tx, command }
 
-  const type = SEND_OWNERSHIP
+  const type = BnsActionType.SEND_OWNERSHIP
 
   const info = 'Give up ownership to another address'
 
@@ -411,7 +521,7 @@ export const currentOwnerRenewAction = (
 
   const args = { st, address, tx }
 
-  const type = RENEW
+  const type = BnsActionType.RENEW
 
   const info = 'Extend ownership of this domain'
 
@@ -457,7 +567,7 @@ export const updateForwardingInfoAction = (
 
   const args = { st, address, tx }
 
-  const type = ONLY_FORWARDS
+  const type = BnsActionType.ONLY_FORWARDS
 
   const info = 'Only update forwarding information'
 

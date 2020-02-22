@@ -1,12 +1,21 @@
 
-export enum BnsActionType {             // types of user BNS actions that match use in actions.tsx
+// types of user BNS actions that match use in actions.tsx
+export enum BnsActionType {
   RENEW = 'RENEW',
   ONLY_FORWARDS = 'ONLY_FORWARDS',
-  CLAIM_OWNERSHIP = 'CLAIM_OWNERSHIP',
+  BID_FOR_OWNERSHIP = 'BID_FOR_OWNERSHIP',
   SEND_OWNERSHIP = 'SEND_OWNERSHIP',
-  CHANGE_ADDRESS = 'CHANGE_ADDRESS'
+  CHANGE_ADDRESS = 'CHANGE_ADDRESS',
+  REFUND_OTHER_BIDS = 'REFUND_OTHER_BIDS'
 }
 
+// types of suggestions so user interface can interpret correctly
+// among limited options
+export enum BnsSuggestionType {
+  REFUND_BIDDERS = 'REFUND_BIDDERS'
+}
+
+// types of bidding
 export enum BnsBidType {
   BURN = 'BURN',            // ownership bidding in progress taht requires burns
   NULL = 'NULL'             // no bidding in progress
@@ -150,13 +159,14 @@ export interface I_Condition {
   status: () => boolean
   info: {
     describe: string                    // string containing explanation for user
+    type?: BnsSuggestionType            // type of suggestion
     set?: {                             // object suggesting user sets something to a value
       value: any                        // value to set it to (if exact value unknown better to .get it from user)
       name: string                      // what the value is for
-      units?: string                    // units if necessary
+      units: string                     // units
     }
     get?: {                             // object of suggested variable to get from user
-      value: number | string            // rules come as key value pair
+      value: number | string | boolean  // initial value of variable trying to get
       name: string                      // name of variable getting
       min?: number | null               // possible min value
       max?: number | null               // possible max value

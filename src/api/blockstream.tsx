@@ -80,7 +80,7 @@ export async function addRawTxToArray (utxoList: Array<any>, strNetwork: string)
   }
 
   // iterate through original utxo and add hex onto clone, 2 tries max each
-  for (const [indexString, utxo] of Object.entries(utxoList)) {
+  for (let [indexString, utxo] of Object.entries(utxoList)) {
     // indexString is a string so convert for array index use
     const index = parseInt(indexString, 10)
 

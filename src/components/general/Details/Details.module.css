@@ -100,5 +100,6 @@
   text-indent: calc(-1 * var(--offsetWrap));
   padding: calc(1 * var(--s)) 0;
   padding-left: var(--offsetWrap);
+  white-space: pre-wrap;
 }
 

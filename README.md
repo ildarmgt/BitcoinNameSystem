@@ -30,7 +30,8 @@ Website can eventually run offline by running index.html in `/docs/` folder (w/ 
 ## To run project on localhost
 
 ```
-npm start
+npm run build
+npm run serve
 ```
 
 This makes it accessible locally at http://localhost:3000

@@ -258,7 +258,7 @@ export const getCommandCalled = (
 
 
   // scan height and name of each forward
-  for (const thisForward of forwards) {
+  for (let thisForward of forwards) {
     const network = thisForward.network
     const forwardHeight = thisForward.updateHeight
     if (forwardHeight === txHeight) {
@@ -320,7 +320,7 @@ export const noUnspentUserNotificationsUtxo = (st: I_BnsState, tx: I_TX): boolea
   const txHeight = getTxHeight(tx)
 
   // go through all derived utxo and make sure none are from this sender
-  for (const utxo of st.domain.derivedUtxoList) {
+  for (let utxo of st.domain.derivedUtxoList) {
     // user that created this utxo
     const userThatCreatedThisUtxo = utxo.from_scriptpubkey_address
 
@@ -370,9 +370,8 @@ export const startBidding = (st: I_BnsState, tx: I_TX, type: BnsBidType) => {
   console.log('Bidding period started at height', txHeight, 'until', txHeight + CHALLENGE_PERIOD_DURATION_BY_BLOCKS)
 }
 
-
 /**
- * Add new bid
+ * Add new bid.
  */
 export const addBid = (st: I_BnsState, tx: I_TX, type: BnsBidType): void => {
   const userAddress = getTxInput0SourceUserAddress(tx);
@@ -391,135 +390,13 @@ export const addBid = (st: I_BnsState, tx: I_TX, type: BnsBidType): void => {
     timestamp: getTxTimestamp(tx),
     address: userAddress,
     value: burnValue,
-    valueLeftToRefund: burnValue,
+    valueLeftToRefund: burnValue, // initially same as value
     blockHash: tx.status.block_hash
   }
   bids.push(bid)
 
   console.log('New bid from', userAddress, 'for', burnValue)
 }
-
-/**
- * Set new owner from bidding period.
- * Note: can be called unknown number of blocks after bidding period ended.
- */
-export const endBidding = (st: I_BnsState): void => {
-
-  const startHeight = st.domain.bidding.startHeight
-  const endHeight = st.domain.bidding.endHeight
-
-  // filter out only relevant notification tx so don't have to filter every time
-  const relevantTxHistory = st.domain.txHistory.filter((thisTx: I_TX) =>
-    ((thisTx.status.block_height >= startHeight) && (thisTx.status.block_height < endHeight))
-  )
-
-  // Rules for who wins bidding:
-  // 1. list of all bids and how much they paid - have that in domain.bidding.bids!
-  // 2. check all bids at bidding start height to this specific bid height - 1 and see if they were refunded (except bids by your own address)
-  // 3. add this bid to list of valid bids if so
-  // 4. parse through valid bids, replace running winner only if burn amount is *CHALLENGE_MIN_MULTIPLY previous winner at last height
-  // 5. tie break same height valid winners by pseudo random number weighted by burn amounts
-  // 6. once done parsing, parse winner is new owner
-
-  // in general it's more expensive to create bids than to refund them - helps limit spam. only output[0] bids count.
-
-  // bids were added by height lowest to highest so list already sorted and
-  // contains all relevant tx/heights that can be used to parse through heights
-
-  // lets keep only bids that meet refund all previous bids rule
-  const goodBidsThatRefunded: Array<I_Bid> = []
-  const bidsLeftToRefund: Array<I_Bid> = []
-  // parsing through history of bids
-  for (const thisBid of st.domain.bidding.bids) {
-    // update bidsLeftToRefund based on relevantTxHistory to see if they were refunded (with notificaiton)
-
-    const thisBidHeight = thisBid.height
-
-    // thisBid itself is not relevant to refund check, only its height is relevant for checking only lower heights
-    // each bid is only responsible for bids before it
-    // refunds from tx w/ height @ [startHeight,endHeight) are checked for each bid w/ height @ [startHeight, thisBidHeight - 1]
-    const hasMetPastRefundCondition = wereAllBidsRefunded({
-      txHistory: relevantTxHistory,
-      bidHistory: bidsLeftToRefund,
-      minHeight: startHeight,
-      maxHeight: thisBidHeight - 1,
-      ignoreAddress: thisBid.address
-    })
-
-    // if all prior bids were refunded, add this bid to the good bid list
-    // otherwise it's ignored
-    if (hasMetPastRefundCondition) {
-      // add this bid to smaller list of bids meeting requirements
-      goodBidsThatRefunded.push(thisBid)
-    }
-
-    // add this bid now to list of bids to refund for higher hights
-    bidsLeftToRefund.push(thisBid)
-  }
-
-  // now with only a list of good bids with refunded priors, parse through them
-  // to check that each bid at higher height paid/burned at least *(CHALLENGE_MIN_MULTIPLY) of next lower height bid
-  let winner: I_Bid = {
-    address: '',
-    height: 0,
-    timestamp: 0,
-    value: 0,
-    valueLeftToRefund: 0,
-    blockHash: ''
-  }
-  let validBidsAtSameHeight: Array<I_Bid> = []
-  let lastHeight = 0
-  let maxIndex = goodBidsThatRefunded.length - 1
-  for (let index = 0; index <= maxIndex; index++) {
-    const thisBid = goodBidsThatRefunded[index]
-
-    // get height from bid
-    const thisHeight = thisBid.height
-
-    if (thisBid.height > lastHeight) {
-      // this means height went up so need to resolve previous heights:
-      // set  winner from X possible winners in the array from previous height
-      // if no entries, no change to winner
-
-      // calc winner from array of same height bids, if possible
-      winner = deterministicRandomBid(validBidsAtSameHeight) || winner
-
-      // reset bidsAtSameHeight
-      validBidsAtSameHeight = []
-    }
-
-    // only push into valid bids array if it meets criteria
-    // compared with winner of lower height calculated this round or before
-    const hasThisBidPaidEnough = thisBid.value >= (CHALLENGE_MIN_MULTIPLY * winner.value)
-
-    if (hasThisBidPaidEnough) {
-      validBidsAtSameHeight.push(thisBid)
-    }
-
-    // set last height based on this parsed bid
-    lastHeight = thisHeight
-
-    // final item update only (since there's no more bids after to step height)
-    if (index === maxIndex) {
-      // calc winner from array of same height bids, if possible
-      winner = deterministicRandomBid(validBidsAtSameHeight) || winner
-    }
-  }
-
-  // if there's a winner (should be, at least initial bid)
-  if (winner.address !== '') {
-    // set winner to owner
-    setOwner(st, winner.address)
-    getOwner(st)!.burnAmount = winner.value
-    getOwner(st)!.winHeight = winner.height
-    getOwner(st)!.winTimestamp = winner.timestamp
-    console.log('', winner.height, 'Bidding winner and new owner is', winner.address)
-  }
-
-  // remove active bidding info
-  resetBidding(st)
-}
-
 
 /**
  * Return true only if bidding was happening and hasn't been resolved yet into a winner.
@@ -538,84 +415,243 @@ export const isBiddingOver = (st: I_BnsState): boolean => {
   return false
 }
 
+/**
+ * Return true if there's a current bidding period.
+ */
+export const isBiddingOngoing = (st: I_BnsState): boolean => {
+  if (!st.chain) throw new Error ('called st.chain without it defined')
+
+  // current parsed height (updated elsewhere)
+  const parsedHeight = st.chain!.parsedHeight
+
+  const biddingType = st.domain.bidding.type
+  const endHeight = st.domain.bidding.endHeight
+  const startHeight = st.domain.bidding.startHeight
+
+  // real bidding type still assigned but height is at or above end height for bidding
+  if ((biddingType !== BnsBidType.NULL) && (parsedHeight < endHeight) && (parsedHeight >= startHeight)) {
+    console.log('', parsedHeight, 'Action falls within bidding period.')
+    return true
+  }
+  return false
+}
 
 /**
- * Returns true only if all bids in range [minHeight,  maxHeight] were fully refunded in transactions provided.
- * txHistory must be provided for only range to check.
- * bidHistory will be limited to only ones to fall within the range.
- * The bidder's past address bids even if not refunded shouldn't matter (ignoreAddress for recepient)
- * Any payments by any address to itself should also be ignored.
+* Return true if address is one of the bidders.
+*/
+export const isAddressACurrentBidder = (st: I_BnsState, address: string): boolean => {
+  if (!isBiddingOngoing) return false
+
+  for (let i = 0; i < st.domain.bidding.bids.length; i++) {
+    const bid = st.domain.bidding.bids[i]
+    // if any bid address matches address provided return true
+    if (bid.address === address) return true
+  }
+
+  return false // no match found
+}
+
+
+/**
+ * Return true if user is one of the bidders.
  */
-function wereAllBidsRefunded (
-  { txHistory, bidHistory, minHeight, maxHeight, ignoreAddress }:
-  { txHistory: Array<I_TX>, bidHistory: Array<I_Bid>, minHeight: number, maxHeight: number, ignoreAddress: string }
-): boolean {
+export const isSenderACurrentBidder = (st: I_BnsState, tx: I_TX): boolean => {
+  const userAddress = getTxInput0SourceUserAddress(tx)
+  return isAddressACurrentBidder(st, userAddress)
+}
 
-  // since parsing the same range of tx history for every bid
-  // should copy bidHistory by local value so edits to it do not remain next time function is called
-  const bidHistoryCopy = JSON.parse(JSON.stringify(bidHistory))
 
-  // create ~hash table of total paid to each address so not to iterate through them every bid
-  const paid: { [address: string]: number } = {}
-  for (const tx of txHistory) {
-    const senderAddress = getTxInput0SourceUserAddress(tx)
-    for (const output of tx.vout) {
-      // for each tx, for each output (payment could be in any of them)
-      const toAddress = output.scriptpubkey_address // can be undefined if burned
-      const toAmount = output.value
-      // add up who got refunded by another address
-      // ignore if burn or if sender is recepient
-      if ((toAddress !== undefined) && (senderAddress !== toAddress)) {
-        paid[toAddress] ? (paid[toAddress] += toAmount) : (paid[toAddress] = toAmount)
-      }
+/**
+ * Subtract refunded amounts from active bids.
+ */
+export const subtractRefunds = (st: I_BnsState, tx: I_TX):void => {
+  const txUserAddress = getTxInput0SourceUserAddress(tx)
+  const bids = st.domain.bidding.bids
+
+  // create paidTo object with addresses as key for all refunds in the tx
+  // (step to prevent O(N^2) scaling)
+  const paidTo: { [address: string]: number } = {}
+  for (let output of tx.vout) {
+    const toAddress = output.scriptpubkey_address
+    const toAmount = output.value
+
+    if (
+      (toAddress !== undefined) &&    // type of output that has an target address
+      (txUserAddress !== toAddress)   // isn't from the same address (sender === receiver is change, not refund)
+    ) {
+      // set paid amount or add onto existing
+      paidTo[toAddress] ? (paidTo[toAddress] += toAmount) : (paidTo[toAddress] = toAmount)
+    }
+
+  }
+  // paidTo object done
+
+  // Apply paid object onto all bids
+  for (let i = 0; i < bids.length; i++) {
+    const thisBid = bids[i]
+    const thisBidAddress = thisBid.address
+
+    console.assert(thisBid.height >= st.domain.bidding.startHeight, `Bid height outside allowed range.`)
+    console.assert(thisBid.height < st.domain.bidding.endHeight, `Bid height outside allowed range.`)
+
+    // if paid to this address
+    if (paidTo[thisBidAddress] !== undefined) {
+
+      // each counted refund falls within range
+      // [0, min(total refunds paid, left to refund for this bid)]
+      // so valueLeftToRefund is 0 or positive only
+      const refund = Math.max(Math.min(paidTo[thisBidAddress], thisBid.valueLeftToRefund), 0)
+
+      // subtract out the refund from both paid amount and valueLeftToRefund
+      thisBid.valueLeftToRefund -= refund
+      paidTo[thisBidAddress] -= refund
     }
   }
-  // paid object complete
+}
 
-  // subtract away refunded amounts
-  for (let i = 0; i < bidHistoryCopy.length; i++) {
-    const pastBid = bidHistoryCopy[i]
-    if ((pastBid.height <= maxHeight) && (pastBid.height >= minHeight)) {
-      // if bid falls within the height range of interest
+/**
+ * Return array of bids with only unrefunded bids.
+ */
+export const unrefundedBidsOnly = (st: I_BnsState): Array<I_Bid> => {
+  const bids = st.domain.bidding.bids
 
-      // address of who is owed refund for past bid
-      const pastBidAddress = pastBid.address
+  const unrefundedBids: Array<I_Bid> = bids.filter((thisBid: I_Bid) => {
+    return thisBid.valueLeftToRefund > 0
+  })
 
-      if (paid[pastBidAddress] !== undefined) {
-        // if was refunded anything
+  return unrefundedBids
+}
 
-        // paid[pastBidAddress] is refunds left
-        // can't simply subtract, because could be multiple bids from same address (can't count same refund twice)
-        // that are refunded with multiple payments to same address (refunds left starts as total)
-        // if value left to refund is <= refunds left, should set value left to refund to 0 and refund left reduced by same amount.
-        // if value left to refund is > refunds left, reduece refunds left to 0 and value left to refund by same amount.
-        // in both cases we reduce both amounts by the minimum of the two numbers.
-        // value left to refund should be ignored if it's below 0
-        // refunds left is < 0 should not happen
+/**
+ * Return object with only addresses to refund as key and amounts left to refund as value.
+ */
+export const unrefundedAmounts = (st: I_BnsState): { [key: string]: number } => {
+  const unrefundedBids = unrefundedBidsOnly(st)
 
-        // 0 <= minRefund <= paid[pastBidAddress]
-        const minRefund = Math.max(Math.min(pastBid.valueLeftToRefund, paid[pastBidAddress]), 0)
-        // update both; if zero, no change
-        pastBid.valueLeftToRefund -= minRefund // refund still needed
-        paid[pastBidAddress] -= minRefund // refunds still unacounted for
-      }
+  const amounts = unrefundedBids.reduce((refundsLeft: any, thisBid: I_Bid) => {
+    const address = thisBid.address
+    const amount = thisBid.valueLeftToRefund
+    // sums up amount left to refund per address
+    return refundsLeft[address]
+      ? {...refundsLeft, [address]: refundsLeft[address] + amount}
+      : {...refundsLeft, [address]: amount }
+  }, {})
 
-      // every bid is only checked once since it checks every tx payment at once
-      // so after subtraction or lack of a payment match, each bid can be checked for
-      // 1. paid out in full
-      // 2. OR belongs to ignoreAddress for who this is being considered (refunds to self = useless)
-      const isPaidInFull = (pastBid.valueLeftToRefund <= 0)
-      const isIgnoredAddress = (pastBidAddress === ignoreAddress)
-      // if is not paid in full and isn't ignored address, can safely return false
-      // all other address bids MUST be paid (refunded) in full
-      if (!isIgnoredAddress && !isPaidInFull) {
-        console.log('not all predecesors refunded, failed to refund:', pastBid, 'bid considered is from', ignoreAddress)
-        return false
-      }
+  console.log('unrefunded amounts:', amounts)
+
+  return amounts
+}
+
+/**
+ * Set new owner from bidding period.
+ * Note: can be called unknown number of blocks after bidding period ended.
+ */
+export const endBidding = (st: I_BnsState): void => {
+  // Rules for who wins bidding:
+  // 1. List of all bids and how much they paid - have that in domain.bidding.bids.
+  // 2. Remove all bids that have any prior (lower height) bids from other addresses that were not refunded.
+  // 3. First potential winner is the first bid.
+  //    At same height, winner is derived from deterministic pseudorandom function (using block's hash) weighted by bid amount.
+  //    At increasing heights, new winner is who bid at least CHALLENGE_MIN_MULTIPLY times prior (lower height) winner's bid.
+
+  // Step (1)
+  const bids = st.domain.bidding.bids
+  const unrefundedBids = unrefundedBidsOnly(st)
+
+  // Step (2)
+
+  // get all bids that refunded priors
+  const goodBidsThatRefunded: Array<I_Bid> = []
+
+  for (let thisBid of bids) {
+
+    console.assert(thisBid.height >= st.domain.bidding.startHeight, `Bid height outside allowed range.`)
+    console.assert(thisBid.height < st.domain.bidding.endHeight, `Bid height outside allowed range.`)
+
+
+    const thisBidHeight = thisBid.height
+
+    // check if any unrefunded past bids
+    const hasUnrefundedPastBids = unrefundedBids.some((thisUnrefundedBid: I_Bid) => {
+      // return false if this isn't an unrefunded bid that matters
+
+      // must not have unrefunded bids at lower height
+      if (thisUnrefundedBid.height >= thisBidHeight) return false
+      // only different addresses matter
+      if (thisUnrefundedBid.address === thisBid.address) return false
+
+      return true
+    })
+
+    // if no unrefunded bids in the past, add to goodBidsThatRefunded
+    if (!hasUnrefundedPastBids) {
+      goodBidsThatRefunded.push(thisBid)
     }
   }
 
-  // if the check doesn't fail after every bid scan, can return true
-  console.log('all known predecesors are refunded. bid considered is from', ignoreAddress, '& checked for heights <=', maxHeight)
-  return true
+  // Step (3)
+  // now with only a list of good bids with refunded priors, parse through them
+  // to check that each bid at higher height paid/burned at least *(CHALLENGE_MIN_MULTIPLY) of next lower height bid
+  let winner: I_Bid = {
+    address: '',
+    height: 0,
+    timestamp: 0,
+    value: 0,
+    valueLeftToRefund: 0,
+    blockHash: ''
+  }
+  let validBidsAtLastHeight: Array<I_Bid> = []
+  let lastHeight = 0
+  let maxBidIndex = goodBidsThatRefunded.length - 1
+  for (let bidIndex = 0; bidIndex <= maxBidIndex; bidIndex++) {
+    const thisBid = goodBidsThatRefunded[bidIndex]
+
+    // get height from bid
+    const thisHeight = thisBid.height
+
+    if (thisBid.height > lastHeight) {
+      // this means height went up so need to resolve previous heights:
+      // set  winner from X possible winners in the array from previous height
+      // if no entries, no change to winner
+
+      // get winner from array of previous bid height winners
+      winner = deterministicRandomBid(validBidsAtLastHeight) || winner
+
+      // reset validBidsAtLastHeight
+      validBidsAtLastHeight = []
+    }
+
+    // only push into bids array if it meets minimum criteria
+    // compared with winner of lower height calculated this round or before
+    const hasThisBidPaidEnough = thisBid.value >= (CHALLENGE_MIN_MULTIPLY * winner.value)
+
+    if (hasThisBidPaidEnough) {
+      validBidsAtLastHeight.push(thisBid)
+    }
+
+    // set last height based on this parsed bid
+    lastHeight = thisHeight
+
+    // final item update only (since there's no more bids after to step height)
+    if (bidIndex === maxBidIndex) {
+      // calc winner from array of same height bids, if possible
+      winner = deterministicRandomBid(validBidsAtLastHeight) || winner
+    }
+  }
+
+  // if there's a winner (should be, at least initial bid)
+  if (winner.address !== '') {
+    // set winner to owner
+    setOwner(st, winner.address)
+    getOwner(st)!.burnAmount = winner.value
+    getOwner(st)!.winHeight = winner.height
+    getOwner(st)!.winTimestamp = winner.timestamp
+    console.log('', winner.height, 'Bidding winner and new owner is', winner.address)
+
+    // resets all active bidding info, sets it to null values
+    resetBidding(st)
+
+  } else {
+    throw new Error('There should be no cases without a winner since at least 1st bid wins')
+  }
 }

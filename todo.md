@@ -1,19 +1,10 @@
 
 ## Short term
 
-- (PRIORITY 2) accurately allow creation of bidding tx with helpful information and risks shown
 
-  - need to show refunds left to do
-  - tell / warn user how many refunds left to do (next to bid amount)
-  - need to add refunds to outputs
-  - need to show unconfirmed burn amounts
+- (PRIORITY 1) if notification is on input, shouldn't be necessary to include it on output! Conditions could check for either, and thus cut down in notification utxo use and smaller/cheaper tx  (modify)
 
-
-- (PRIORITY 3) if notification is on input, shouldn't be necessary to include it on output! Conditions could check for either, and thus cut down in notification utxo use and smaller/cheaper tx  (modify)
-
-- (PRIORITY 4) stealth addresses proof of concept to send, receive, UI
-
-
+- (PRIORITY 2) stealth addresses proof of concept to send, receive, UI
 
 - settings page
 - page navigation improved for hopping and checks
@@ -52,6 +43,8 @@
 
 - encoding interpretations
 
+- allow to scan unconfirmed bidding information
+  - need to show unconfirmed burn amounts
 
 ---
 Long term

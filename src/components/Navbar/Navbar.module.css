@@ -123,14 +123,13 @@
   vertical-align: middle;
 }
 
-/* ... for handling menu options outside visible range */
-/* sets variables for animation */
+/* "..." for handling menu options outside visible range */
 .collapsitron {
   display: inline-block;
   position: relative;
   text-align: center;
   cursor: pointer;
-  padding: calc(0.5 * var(--s)) calc(1.5 * var(--s));
+  padding: calc(0.5 * var(--s)) calc(2.5 * var(--s));
   margin: calc(0 * var(--s)) calc(2 * var(--s));
 
   vertical-align: middle;

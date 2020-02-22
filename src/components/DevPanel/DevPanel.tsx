@@ -13,8 +13,14 @@ export const DevPanel = (props: any): JSX.Element => {
   // global state
   const { state, dispatch } = React.useContext(Store)
 
+  // now can show dev panel whenever in npm run start instead of deployed build
+  const TESTING = (process.env.NODE_ENV === 'development')
+
   // store if DevPanel is hidden
-  const [hidden, setHidden] = useState<boolean>(false)
+  const [hidden, setHidden] = useState<boolean>(TESTING)
+
+
+
 
   // reruns to reattach keyup event to toggle hidden class
   useEffect(() => {
@@ -113,6 +119,16 @@ export const DevPanel = (props: any): JSX.Element => {
         } }
       >
         Load localStorage
+      </div>
+
+      <div
+        className={ [styles.button].join(' ') }
+        onClick={ () => {
+          const state = localStorage.getItem('tempstate')
+          if (state) { dispatch({ type: ActionTypes.LOAD_STATE, payload: JSON.parse(state) }) }
+        } }
+      >
+        Load last known state
       </div>
 
       <div

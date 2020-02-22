@@ -108,16 +108,17 @@ export const P6Broadcast = () => {
                     {' '}{ tx.nInputsFromWallet } wallet utxo</p>
                     <p>{ showBTC(tx.gatheredFromOther) } from
                     {' '}{ tx.nInputsFromOther } notification utxo</p>
-                    <p>{ showBTC(tx.totalGathered) } total</p>
+                    <p>{ showBTC(tx.totalGathered) } total ({ tx.nInputsFromWallet + tx.nInputsFromOther } inputs)</p>
                   </td>
                 </tr>
                 <tr>
                   <td>Outputs:</td>
                   <td>
                     <p>Burning { showBTC(tx.burnAmount) } at #0</p>
-                    <p>Sending { showBTC(tx.notifyAmount) } at #1</p>
+                    <p>Sending { showBTC(tx.notifyAmount) } at #1 (notification)</p>
                     <p>Change of { showBTC(tx.change) } sent back at #2</p>
-                    <p>{ tx.nOutputs } total outputs</p>
+                    <p>Refunds of { showBTC(tx.refundsAmount) } total</p>
+                    <p>{ showBTC(tx.totalGathered - tx.fee) } total ({ tx.nOutputs } outputs)</p>
                   </td>
                 </tr>
                 <tr>
@@ -139,7 +140,7 @@ export const P6Broadcast = () => {
                   </td>
                 </tr>
                 <tr>
-                  <td>Net cost:</td>
+                  <td>Net user cost:</td>
                   <td>{ showBTC(tx.gatheredFromWallet - tx.change) }</td>
                 </tr>
               </tbody></table>

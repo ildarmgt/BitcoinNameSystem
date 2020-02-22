@@ -7,6 +7,7 @@ import { Details } from './../../general/Details'
 import { runAllActionPermissionChecks, calcBnsState, getGetters, getSetters } from './../../../helpers/bns/'
 import { I_Checked_Action } from './../../../helpers/bns/types'
 import { InputForm } from './../../general/InputForm'
+import { Switch } from './../../general/Switch'
 import sanitize from '../../../helpers/sanitize'
 
 /**
@@ -40,38 +41,95 @@ export const P4ActionChoice = () => {
     const network = state.network
     const units = get.units
     const min = get.min
-    const type = min ? 'number' : 'string'
+    const type = typeof get.value
 
-    // min suggestions it's a number
-    if (min) {
+
+    if (type === 'number') {
 
       // if satoshi, convert to btc
-      const finalMin = units === 'satoshi' ? min / 1.0e8 : min
-      const finalUnitsName = network === 'testnet' ? 'tBTC' : 'BTC'
+      const btcMin = min ? (units === 'satoshi' ? (min / 1.0e8) : min) : 0
+      const btcUnits = network === 'testnet' ? 'tBTC' : 'BTC'
+      const btcValue = units === 'satoshi' ? (get.value / 1.0e8) : get.value
+
 
       return {
-        value: '' + get.value, // raw value as string
-        finalMin: finalMin.toFixed(8), // min in BTC
-        type,
-        units: finalUnitsName,
-        // always entering in BTC
-        // so convert to satoshi if units are satoshi
-        // otherwise leave alone
-        // store as string
-        finalValue: () => {
-          if (units === 'satoshi') {
-            const sanitizeValue = sanitize(get.value, ['decimal_point', 'numbers'])
-            return String(Math.round(parseFloat(sanitizeValue) * 1.0e8)) // to sats
-          }
-          return get.value // sats
-        }
+        value: get.value,                           // raw value
+        btcMin: '' + btcMin,                        // min in BTC
+        btcMinFull: btcMin.toFixed(8),              // ^ with 8 decimal places
+        type,                                       // typeof on min
+        units,                                      // original units
+        btcUnits,                                   // btc units tBTC or BTC
+        btcValue,                                   // btc value
+        btcValueFull: btcValue.toFixed(8)           // btc value with 8 decimal places
       }
     }
 
+    // if a string
     return {
       type,
       value: get.value
     }
+  }
+
+  // render suggestion data
+  const renderSetSuggestion = (setSuggestion: any, settings: any) => {
+    const set = setSuggestion.info.set
+    const value = setSuggestion.info.set.value
+
+    let valueToReturn = ['']
+    const valueArray = String(value).split(/ |\n/)
+    const unitsArray = set.units.split(' ')
+
+    for (let i = 0; i < valueArray.length; i++) {
+      const thisValue = valueArray[i]
+      const units = unitsArray[i % unitsArray.length]
+
+      // if this is not the first set of values, add next line char
+      if (i % unitsArray.length === 0 && i !== 0) {
+        valueToReturn = [...valueToReturn, '\n']
+      }
+
+      if (i % unitsArray.length === 0) {
+        if (settings.bullets) {
+          valueToReturn = [...valueToReturn, ' + ']
+        }
+      }
+
+
+      if (!isNaN(Number(thisValue))) {
+        // if value can be a number
+
+        // assume it's in bitcoin form already unless units are satoshi
+
+        // show btc value to 8 decimal spaces
+        if (settings.btcValueFull) {
+          if (units === 'satoshi') {
+            valueToReturn = [...valueToReturn, (parseInt(thisValue, 10) / 1.0e8).toFixed(8)]
+          } else {
+            valueToReturn = [...valueToReturn, parseFloat(thisValue).toFixed(8)]
+          }
+        }
+
+        // show correct btc units
+        if (settings.btcUnits) {
+          valueToReturn = [...valueToReturn, state.network === 'testnet' ? ' tBTC' : ' BTC']
+        }
+
+      } else {
+        // if not a number
+
+        // if function for strings was provided
+        if (settings.strings) {
+          valueToReturn = [...valueToReturn, ' ', ...settings.strings(thisValue), ' ']
+        }
+      }
+    }
+
+    return (
+      <>
+        { valueToReturn }
+      </>
+    )
   }
 
   // initializes extra form status from permission checks
@@ -138,103 +196,178 @@ export const P4ActionChoice = () => {
             {/* create input forms if shown */}
 
             { (extraFormData && extraFormData[action.info].show) && (
-              suggestionsToGet.map((suggestionToGet: any) => (
+              suggestionsToGet.map((suggestionToGet: any) => {
+                if (typeof suggestionToGet.info.get.value === 'boolean') {
 
-                <InputForm
-                  key={ suggestionToGet.info.describe }
-
-                  className={ styles.inputForms }
-
-                  thisInputLabel={
-                    suggestionToGet.info.describe + (
-                      !suggestionToGet.info.get.min ? '' : (
-                        '\n' +
-                        '(at least ' +
-                        getSuggestInfo(suggestionToGet).finalMin + ' ' +
-                        getSuggestInfo(suggestionToGet).units + ' to get a winning ' +
-                         'valid bid )'.replace(/ /g, '\xa0')
-                      )
-                    )
-                  }
-
-                  thisInputValue={ getSuggestInfo(suggestionToGet).value }
-
-                  thisInputOnChange={ (e: any) => {
-                    // sanitize text
-                    let cleanText
-
-                    if (suggestionToGet.info.get.min) {
-                      cleanText = sanitize(e.target.value, ['no_spaces', 'fractions'])
-                    } else {
-                      cleanText = sanitize(e.target.value, ['oneline', 'no_spaces'])
-                    }
-
-                    console.log('onchange clean text', cleanText)
-
-
-                    // add changed value to checkActions object
-                    // find and edit the value I need to get
+                  const onChangeFunction = (value: boolean) => {
+                    console.log(value)
+                    // find and change action setting
                     checkActions
                       .find((thisAction: any) => thisAction.type === action.type )
                       .suggestions
                       .find((thisSuggestion: any) =>
                         thisSuggestion.info.describe === suggestionToGet.info.describe
-                      ).info.get.value = cleanText
-
-                    // notify local state about changes with clone
+                      ).info.get.value = value
+                    // update local state with edited object
                     setCheckActions([...checkActions])
-                  } }
+                  }
 
-                  thisSubmitButtonOnClick={ () => {
+                  return <Switch
+                    key={ suggestionToGet.info.describe }
 
-                    // if number do one last update
-                    if (suggestionToGet.info.get.min) {
-                      const finalize = getSuggestInfo(suggestionToGet).finalValue
-                      if (finalize) {
-                        const cleanText = finalize()
-                        console.log('final clean text', cleanText)
-                        checkActions
+                    thisInputLabel={
+                      suggestionToGet.info.describe + ': \n  ' +
+                      suggestionToGet.info.get.name
+                    }
+
+                    initialIndex={
+                      suggestionToGet.info.get.value ? 1 : 0
+                    }
+
+                    choices={[
+                      { value: false,   display: 'No',    do: onChangeFunction },
+                      { value: true,    display: 'Yes',   do: onChangeFunction }
+                    ]}
+                  />
+
+                } else {
+
+                  return <InputForm
+                    key={ suggestionToGet.info.describe }
+
+                    showButton={ 'false' }
+
+                    className={ styles.inputForms }
+
+                    thisInputLabel={
+                      // show minimum if available in bitcoin units
+                      suggestionToGet.info.describe + (
+                        !suggestionToGet.info.get.min ? '' : (
+                          // if has a min
+                          '\n' +
+                          '(at least ' +
+                          getSuggestInfo(suggestionToGet).btcMinFull + ' ' +
+                          getSuggestInfo(suggestionToGet).btcUnits + ' to get a winning ' +
+                          'valid bid )'.replace(/ /g, '\xa0')
+                        )
+                      )
+                    }
+
+                    thisInitialValue={
+                      // if number, show in BTC and to 8 digits intially
+                      (typeof suggestionToGet.info.get.value === 'number')
+                        ? getSuggestInfo(suggestionToGet).btcValueFull
+                        // if not number just show the actual value
+                        : suggestionToGet.info.get.value
+                    }
+
+                    sanitizeFilters={ [typeof suggestionToGet.info.get.value] }
+
+                    thisInputOnChange={ (e: any) => {
+                      // type in bitcoin units
+                      // store into memory in expected units (depending on .units)
+
+                      // sanitize text
+                      let cleanInput: number | string
+
+                      if (
+                        typeof suggestionToGet.info.get.min === 'number' ||
+                        typeof suggestionToGet.info.get.value === 'number'
+                      ) {
+                        // if number
+                        cleanInput = sanitize(e.target.value, ['no_spaces', 'fractions', 'no_leading_zeros', 'decimal_point'])
+
+                        if (suggestionToGet.info.get.units === 'satoshi') {
+                          // convert to satoshi and then number
+                          cleanInput = Math.round(parseFloat(cleanInput) * 1.0e8)
+                        } else {
+                          // just convert to number
+                          cleanInput = Math.round(parseFloat(cleanInput))
+                        }
+
+                      } else {
+                        // if string, just make sure no spaces
+                        cleanInput = sanitize(e.target.value, ['no_spaces'])
+                      }
+
+                      // add changed value to checkActions current object
+                      // find and edit the value
+                      checkActions
                         .find((thisAction: any) => thisAction.type === action.type )
                         .suggestions
                         .find((thisSuggestion: any) =>
                           thisSuggestion.info.describe === suggestionToGet.info.describe
-                        ).info.get.value = cleanText
-                      }
-                    }
+                        ).info.get.value = cleanInput
 
-                    // if input is not blank
-                    if (suggestionToGet.info.get.value !== '') {
-                      // place the customized action object entirely into the global state
-                      changeChoicesBNSAction(state, dispatch, {
-                        action: JSON.parse(JSON.stringify(action))
-                      })
-
-                      // change page
-                      changePageInfoAction(state, dispatch, 5)
-                    }
-
-                  } }
-                >
-                  { (getSetters(action).length > 0) &&
-                    <Details description={ 'Fixed value action requirements' } show={ 'true' }>
-                    <p>
-                      { getSetters(action).map((thisAction: any, index: number) => {
-                        const setDescription = thisAction.info.describe || ''
-                        const setName = thisAction.info.set.name || ''
-                        const setValue = thisAction.info.set.value || ''
-                        const setUnits = thisAction.info.set.units || ''
-                        return (
-                          <span key={ setDescription }>
-                            { index + 1 }. { setDescription } : { (setValue + ' ' + setUnits).replace(/ /g, '\xa0') } ({ setName })
-                          </span>
-                        )
-                      }) }
-                    </p>
-                    </Details>
-                   }
-                </InputForm>
-              ))
+                      // update local state with edited object
+                      setCheckActions([...checkActions])
+                    } }
+                  />
+                }
+              })
             )}
+            { (getSetters(action).length > 0) &&
+              <Details description={ 'Details...' } show={ 'false' }>
+                <p>
+                  { getSetters(action).map((setSuggestion: any, index: number) => {
+
+                    const setDescription = setSuggestion.info.describe || ''
+                    const setName = setSuggestion.info.set.name || ''
+
+                    return (
+                      <span key={ setDescription }>
+                        { index + 1 }. { setDescription }: { '\n' }
+
+                        { renderSetSuggestion(setSuggestion, {
+                            btcValueFull: true,
+                            btcUnits: true,
+                            bullets: true,
+                            strings: (content: string) => ([
+                              'for ',
+                              <span
+                                key={ setDescription + content }
+                                className={ styles.breakable }
+                              >
+                                { content }
+                              </span>
+                            ])
+                        }) }
+
+                        { ' ' + ('(' + setName + ')').replace(/ /g, '\xa0') }
+                      </span>
+                    )
+
+                  } ) }
+                </p>
+              </Details>
+            }
+            { (extraFormData && extraFormData[action.info].show) && (
+              <RoundButton
+                next={ 'true' }
+                onClick={ () => {
+
+
+                  // place the customized action object entirely into the global state
+                  changeChoicesBNSAction(state, dispatch, {
+                    action: action // JSON.parse(JSON.stringify( needed?
+                  })
+
+                  // change page
+                  changePageInfoAction(state, dispatch, 5)
+
+                  // const isNotEmpty = suggestionToGet.info.get.value !== ''
+                  // const meetsMinRequirement = (typeof suggestionToGet.info.get.min === 'number')
+                  //     ? (suggestionToGet.info.get.value >= suggestionToGet.info.get.min)
+                  //     : true
+
+                  // // if input is not blank
+                  // if (isNotEmpty && meetsMinRequirement) {}
+
+                } }
+              >
+                OK
+              </RoundButton>
+            ) }
           </div>
         )
       } else {

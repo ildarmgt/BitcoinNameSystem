@@ -2,10 +2,37 @@
   padding: calc(1 * var(--s));
   display: inline-block;
   box-sizing: border-box;
+
+  --inputSize: calc(2.3 * var(--s));
+  font-size: var(--inputSize);
+  color: var(--colorBitcoinBlue);
+  text-align: center;
+}
+
+.shiftRight {
+  box-sizing: border-box;
+
+  width: 100%;
+  padding-left: var(--inputSize);
+}
+
+.label {
+  box-sizing: border-box;
+  padding-bottom: calc(1 * var(--s));
+  text-indent: calc(-1 * var(--inputSize));
+
+  font-size: var(--inputSize);
+  /* position: absolute; */
+  display: block;
+  opacity: 0.7;
+  text-align: left;
+
+  /* so next line character works */
+  white-space: pre-wrap;
 }
 
 .choiceArea {
-  display: flex;
+  display: inline-flex;
   background-color: var(--colorBrighter8);
   border-radius: calc(0.5 * var(--s));
   color: var(--colorMediumText);

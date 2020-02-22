@@ -6,6 +6,8 @@
   font-size: var(--inputSize);
   color: var(--colorBitcoinBlue);
   align-self: flex-end;
+  text-align: center;
+
 }
 
 .shiftRight {
@@ -24,7 +26,7 @@
   /* top: 0; */
   /* bottom: 0; */
 
-  text-indent: calc(-2 * var(--s));
+  text-indent: calc(-1 * var(--inputSize));
 
   left: 0;
   right: 0;
@@ -51,4 +53,8 @@
 
 .bonusInformation {
   margin: calc(1 * var(--s));
+}
+
+.invisible {
+  visibility: hidden;
 }

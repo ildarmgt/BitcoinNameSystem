@@ -3,6 +3,7 @@ import { calcP2WSH } from './calcP2WSH'
 import { MIN_NOTIFY } from './constants'
 import { encrypt } from './cryptography'
 import { I_Domain, I_Checked_Action } from './types/'
+import { BnsSuggestionType } from './../bns/types'
 import { getNonce } from './formathelpers'
 import { getFinalScripts } from './bitcoin'
 
@@ -18,6 +19,7 @@ interface I_Tx_Result {
   change: number
   burnAmount: number
   notifyAmount: number
+  refundsAmount: number
   totalGathered: number
   gatheredFromWallet: number
   gatheredFromOther: number
@@ -65,10 +67,10 @@ export const calcTx = (
 
   // output[0]: check special tx rules for max amount required to burn among all of them
   const burnAmounts = choices.action.suggestions.reduce((allBurnAmounts: any, thisSuggestion: any) => {
-    console.log('choices.action.suggestions each item:', thisSuggestion)
+    // console.log('choices.action.suggestions each item:', thisSuggestion)
     let burnAmountsHere: any = []
       // if there's a set burn rule, add to list
-      if (('set' in thisSuggestion.info) && (thisSuggestion.info.set.name === 'output 0 value')) {
+      if (('set' in thisSuggestion.info) && (thisSuggestion.info.set.name === 'Bid burn amount')) {
         burnAmountsHere = [...burnAmountsHere, thisSuggestion.info.set.value]
       }
       // if there's a user provided get value, add to list
@@ -79,8 +81,27 @@ export const calcTx = (
   }, [])
   const burnAmount = Math.max(...burnAmounts)
 
+  // add up any refunds to do for total needed and array of address/amount for generating outputs
+  let refundsAmount = 0
+  const refundAmountsArray = choices.action.suggestions.reduce((refundAmounts: any, thisSuggestion: any) => {
+    // console.log('choices.action.suggestions each item:', thisSuggestion)
+    // if there's a refund to do, add to list
+    if (thisSuggestion.info.type === BnsSuggestionType.REFUND_BIDDERS && thisSuggestion.info.get.value === true) {
+      const arrayOfAmountsAndAddresses = thisSuggestion.info.set.value.split('\n')
+      const refunds = arrayOfAmountsAndAddresses.map((thisAmountAndAddress: any) => {
+        const thisAddress = thisAmountAndAddress.split(' ')[1]
+        const thisAmount = parseInt(thisAmountAndAddress.split(' ')[0], 10)
+        refundsAmount += thisAmount
+        return { address: thisAddress, amount: thisAmount }
+      })
 
-  const valueNeeded = burnAmount + MIN_NOTIFY + fee; // sat
+      return [...refundAmounts, ...refunds]
+    } else {
+      return refundAmounts
+    }
+  }, [])
+
+  const valueNeeded = refundsAmount + burnAmount + MIN_NOTIFY + fee // sat
 
   // gather necessary utxo to use until enough to cover costs
   let totalGathered = 0 // sat
@@ -217,6 +238,12 @@ export const calcTx = (
     value: change
   })
 
+  refundAmountsArray.forEach((thisRefund: { address: string, amount: number }) => {
+    psbt.addOutput({
+      address: thisRefund.address,
+      value: thisRefund.amount
+    })
+  })
 
   /* -------------------------------------------------------------------------- */
   /*          at this point all inputs & outputs added so ready to sign         */
@@ -274,6 +301,7 @@ export const calcTx = (
       change,
       burnAmount,
       notifyAmount: MIN_NOTIFY,
+      refundsAmount,
       totalGathered,
       gatheredFromWallet,
       gatheredFromOther,
