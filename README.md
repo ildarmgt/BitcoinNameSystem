@@ -177,7 +177,7 @@ Design was created with intention to not make Bitcoin worse.
 
 ## Why not layer 2?
 
-* Domains and forwards are the one usecase that specifically does greatly benefit from persistent and easily accessible data. It might, however, be used for simplifying LN addresses or invoices, optionally even linking to ipfs if cheaper data needed.
+Domains and forwards are the one usecase that specifically does greatly benefit from persistent and easily accessible data. It might, however, be used for simplifying LN addresses or invoices, optionally even linking to ipfs if cheaper data needed.
 
 ## How is it different?
 
