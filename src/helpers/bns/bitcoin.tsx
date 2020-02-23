@@ -12,7 +12,7 @@ export const createNewWallet = (strNetwork: string) => {
   // network version. bitcoin or testnet
   const network = bitcoin.networks[strNetwork]
   // create backup phrase
-  const mnemonic = bip39.generateMnemonic()
+  const mnemonic = bip39.generateMnemonic() // 128 bit & randomBytes by default
   const seedBuffer = bip39.mnemonicToSeed(mnemonic)
   // create derivation master node
   const masterNode = bitcoin.bip32.fromSeed(seedBuffer, network)
