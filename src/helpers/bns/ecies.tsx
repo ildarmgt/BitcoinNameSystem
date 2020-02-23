@@ -164,7 +164,7 @@ function makeUpOptions(options: I_Options = {}) {
     options.symmetricCypherName = 'aes-256-ecb'
     options.iv = null
   }
-  if (options.iv === undefined && options.toIv) {
+  if ((options.iv === undefined) && !!options.toIv) {
     options.iv = crypto.createHash('sha256')
       .update(options.toIv)     // value to hash
       .digest()                 // hash
