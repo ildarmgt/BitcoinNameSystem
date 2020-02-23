@@ -1,5 +1,5 @@
 // My edit of https://github.com/bin-y/standard-ecies/blob/master/main.js
-// Remove space consuming hmac, replaced with 4 byte checksum, simplified
+// Removed space consuming hmac, replaced with 4 byte checksum, simplified
 // https://medium.com/asecuritysite-when-bob-met-alice/go-public-and-symmetric-key-the-best-of-both-worlds-ecies-180f71eebf59
 // https://en.wikipedia.org/wiki/Integrated_Encryption_Scheme
 
