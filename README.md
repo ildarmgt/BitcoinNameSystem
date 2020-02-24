@@ -79,7 +79,7 @@ This design has neutral costs to prevent domains from being captured en masse, e
 
 (using testnet and short duration testing mode parameters for now)
 
-* Bidding period for domains operational. Refunds on previous bids and minimum increases enforced for validity. Tie breaking at same height via pseudo-random deterministic function based on transaction's block height gives nobody an advantage.
+* Bidding period for domains operational. Refunds on previous bids and minimum increases enforced for validity. Tie breaking at same height via pseudo-random deterministic function based on transaction's block hash gives nobody an advantage.
 
 * Transactions are created and broadcast within the UI based on action chosen and requirements. Tx is summarized on same page as broadcast.
 
