@@ -230,10 +230,10 @@ describe('stealth address implementation', () => {
   potentialNotifications.forEach((tx) => {
     // options for decryption
     const Alice_eciesOptions = {
-    curveName: 'secp256k1',
-    symmetricCypherName: 'aes-256-ctr',
-    toIv: tx.from + aliceNotificationKeyNode.publicKey.toString('hex') + '0'
-  }
+      curveName: 'secp256k1',
+      symmetricCypherName: 'aes-256-ctr',
+      toIv: tx.from + aliceNotificationKeyNode.publicKey.toString('hex') + '0'
+    }
 
     const decryptAttempt = ecies.decrypt(privateKeyBuffer, tx.data, Alice_eciesOptions)
 
