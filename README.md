@@ -204,7 +204,7 @@ Domains and forwards are the one usecase that specifically does greatly benefit 
 
 ## How is it different?
 
-I am not aware of any other solutions without compromises that are pure Bitcoin based. It works through derivation entirely from always available public [replicated](http://luke.dashjr.org/programs/bitcoin/files/charts/services.html) Bitcoin blockchain data. There's no specialized indexing service needed (or possible) to scan every transaction with embedded messages to derive specific domain's state, only a small domain-unique subset of transactions are relevant using generic indexing of addresses already available in probably all standard Bitcoin node and explorer implementations.
+I am not aware of any other solutions without compromises that are pure Bitcoin based. It works through derivation entirely from always available public [replicated](http://luke.dashjr.org/programs/bitcoin/files/charts/services.html) Bitcoin blockchain data. There's no specialized indexing service needed (or possible) to scan every transaction with embedded messages to derive specific domain's state. Only a small domain-unique subset of transactions are relevant. BNS is using generic indexing by addresses already available in probably all standard Bitcoin node and explorer implementations.
 
 ## Donations
 
