@@ -1,6 +1,16 @@
 
 # Dev Blog
 
+### 2020-02-24
+
+Basic implementation done as a series of tests complete.
+
+![pic](https://i.imgur.com/wnZ52zJ.png)
+
+Works so far. Interesting derivation with public key takes ~5 sec but derivation with private less than half the time.
+
+`src/utils/bns/stealthaddress.test.js`
+
 ### 2020-02-23
 
 Was difficult to find ECEIS implementation to use for OP_RETURN. The bytes are not cheap and needed enough flexibility to use compressed keys, use the same keys in matching format as bitcoin library, and remove HMAC to save space. OP_RETURN only has 80 bytes to use for standard transactions.
