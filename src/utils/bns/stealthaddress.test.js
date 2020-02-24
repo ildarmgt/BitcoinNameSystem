@@ -126,7 +126,7 @@ describe('stealth address implementation', () => {
       // get 16 bytes of secret
       const thisStepPathBuffer = sharedSecret.slice(i * 2, (i + 1) * 2)
       // convert to integer string (read buffer as big endian)
-      const thisStepPathIntString = parseInt(thisStepPathBuffer.readUInt16BE(), 10)
+      const thisStepPathIntString = thisStepPathBuffer.readUInt16BE().toString()
       // add to path string
       subPathFromNode += thisStepPathIntString + '/'
     }
@@ -299,7 +299,7 @@ describe('stealth address implementation', () => {
     Alice_StealthAddress2, 'with private key (WIF):', Alice_StealthAddress2_WIF, '\n'
   )
 
-  test('Alice address 0,1,2 matche Bob address 0,1,2', () => {
+  test('Alice addresses 0,1,2 matched Bob addresses 0,1,2', () => {
     expect(Alice_StealthAddress0).toEqual(Bob_calculateAliceStealthAddress0)
     expect(Alice_StealthAddress1).toEqual(Bob_calculateAliceStealthAddress1)
     expect(Alice_StealthAddress2).toEqual(Bob_calculateAliceStealthAddress2)
