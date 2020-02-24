@@ -248,6 +248,10 @@ describe('stealth address implementation', () => {
     expect(nFound).toEqual(1)
   })
 
+  test('Alice derived same clear text that Bob encrypted', () => {
+    expect(sharedSecretBuffer).toEqual(Bob_sharedSecret)
+  })
+
   /* -------------------------------------------------------------------------- */
   /*               Alice derives key pair for each stealth address              */
   /* -------------------------------------------------------------------------- */
