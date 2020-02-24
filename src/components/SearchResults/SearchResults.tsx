@@ -63,7 +63,7 @@ export const SearchResults = () => {
         )
       } }
     >
-      { state.domain.notificationAddress }
+      { address }
     </span>
   )
 
