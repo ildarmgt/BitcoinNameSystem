@@ -440,7 +440,7 @@ export const P4ActionChoice = () => {
   return (
     <div className={ styles.wrapper }>
       <div className={ styles.title }>
-        Available actions
+        Available <span className={ styles.orange }>BNS</span> <br />actions
       </div>
       <div className={ styles.availableActions }>
         {

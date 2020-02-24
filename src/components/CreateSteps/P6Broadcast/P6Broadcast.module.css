@@ -1,15 +1,16 @@
 .wrapper {
   box-sizing: border-box;
 
-  margin: 0 1%;
+  margin: 0 calc(2 * var(--s));
+
   font-size: calc(2.5 * var(--s));
   color: var(--colorBitcoinBlue);
   display: grid;
 
-  grid-template-columns:  48% 48%;
+  grid-template-columns:  calc(50% - (2 * var(--s))) calc(50% - (2 * var(--s)));
   grid-template-rows:     auto auto auto auto auto auto;
 
-  grid-gap: calc(1 * var(--s)) 2%;
+  grid-gap: calc(1 * var(--s)) calc(2 * var(--s));
 
   grid-template-areas:
     "title            title"
@@ -27,8 +28,35 @@
 .title {
   grid-area: title;
   width: 100%;
-  font-size: calc(3 * var(--s));
   margin-bottom: calc(7 * var(--s));
+}
+
+.title {
+  box-sizing: border-box;
+  display: inline-block;
+  position: relative;
+  font-size: calc(4 * var(--s));
+  margin-bottom: calc(3 * var(--s));
+  cursor: default;
+  color: var(--colorBitcoinBlue);
+  text-align: right;
+  max-width: calc(50 * var(--s));
+  padding-right: calc(6 * var(--s));
+  margin-top: calc(-6 * var(--s));
+  margin-right: calc(-1.5 * var(--s));
+  margin-left: auto;
+}
+
+.title::after {
+  box-sizing: border-box;
+
+  content: "";
+  --offset: calc(0.75 * var(--s));
+  top: var(--offset);
+  right: calc(2 * var(--s));
+  height: calc(100% - (2.1 * var(--offset);));
+  position: absolute;
+  border-right: solid calc(2 * var(--s)) var(--colorBitcoinBlue);
 }
 
 .fees {
@@ -158,22 +186,22 @@
 /* wide screen settings */
 @media screen and (min-aspect-ratio: 12/9) {
   .wrapper {
-    grid-template-columns:  56% 2% 38%;
+    grid-template-columns:  auto calc(2 * var(--s)) calc(40% - (2 * var(--s)));
     grid-template-rows:     auto auto auto auto auto;
 
     grid-template-areas:
-      ".              . title"
-      "fees           . totalCost"
-      "txSummary      . buttonWrapper"
-      "txSummary      . status"
-      "txSummary      . ."
+      "title          title title"
+      "fees           .     totalCost"
+      "txSummary      .     buttonWrapper"
+      "txSummary      .     status"
+      "txSummary      .     ."
     ;
     align-items: flex-start;
     text-align: right;
   }
 
   .title {
-    margin-top: calc(-4 * var(--s))
+    /* margin-top: calc(-4 * var(--s)) */
   }
 
   .buttonWrapper {
@@ -183,6 +211,6 @@
     justify-self: right;
   }
   .txSummary > div {
-    padding: calc(1 * var(--s)) calc(1 * var(--s));
+    padding: calc(1 * var(--s)) calc(0 * var(--s));
   }
 }

@@ -28,6 +28,12 @@ export const P2LoadWallet = () => {
 
   return (
     <div className={ styles.wrapper }>
+      <div
+        className={ styles.title }
+      >
+        Fund your <span className={ styles.orange }>BTC</span> wallet to interact with domains.
+      </div>
+
       <div className={ styles.contentWrapper }>
         <div
           className={ styles.imgQr }
@@ -35,34 +41,38 @@ export const P2LoadWallet = () => {
           {/* downloadable */}
           <img src={qrCode} alt={'QR Code'} />
         </div>
-        <div>
-          Fund your wallet to interact with domains.
-        </div>
+
         <div className={ [styles.address, 'selectable'].join(' ') }>
           { state.wallet.address }
         </div>
       </div>
       <div className={ styles.buttonWrapper }>
 
-        <RoundButton
-          back='true'
-          onClick={ () => {
-            changePageInfoAction(state, dispatch, 1)
-          }}
-        >
-          Back
-        </RoundButton>
+        <div className={ styles.backAndReady }>
+          <RoundButton
+            className={ styles.button }
+            back='true'
+            onClick={ () => {
+              changePageInfoAction(state, dispatch, 1)
+            }}
+          >
+            Back
+          </RoundButton>
+
+          <RoundButton
+            className={ styles.button }
+            next='true'
+            onClick={ () => {
+              changePageInfoAction(state, dispatch, 3)
+            }}
+          >
+            Ready
+          </RoundButton>
+        </div>
+
 
         <RoundButton
-          next='true'
-          onClick={ () => {
-            changePageInfoAction(state, dispatch, 3)
-          }}
-        >
-          Ready
-        </RoundButton>
-
-        <RoundButton
+          className={ styles.button }
           show={ (!!state.wallet?.address).toString() }
           onClick={() => {
             history.push('/wallet')
@@ -73,6 +83,7 @@ export const P2LoadWallet = () => {
         </RoundButton>
 
         <RoundButton
+          className={ styles.button }
           colorbutton={'var(--colorHighlightDark)'}
           show={ (state.network === 'testnet').toString() }
           onClick={ () => {
@@ -84,6 +95,7 @@ export const P2LoadWallet = () => {
         </RoundButton>
 
         <RoundButton
+          className={ styles.button }
           colorbutton={'var(--colorHighlightDark)'}
           show={ (state.network === 'testnet').toString() }
           onClick={ () => {
@@ -96,6 +108,7 @@ export const P2LoadWallet = () => {
         </RoundButton>
 
         <RoundButton
+          className={ styles.button }
           colorbutton={'var(--colorHighlightDark)'}
           onClick={ () => {
             // open blockstream explorer for address in new window/tab

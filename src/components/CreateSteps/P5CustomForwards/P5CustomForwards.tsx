@@ -238,11 +238,12 @@ export const P5CustomForwards = () => {
 
       <div className={ styles.title }>
         Update forwarding information
-        <div
+      </div>
+
+      <div
           className={ styles.subtitle }
         >
-          Main actions: { state.choices.action.info }
-        </div>
+        BNS action: { state.choices.action.info }
       </div>
 
       <div className={ styles.changes }>

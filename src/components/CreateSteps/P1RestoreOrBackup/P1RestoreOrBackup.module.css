@@ -1,21 +1,45 @@
 .wrapper {
   color: var(--colorBitcoinBlue);
   font-size: calc(2.5 * var(--s));
+  text-align: right;
+  margin: calc(2 * var(--s));
 }
 
 .title {
+  box-sizing: border-box;
   display: inline-block;
-  font-size: calc(3 * var(--s));
-  margin: calc(1 * var(--s));
+  position: relative;
+  font-size: calc(4 * var(--s));
+  /* margin: calc(3 * var(--s)); */
   margin-bottom: calc(3 * var(--s));
   cursor: default;
   color: var(--colorBitcoinBlue);
+  text-align: right;
+  max-width: calc(50 * var(--s));
+  padding-right: calc(6 * var(--s));
+  margin-top: calc(-6 * var(--s));
+
+}
+
+.title::after {
+  box-sizing: border-box;
+
+  content: "";
+  --offset: calc(0.75 * var(--s));
+  top: var(--offset);
+  right: calc(2.5 * var(--s));
+  height: calc(100% - (2.1 * var(--offset);));
+  position: absolute;
+  border-right: solid calc(2 * var(--s)) var(--colorBitcoinBlue);
 }
 
 .contentWrapper {
   display: flex;
   flex-direction: column;
-  align-items: center;
+  align-items: flex-end;
+  padding: calc(2 * var(--s));
+  justify-content: flex-end;
+
 }
 
 .buttonWrapper {
@@ -23,21 +47,24 @@
   display: flex;
   flex-wrap: wrap-reverse;
   flex-direction: row;
-  justify-content: center;
+  /* justify-content: center; */
   align-items: center;
-  margin: calc(4 * var(--s));
+  justify-content: flex-end;
+
+  /* margin: calc(4 * var(--s)); */
 }
 
 .buttonWrapper > div {
   box-sizing: border-box;
-  margin: calc(2 * var(--s)) calc(3 * var(--s));
+  margin: calc(1 * var(--s)) calc(2 * var(--s));
 }
 
 .describe {
   cursor: default;
+  padding: calc(1 * var(--s));
 }
 
-.Orange {
+.orange {
   color: var(--colorBitcoinOrange);;
   text-shadow: none;
 }
@@ -53,12 +80,13 @@
   margin: calc(2 * var(--s));
   color: var(--colorBitcoinOrange);
   background-color: var(--colorBackground);
-  width: 70vw;
+  width: 70%;
   cursor: default;
+  text-align: center;
 }
 
 .restoreBackup {
-  width: 70vw;
+  width: 70%;
   color: var(--colorBitcoinOrange);
   caret-color: var(--colorBitcoinOrange);
   height: calc(20 * var(--s));
@@ -76,4 +104,19 @@
 .restoreBackup::placeholder {
   color: var(--colorBitcoinOrange);
   opacity: 0.5;
+}
+
+@media screen and (min-aspect-ratio: 12/9) {
+
+
+  .contentWrapper {
+    /* align-items: center; */
+  }
+
+  .buttonWrapper {
+    /* margin-right: 0; */
+    /* align-items: center; */
+  }
+
+
 }

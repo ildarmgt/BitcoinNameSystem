@@ -80,6 +80,40 @@
   margin: calc(2 * var(--s));
 }
 
+.title {
+  box-sizing: border-box;
+  display: inline-block;
+  position: relative;
+  font-size: calc(4 * var(--s));
+  /* margin: calc(3 * var(--s)); */
+  margin-bottom: calc(3 * var(--s));
+  cursor: default;
+  color: var(--colorBitcoinBlue);
+  text-align: right;
+  max-width: calc(50 * var(--s));
+  padding-right: calc(6 * var(--s));
+  margin-top: calc(-6 * var(--s));
+  margin-left: auto;
+
+}
+
+.title::after {
+  box-sizing: border-box;
+
+  content: "";
+  --offset: calc(0.75 * var(--s));
+  top: var(--offset);
+  right: calc(2.5 * var(--s));
+  height: calc(100% - (2.1 * var(--offset);));
+  position: absolute;
+  border-right: solid calc(2 * var(--s)) var(--colorBitcoinBlue);
+}
+
+.orange {
+  color: var(--colorBitcoinOrange);;
+  text-shadow: none;
+}
+
 .unavailableActions__title {
   margin-bottom: calc(1 * var(--s));
   overflow-wrap: normal;
@@ -151,7 +185,7 @@
   }
   .title {
     text-align: right;
-    margin-right: calc(2 * var(--s));
+    /* margin-right: calc(2 * var(--s)); */
   }
   .availableActions {
     align-self: flex-start;

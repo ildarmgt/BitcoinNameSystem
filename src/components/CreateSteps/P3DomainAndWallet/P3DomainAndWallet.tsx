@@ -59,8 +59,7 @@ export const P3DomainAndWallet = () => {
   return (
     <div className={ styles.wrapper }>
       <div className={ styles.title }>
-        Wallet and domain history needed. <br />
-        (No offline method yet)
+        Wallet and domain history needed
       </div>
       <div className={ styles.domainInfo }>
         { (apiStatus !== 'domain')  && 'Domain ' + domainInfo() }

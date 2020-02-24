@@ -1,5 +1,5 @@
 .wrapper {
-  margin-top: calc(2 * var(--s));
+  margin: calc(2 * var(--s));
   font-size: calc(2.5 * var(--s));
   color: var(--colorBitcoinBlue);
   display: flex;
@@ -7,6 +7,38 @@
   /* wrap makes basis of child elements go to next line */
   flex-wrap: wrap;
   align-items: stretch;
+  text-align: right;
+
+}
+
+.title {
+  justify-self: flex-start;
+  align-self: flex-start;
+
+  box-sizing: border-box;
+  display: inline-block;
+  position: relative;
+  font-size: calc(4 * var(--s));
+  margin-bottom: calc(3 * var(--s));
+  cursor: default;
+  color: var(--colorBitcoinBlue);
+  text-align: right;
+  max-width: calc(50 * var(--s));
+  padding-right: calc(6 * var(--s));
+  margin-left: auto;
+  margin-top: calc(-6 * var(--s));
+}
+
+.title::after {
+  box-sizing: border-box;
+
+  content: "";
+  --offset: calc(0.75 * var(--s));
+  top: var(--offset);
+  right: calc(2.5 * var(--s));
+  height: calc(100% - (2.1 * var(--offset);));
+  position: absolute;
+  border-right: solid calc(2 * var(--s)) var(--colorBitcoinBlue);
 }
 
 .contentWrapper {
@@ -30,8 +62,11 @@
   margin-left: calc(7 * var(--s));
 }
 
-.contentWrapper > div,
-.buttonWrapper > div {
+.contentWrapper > div {
+  margin: calc(1 * var(--s)) calc(3 * var(--s));
+}
+
+.button {
   margin: calc(1 * var(--s)) calc(3 * var(--s));
 }
 
@@ -44,18 +79,29 @@
   text-align: center;
 }
 
-
+.orange {
+  color: var(--colorBitcoinOrange);;
+  text-shadow: none;
+}
 
 .imgQr,
 .imgQr img {
   height: calc(20 * var(--s));
   width: calc(20 * var(--s));
   image-rendering: pixelated;
+  border-radius: calc(1 * var(--s));
+}
+
+.backAndReady {
+  width: 100%;
+  display: flex;
+  flex-wrap: wrap-reverse;
+  justify-content: center;
 }
 
 @media screen and (min-aspect-ratio: 12/9) {
   .contentWrapper {
-    justify-content: center;
+    justify-content: flex-start;
 
     flex-basis: 60%;
     /* aligns perpendicular to main column axis to the right */
@@ -75,5 +121,9 @@
 
   .address {
     text-align: right;
+  }
+
+  .backAndReady {
+    justify-content: flex-start;
   }
 }

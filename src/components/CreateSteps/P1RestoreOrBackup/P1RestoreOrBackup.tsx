@@ -34,14 +34,16 @@ export const P1RestoreOrBackup = () => {
           className={ styles.title }
         >
           { state.wallet.address ? (<>
-            Your <span className={ styles.Orange }>BTC</span> wallet for interacting<br />
+            Your <span className={ styles.orange }>BTC</span> wallet for interacting<br />
             with the domains
           </>) : (<>
-            Need a <span className={ styles.Orange }>BTC</span> wallet for interacting<br />
+            Need a <span className={ styles.orange }>BTC</span> wallet for interacting<br />
             with the domains
           </>) }
         </div>
-        <div>
+        <div
+          className={ styles.contentWrapper }
+        >
           <Details
             description={ 'Explain' }
           >
@@ -97,16 +99,19 @@ export const P1RestoreOrBackup = () => {
       </div>
 
       {/* NEW_WALLET PAGE */ }
-
+      <div
+        className={ styles.title }
+        style={{ display: page === pages.NEW_WALLET ? 'inline-block' : 'none' }}
+      >
+        Randomly generated mnemonic backup for <span className={ styles.orange }>BTC</span> wallet
+      </div>
       <div
         className={ styles.contentWrapper }
         style={{ display: page === pages.NEW_WALLET ? 'flex' : 'none' }}
       >
         <div className={ styles.describe }>
-          Randomly generated for domain control
-          <br /><br />
           Backup this private phrase
-          or you will lose access
+          or you will lose access!
         </div>
         <div
           id='divBackup'
@@ -122,32 +127,35 @@ export const P1RestoreOrBackup = () => {
         >
           { state.wallet.mnemonic }
         </div>
-        <div className={ styles.buttonWrapper } >
-          <RoundButton
-            onClick={() => {
-              setPage(pages.ROOT)
-            }}
-            back='true'
-          >
-            Back
-          </RoundButton>
-          <RoundButton
-            onClick={() => {
-              setPage(pages.NEW_WALLET)
-              createNewWalletAction(state, dispatch)
-            }}
-          >
-            New
-          </RoundButton>
-          <RoundButton
-            next='true'
-            onClick={() => {
-              changePageInfoAction(state, dispatch, 2)
-            }}
-          >
-            I'm done with backup
-          </RoundButton>
-        </div>
+      </div>
+      <div
+        className={ styles.buttonWrapper }
+        style={{ display: page === pages.NEW_WALLET ? 'flex' : 'none' }}
+      >
+        <RoundButton
+          onClick={() => {
+            setPage(pages.ROOT)
+          }}
+          back='true'
+        >
+          Back
+        </RoundButton>
+        <RoundButton
+          onClick={() => {
+            setPage(pages.NEW_WALLET)
+            createNewWalletAction(state, dispatch)
+          }}
+        >
+          New
+        </RoundButton>
+        <RoundButton
+          next='true'
+          onClick={() => {
+            changePageInfoAction(state, dispatch, 2)
+          }}
+        >
+          I'm done with backup
+        </RoundButton>
       </div>
 
       {/* LOAD_BACKUP PAGE */ }
@@ -158,11 +166,11 @@ export const P1RestoreOrBackup = () => {
         <div className={ styles.title }>
           Type or paste your backup here
         </div>
-        <br></br>
-        <div>
+
+        <div className={ styles.contentWrapper }>
           { (wordCount).toString() + ' words now. 12 minimum.' }
         </div>
-        <br></br>
+
         <textarea
           className={ styles.restoreBackup }
           cols={ 30 }

@@ -34,7 +34,7 @@
   word-wrap: break-word;
 
   /* for arrow */
-  padding-right: calc(4 * var(--s));
+  padding-right: calc(3.5 * var(--s));
   width: 100%;
   text-indent: calc(-2 * var(--s));
 }
@@ -49,7 +49,7 @@
   height: calc(2 * var(--s));
   position: absolute;
   top: calc(50% - (1 * var(--s)));
-  right: calc(1 * var(--s));
+  right: calc(0.5 * var(--s));
   vertical-align: middle;
   line-height: calc(2 * var(--s));
 
@@ -92,7 +92,6 @@
 .details {
   /* just basic block in case styling is custom */
   margin-top: calc(1 * var(--s));
-  width: 100%;
 }
 
 .details > p {
@@ -104,8 +103,10 @@
   padding: calc(2 * var(--s)) calc(3 * var(--s));
   padding-right: calc(2 * var(--s));
 
-  margin: calc(1 * var(--s)) calc(4 * var(--s));
+  /* margin: calc(1 * var(--s)) calc(4 * var(--s)); */
   margin-top: 0;
+  max-width: 66vw;
+
 }
 
 .details > p > span {
