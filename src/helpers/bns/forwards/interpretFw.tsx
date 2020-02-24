@@ -4,7 +4,7 @@ import { I_Forward } from '../types'
  * as where the forwarding address should be used, what it is, and what link to use.
  * Returns {what: string, where: string, link: string, render: boolean}.
  */
-export function interpretFw (fw: I_Forward) {
+export function interpretFw (fw: I_Forward, blockchain?: string) {
   // blank address means it was removed
   // ! at start means it's a command, not a network
   if (fw.network === '' || fw.address === '' || fw.network.startsWith('!')) {
@@ -29,7 +29,7 @@ export function interpretFw (fw: I_Forward) {
         fw.address
       ),
       link: (
-        'https://blockstream.info/address/' + fw.address
+        `https://blockstream.info/${blockchain === 'testnet' ? 'testnet/' : ''}address/` + fw.address
       ),
       render: true
     }

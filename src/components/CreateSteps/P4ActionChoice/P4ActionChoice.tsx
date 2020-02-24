@@ -159,6 +159,10 @@ export const P4ActionChoice = () => {
         console.log('getters:', getGetters(action))
         console.log('setters:', getSetters(action))
 
+        const haveGettersOrSetters = (
+          suggestionsToGet.length > 0 || getSetters(action).length > 0
+        )
+
         return (
 
           // action div start
@@ -166,9 +170,9 @@ export const P4ActionChoice = () => {
             {/* change what action button does based on if there's data to get */}
             {/* missing data (~ get suggestion) means it has to be requested first before moving on */}
             <RoundButton
-              next={ suggestionsToGet.length === 0 ? 'true' : undefined }
+              next={ !haveGettersOrSetters ? 'true' : undefined }
               onClick={ () => {
-                if (suggestionsToGet.length === 0) {
+                if (!haveGettersOrSetters) {
 
                   // if regular action without extra data needed
                   // set this action as the chosen action
@@ -190,159 +194,167 @@ export const P4ActionChoice = () => {
                 }
               }}
             >
-              { action.info }{ suggestionsToGet.length > 0 ? (<>&nbsp;...</>) : '' }
+              { action.info }{
+                (haveGettersOrSetters)
+                  ? (<>&nbsp;...</>)
+                  : ''
+              }
             </RoundButton>
 
             {/* create input forms if shown */}
 
             { (extraFormData && extraFormData[action.info].show) && (
-              suggestionsToGet.map((suggestionToGet: any) => {
-                if (typeof suggestionToGet.info.get.value === 'boolean') {
+              <>
+                { suggestionsToGet.map((suggestionToGet: any) => {
+                  if (typeof suggestionToGet.info.get.value === 'boolean') {
 
-                  const onChangeFunction = (value: boolean) => {
-                    console.log(value)
-                    // find and change action setting
-                    checkActions
-                      .find((thisAction: any) => thisAction.type === action.type )
-                      .suggestions
-                      .find((thisSuggestion: any) =>
-                        thisSuggestion.info.describe === suggestionToGet.info.describe
-                      ).info.get.value = value
-                    // update local state with edited object
-                    setCheckActions([...checkActions])
-                  }
-
-                  return <Switch
-                    key={ suggestionToGet.info.describe }
-
-                    thisInputLabel={
-                      suggestionToGet.info.describe + ': \n  ' +
-                      suggestionToGet.info.get.name
-                    }
-
-                    initialIndex={
-                      suggestionToGet.info.get.value ? 1 : 0
-                    }
-
-                    choices={[
-                      { value: false,   display: 'No',    do: onChangeFunction },
-                      { value: true,    display: 'Yes',   do: onChangeFunction }
-                    ]}
-                  />
-
-                } else {
-
-                  return <InputForm
-                    key={ suggestionToGet.info.describe }
-
-                    showButton={ 'false' }
-
-                    className={ styles.inputForms }
-
-                    thisInputLabel={
-                      // show minimum if available in bitcoin units
-                      suggestionToGet.info.describe + (
-                        !suggestionToGet.info.get.min ? '' : (
-                          // if has a min
-                          '\n' +
-                          '(at least ' +
-                          getSuggestInfo(suggestionToGet).btcMinFull + ' ' +
-                          getSuggestInfo(suggestionToGet).btcUnits + ' to get a winning ' +
-                          'valid bid )'.replace(/ /g, '\xa0')
-                        )
-                      )
-                    }
-
-                    thisInitialValue={
-                      // if number, show in BTC and to 8 digits intially
-                      (typeof suggestionToGet.info.get.value === 'number')
-                        ? getSuggestInfo(suggestionToGet).btcValueFull
-                        // if not number just show the actual value
-                        : suggestionToGet.info.get.value
-                    }
-
-                    sanitizeFilters={ [typeof suggestionToGet.info.get.value] }
-
-                    thisInputOnChange={ (e: any) => {
-                      // type in bitcoin units
-                      // store into memory in expected units (depending on .units)
-
-                      // sanitize text
-                      let cleanInput: number | string
-
-                      if (
-                        typeof suggestionToGet.info.get.min === 'number' ||
-                        typeof suggestionToGet.info.get.value === 'number'
-                      ) {
-                        // if number
-                        cleanInput = sanitize(e.target.value, ['no_spaces', 'fractions', 'no_leading_zeros', 'decimal_point'])
-
-                        if (suggestionToGet.info.get.units === 'satoshi') {
-                          // convert to satoshi and then number
-                          cleanInput = Math.round(parseFloat(cleanInput) * 1.0e8)
-                        } else {
-                          // just convert to number
-                          cleanInput = Math.round(parseFloat(cleanInput))
-                        }
-
-                      } else {
-                        // if string, just make sure no spaces
-                        cleanInput = sanitize(e.target.value, ['no_spaces'])
-                      }
-
-                      // add changed value to checkActions current object
-                      // find and edit the value
+                    const onChangeFunction = (value: boolean) => {
+                      console.log(value)
+                      // find and change action setting
                       checkActions
                         .find((thisAction: any) => thisAction.type === action.type )
                         .suggestions
                         .find((thisSuggestion: any) =>
                           thisSuggestion.info.describe === suggestionToGet.info.describe
-                        ).info.get.value = cleanInput
-
+                        ).info.get.value = value
                       // update local state with edited object
                       setCheckActions([...checkActions])
-                    } }
-                  />
+                    }
+
+                    return <Switch
+                      key={ suggestionToGet.info.describe }
+
+                      thisInputLabel={
+                        suggestionToGet.info.describe + ': \n  ' +
+                        suggestionToGet.info.get.name
+                      }
+
+                      initialIndex={
+                        suggestionToGet.info.get.value ? 1 : 0
+                      }
+
+                      choices={[
+                        { value: false,   display: 'No',    do: onChangeFunction },
+                        { value: true,    display: 'Yes',   do: onChangeFunction }
+                      ]}
+                    />
+
+                  } else {
+
+                    return <InputForm
+                      key={ suggestionToGet.info.describe }
+
+                      showButton={ 'false' }
+
+                      className={ styles.inputForms }
+
+                      thisInputLabel={
+                        // show minimum if available in bitcoin units
+                        suggestionToGet.info.describe + (
+                          !suggestionToGet.info.get.min ? '' : (
+                            // if has a min
+                            '\n' +
+                            '(at least ' +
+                            getSuggestInfo(suggestionToGet).btcMinFull + ' ' +
+                            getSuggestInfo(suggestionToGet).btcUnits + ' to get a winning ' +
+                            'valid bid )'.replace(/ /g, '\xa0')
+                          )
+                        )
+                      }
+
+                      thisInitialValue={
+                        // if number, show in BTC and to 8 digits intially
+                        (typeof suggestionToGet.info.get.value === 'number')
+                          ? getSuggestInfo(suggestionToGet).btcValueFull
+                          // if not number just show the actual value
+                          : suggestionToGet.info.get.value
+                      }
+
+                      sanitizeFilters={ [typeof suggestionToGet.info.get.value] }
+
+                      thisInputOnChange={ (e: any) => {
+                        // type in bitcoin units
+                        // store into memory in expected units (depending on .units)
+
+                        // sanitize text
+                        let cleanInput: number | string
+
+                        if (
+                          typeof suggestionToGet.info.get.min === 'number' ||
+                          typeof suggestionToGet.info.get.value === 'number'
+                        ) {
+                          // if number
+                          cleanInput = sanitize(e.target.value, ['no_spaces', 'fractions', 'no_leading_zeros', 'decimal_point'])
+
+                          if (suggestionToGet.info.get.units === 'satoshi') {
+                            // convert to satoshi and then number
+                            cleanInput = Math.round(parseFloat(cleanInput) * 1.0e8)
+                          } else {
+                            // just convert to number
+                            cleanInput = Math.round(parseFloat(cleanInput))
+                          }
+
+                        } else {
+                          // if string, just make sure no spaces
+                          cleanInput = sanitize(e.target.value, ['no_spaces'])
+                        }
+
+                        // add changed value to checkActions current object
+                        // find and edit the value
+                        checkActions
+                          .find((thisAction: any) => thisAction.type === action.type )
+                          .suggestions
+                          .find((thisSuggestion: any) =>
+                            thisSuggestion.info.describe === suggestionToGet.info.describe
+                          ).info.get.value = cleanInput
+
+                        // update local state with edited object
+                        setCheckActions([...checkActions])
+                      } }
+                    />
+                  }
+                }) }
+                { (getSetters(action).length > 0) &&
+                  <Details description={ 'Details...' } show={ 'false' }>
+                    <p>
+                      { getSetters(action).map((setSuggestion: any, index: number) => {
+
+                        const setDescription = setSuggestion.info.describe || ''
+                        const setName = setSuggestion.info.set.name || ''
+
+                        return (
+                          <span key={ setDescription }>
+                            { index + 1 }. { setDescription }: { '\n' }
+
+                            { renderSetSuggestion(setSuggestion, {
+                                btcValueFull: true,
+                                btcUnits: true,
+                                bullets: true,
+                                strings: (content: string) => ([
+                                  'for ',
+                                  <span
+                                    key={ setDescription + content }
+                                    className={ styles.breakable }
+                                  >
+                                    { content }
+                                  </span>
+                                ])
+                            }) }
+
+                            { ' ' + ('(' + setName + ')').replace(/ /g, '\xa0') }
+                          </span>
+                        )
+
+                      } ) }
+                    </p>
+                  </Details>
                 }
-              })
+              </>
             )}
-            { (getSetters(action).length > 0) &&
-              <Details description={ 'Details...' } show={ 'false' }>
-                <p>
-                  { getSetters(action).map((setSuggestion: any, index: number) => {
 
-                    const setDescription = setSuggestion.info.describe || ''
-                    const setName = setSuggestion.info.set.name || ''
-
-                    return (
-                      <span key={ setDescription }>
-                        { index + 1 }. { setDescription }: { '\n' }
-
-                        { renderSetSuggestion(setSuggestion, {
-                            btcValueFull: true,
-                            btcUnits: true,
-                            bullets: true,
-                            strings: (content: string) => ([
-                              'for ',
-                              <span
-                                key={ setDescription + content }
-                                className={ styles.breakable }
-                              >
-                                { content }
-                              </span>
-                            ])
-                        }) }
-
-                        { ' ' + ('(' + setName + ')').replace(/ /g, '\xa0') }
-                      </span>
-                    )
-
-                  } ) }
-                </p>
-              </Details>
-            }
             { (extraFormData && extraFormData[action.info].show) && (
               <RoundButton
+                className={ styles.okButton }
                 next={ 'true' }
                 onClick={ () => {
 

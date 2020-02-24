@@ -122,16 +122,6 @@ export const DevPanel = (props: any): JSX.Element => {
       </div>
 
       <div
-        className={ [styles.button].join(' ') }
-        onClick={ () => {
-          const state = localStorage.getItem('tempstate')
-          if (state) { dispatch({ type: ActionTypes.LOAD_STATE, payload: JSON.parse(state) }) }
-        } }
-      >
-        Load last known state
-      </div>
-
-      <div
         className={ styles.button }
         onClick={ () => {
           console.log(state);

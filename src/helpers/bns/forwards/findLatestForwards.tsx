@@ -15,9 +15,10 @@ export const findLatestForwards = (forwards: Array<I_Forward>): Array<I_Forward>
   // now just overwrite values for same networks in order of sorted array
   const currentNetworks: {[key: string]: I_Forward} = {}
   sortedForwards.forEach(eaForward => {
-    // add all networks that are not commands
+    // add all networks that are not commands or blank network name
     const isNotCommand = !eaForward.network.startsWith('!')
-    if (isNotCommand) {
+    const isNotEmptyNetwork = !(eaForward.network === '')
+    if (isNotCommand && isNotEmptyNetwork) {
       currentNetworks[eaForward.network] = eaForward
     }
     // if the final address is blank, delete it from object

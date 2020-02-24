@@ -20,21 +20,23 @@ export const Details = (props: any) => {
       {/* button that toggles whether details are shown or not */}
       <div
         className={ styles.buttonWrapper }
+        onClick={ () => {
+          setShowDetails(!showDetails)
+        } }
       >
         <div
           className={ styles.toggleDetails }
-          onClick={ () => {
-            setShowDetails(!showDetails)
-          } }
+
         >
           {/* the text on button coems from title prop */}
           { props.title || props.description || 'Show details' }
-          {/* the arrow that rotates on click */}
-          <div
-            className={ [styles.arrow, showDetails ? styles.down : '' ].join(' ') }
-          />
+          </div>
+        {/* the arrow that rotates on click */}
+        <div
+          className={ [styles.arrow, showDetails ? styles.down : '' ].join(' ') }
+        />
         </div>
-      </div>
+
 
       {/* the details that is rendered when showDetails = true */}
       <div

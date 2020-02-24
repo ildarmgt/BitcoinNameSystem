@@ -44,6 +44,9 @@
   margin: calc(1 * var(--s)) calc(2 * var(--s));
   cursor: pointer;
   height: auto;
+
+  padding-left: calc(4 * var(--s));
+  text-indent: calc(-2 * var(--s));
 }
 
 .listItem .key {
@@ -142,7 +145,7 @@
 .ownershipDetails {
   text-align: center;
   margin-bottom: calc(1 * var(--s));
-  box-sizing: border-box;
+  /* box-sizing: border-box; */
   text-align: left;
 }
 

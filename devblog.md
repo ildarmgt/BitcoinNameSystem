@@ -30,7 +30,9 @@ I didn't want to write bip47 implementation myself from scratch and instead rely
 
 Now I should be able to target xpub posted under a domain, generate a transaction that both notifies the target via their public key and sends credits to an address they control and can easily find based on random number we picked.
 
-Notification address, unlike bip47, doesn't have to be theirs as that could connect to their public xpub. Instead can use a generic notification address and target simply scans all embedded data notifying there for successful decryption, which would reveal the secret path where their money is.
+Notification address, unlike bip47, doesn't have to be theirs as that could connect to their public xpub. Also the bip47 spec suggests using only 0-2147483647 or <4 bytes of entropy but at very little additional data that could be increased outside (current) brute force range. That's particularly importnat if the payment code is public information.
+
+Instead can use a generic notification address (same one used by everyone) and target simply scans all embedded data notifying there for successful decryption (check sum), which would reveal the secret path where their coins are.
 
 With up to 256 bits of entropy, it's infeasible for anyone else to parse every path.
 
@@ -48,6 +50,8 @@ This means (any number of people) 1337 people can send to awesome.btc user who p
 
 (Maybe I'm missing something)
 
-Only downside I can see is by using the generic notification address, the sender might be making it obvious they are sending someone privately. But they only have to do it once. After the first notification, with or without sending within same tx, the path can be just increased by 1 each time and thus requires no further notifications.
+Only downside I can see is by using the generic notification address, the sender might be making it obvious they are probably sending to someone privately even if unclear who. But they only have to do it once. After the first notification, with or without sending within same tx, the path can be just increased by 1 each time and thus requires no further notifications.
+
+Of course, this is a minor privacy improvement and doesn't remove the need to remember about the individual utxo, but it's also very cool I can give something like awesome.btc personalized name, go afk, and people sending to me do not see each other nor my other transaction history.
 
 I'm excited to finish writing this.

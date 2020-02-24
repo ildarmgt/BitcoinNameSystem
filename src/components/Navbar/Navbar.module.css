@@ -1,10 +1,10 @@
- /* total height: padding 2s, 2.5s a text line, 2s a padding = 6.0s */
+ /* total height: padding 2s, 2.5s button text line, 2s button padding = 6.0s */
 .nav {
   box-sizing: border-box;
   display: inline-block;
   position: absolute;
-  bottom: calc(0 * var(--s));
-  right: calc(0 * var(--s));
+  bottom: 0;
+  right: 0;
   text-align: right;
   color: var(--colorLightText);
   vertical-align: middle;
@@ -45,25 +45,17 @@
 
   box-shadow: inset 0 0 calc(0.25 * var(--s)) 0 var(--colorDarker1);
   background-color: var(--colorBrighter4);
-
-  /* --col1: rgba(255,255,255, 0.1); */
-  /* --col2: rgba(255,255,255, 0.7); */
-
-  /* background: linear-gradient(-45deg,  var(--col1) 0%, var(--col2) 33%, var(--col1) 66%, var(--col2) 100%); */
-  /* filter: opacity(0.9); */
-
 }
 
-.overflowMenu > div > a {
+.overflowMenu > div > .button {
   margin: calc(0.5 * var(--s));
   color: var(--colorDarker5);
 }
 
-.overflowMenu a,
-.nav a,
+.overflowMenu .button,
+.nav .button,
 .button {
   text-align: center;
-  color: var(--colorLightText);
   display: inline-block;
   vertical-align: middle;
   font-size: calc(2.5 * var(--s));
@@ -74,15 +66,13 @@
   cursor: pointer;
 }
 
-.nav a:hover,
+.nav .button:hover,
 .nav .button:hover {
   background-color: var(--colorDarker0_5);
 }
 
-.overflowMenu a:hover {
+.overflowMenu .button:hover {
   background-color: var(--colorBrighter9);
-  /* background-color: var(--colorDarker3); */
-
 }
 
 
@@ -93,11 +83,6 @@
 .overflowMenu .selected {
   background-color: var(--colorBrighter9);
 }
-
-/* .overflowMenu .selected:hover,
-.nav .selected:hover {
-  background-color: var(--colorDarker0_5);
-} */
 
 .warning {
   display: inline-block;
@@ -113,7 +98,6 @@
 }
 
 .pageNum {
-  color: var(--colorLightText);
   display: inline-block;
   font-size: calc(2.3 * var(--s));
   line-height: calc(2.5 * var(--s));
@@ -153,7 +137,7 @@
   .overflowMenu > div {
     background-color: var(--colorBrighter8);
   }
-  .overflowMenu > div > a:hover {
+  .overflowMenu > div > .button:hover {
     background-color: var(--colorDarker0_5);
   }
   .overflowMenu .selected {

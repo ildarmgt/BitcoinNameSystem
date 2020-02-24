@@ -161,7 +161,30 @@ Decentralization works on the principle of not being forced to trust backends. B
 
 * Search only easy in one direction: from alias to forwarding information, especially with long aliases.
 
-* Stealth address implementation (using slightly modified BIP47 principles for more entropy, single tx implementation, and no notification traceability to recepient nor to possibly public forwarding information)
+* Stealth address implementation
+
+  * using slightly modified BIP47 principles for more entropy
+
+  * single tx implementation
+
+  * linkability:
+
+    >"two transactions are unlinkable when an observer cannot prove that those two transactions were sent to the same user" - MRL-1
+
+    no direct link (including notification) to a recepient, their domain, or their public xpub
+
+  * traceability:
+
+    >"transaction is considered untraceable if all possible senders of a transaction are equiprobable" - MRL-1
+
+    traceability solution is beyond scope of this work and has to be solved via other methods:
+
+    1. coinjoin
+    2. wasabi
+    3. lightning network (turbo) channels
+    4. submarine swaps (atomic swaps between chain and lightning)
+    5. atomic swaps to another chain
+    6. probably more...
 
 ## Taking care of Bitcoin
 

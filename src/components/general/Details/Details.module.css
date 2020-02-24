@@ -1,39 +1,55 @@
 .wrapper {
   box-sizing: border-box;
+  display: block;
+
   font-size: calc(2 * var(--s));
 
   color: var(--colorBitcoinBlue);
+  width: 100%;
 }
 
 .buttonWrapper {
+  box-sizing: border-box;
+  position: relative;
+
   display: inline-block;
+  max-width: 80%;
+  cursor: pointer;
+  opacity: 0.5;
+
 }
 
 .toggleDetails {
+  box-sizing: border-box;
 
-  cursor: pointer;
-  /* display: inline-block; */
+  display:inline-block;
 
   line-height: calc(2 * var(--s));
   text-decoration: none;
-  padding: calc(0.75 * var(--s)) calc(2 * var(--s));
-  opacity: 0.5;
-  white-space: nowrap;
+  padding: calc(0.75 * var(--s)) calc(4 * var(--s));
+
   vertical-align: middle;
+  white-space: normal;
+  text-align: right;
+  word-wrap: break-word;
+
+  /* for arrow */
+  padding-right: calc(4 * var(--s));
+  width: 100%;
+  text-indent: calc(-2 * var(--s));
 }
 
-/* increase opacity on hover */
-.toggleDetails:hover {
-  opacity: 1;
-}
+
 
 /* empty arrow div */
 .arrow {
+  box-sizing: border-box;
+
   width: calc(2 * var(--s));
   height: calc(2 * var(--s));
-  /* lets the :before element be placed in absolute */
-  position: relative;
-  display: inline-block;
+  position: absolute;
+  top: calc(50% - (1 * var(--s)));
+  right: calc(1 * var(--s));
   vertical-align: middle;
   line-height: calc(2 * var(--s));
 
@@ -45,7 +61,6 @@
   /* starting position pointing to right when collapsed */
   transform: rotate(-90deg);
   margin: 0;
-  margin-left: calc(0.75 * var(--s));
 }
 
 /* actual arrow drawn */
@@ -77,7 +92,7 @@
 .details {
   /* just basic block in case styling is custom */
   margin-top: calc(1 * var(--s));
-
+  width: 100%;
 }
 
 .details > p {
@@ -89,8 +104,7 @@
   padding: calc(2 * var(--s)) calc(3 * var(--s));
   padding-right: calc(2 * var(--s));
 
-  /* padding-left: calc(4 * var(--s)); */
-  margin: calc(1 * var(--s)) calc(2 * var(--s));
+  margin: calc(1 * var(--s)) calc(4 * var(--s));
   margin-top: 0;
 }
 
@@ -103,3 +117,7 @@
   white-space: pre-wrap;
 }
 
+/* increase opacity on hover */
+.buttonWrapper:hover {
+  opacity: 1;
+}

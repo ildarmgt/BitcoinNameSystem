@@ -6,7 +6,7 @@ import axios from 'axios'
 
 const API_PATH_TESTNET = 'https://blockstream.info/testnet/api/'
 const API_PATH_BITCOIN = 'https://blockstream.info/api/'
-const API_RATE_LIMIT = 0.6    // guessing calls per second cap
+const API_RATE_LIMIT = 0.5    // guessing calls per second cap
 
 // (TODO) a single instance of async task executing loop per API to ensure rate limit holds per API
 // Meanwhile calling function can use its own busy flag to ensure promises are resolved before repeats.
@@ -18,19 +18,18 @@ export async function getFeeEstimates (strNetwork: string) {
     ? API_PATH_BITCOIN // only main chain fee estimate for better testing
     : API_PATH_BITCOIN
   ) + 'fee-estimates'
+  console.warn(API_PATH)
 
   try {
 
     const res = await axios.get(API_PATH)
-    console.log('Blockstream.info API getFeeEstimates', res.data)
-
-    // await rateLimit()
+    console.warn('Blockstream.info API getFeeEstimates', res.data)
 
     return res.data
 
   } catch (e) {
 
-    console.log(e)
+    console.warn(e)
     await rateLimit()
     throw new Error('Blockstream.info API getFeeEstimates failed')
   }
@@ -44,20 +43,18 @@ export async function getHeight (strNetwork: string) {
     ? API_PATH_TESTNET
     : API_PATH_BITCOIN
   ) + 'blocks/tip/height'
-  console.log(API_PATH)
+  console.warn(API_PATH)
 
   try {
 
     const res = await axios.get(API_PATH)
-    console.log('Blockstream.info API getHeight', res.data)
-
-    // await rateLimit()
+    console.warn('Blockstream.info API getHeight', res.data)
 
     return res.data
 
   } catch (e) {
 
-    console.log(e)
+    console.warn(e)
     await rateLimit()
     throw new Error('Blockstream.info API height get failed')
   }
@@ -95,10 +92,10 @@ export async function addRawTxToArray (utxoList: Array<any>, strNetwork: string)
             ? API_PATH_TESTNET
             : API_PATH_BITCOIN
         ) + 'tx/' + txid + '/hex'
-        console.log(API_PATH)
+        console.warn(API_PATH)
 
         const res = await axios.get(API_PATH)
-        console.log('Blockstream.info API addRawTxToArray:', index, 'index utxo has raw hex of', res.data)
+        console.warn('Blockstream.info API addRawTxToArray:', index, 'index utxo has raw hex of', res.data)
 
         // add hex data into cloned utxo array
         utxoList[index].hex = res.data
@@ -108,7 +105,7 @@ export async function addRawTxToArray (utxoList: Array<any>, strNetwork: string)
 
       } catch(e) {
         // keeping track of failures
-        console.log('fail detected', indexString, utxo, tries, erroredOutputs, e)
+        console.warn('fail detected', indexString, utxo, tries, erroredOutputs, e)
         // keep track of indecies missing hex
         erroredOutputs += indexString + ' '
       }
@@ -134,11 +131,11 @@ export async function getUTXOList (address: string, strNetwork: string) {
     ? API_PATH_TESTNET
     : API_PATH_BITCOIN
   ) + 'address/' + address + '/utxo'
-  console.log(API_PATH)
+  console.warn(API_PATH)
 
   try {
     const res = await axios.get(API_PATH)
-    console.log('Blockstream.info API getUTXOList', res.data)
+    console.warn('Blockstream.info API getUTXOList', res.data)
 
     await rateLimit()
 
@@ -147,7 +144,7 @@ export async function getUTXOList (address: string, strNetwork: string) {
 
   } catch (e) {
 
-    console.log(e)
+    console.warn(e)
     await rateLimit()
     throw new Error('Blockstream.info API access failed')
 
@@ -174,15 +171,16 @@ export async function getAddressHistory (address: string, network: string) {
     ? API_PATH_TESTNET
     : API_PATH_BITCOIN
   ) + 'address/' + address + CONFIRMED_PAGES_ADDON
+  console.warn(API_PATH)
 
   try {
     const res = await axios.get(API_PATH)
-    console.log('blockstream.info API getAddressHistory', res)
+    console.warn('blockstream.info API getAddressHistory', res)
 
     return res.data
 
   } catch (e) {
-    console.log(e)
+    console.warn(e)
     throw new Error('Blockstream.info API access failed')
   }
 }
@@ -208,14 +206,14 @@ export async function txPush (content: string, network: string) {
       }
     })
 
-    // console.log(res)
-    console.log('blockstream.info API txPush', res, ' Broadcasted on', network)
+    // console.warn(res)
+    console.warn('blockstream.info API txPush', res, ' Broadcasted on', network)
 
     // returns txid on success
     return { txid: res.data }
 
   } catch (e) {
-    console.log('Failed pushtx', network, e.response.data )
+    console.warn('Failed pushtx', network, e.response.data )
 
     throw new Error('Blockstream.info API access failed\n' + e.response.data)
   }

@@ -1,6 +1,6 @@
 import React from 'react'
 import { Store } from './../../store'
-import { Link, useHistory } from 'react-router-dom'
+import { useHistory } from 'react-router-dom'
 import styles from './Navbar.module.css'
 
 
@@ -9,6 +9,8 @@ const MAX_BUTTONS_TO_SHOW_UNCOLLAPSED = 4
 export const Navbar = (): JSX.Element => {
   // global state
   const { state } = React.useContext(Store)
+  // url changer
+  const history = useHistory()
 
   // references for objects of interest
   const searchButton = React.useRef<HTMLDivElement>(null)
@@ -92,49 +94,62 @@ export const Navbar = (): JSX.Element => {
   // all main buttons
   const buttonsArray = [
     [
-      <span ref={ searchButton }>
-        <Link
-          className={ isHomePage ? styles.selected : '' }
-          to='/'
-        >
-          search
-        </Link>
-      </span>
+
+      <div
+        ref={ searchButton }
+        className={ [styles.button, isHomePage ? styles.selected : ''].join(' ') }
+        onClick={ () => {
+          history.push('/')
+        } }
+      >
+        search
+      </div>
+
     ],[
-      <Link
-        className={ isCreatePage ? styles.selected : '' }
-        to='/create'
+      <div
+        className={ [styles.button, isCreatePage ? styles.selected : ''].join(' ') }
+        onClick={ () => {
+          history.push('/create')
+        } }
       >
         owners
-      </Link>
+      </div>
     ],[
-      <a
-        href="https://github.com/ildarmgt/BitcoinNameSystem"
-        target="_blank"
-        rel="noopener noreferrer"
+      <div
+        className={ [styles.button].join(' ') }
+        onClick={ () => {
+          window.open('https://github.com/ildarmgt/BitcoinNameSystem', '_blank')
+        } }
       >
         &lt;{ 'source' }&gt;
-      </a>
+      </div>
     ],[
-      <Link
-        className={ isAboutPage ? styles.selected : '' }
-        to='/about'
+      <div
+        className={ [styles.button, isAboutPage ? styles.selected : ''].join(' ') }
+        onClick={ () => {
+          history.push('/about')
+        } }
       >
         about
-      </Link>    ],[
-      <Link
-        className={ isSettingsPage ? styles.selected : '' }
-        to='/settings'
+      </div>
+    ],[
+      <div
+        className={ [styles.button, isSettingsPage ? styles.selected : ''].join(' ') }
+        onClick={ () => {
+          history.push('/settings')
+        } }
       >
         settings
-      </Link>
+      </div>
     ],[
-      <Link
-        className={ isWalletPage ? styles.selected : '' }
-        to='/wallet'
+      <div
+        className={ [styles.button, isWalletPage ? styles.selected : ''].join(' ') }
+        onClick={ () => {
+          history.push('/wallet')
+        } }
       >
         wallet
-      </Link>
+      </div>
     ],
   ]
 
@@ -164,8 +179,9 @@ export const Navbar = (): JSX.Element => {
       <div
         className={ styles.warning }
       >
-        not reviewed for use<br />
-        { state.network }
+        { state.network }<br />
+        {(process.env.NODE_ENV === 'development') && (<>development mode <br /></>)}
+        not reviewed for use
       </div>
 
       <div

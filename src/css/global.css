@@ -63,7 +63,7 @@ html {
   --colorHighlightLight: #FFFF00;
 
   /* transparent version of blue */
-  --colorLightText: rgba(17, 17, 51, 0.3);
+  --colorLightText: rgba(17, 17, 51, 0.35);
   --colorMediumText: rgba(17, 17, 51, 0.5);
   --colorHeavyText: rgba(17, 17, 51, 0.8);
 
@@ -405,6 +405,10 @@ table {
   box-sizing: border-box;
   width: 100%;
   border-collapse: collapse;
+  border-spacing: 0;
+  -webkit-border-horizontal-spacing: 0;
+  -webkit-border-vertical-spacing: 0;
+  table-layout: fixed;
 }
 
 table,

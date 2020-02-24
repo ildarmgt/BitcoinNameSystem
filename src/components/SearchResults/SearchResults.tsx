@@ -50,15 +50,27 @@ export const SearchResults = () => {
     </span>
   )
 
+  let nAddress = 0
+  const addressLink = (address: string) => (
+    <span
+      className={ [styles.breakable, styles.linkable].join(' ') }
+      key={ address + nAddress++ }
+      onClick={ ()=> {
+        const pathEdit = (state.network === 'testnet') ? 'testnet/' : ''
+        window.open(
+          `https://blockstream.info/${pathEdit}address/${address}`
+          , '_blank'
+        )
+      } }
+    >
+      { state.domain.notificationAddress }
+    </span>
+  )
+
   // get ownership info
   const tabledOwnershipData = owner ? [
     [['Owner'],               [[
-                                <span
-                                  className={ styles.breakable }
-                                  key={ 'owner1' }
-                                  >
-                                  { owner.address }
-                                </span>
+                                addressLink(owner.address)
                               ]]
     ],
     [['Notifications'],       [[
@@ -191,32 +203,46 @@ export const SearchResults = () => {
           <div
             className={ styles.describe }
           >
-            {/* only show matches when there is owner */}
-            {(!isBurn && !!owner) &&
-            (
-              <div className={ styles.describe__matches } >
-                { latestForwards.length } matches on { state.network } {'  '}
-              </div>
-            )}
+            {/* summarize search */}
+            <div className={ styles.describe__matches } >
+              { state.domain.txHistory.length } transaction{ state.domain.txHistory.length === 1 ? '' : 's' } found on { state.network }
+              {(!!owner) &&
+              (
+                <>
+                  <br />
+                  { latestForwards.length } current forward{ latestForwards.length === 1 ? '' : 's' }
+                </>
+              )}
+
+            </div>
 
             {/* no wonder but bidding period started */}
             {
-              (isBurn) && (
-                expandableTable(tabledBiddingData, 'Bidding information')
+              (!!isBurn) && (
+                expandableTable(tabledBiddingData, 'Bidding in progress. See details')
               )
             }
 
             {/* if no owner and no bidding - totally available */}
             {
               (!isBurn && !owner) && (
-                expandableTable(tabledAvailableDomainData, 'Available information')
+                expandableTable(tabledAvailableDomainData, 'No owner. See details')
               )
             }
 
             {/* owner exists - ownership details */}
             {(!!owner) && (
               <div className={ styles.ownershipDetails }>
-                { expandableTable(tabledOwnershipData, 'Ownership details')}
+                { expandableTable(
+                  tabledOwnershipData,
+                  `
+                    Owned by
+                    ${
+                      state.domain.currentOwner.slice(0, 3)
+                    }..${
+                      state.domain.currentOwner.slice(-3)
+                    }. \xa0See\xa0details
+                  `) }
               </div>
             )}
 
@@ -245,6 +271,23 @@ export const SearchResults = () => {
             })
           }
 
+          { (!!owner) && (
+            <a
+              className={ styles.listItem }
+              href={ interpretFw({
+                network: 'btc',
+                address: state.domain.currentOwner,
+                updateHeight: 0,
+                updateTimestamp: 0
+              }, state.network).link || undefined }
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              <span className={ styles.key }>control address: </span>
+              { state.domain.currentOwner }
+          </a>
+          ) }
+
           {/* show if domain is available */}
           <div className={ styles.avaiability }>
             {(!owner) && (
@@ -252,7 +295,7 @@ export const SearchResults = () => {
                 to='/create'
                 className={ styles.createLink }
               >
-                { isBurn ? 'Bidding started. Join?' : 'Domain available!' }
+                { isBurn ? 'Join bidding' : 'Domain available!' }
               </Link>
             )}
           </div>

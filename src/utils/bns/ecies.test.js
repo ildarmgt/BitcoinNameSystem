@@ -3,7 +3,12 @@ import bip39 from 'bip39'
 // import bs58check from 'bs58check'
 import { ecies } from './../../helpers/bns'
 
+
+
 describe('ecies encrypt and decrypt', () => {
+
+  console.time('ecies - derive nodes')
+
   const network = bitcoin.networks.bitcoin
   const strMnemonic = 'grace buddy scene leisure strategy spike hair mammal vanish butter hint olive'
   const seedBuffer = bip39.mnemonicToSeed(strMnemonic)
@@ -28,6 +33,7 @@ describe('ecies encrypt and decrypt', () => {
   // const calcNode = bitcoin.bip32.fromBase58(calcXPub, network)
   // console.log('others: 1st node:', calcNode)
 
+  console.timeEnd('ecies - derive nodes')
 
   const clearText = Buffer.from('This is 16 chars', 'utf8')
 
@@ -37,8 +43,13 @@ describe('ecies encrypt and decrypt', () => {
     toIv: 'tb1q2t7tc7nta5ul6xzd7682jgstxwkap2uflrgu4s02c800a077f88a2ea6d76d43de00e08e69411dd080a60e2e2788fed6af8e40444b0'
   }
 
+  console.time('ecies - encrypt')
   const encrypted = ecies.encrypt(childNode_m_1001h_0h_0h_neutered.publicKey, clearText, options)
+  console.timeEnd('ecies - encrypt')
+
+  console.time('ecies - decrypt')
   const decrypted = ecies.decrypt(childNode_m_1001h_0h_0h.privateKey, encrypted, options)
+  console.timeEnd('ecies - decrypt')
 
   test('Encryption returned buffer', () => {
     expect(Buffer.isBuffer(encrypted)).toEqual(true)

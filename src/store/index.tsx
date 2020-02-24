@@ -54,12 +54,10 @@ export function StoreProvider ({ children }: JSX.ElementChildrenAttribute): JSX.
   const [state, dispatch] = React.useReducer(reducer, initialState)
 
   // dev mode only (npm run start mode only, not built version!)
-  const TESTING = (process.env.NODE_ENV === 'development')
-  if (TESTING) {
-    localStorage.setItem('tempstate', JSON.stringify(state))
-  }
-
-
+  // const TESTING = (process.env.NODE_ENV === 'development')
+  // if (TESTING) {
+  //   localStorage.setItem('tempstate', JSON.stringify(state))
+  // }
 
   return (
     <Store.Provider value={{ state, dispatch }}>
