@@ -36,7 +36,7 @@ export const CreateHeader = () => {
   const aliasFontSize = { fontSize: fontScale.toString() + 'px' }
 
   return (
-    <>
+    <div className={ styles.wrapper }>
       <div
         className={ styles.cutOverflow }
         style={ barHeight }
@@ -63,7 +63,7 @@ export const CreateHeader = () => {
         >{ state.extension }</span>
       </div>
       <div className={ styles.spacer } />
-    </>
+    </div>
   )
 }
 

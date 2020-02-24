@@ -56,3 +56,13 @@
   margin-bottom: 8vw;
 }
 
+@media screen and (min-aspect-ratio: 12/9) {
+  .wrapper > * {
+    transform: scale(var(--horizontalScale));
+    transform-origin: top left;
+  }
+
+  .cutOverflow {
+    width: calc(100vw / var(--horizontalScale))
+  }
+}
