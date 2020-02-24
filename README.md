@@ -69,7 +69,9 @@ Wasn't sure what's better: Bitcoin Name Service, Bitcoin Name System, Bitcoin Na
 
   Located here: [Terminology and definitions](Definitions.md)
 
-  Example: `satoshi.btc` domain name alias could have multiple entries for forwarding information. One such entry could be of `twitter` network where `halfin` is provided for a forwarding address to find a twitter account. Another possibility is to have `https` network show `bitcoin.org` provided as a forwarding address to locate a home page on the world wide web, and `btc` network key can be matched with a long forwarding bitcoin address of `bc1q_FAKE_ADDRESS_e2_FAKE_ADDRESS_e2_FAKE_ADDRESS_e2_FAKE_ADDRESS_e2`.
+  1 domain name on BNS can provide many forwarding addresses for any network
+
+  ![pic](https://i.imgur.com/Blx5Rfv.png)
 
 ## Payments
 
