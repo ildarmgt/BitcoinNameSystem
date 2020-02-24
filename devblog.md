@@ -7,7 +7,10 @@ Basic implementation done as a series of tests complete.
 
 ![pic](https://i.imgur.com/wnZ52zJ.png)
 
-Works so far. Interesting derivation with public key takes ~5 sec but derivation with private less than half the time.
+Works so far.
+
+Interesting derivation of reusable node with public key takes ~5 sec but derivation with private less than half the time.
+Then individual sequence of children nodes are then easily calculated.
 
 `src/utils/bns/stealthaddress.test.js`
 

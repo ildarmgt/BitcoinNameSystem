@@ -31,7 +31,7 @@ export const P2LoadWallet = () => {
       <div
         className={ styles.title }
       >
-        Fund your <span className={ styles.orange }>BTC</span> wallet to interact with domains.
+        Fund your <span className={ styles.orange }>BTC</span> wallet to interact with domains
       </div>
 
       <div className={ styles.contentWrapper }>
