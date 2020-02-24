@@ -217,34 +217,19 @@ export const SearchResults = () => {
             </div>
 
             {/* no wonder but bidding period started */}
-            {
-              (!!isBurn) && (
-                expandableTable(tabledBiddingData, 'Bidding in progress. See details')
-              )
-            }
+            { (!!isBurn) && (
+                expandableTable(tabledBiddingData, 'Bidding period domain details')
+            ) }
 
             {/* if no owner and no bidding - totally available */}
-            {
-              (!isBurn && !owner) && (
-                expandableTable(tabledAvailableDomainData, 'No owner. See details')
-              )
-            }
+            { (!isBurn && !owner) && (
+              expandableTable(tabledAvailableDomainData, 'Unowned domain details')
+            ) }
 
             {/* owner exists - ownership details */}
-            {(!!owner) && (
-              <div className={ styles.ownershipDetails }>
-                { expandableTable(
-                  tabledOwnershipData,
-                  `
-                    Owned by
-                    ${
-                      state.domain.currentOwner.slice(0, 3)
-                    }..${
-                      state.domain.currentOwner.slice(-3)
-                    }. \xa0See\xa0details
-                  `) }
-              </div>
-            )}
+            { (!!owner) && (
+              expandableTable(tabledOwnershipData, 'Owned domain details')
+            ) }
 
           </div>
 
