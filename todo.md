@@ -2,21 +2,24 @@
 ## Short term
 
 
-- (PRIORITY 1) if notification is on input, shouldn't be necessary to include it on output! Conditions could check for either, and thus cut down in notification utxo use and smaller/cheaper tx  (modify)
+- (PRIORITY 1) stealth addresses proof of concept to send, receive, UI
 
-- (PRIORITY 2) stealth addresses proof of concept to send, receive, UI
+- (PRIORITY 2) independent single task queue for (each) api. visually might be easiest to handle them as a component, pass api functions as props, and even show history of all api calls and results for clarity or progress of calls. Component can be placed high up on tree to limit redraws and with persistent state. Editing api settings would could just render another component with different props killing previous. Combined with wallet component, these could then even be deployed as stand alone app, browser plugin, or reused in another app.
 
-- (PRIORITY 3) all different transaction types are putting too much complexity into transaction building function. I should create a wallet component that can be reused into any project to respond to queries. Source for query should be customizable and can come from state or even url. Wallet should handle displaying all data in full generic detail and give user option to review, accept, or deny broadcasts. This should allow separating logic for putting rules to do something vs putting together the bytes of transactions properly via 1 or more methods.
+- (PRIORITY 3) all different transaction types are putting too much complexity into transaction building function. I should create a wallet component that can be reused into any project to respond to queries. Source for query should be customizable and can come from state or even url. Wallet should handle displaying all data in full generic detail and give user option to review, accept, or deny broadcasts. This should allow separating logic for putting rules to do something vs putting together the bytes of transactions properly via 1 or more methods. Ideally I shouldn't have to scan for full tx hex's for all inputs until wallet is ready to build where it can queue api for only necessary tx hex's.
 
-- (PRIORITY 4) independent single task queue for (each) api. visually might be easiest to handle them as a component, pass api functions as props, and even show history of all api calls and results for clarity or progress of calls. Component can be placed high up on tree to limit redraws and with persistent state. Editing api settings would could just render another component with different props killing previous. Combined with wallet component, these could then even be deployed as stand alone app, browser plugin, or reused in another app.
+- (PRIORITY 4) if notification is on input, shouldn't be necessary to include it on output! Conditions could check for either, and thus cut down in notification utxo use and smaller/cheaper tx  (modify)
 
 - settings page
 - page navigation improved for hopping and checks
+- detect and fix dust outputs in tx maker
+- standardize lower case on addresses or hex strings used for hash?
 
 - `!a  <# of BTCs>` - Post price to sell (output @0), measured in floating point btc. Owner address (input @0). Similar to challenge period but instead of burning, tx are sent to owner. ~24 hours from time of first bid w/ more left on lease, cannot transfer ownership after first bid. Include notification (output @1) & optional public notification to '':'' address (@output 2). Must be no owner's ACS, use as inputs (inputs @1+). Does not change lease expiration - only burns can extend even if transfered.
 
 - `!ba <last price in floating BTC>` Bid on auction. Must: 1. State price at point of bid via the !buy command in op_return (output @0). 2. Must consume past ACS inputs at that price height (includes the owners public notification at '':'' if used) (inputs @1+). 3. Refund previous valid bidders (outputs @4+). 4. Pay 1.5x last price requested except for original price (output @3). 5. Create notification (output @1). 6. Use desired ownership/refund adderss as first input (input @0). Winner is derived 24 hours after first bid by highest price that followed all the rules. Does not change lease expiration - only burns can extend even if transfered.
 
+- scroll bar too high on search results
 
 - when changing yoru own address, should require cleaning up your old utxo from new address. could use an array under user state to track old addresses that can be checked in utxo rule scan.
 
@@ -43,8 +46,6 @@
 - npm library implemented with api/docker
 
 - multi-tx addresses interpretations (breaking them into pages)
-
-- more generic & user customizable interpretation logic
 
 - encoding interpretations
 
