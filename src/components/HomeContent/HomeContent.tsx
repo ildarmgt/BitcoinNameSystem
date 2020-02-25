@@ -5,6 +5,9 @@ import { searchAction, changeAliasAction } from './../../store/actions/'
 import { SearchResults } from './../SearchResults'
 import styles from './HomeContent.module.css'
 
+/**
+ * Root landing page.
+ */
 export const HomeContent = (props: any): JSX.Element => {
   const { state, dispatch } = React.useContext(Store)
 
@@ -64,7 +67,10 @@ export const HomeContent = (props: any): JSX.Element => {
           .btc
         </RoundButton>
       </div>
-      <div style={{ display: isSearchDone() ? 'block' : 'none' }}>
+      <div
+        className={ styles.results }
+        style={{ display: isSearchDone() ? 'block' : 'none' }}
+      >
         <SearchResults />
       </div>
     </div>

@@ -12,6 +12,10 @@
   margin-top: 10vh;
 }
 
+.results {
+  padding-top: calc(2 * var(--s));
+}
+
 .divSearch {
   display: inline-block;
   width: 100%;

@@ -1,7 +1,6 @@
 import React from 'react'
 import { Store, getOwner, getBidding } from '../../store/'
 import { Link } from 'react-router-dom'
-
 import styles from './SearchResults.module.css'
 import timeDiff from './../../helpers/timediff'
 import { OWNERSHIP_DURATION_BY_BLOCKS, CHALLENGE_PERIOD_DURATION_BY_BLOCKS, interpretFw, findLatestForwards } from '../../helpers/bns/'
@@ -21,7 +20,6 @@ export const SearchResults = () => {
     const msUntilExpires = blocksUntilExpires * 10.0 * 60.0 * 1000.0
     diff = timeDiff(msUntilExpires, 0)
   }
-
 
   // show BTC balance with styling and proper units based on network
   const unitBTC = (state.network === 'testnet') ? ' tBTC ' : ' BTC '
@@ -194,8 +192,25 @@ export const SearchResults = () => {
   const latestForwards = owner ? findLatestForwards(owner.forwards) : []
 
   return (
-    <>
-      <div className={ [styles.wrapper, 'scrollbar'].join(' ') }>
+    <div className={ styles.wrapper }>
+
+      {/* summarize search */}
+      <div className={ styles.matches } >
+        <div>
+          { state.domain.txHistory.length } transaction{ state.domain.txHistory.length === 1 ? '' : 's' } found on { state.network }
+        </div>
+        <div>
+          {
+            latestForwards.length
+          } current forward{
+            latestForwards.length === 1
+              ? ''
+              : 's'
+          }
+        </div>
+      </div>
+
+      <div className={ [styles.scrollbars, 'scrollbar'].join(' ') }>
 
         {/* scrollable search results */}
         <div className={ styles.listContainer } >
@@ -203,18 +218,6 @@ export const SearchResults = () => {
           <div
             className={ styles.describe }
           >
-            {/* summarize search */}
-            <div className={ styles.describe__matches } >
-              { state.domain.txHistory.length } transaction{ state.domain.txHistory.length === 1 ? '' : 's' } found on { state.network }
-              {(!!owner) &&
-              (
-                <>
-                  <br />
-                  { latestForwards.length } current forward{ latestForwards.length === 1 ? '' : 's' }
-                </>
-              )}
-
-            </div>
 
             {/* no wonder but bidding period started */}
             { (!!isBurn) && (
@@ -287,7 +290,7 @@ export const SearchResults = () => {
 
         </div>
       </div>
-    </>
+    </div>
   )
 }
 

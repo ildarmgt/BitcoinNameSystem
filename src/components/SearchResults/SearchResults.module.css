@@ -1,18 +1,27 @@
 .wrapper {
-
   font-size: (2 * var(--s));
+}
+
+.matches {
+  padding: calc(0 * var(--s)) calc(4.0 * var(--s));
+  margin-right: auto;
+  color: var(--colorLightText);
+  text-align: left;
+}
+
+.scrollbars {
   display: flex;
 
   flex-direction: column;
   text-align: left;
   align-items: left;
-  margin: calc(2.0 * var(--s));
-  margin-top: 0;
-  height: calc(100vh - 13.5vh - (22 * var(--s)));
+  margin: 0 calc(2.0 * var(--s));
 
+  height: calc(100vh - 13.5vh - (25 * var(--s)));
 
   color: var(--colorDarkText);
-  padding: calc(2.0 * var(--s));
+
+  padding: 0 calc(2.0 * var(--s));
 
   overflow-x: hidden;
   overflow-y: scroll;
@@ -138,9 +147,7 @@
   display: block;
 }
 
-.describe__matches {
-  padding: calc(0.75 * var(--s)) 0;
-}
+
 
 .ownershipDetails {
   text-align: center;
@@ -177,8 +184,7 @@
     justify-content: space-evenly;
   }
 
-  .wrapper {
-    height: calc(((100vh - 12.5vh)/ var(--horizontalScale)) - ((22.5 * var(--s))));
-
+  .scrollbars {
+    height: calc(((100vh - 12.5vh)/ var(--horizontalScale)) - ((25.5 * var(--s))));
   }
 }

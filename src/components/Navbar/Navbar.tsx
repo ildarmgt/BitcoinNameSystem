@@ -174,18 +174,20 @@ export const Navbar = (): JSX.Element => {
     (i > howManyButtonsFitSafely - 1)
   ) || []
 
+  const TESTING = (process.env.NODE_ENV === 'development')
+
   return (
     <>
       <div
         className={ styles.warning }
       >
         { state.network }<br />
-        {(process.env.NODE_ENV === 'development') && (<>development mode <br /></>)}
+        {(TESTING) && (<>development mode <br /></>)}
         not reviewed for use
       </div>
 
       <div className={ styles.wallet }>
-        <Wallet />
+        { (TESTING) && (<Wallet />) }
       </div>
 
       <div

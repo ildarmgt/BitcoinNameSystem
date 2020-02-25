@@ -19,9 +19,6 @@ export const DevPanel = (props: any): JSX.Element => {
   // store if DevPanel is hidden
   const [hidden, setHidden] = useState<boolean>(TESTING)
 
-
-
-
   // reruns to reattach keyup event to toggle hidden class
   useEffect(() => {
     const onDevKey = (e: any) => {

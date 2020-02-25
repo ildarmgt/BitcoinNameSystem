@@ -24,7 +24,8 @@
   bottom: calc(14 * var(--s));
   left: calc(2 * var(--s));
   color: var(--colorLightText);
-  font-size: calc(2.5 * var(--s));
+  font-size: calc(2 * var(--s));
+  opacity: 0.5;
 }
 
 .warning {

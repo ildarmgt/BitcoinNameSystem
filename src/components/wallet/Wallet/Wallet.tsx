@@ -11,18 +11,17 @@ import styles from './Wallet.module.css'
 export const Wallet = (props: any): JSX.Element => {
 
   // tasks
-  const [tasks, setTasks]: [any, (args: any) => void] = React.useState([])
+  const [tasks, setTasks]: [any, (args: any) => void] = React.useState()
 
   // detect changes in url
   React.useEffect(() => {
     const onUrlChange = (e: any) => {
-      setTasks(e.newURL)
       console.log(
-        '%c new url detected:', e.newURL,
+        'new url detected:', e.newURL,
         '\nold:', e.oldURL,
-        '\nevent:',
-        e, 'background: lightgreen;'
+        '\nevent:', e
       )
+      setTasks(e.newURL)
     }
     // event to detect url change
     window.addEventListener('hashchange', onUrlChange)
@@ -32,12 +31,10 @@ export const Wallet = (props: any): JSX.Element => {
     }
   }, [])
 
-
-
-
   return (
     <div className={ styles.wrapper }>
-      wallet state:
+      w
+      { ' ' }
       { tasks }
     </div>
   )
