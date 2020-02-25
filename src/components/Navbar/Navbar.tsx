@@ -187,7 +187,7 @@ export const Navbar = (): JSX.Element => {
       </div>
 
       <div className={ styles.wallet }>
-        { (TESTING) && (<Wallet />) }
+        <Wallet />
       </div>
 
       <div

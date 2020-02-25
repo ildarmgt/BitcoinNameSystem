@@ -4,6 +4,8 @@
 
 .matches {
   padding: calc(0 * var(--s)) calc(4.0 * var(--s));
+  padding-top: calc(2.0 * var(--s));
+  padding-bottom: calc(2.0 * var(--s));
   margin-right: auto;
   color: var(--colorLightText);
   text-align: left;
@@ -17,7 +19,7 @@
   align-items: left;
   margin: 0 calc(2.0 * var(--s));
 
-  height: calc(100vh - 13.5vh - (25 * var(--s)));
+  height: calc(100vh - 13.5vh - (29 * var(--s)));
 
   color: var(--colorDarkText);
 
@@ -185,6 +187,6 @@
   }
 
   .scrollbars {
-    height: calc(((100vh - 12.5vh)/ var(--horizontalScale)) - ((25.5 * var(--s))));
+    height: calc(((100vh - 12.5vh)/ var(--horizontalScale)) - ((29.5 * var(--s))));
   }
 }

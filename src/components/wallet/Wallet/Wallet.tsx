@@ -9,7 +9,6 @@ import styles from './Wallet.module.css'
  *
  */
 export const Wallet = (props: any): JSX.Element => {
-
   // tasks
   const [tasks, setTasks]: [any, (args: any) => void] = React.useState()
 
@@ -31,11 +30,18 @@ export const Wallet = (props: any): JSX.Element => {
     }
   }, [])
 
+
+  const TESTING = (process.env.NODE_ENV === 'development')
+
   return (
     <div className={ styles.wrapper }>
-      w
-      { ' ' }
-      { tasks }
+      { (TESTING) && (
+        <>
+          w
+          { ' ' }
+          { tasks }
+        </>
+      ) }
     </div>
   )
 }
