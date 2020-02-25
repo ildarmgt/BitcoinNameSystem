@@ -1,5 +1,5 @@
 import React from 'react'
-import { Store } from './../../../store/'
+import { Store } from '../../../store/'
 import styles from './Withdraw.module.css'
 import { RoundButton } from './../../general/RoundButton'
 import { ActionTypes } from './../../../interfaces'

@@ -1,6 +1,6 @@
 import React from 'react'
 import styles from './FeesSelection.module.css'
-import { Store } from './../../../store/'
+import { Store } from '../../../store/'
 import { RoundButton } from './../../general/RoundButton'
 import sanitize from './../../../helpers/sanitize'
 import {

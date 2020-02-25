@@ -15,7 +15,29 @@
   padding: calc(1 * var(--s));
   overflow-x: hidden;
   overflow-y: hidden;
+  font-size: calc(2.5 * var(--s));
+}
 
+.wallet {
+  position: absolute;
+  display: inline-block;
+  bottom: calc(14 * var(--s));
+  left: calc(2 * var(--s));
+  color: var(--colorLightText);
+  font-size: calc(2.5 * var(--s));
+}
+
+.warning {
+  display: inline-block;
+  position: absolute;
+  bottom: calc(6 * var(--s));
+  left: calc(2 * var(--s));
+  color: rgba(180, 12, 12, 0.685);
+  font-size: calc(2 * var(--s));
+  /* margin-left: calc(1 * var(--s)); */
+  vertical-align: middle;
+  opacity: 0.6;
+  text-align: left;
 }
 
 .overflowMenu {
@@ -58,7 +80,6 @@
   text-align: center;
   display: inline-block;
   vertical-align: middle;
-  font-size: calc(2.5 * var(--s));
   line-height: calc(2.5 * var(--s));
   margin: 0 calc(0.25 * var(--s));
   padding: calc(0.75 * var(--s)) calc(3 * var(--s));
@@ -84,18 +105,7 @@
   background-color: var(--colorBrighter9);
 }
 
-.warning {
-  display: inline-block;
-  position: absolute;
-  bottom: calc(6 * var(--s));
-  left: calc(0.1 * var(--s));
-  color: rgba(180, 12, 12, 0.685);
-  font-size: calc(2 * var(--s));
-  margin-left: calc(1 * var(--s));
-  vertical-align: middle;
-  opacity: 0.6;
-  text-align: left;
-}
+
 
 .pageNum {
   display: inline-block;

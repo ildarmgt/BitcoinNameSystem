@@ -1,5 +1,5 @@
 import React from 'react'
-import { Store, getOwner, getBidding } from './../../store'
+import { Store, getOwner, getBidding } from '../../store/'
 import { Link } from 'react-router-dom'
 
 import styles from './SearchResults.module.css'

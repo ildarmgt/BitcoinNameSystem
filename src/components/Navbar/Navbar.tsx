@@ -1,8 +1,8 @@
 import React from 'react'
-import { Store } from './../../store'
+import { Store } from '../../store/'
 import { useHistory } from 'react-router-dom'
 import styles from './Navbar.module.css'
-
+import { Wallet } from './../wallet/Wallet'
 
 const MAX_BUTTONS_TO_SHOW_UNCOLLAPSED = 4
 
@@ -182,6 +182,10 @@ export const Navbar = (): JSX.Element => {
         { state.network }<br />
         {(process.env.NODE_ENV === 'development') && (<>development mode <br /></>)}
         not reviewed for use
+      </div>
+
+      <div className={ styles.wallet }>
+        <Wallet />
       </div>
 
       <div

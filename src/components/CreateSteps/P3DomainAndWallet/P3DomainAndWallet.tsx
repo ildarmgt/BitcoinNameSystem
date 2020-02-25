@@ -1,7 +1,7 @@
 import React from 'react'
 import { RoundButton } from '../../general/RoundButton'
 import styles from './P3DomainAndWallet.module.css'
-import { Store } from '../../../store'
+import { Store } from '../../../store/'
 import { changePageInfoAction } from '../../../store/actions'
 import { scanAddressFullyAction } from './../../../store/actions'
 import { ActionTypes } from './../../../interfaces'

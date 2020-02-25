@@ -3,7 +3,7 @@ import ReactDOM from 'react-dom';
 import { HashRouter } from 'react-router-dom';
 import './css/global.css';
 import App from './App';
-import { StoreProvider } from './store'
+import { StoreProvider } from './store/'
 import { DevPanel } from './components/DevPanel'
 
 // Using for store access and hash router base

@@ -1,6 +1,6 @@
 import React from 'react'
 import { Switch } from './../components/general/Switch'
-import { Store } from './../store/'
+import { Store } from '../store/'
 import { ActionTypes } from './../interfaces/'
 
 export const Settings = (props: any): JSX.Element => {

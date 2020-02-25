@@ -1,6 +1,6 @@
 import React, { useEffect, useRef } from 'react'
 import { RoundButton } from './../general/RoundButton'
-import { Store } from './../../store/'
+import { Store } from '../../store/'
 import { searchAction, changeAliasAction } from './../../store/actions/'
 import { SearchResults } from './../SearchResults'
 import styles from './HomeContent.module.css'

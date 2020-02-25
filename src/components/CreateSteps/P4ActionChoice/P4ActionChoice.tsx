@@ -1,7 +1,7 @@
 import React from 'react'
 import { RoundButton } from '../../general/RoundButton'
 import styles from './P4ActionChoice.module.css'
-import { Store } from '../../../store'
+import { Store } from '../../../store/'
 import { changePageInfoAction, changeChoicesBNSAction } from '../../../store/actions'
 import { Details } from './../../general/Details'
 import { runAllActionPermissionChecks, calcBnsState, getGetters, getSetters } from './../../../helpers/bns/'

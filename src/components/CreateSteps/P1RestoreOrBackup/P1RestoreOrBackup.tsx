@@ -3,7 +3,7 @@ import { RoundButton } from '../../general/RoundButton'
 import styles from './P1RestoreOrBackup.module.css'
 import { createNewWalletAction, changePageInfoAction } from '../../../store/actions/'
 import sanitize from './../../../helpers/sanitize'
-import { Store } from './../../../store/'
+import { Store } from '../../../store/'
 import { Details } from './../../general/Details'
 
 enum pages {

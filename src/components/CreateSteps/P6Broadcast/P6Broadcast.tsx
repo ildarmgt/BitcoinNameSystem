@@ -1,5 +1,5 @@
 import React from 'react'
-import { Store } from '../../../store'
+import { Store } from '../../../store/'
 import { RoundButton } from '../../general/RoundButton'
 import styles from './P6Broadcast.module.css'
 import { changePageInfoAction } from '../../../store/actions'

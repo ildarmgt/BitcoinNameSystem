@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import { RoundButton } from '../../general/RoundButton'
 import styles from './P2LoadWallet.module.css'
-import { Store } from '../../../store'
+import { Store } from '../../../store/'
 import { changePageInfoAction } from '../../../store/actions'
 import qr from 'qrcode'
 import { useHistory } from 'react-router-dom'

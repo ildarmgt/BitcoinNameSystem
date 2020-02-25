@@ -1,5 +1,5 @@
 import { I_State, I_Action, ActionTypes } from '../../interfaces'
-import { initialState } from './../'
+import { initialState } from './../index.js'
 const {
   STORE_SEARCH_RESULTS_FAIL,
   STORE_SEARCH_RESULTS,
