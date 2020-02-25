@@ -39,6 +39,8 @@
 
 .alias {
   color: var(--colorBackground);
+  /* margin-top - modified by js */
+  /* font size - modified by js */
 }
 
 .ext {
@@ -53,7 +55,8 @@
 .spacer {
   display: block;
   position: static;
-  margin-bottom: 8vw;
+  /* 8vw old value */
+  margin-bottom: var(--headerOffset);
 }
 
 @media screen and (min-aspect-ratio: 12/9) {

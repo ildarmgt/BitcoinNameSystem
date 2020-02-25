@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import styles from './CreateHeader.module.css'
-import { Store } from './../../../store/'
+import { Store } from '../../../store/'
 import { useHistory } from 'react-router-dom'
 
 // restore backup or create new

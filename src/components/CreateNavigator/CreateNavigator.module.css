@@ -7,7 +7,7 @@
   /* doesn't change measured width if scroll bar appears or not */
   overflow-y: scroll;
   overflow-x: hidden;
-  height: calc(100vh - 8vw - calc(6 * var(--s)));
+  height: calc(100vh - var(--headerOffset) - calc(6 * var(--s)));
 }
 
 .horizontalScaler {
@@ -21,6 +21,6 @@
     transform: scale(var(--horizontalScale));
   }
   .wrapper {
-    height: calc(100vh - 8vw - (6 * var(--s) * var(--horizontalScale)));
+    height: calc(100vh - var(--headerOffset) - (6 * var(--s) * var(--horizontalScale)));
   }
 }

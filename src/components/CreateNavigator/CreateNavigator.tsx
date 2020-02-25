@@ -1,5 +1,5 @@
 import React from 'react'
-import { Store } from './../../store/'
+import { Store } from '../../store/'
 import { CreateHeader } from './../CreateSteps/CreateHeader'
 import { P1RestoreOrBackup } from '../CreateSteps/P1RestoreOrBackup'
 import { P2LoadWallet } from '../CreateSteps/P2LoadWallet'
