@@ -545,7 +545,7 @@ export const unrefundedAmounts = (st: I_BnsState): { [key: string]: number } => 
       : {...refundsLeft, [address]: amount }
   }, {})
 
-  console.log('unrefunded amounts:', amounts)
+  // console.log('unrefunded amounts:', amounts)
 
   return amounts
 }

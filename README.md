@@ -19,9 +19,10 @@ Or with a shorter URL scheme: [http://onbtc.me/?satoshi](http://onbtc.me/?satosh
 ```
 git clone https://github.com/ildarmgt/BitcoinNameSystem.git bns
 cd bns
-npm i
+npm ci # ci so fixed package versions are used to prevent unexpected changes
 npm run build
 ```
+
 The latest compiled release used can be found in `./docs/` folder
 
 Website can eventually run offline by running index.html in `/docs/` folder (w/ rest of files in folder present) for putting together transactions on air-gapped computers.
