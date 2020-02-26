@@ -29,3 +29,21 @@ export const getBidding = (st: I_State) => {
     bidding
   }
 }
+
+// show BTC balance with styling and proper units based on network
+export const unitsBTC = (st: I_State) => (st.network === 'testnet') ? 'tBTC' : 'BTC'
+
+export const satsToBTC = (sats: number): string => (sats / 1e8).toFixed(8)
+
+// easier visually to count satoshi via spaces
+// 123.876 543 21
+export const satsToBTCSpaced = (sats: number): string => {
+  let styling = (sats / 1e8).toFixed(8).split('')
+
+  // insert space 5 chars from end
+  styling = [...styling.slice(0, -5), '\xa0', ...styling.slice(-5)]
+  // insert another space 2 char from end
+  styling = [...styling.slice(0, -2), '\xa0', ...styling.slice(-2)]
+
+  return styling.join('')
+}

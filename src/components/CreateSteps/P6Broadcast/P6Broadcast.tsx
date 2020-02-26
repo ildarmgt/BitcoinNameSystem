@@ -4,7 +4,7 @@ import { RoundButton } from '../../general/RoundButton'
 import styles from './P6Broadcast.module.css'
 import { changePageInfoAction } from '../../../store/actions'
 import { calcTx } from './../../../helpers/bns/'
-import { txPush } from './../../../api/blockstream'
+import { txPushAPI } from './../../../api/blockstream'
 import { getUnspentSum } from '../../../helpers/bns/bitcoin'
 import { Details } from './../../general/Details'
 import { FeesSelection } from './../../wallet/FeesSelection'
@@ -188,7 +188,7 @@ export const P6Broadcast = () => {
           onClick={ async () => {
             if (tx && tx.hex) {
               try {
-                const res = await txPush(tx.hex, state.network)
+                const res = await txPushAPI(tx.hex, state.network, state.choices.apiPath)
                 setBroadcastStatus({ok: true, txid: res.txid, reason: '' })
               } catch (e) {
                 setBroadcastStatus({ok: false, txid: '', reason: e.message })

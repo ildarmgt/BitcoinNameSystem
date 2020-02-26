@@ -15,10 +15,13 @@ export const InputForm = (props: any) => {
   const [textValue, setTextValue] = React.useState()
 
   if (textValue === undefined){
-    setTextValue(props.thisInitialValue || '')
     if (props.thisInputOnChange) props.thisInputOnChange({ target: { value: props.thisInitialValue || '' } })
   }
 
+
+  React.useEffect(() => {
+    setTextValue(props.thisInitialValue || '')
+  }, [props.thisInitialValue] )
 
   return (
     <div
@@ -39,7 +42,6 @@ export const InputForm = (props: any) => {
           }
 
           onChange={ (e?: any) => {
-            console.log(['oneline', ...(props.sanitizeFilters || [''])])
 
             // set what we see in the textarea after removing unwanted chars like nextline
             const cleanedValue = sanitize(e.target.value, (props.sanitizeFilters || ['oneline']))
@@ -58,8 +60,8 @@ export const InputForm = (props: any) => {
             props.showButton === 'false' ? styles.invisible : ''
           ].join(' ') }
           next={ 'true' }
-          onClick={ (e?: any) => {
-            props.thisSubmitButtonOnClick ? props.thisSubmitButtonOnClick(e) : (()=>{})()
+          onClick={ (e: any) => {
+            props.thisSubmitButtonOnClick ? props.thisSubmitButtonOnClick(textValue) : (()=>{})()
           } }
         >
           OK

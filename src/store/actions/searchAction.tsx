@@ -1,6 +1,6 @@
 import { I_State, Dispatch, ActionTypes } from '../../interfaces'
 import { calcP2WSH, calcBnsState } from '../../helpers/bns'
-import { getAddressHistory, getHeight } from './../../api/blockstream'
+import { getAddressHistoryAPI, getHeightAPI } from './../../api/blockstream'
 const { STORE_SEARCH_RESULTS_FAIL, STORE_SEARCH_RESULTS } = ActionTypes;
 
 /**
@@ -23,12 +23,12 @@ export const searchAction = async (state: I_State, dispatch: Dispatch, router: a
 
     // 1. Get current blockheight from API so ownership is using latest possible info
 
-    const currentHeight = await getHeight(state.network)
+    const currentHeight = await getHeightAPI(state.network, state.choices.apiPath)
 
     // 2. Get API response for all tx history of this address
     // This will grab all tx that "notified" this address by sending to it
     // Upon failure error should be caught in this function
-    const notificationsTxHistory = await getAddressHistory(notificationsAddress, state.network)
+    const notificationsTxHistory = await getAddressHistoryAPI(notificationsAddress, state.network, state.choices.apiPath)
 
     // calculate bns data from this history via helper functions
     const { domain } = calcBnsState(

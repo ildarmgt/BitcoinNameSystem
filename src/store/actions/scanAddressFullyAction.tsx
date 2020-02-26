@@ -1,6 +1,6 @@
 import { I_State, Dispatch, ActionTypes } from '../../interfaces'
 import { calcP2WSH, calcBnsState } from '../../helpers/bns'
-import { getAddressHistory, getUTXOList, addRawTxToArray, getHeight } from '../../api/blockstream'
+import { getAddressHistoryAPI, getUTXOListAPI, addRawTxToArrayAPI, getHeightAPI } from '../../api/blockstream'
 const { UPDATE_WALLET, UPDATE_DOMAIN, ACTION_FAIL } = ActionTypes
 
 /**
@@ -27,15 +27,15 @@ export const scanAddressFullyAction = async (
       // 1. get address TX history
 
       const walletAddress = state.wallet.address
-      const walletTxHistory = await getAddressHistory(walletAddress, state.network)
+      const walletTxHistory = await getAddressHistoryAPI(walletAddress, state.network, state.choices.apiPath)
 
       // 2. get address UTXO list (could also calculate from tx history or API)
 
-      const utxoListWalletAddress = await getUTXOList(walletAddress, state.network)
+      const utxoListWalletAddress = await getUTXOListAPI(walletAddress, state.network, state.choices.apiPath)
 
       // 3. get raw tx for each UTXO (psbt requirement for creating new tx later)
 
-      const { utxoList, erroredOutputs } = await addRawTxToArray(utxoListWalletAddress, state.network)
+      const { utxoList, erroredOutputs } = await addRawTxToArrayAPI(utxoListWalletAddress, state.network, state.choices.apiPath)
 
       !!erroredOutputs && console.log('API had issues during hex utxo scan:', erroredOutputs)
 
@@ -68,12 +68,12 @@ export const scanAddressFullyAction = async (
 
       // 1. get current blockheight from API so ownership is using latest possible info
 
-      const currentHeight = await getHeight(state.network)
+      const currentHeight = await getHeightAPI(state.network, state.choices.apiPath)
 
       // 2. get address TX history
 
       const { notificationsAddress } = calcP2WSH(domainName, state.network)
-      const notificationsTxHistory = await getAddressHistory(notificationsAddress, state.network)
+      const notificationsTxHistory = await getAddressHistoryAPI(notificationsAddress, state.network, state.choices.apiPath)
 
 
       // 3. derive new BNS domain state & utxo
@@ -87,9 +87,10 @@ export const scanAddressFullyAction = async (
 
       // 4. get raw tx for each UTXO (psbt requirement for creating new tx later)
 
-      const { erroredOutputs } = await addRawTxToArray(
+      const { erroredOutputs } = await addRawTxToArrayAPI(
         newDomain.derivedUtxoList,
-        state.network
+        state.network,
+        state.choices.apiPath
       )
 
       !!erroredOutputs && console.log('API had issues during hex utxo scan:', erroredOutputs)

@@ -1,4 +1,5 @@
 import { I_Forward } from '../types'
+
 /**
  * Reads a single forward info object to interpret its values
  * as where the forwarding address should be used, what it is, and what link to use.
@@ -25,11 +26,9 @@ export function interpretFw (fw: I_Forward, blockchain?: string) {
   ) {
     return {
       where: 'btc:',
-      what: (
-        fw.address
-      ),
+      what: (fw.address),
       link: (
-        `https://blockstream.info/${blockchain === 'testnet' ? 'testnet/' : ''}address/` + fw.address
+        `https://blockstream.info/${blockchain === 'testnet' ? 'testnet/' : ''}address/` + (fw.address)
       ),
       render: true
     }
@@ -43,8 +42,8 @@ export function interpretFw (fw: I_Forward, blockchain?: string) {
   ) {
     return {
       where: 'https://',
-      what: fw.address,
-      link: 'https://' + fw.address,
+      what: (fw.address),
+      link: 'https://' + (fw.address),
       render: true
     }
   }
@@ -52,8 +51,8 @@ export function interpretFw (fw: I_Forward, blockchain?: string) {
   if (onNetwork === 'twitter') {
     return {
       where: 'twitter.com/',
-      what: fw.address,
-      link: 'https://twitter.com/' + fw.address,
+      what: (fw.address),
+      link: 'https://twitter.com/' + (fw.address),
       render: true
     }
   }
@@ -61,8 +60,8 @@ export function interpretFw (fw: I_Forward, blockchain?: string) {
   if (onNetwork === 'github') {
     return {
       where: 'github.com/',
-      what: fw.address,
-      link: 'https://github.com/' + fw.address,
+      what: (fw.address),
+      link: 'https://github.com/' + (fw.address),
       render: true
     }
   }
@@ -70,15 +69,15 @@ export function interpretFw (fw: I_Forward, blockchain?: string) {
   if (onNetwork === 'youtube') {
     return {
       where: 'youtu.be/',
-      what: fw.address,
-      link: 'https://www.youtube.com/watch?v=' + fw.address,
+      what: (fw.address),
+      link: 'https://www.youtube.com/watch?v=' + (fw.address),
       render: true
     }
   }
 
   return {
-    where: onNetwork + ' :',
-    what: ' ' + fw.address,
+    where: (onNetwork) + ' :',
+    what: ' ' + (fw.address),
     link: undefined,
     render: true
   }

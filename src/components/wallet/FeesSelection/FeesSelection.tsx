@@ -6,7 +6,7 @@ import sanitize from './../../../helpers/sanitize'
 import {
   changeChoicesBNSAction
 } from './../../../store/actions'
-import { getFeeEstimates } from './../../../api/blockstream'
+import { getFeeEstimatesAPI } from './../../../api/blockstream'
 
 /**
  * Fees selection dialogue.
@@ -34,7 +34,7 @@ export const FeesSelection = () => {
     if (!feeSuggestions.apiSuccess) {
       try {
         // get fee estimates from API
-        const apiSuggest = await getFeeEstimates(state.network)
+        const apiSuggest = await getFeeEstimatesAPI(state.network, state.choices.apiPath)
         setFeeSuggestions({
           min20: apiSuggest['2'],
           min40: apiSuggest['4'],

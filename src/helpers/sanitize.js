@@ -14,6 +14,7 @@ export default function  sanitize (inputString, stringOrArray) {
   }
 
   // add each choice to filter selection
+  // (set object would be fastest but these are only a few letters)
 
   // string mask
   let filter = '';

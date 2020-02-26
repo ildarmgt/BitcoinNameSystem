@@ -4,20 +4,17 @@ import axios from 'axios'
 // https://github.com/Blockstream/esplora/blob/esplora_v2.00/API.md
 // https://github.com/Blockstream/esplora/blob/master/API.md#post-tx
 
-const API_PATH_TESTNET = 'https://blockstream.info/testnet/api/'
-const API_PATH_BITCOIN = 'https://blockstream.info/api/'
+// const API_PATH_TESTNET = 'https://blockstream.info/testnet/api/'
+// const API_PATH_BITCOIN = 'https://blockstream.info/api/'
+
 const API_RATE_LIMIT = 0.5    // guessing calls per second cap
 
 // (TODO) a single instance of async task executing loop per API to ensure rate limit holds per API
 // Meanwhile calling function can use its own busy flag to ensure promises are resolved before repeats.
 // RawTx requests and multipage history (length > 25) are main risks.
 
-export async function getFeeEstimates (strNetwork: string) {
-  const API_PATH = (
-    (strNetwork === 'testnet')
-    ? API_PATH_BITCOIN // only main chain fee estimate for better testing
-    : API_PATH_BITCOIN
-  ) + 'fee-estimates'
+export async function getFeeEstimatesAPI (strNetwork: string, path: { [network: string]: string }) {
+  const API_PATH = path[strNetwork] + 'fee-estimates'
   console.warn(API_PATH)
 
   try {
@@ -37,12 +34,8 @@ export async function getFeeEstimates (strNetwork: string) {
 }
 
 
-export async function getHeight (strNetwork: string) {
-  const API_PATH = (
-    (strNetwork === 'testnet')
-    ? API_PATH_TESTNET
-    : API_PATH_BITCOIN
-  ) + 'blocks/tip/height'
+export async function getHeightAPI (strNetwork: string, path: { [network: string]: string }) {
+  const API_PATH = path[strNetwork] + 'blocks/tip/height'
   console.warn(API_PATH)
 
   try {
@@ -67,7 +60,9 @@ export async function getHeight (strNetwork: string) {
  * @param     {string}    strNetwork      Network type: 'bitcoin' or 'testnet'.
  * @returns   {object}                    { arrayTx: arrayTx w/ .hex, error: string, fails: number }
  */
-export async function addRawTxToArray (utxoList: Array<any>, strNetwork: string) {
+export async function addRawTxToArrayAPI (utxoList: Array<any>, strNetwork: string, path: { [any: string]: string }) {
+  if (utxoList === undefined) throw new Error('undefined utxoList when addRawTxToArray was called')
+
   // to track failures indecies
   let erroredOutputs = ''
 
@@ -87,11 +82,7 @@ export async function addRawTxToArray (utxoList: Array<any>, strNetwork: string)
         const { txid } = utxo
 
         // raw tx hex path on API
-        const API_PATH = (
-          (strNetwork === 'testnet')
-            ? API_PATH_TESTNET
-            : API_PATH_BITCOIN
-        ) + 'tx/' + txid + '/hex'
+        const API_PATH = path[strNetwork] + 'tx/' + txid + '/hex'
         console.warn(API_PATH)
 
         const res = await axios.get(API_PATH)
@@ -125,12 +116,11 @@ export async function addRawTxToArray (utxoList: Array<any>, strNetwork: string)
  * @param     {string}    strNetwork    Network type: 'bitcoin' or 'testnet'.
  * @returns   {Array}                   Array of UTXO.
  */
-export async function getUTXOList (address: string, strNetwork: string) {
-  const API_PATH = (
-    (strNetwork === 'testnet')
-    ? API_PATH_TESTNET
-    : API_PATH_BITCOIN
-  ) + 'address/' + address + '/utxo'
+export async function getUTXOListAPI (address: string, strNetwork: string, path: { [any: string]: string }) {
+  if (address === undefined || address === '') throw new Error('no address when getUTXOList called')
+
+
+  const API_PATH = path[strNetwork] + 'address/' + address + '/utxo'
   console.warn(API_PATH)
 
   try {
@@ -158,19 +148,15 @@ export async function getUTXOList (address: string, strNetwork: string) {
  * @param   {string} network    - 'testnet' or 'bitcoin' to match bitcoinjs-lib.
  * @returns {Array<object>}     -  Array of tx objects.
  */
-export async function getAddressHistory (address: string, network: string) {
+export async function getAddressHistoryAPI (address: string, strNetwork: string, path: { [any: string]: string }) {
+  if (address === undefined || address === '') throw new Error('no address when getAddressHistory called')
   // https://blockstream.info/testnet/api/address/tb1qprkzdaqt5jkxrhy57ngvra8k0rvq63ulksz8cx85qwke3myhjrtq9s6nj3/txs/chain
   // GET /address/:address/txs/chain[/:last_seen_txid]
   // Get confirmed transaction history for the specified address/scripthash, sorted with newest first.
   // Returns 25 transactions per page. More can be requested by specifying the last txid seen by the previous query.
 
   const CONFIRMED_PAGES_ADDON = '/txs/chain'
-
-  const API_PATH = (
-    (network === 'testnet')
-    ? API_PATH_TESTNET
-    : API_PATH_BITCOIN
-  ) + 'address/' + address + CONFIRMED_PAGES_ADDON
+  const API_PATH = path[strNetwork] + 'address/' + address + CONFIRMED_PAGES_ADDON
   console.warn(API_PATH)
 
   try {
@@ -192,12 +178,10 @@ export async function getAddressHistory (address: string, network: string) {
  * @param   {string}  network  - 'testnet' or 'bitcoin' to match bitcoinjs-lib.
  * @returns {string}           - Successful broadcast returns txid, otherwise error reason.
  */
-export async function txPush (content: string, network: string) {
+export async function txPushAPI (content: string, strNetwork: string, path: { [any: string]: string }) {
+  if (content === undefined || content === '') throw new Error('no content when txPush called')
 
-  const API_PATH =
-    (network === 'testnet')
-    ? API_PATH_TESTNET + 'broadcast'
-    : API_PATH_BITCOIN + 'broadcast'
+  const API_PATH = path[strNetwork] + 'broadcast'
 
   try {
     const res = await axios.get(API_PATH, {
@@ -207,13 +191,13 @@ export async function txPush (content: string, network: string) {
     })
 
     // console.warn(res)
-    console.warn('blockstream.info API txPush', res, ' Broadcasted on', network)
+    console.warn('blockstream.info API txPush', res, ' Broadcasted on', strNetwork)
 
     // returns txid on success
     return { txid: res.data }
 
   } catch (e) {
-    console.warn('Failed pushtx', network, e.response.data )
+    console.warn('Failed pushtx', strNetwork, e.response.data )
 
     throw new Error('Blockstream.info API access failed\n' + e.response.data)
   }
