@@ -50,6 +50,9 @@ export interface I_State {
     height: number
   }
   choices: {
+    apiPath: {
+      [network: string]: string
+    }
     action: I_Checked_Action | {}
     feeRate: number
     txHex: string

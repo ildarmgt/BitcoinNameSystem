@@ -1,8 +1,12 @@
 import React from 'react'
 import { Switch } from './../components/general/Switch'
+import { InputForm } from './../components/general/InputForm'
 import { Store } from '../store/'
 import { ActionTypes } from './../interfaces/'
 
+/**
+ * Settings path page. (temporarily used for testing)
+ */
 export const Settings = (props: any): JSX.Element => {
   // global state
   const { state, dispatch } = React.useContext(Store)
@@ -27,11 +31,33 @@ export const Settings = (props: any): JSX.Element => {
             { value: 'mainnet', do: () => { dispatch({ type: ActionTypes.LOAD_STATE, payload: { ...state, network: 'bitcoin' } }) } }
           ] }
         />
-
-
       </div>
 
-      <br /> <br />
+      <br />
+
+      <InputForm
+        style={ { width: '80%' } }
+        thisInputLabel={ 'Path for full node with esplora API' }
+
+        thisInitialValue={ state.choices.apiPath[state.network] }
+
+        showBonusInformation={ 'true' }
+        sanitizeFilters={ ['url'] }
+
+        thisSubmitButtonOnClick={ (textValue: string) => {
+          state.choices.apiPath[state.network] = textValue
+          console.log('click set value to ', textValue)
+          dispatch({
+            type: ActionTypes.LOAD_STATE,
+            payload: { ...state}
+          })
+        } }
+      >
+        { state.network } : { state.choices.apiPath[state.network] }
+      </InputForm>
+
+      <br /><br />
+
       <div>
         Automatically save data to browser (local storage) ? (todo)<br />
         <Switch
