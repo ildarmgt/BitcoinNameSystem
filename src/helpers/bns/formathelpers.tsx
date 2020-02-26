@@ -10,7 +10,10 @@ import { I_User, I_Forward, I_BnsState, I_TX, I_UTXO, I_Bid, BnsBidType } from '
 import { decrypt } from './cryptography'
 import { deterministicRandomBid } from './deterministicRandom'
 
-// ========== helper functions =====================
+
+/* -------------------------------------------------------------------------- */
+/*                              helper functions                              */
+/* -------------------------------------------------------------------------- */
 
 export const existsCurrentOwner = (st: I_BnsState): boolean => st.domain.currentOwner !== ''
 export const existsUser = (st: I_BnsState, address: string): boolean => !!st.domain.users[address]
@@ -153,16 +156,16 @@ export const readEmbeddedData = (st: I_BnsState, tx: I_TX):void => {
   const embeddedDataBuffer = Buffer.from(embeddedDataHex, 'hex')
 
   const decryptionKey = st.domain.domainName + user.address + nonce
-  console.log(
-    '',
-    getTxHeight(tx),
-    ': decryption key: ',
-    st.domain.domainName,
-    user.address,
-    nonce
-  )
+  // console.log(
+  //   '',
+  //   getTxHeight(tx),
+  //   ': decryption key: ',
+  //   st.domain.domainName,
+  //   user.address,
+  //   nonce
+  // )
   const embeddedDataUtf8 = decrypt(embeddedDataBuffer, decryptionKey)
-  console.log('', getTxHeight(tx), ': found embedded data:', embeddedDataUtf8)
+  // console.log('', getTxHeight(tx), ': found embedded data:', embeddedDataUtf8)
 
   // split by spaces into array
   const embeddedDataUtf8Array = embeddedDataUtf8.split(' ')
@@ -179,8 +182,13 @@ export const readEmbeddedData = (st: I_BnsState, tx: I_TX):void => {
       const networkPiece = embeddedDataUtf8Array[index - 1]
       const forwardingAddressPiece = word
       const thisForward = {
-        network:          networkPiece,
-        address:          forwardingAddressPiece,
+        // encoding text here before inserting it into global state
+        // encodeURIComponent() escapes all characters except: A-Z a-z 0-9 - _ . ! ~ * ' ( )
+        // majority of usecases do not need special characters
+        // for special cases users can just
+        // create a rule for specific network to decodeURIComponent & handle carefully
+        network:          encodeURIComponent(networkPiece),
+        address:          encodeURIComponent(forwardingAddressPiece),
         updateHeight:     getTxHeight(tx),
         updateTimestamp:  getTxTimestamp(tx)
       }
