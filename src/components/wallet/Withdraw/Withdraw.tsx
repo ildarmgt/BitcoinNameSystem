@@ -1,13 +1,13 @@
 import React from 'react'
-import { Store } from '../../../store/'
+import { Store, unitsBTC, satsToBTCSpaced } from '../../../store/'
 import styles from './Withdraw.module.css'
 import { RoundButton } from './../../general/RoundButton'
 import { ActionTypes } from './../../../interfaces'
 import {
   scanAddressFullyAction,
-  changePageInfoAction
+  // changePageInfoAction
 } from './../../../store/actions'
-import { useHistory } from 'react-router-dom'
+// import { useHistory } from 'react-router-dom'
 import { getUnspentSum } from '../../../helpers/bns/bitcoin'
 import { FeesSelection } from './../FeesSelection'
 import { LogoBackground } from './../../general/LogoBackground'
@@ -19,28 +19,24 @@ export const Withdraw = () => {
   // global state
   const { state, dispatch } = React.useContext(Store)
 
-
   // Local state: keep track if API is busy
   const [ apiStatus, setApiStatus ] = React.useState('ok')
 
-  // show BTC balance with styling and proper units based on network
-  const unitBTC = (state.network === 'testnet') ? ' tBTC ' : ' BTC '
   const showBTC = (sats: number = 0): JSX.Element => (
     <>
       <span className={ styles.balance }>
-        { (sats / 1e8).toFixed(8) }
+        { satsToBTCSpaced(sats) }
       </span>
-      { unitBTC }
+      { ' ' + unitsBTC(state) + ' ' }
     </>
   )
 
-  const history = useHistory()
-
+  // const history = useHistory()
   // if wallet is not loaded, send to create page 1
-  if (!state.wallet.mnemonic) {
-    changePageInfoAction(state, dispatch, 1)
-    history.push('/create')
-  }
+  // if (!state.wallet.mnemonic) {
+  //   changePageInfoAction(state, dispatch, 1)
+  //   history.push('/create')
+  // }
 
   return (
     <div className={ styles.wrapper }>
