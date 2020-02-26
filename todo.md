@@ -23,6 +23,9 @@
 
 - when changing yoru own address, should require cleaning up your old utxo from new address. could use an array under user state to track old addresses that can be checked in utxo rule scan.
 
+- escape domain names for standard by default to prevent collisions with unescaped names and other url params, might prevent others from rendering it directly as well. decoding back to raw string can be easily done in done but riskier as default.
+- no html drawn directly or 3rd party provided JSON files.
+
 - multipage tx scan (setting up test cases on testnet)
 
 - forward option to open url (if possible) or copy content to clipboard as side icons allow on links

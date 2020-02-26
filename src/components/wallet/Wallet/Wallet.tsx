@@ -9,7 +9,11 @@ import styles from './Wallet.module.css'
 
 /**
  * Reusable component for creating a wallet.
- * Let's pass obvious data via props.
+ * Can get data in props (props.txBuilder object) but unescaped and can result in clear html
+ * Can get data in URL params (follows ? after # with ?key1=value1&key2=value2 format, values must go through encodeURIcomponent)
+ * Can get data from sessionstorage
+ * Wallet can ask for most sensitive data directly, very last step, and discard after using.
+ * User can provide pin and choose to store most sensitive data encrypted.
  * Simulates behavior of browser wallet plugins without needing them. *
  */
 export const Wallet = (props: any): JSX.Element => {
@@ -21,21 +25,34 @@ export const Wallet = (props: any): JSX.Element => {
   })
 
 
+  // gui settings
+  // const [gui, setGui] = React.useState({ show: true })
+
+
+
+
   // stores fed params
   const [params, setParams]: [any, (args: any) => void] = React.useState({})
 
-  // run methods to handle detection and processing of parameters after '#' in URL
-  React.useEffect(() => handleParamsChanges(params, setParams), [params])
+  // run methods to handle detection and processing of parameters from all sources
+  React.useEffect(() => handleParams(params, setParams), [params])
 
   return (
     <div className={ styles.wrapper }
       onClick={ () => {
         console.log({ params, txBuilder })
+        sessionStorage.setItem('this', 'was')
+        sessionStorage.setItem('a', 'triumph')
+        sessionStorage.setItem('I', 'm')
+        sessionStorage.setItem('making', 'a')
+        sessionStorage.setItem('note', 'here')
+        sessionStorage.setItem('huge', 'success')
+        window.dispatchEvent( new Event('storage') );
       } }
     >
       { (TESTING) && (
         <>
-          log state
+          B
         </>
       ) }
     </div>
@@ -47,17 +64,28 @@ export const Wallet = (props: any): JSX.Element => {
 /*                              helpers (for now)                             */
 /* -------------------------------------------------------------------------- */
 
-// run methods to handle detection and processing of parameters after '#' in URL
-const handleParamsChanges = (params: any, setParams: any) => {
 
+
+// run methods to handle detection and clean up of parameters passed
+const handleParams = (params: any, setParams: any) => {
+
+  // even to detect session storage edit
+  window.addEventListener('storage', handleStorageChange(params, setParams))
   // event to detect url change
   window.addEventListener('hashchange', handleHashChange(params, setParams))
+
+  // clean up function is returned to run if component is removed (or changed)
   return () => {
-    // clean up function is returned to run if component is removed (or changed)
+    // clean up storage listener
+    window.removeEventListener('storage', handleStorageChange(params, setParams))
+    // clean up url hash listener
     window.removeEventListener('hashchange', handleHashChange(params, setParams))
-    // clean up url as well
-    resetUrl()
   }
+}
+
+// curried storage change handler
+const handleStorageChange = (params: any, setParams: any) => (e: any): void => {
+  console.log('handleStorageChange', { e })
 }
 
 // curried url change handler
@@ -98,12 +126,15 @@ const handleHashChange = (params: any, setParams: any) => (e: any): void => {
     console.log('new wallet params added:', newParams)
     setParams(newParams)
   }
+
+  // clean up url as well
+  resetUrl()
 }
 
 // remove params from URL
 const resetUrl = () => {
   window.history.pushState({}, '', `${ window.location.href.split('?')[0] }`)
-  // emit event if param or url change needs to be detected
+  // emit event if param or url change if needs to be detected
   // window.dispatchEvent(new HashChangeEvent("hashchange"));
 }
 
@@ -281,3 +312,23 @@ interface I_Input {
 
 // other way to update url:
 // window.history.replaceState({}, '', `${location.pathname}?${params}`);
+
+
+// sessionStorage is bound not only to the origin, but also to the browser tab
+// survives page refresh but not tab close and never seen by another tab
+// https://javascript.info/localstorage
+// combined with encryption sounds good
+// only data
+
+// Save data to sessionStorage
+// sessionStorage.setItem('key', 'value');
+// Get saved data from sessionStorage
+// let data = sessionStorage.getItem('key');
+// Remove saved data from sessionStorage
+// sessionStorage.removeItem('key');
+// Remove all saved data from sessionStorage
+// sessionStorage.clear();
+
+// props are unescaped and many times appear in html, most dangerous
+
+// https://owasp.org/www-community/xss-filter-evasion-cheatsheet
