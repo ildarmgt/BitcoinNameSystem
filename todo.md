@@ -104,20 +104,7 @@ Uncertain ideas
   - (no bns change needed, only in presentation of data have to do 2nd request)
 
 - Remove address re-use. This is not easy since everyone has to keep track of owner address & ignore tx not from owner.
-  - option 1: switch from p2wpkh address to p2wsh address with hot and cold keys and script of type
-  ```
-  IF                                            // user selects hot key
-    < 24 hours > CHECKSEQUENCEVERIFY DROP       // make sure 24 hours have passed since utxo was created
-    < hot public key > CHECKSIGVERIFY           // compare hot public key to submitted signature
-  ELSE                                          // user selects cold key
-    < cold public key > CHECKSIGVERIFY          // compare cold public key to submitted signature
-  ENDIF
-  <nonce> DROP
-  ```
-  Start nonce at 0, every notification increase nonce by 1.
-  If hot keys get stolen or lost, can use cold keys to transfer ownership to another address.
-  Is this still necessary with RFC6979 for security? It won't give much privacy since everyone has to derive it.
-  Could add logic to allow cold keys to undo hot keys actions for 24 hours so they can transfer ownership to address they do control.
+
 
   - option 2: - transfer ownership every tx to new owner address with a flag signifying same owner?
 
@@ -150,8 +137,16 @@ Uncertain ideas
   - minimums and refunds: at some time during bidding period, there could be a mix of confirmed and unconfirmed tx bidding. most effective bids that accept the cost to win would be encouraged to significantly outbid everyone else. There are no obvious reasons to allow fighting over minor fractions for ownership and only makes the domains less appealing. However, if there is a demand for a specific domain that only has a lowball bid on it, a significant increase (like x10) should be worth it. Minimize pointless tx span and griefing. For most cases, 24 hours waiting period is only a formality as nobody will know that domain is bid on without extensive monitoring that only gets tougher as aliases get longer. 24 hours is shortest amount of time that gives everyone around the world chance to check the status during regular awake hours to allow oportunity to challenge but keep delay small if not. Even non-owners can be adding forwarding info to the domain in same tx or after the bids to save on fees. As burn amounts get significant, the reimbersement requirement should the losing parties significantly but it's always a risk and not a guarantee. Refunds could be held off until near the end to see if they are worth it.
 
 - address reuse avoidance
-  - owner could be updated via nonced script or hd wallet (would need xpub stored) or changing address
-  - unlikely to help enough given the op_return output on all
+  - owner could be updated via nonced script if controlled from p2wsh but key pair for signature within script would stay same
+  - owner could be deterministically updated via xpub but xpub sharing has similar risks to reuse
+  - unlikely to help privacy enough given the op_return outputs and notification address on all
+  - gets complicated if old address is ever reused for control, but could be abstracted under parent address
+  - allows this now by changing address each tx via commands (page 4)
+    - space consuming, can give decoded into bytes option
+    - https://github.com/sipa/bech32/tree/master/ref/javascript
+  ideally control address is simply used very rarely for only this purpose
+
+
 
 - notification tx could also be nonced
   - would have to request significantly more address data
@@ -198,3 +193,30 @@ can connect to LN? spending-only channel creation and sending is safe (?) from l
   CPFP effective fee rate calculations miners do: minerFeeRate = (sum of fees from all tx)/(sum of all sizes of all tx (in vBytes))
 
 - dust limits are currently calculated on mainnet at 3 sat/byte which is easier for witness tx but still very low if fees are 30 sat/vByte.
+
+Rejected ideas:
+
+No privacy advantage, cold/hot key from users personal address implementation would be separate from bns anyway. Handling various outputs unlocking at arbitrary times is just difficult for all.
+
+    option 1: switch from p2wpkh address to p2wsh address with hot and cold keys and script of type
+      ```
+      IF                                            // user selects hot key
+        < 24 hours > CHECKSEQUENCEVERIFY DROP       // make sure 24 hours have passed since utxo was created
+        < hot public key > CHECKSIGVERIFY           // compare hot public key to submitted signature
+      ELSE                                          // user selects cold key
+        < cold public key > CHECKSIGVERIFY          // compare cold public key to submitted signature
+      ENDIF
+      <nonce> DROP
+      ```
+      Start nonce at 0, every notification increase nonce by 1.
+      If hot keys get stolen or lost, can use cold keys to transfer ownership to another address.
+      Is this still necessary with RFC6979 for security? It won't give much privacy since everyone has to derive it.
+      Could add logic to allow cold keys to undo hot keys actions for 24 hours so they can transfer ownership to address they do control.
+
+alternative:
+1. Add command to add cold address (no cold key necessary)
+3. Doing #1 activates a delay on changes by hot key
+4. Cold keys can remove hot key access that cancel all pending actions, not vise versa
+5. Cold keys can remove themselves, canceling delay.
+
+By doing delay purely with BNS state derivation, it's much less complex. Multi-address ownership structure needs to be explored. People can already use a multisig address as control address w/ their own UI so alternative is simple and opt-in.
