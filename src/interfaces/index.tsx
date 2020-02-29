@@ -22,7 +22,8 @@ export enum ActionTypes {
   UPDATE_DOMAIN = 'UPDATE_DOMAIN',
   ACTION_FAIL = 'ACTION_FAIL',
   LOAD_STATE = 'LOAD_STATE',
-  CHOICES_BNS_ACTION = 'CHOICES_BNS_ACTION'
+  CHOICES_BNS_ACTION = 'CHOICES_BNS_ACTION',
+  SET_API = 'SET_API'
 }
 
 // for global state reducer
@@ -49,20 +50,25 @@ export interface I_State {
   chain: {
     height: number
   }
-  choices: {
-    apiPath: {
-      [network: string]: string
-    }
-    action: I_Checked_Action | {}
-    feeRate: number
-    txHex: string
-    embedString: string
-  }
   pageInfo: {
     current: number
     checkedDomain: boolean
     checkedWallet: boolean
     checkedLightSearch: boolean
+  }
+  choices: {
+    action: I_Checked_Action | {}
+    feeRate: number
+    txHex: string
+    embedString: string
+  }
+  api: {
+    running: boolean
+    tasks: any[]
+    path: {
+      [network: string]: string
+    },
+    rateLimit: number   // calls per second
   }
   lastTimeStamp: number
 }

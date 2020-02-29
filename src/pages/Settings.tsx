@@ -39,13 +39,13 @@ export const Settings = (props: any): JSX.Element => {
         style={ { width: '80%' } }
         thisInputLabel={ 'Path for full node with esplora API' }
 
-        thisInitialValue={ state.choices.apiPath[state.network] }
+        thisInitialValue={ state.api.path[state.network] }
 
         showBonusInformation={ 'true' }
         sanitizeFilters={ ['url'] }
 
         thisSubmitButtonOnClick={ (textValue: string) => {
-          state.choices.apiPath[state.network] = textValue
+          state.api.path[state.network] = textValue
           console.log('click set value to ', textValue)
           dispatch({
             type: ActionTypes.LOAD_STATE,
@@ -53,7 +53,7 @@ export const Settings = (props: any): JSX.Element => {
           })
         } }
       >
-        { state.network } : { state.choices.apiPath[state.network] }
+        { state.network } : { state.api.path[state.network] }
       </InputForm>
 
       <br /><br />

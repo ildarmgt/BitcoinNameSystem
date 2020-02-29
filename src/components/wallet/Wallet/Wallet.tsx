@@ -1,20 +1,27 @@
 import React from 'react'
 import styles from './Wallet.module.css'
-// import { psbt } from './psbt'
+import { getTx } from './getTx'
 
+const RESERVED_FROM_WALLET_KEY = 'fromWallet'
 
-
-
+// logic flow
+// user -> params -> txBuilder -> user
+// user feeds data into wallet component from any of following:
+// 1. props (object with key:values inside props.txBuilder)
+// 2. querry strings (#*?key=value&key=value format, values with encodeURIcomponent encoding)
+// 3. session storage with (key:JSON.stringify(value))
+// 4. via forms in wallet gui
+// querry strings and session storage is wiped after data is copied
+// all new values are fed into same 'params' local state
+// 'params' key:values are processed and added in correct formats to 'txBuilder' state
+// 'txBuilder' state changes trigger updated calculations
+// user can check what's missing
+// user is notified if tx is ready (session storage)
 
 
 /**
  * Reusable component for creating a wallet.
- * Can get data in props (props.txBuilder object) but unescaped and can result in clear html
- * Can get data in URL params (follows ? after # with ?key1=value1&key2=value2 format, values must go through encodeURIcomponent)
- * Can get data from sessionstorage
- * Wallet can ask for most sensitive data directly, very last step, and discard after using.
- * User can provide pin and choose to store most sensitive data encrypted.
- * Simulates behavior of browser wallet plugins without needing them. *
+ * Simulates behavior of browser wallet plugins without needing them.
  */
 export const Wallet = (props: any): JSX.Element => {
   // stores and initializes tx builder from initial state and passed props
@@ -24,35 +31,39 @@ export const Wallet = (props: any): JSX.Element => {
     ...(!!props.txBuilder ? props.txBuilder : {})
   })
 
-
   // gui settings
-  // const [gui, setGui] = React.useState({ show: true })
-
-
-
+  const [info, setInfo] = React.useState({ text: '' })
 
   // stores fed params
   const [params, setParams]: [any, (args: any) => void] = React.useState({})
 
-  // run methods to handle detection and processing of parameters from all sources
+  // run methods to handle detection of new parameters from all sources
   React.useEffect(() => handleParams(params, setParams), [params])
+
+  // run methods to move new parameters into txBuilder
+  React.useEffect(() => processNewParams(
+    params,
+    setParams,
+    txBuilder,
+    setTxBuilder
+  ), [params, txBuilder])
+
+  // on tx builder changes, attempt to create a transaction
+  React.useEffect(() => recalcBuilder({
+    txBuilder,
+    setTxBuilder,
+    setInfo
+  }), [txBuilder])
 
   return (
     <div className={ styles.wrapper }
       onClick={ () => {
         console.log({ params, txBuilder })
-        sessionStorage.setItem('this', 'was')
-        sessionStorage.setItem('a', 'triumph')
-        sessionStorage.setItem('I', 'm')
-        sessionStorage.setItem('making', 'a')
-        sessionStorage.setItem('note', 'here')
-        sessionStorage.setItem('huge', 'success')
-        window.dispatchEvent( new Event('storage') );
       } }
     >
       { (TESTING) && (
         <>
-          B
+          <div>B { info.text }</div>
         </>
       ) }
     </div>
@@ -65,27 +76,93 @@ export const Wallet = (props: any): JSX.Element => {
 /* -------------------------------------------------------------------------- */
 
 
+// if events not firing need to use
+// window.dispatchEvent(new Event('storage'))
 
-// run methods to handle detection and clean up of parameters passed
+
+// Run methods to handle detection and clean up of parameters passed.
+// Was easiest to do it with access to params.
 const handleParams = (params: any, setParams: any) => {
+  // Events added to move user data from listening sources to params
+  addListeners(params, setParams)
 
+  // clean up function is returned to run if component is removed (or changed)
+  return () => {
+    // clean up listeners
+    removeListeners(params, setParams)
+
+    // clean up url as well
+    resetUrl()
+  }
+}
+
+const addListeners = (params: any, setParams: any) => {
   // even to detect session storage edit
   window.addEventListener('storage', handleStorageChange(params, setParams))
   // event to detect url change
   window.addEventListener('hashchange', handleHashChange(params, setParams))
+}
 
-  // clean up function is returned to run if component is removed (or changed)
-  return () => {
-    // clean up storage listener
-    window.removeEventListener('storage', handleStorageChange(params, setParams))
-    // clean up url hash listener
-    window.removeEventListener('hashchange', handleHashChange(params, setParams))
+const removeListeners = (params: any, setParams: any) => {
+  // clean up storage listener
+  window.removeEventListener('storage', handleStorageChange(params, setParams))
+  // clean up url hash listener
+  window.removeEventListener('hashchange', handleHashChange(params, setParams))
+}
+
+const processNewParams = (params: any, setParams: any, txBuilder: any, setTxBuilder: any) => {
+  // only update state if necessary
+  if (Object.keys(params).length > 0) {
+    // most basic
+    setTxBuilder({ ...txBuilder, params }) // add params to txBuilder
+    setParams({}) // reset params
   }
 }
 
-// curried storage change handler
+const recalcBuilder = ({txBuilder, setTxBuilder, setInfo}: any) => {
+  try {
+    // attempt to build
+    const res = getTx(txBuilder)
+    console.log('successful psbt:', res)
+
+  } catch (e) {
+    console.log('can not do psbt yet:', e.message)
+    setInfo({ text: e.message })
+  }
+}
+
+
+/**
+ * Session storage scan. Key value pairs.
+ */
 const handleStorageChange = (params: any, setParams: any) => (e: any): void => {
-  console.log('handleStorageChange', { e })
+  // do not want spam of events going off in middle of this
+  removeListeners(params, setParams)
+
+  const fedValues: { [key: string]: string } = {}
+
+  Object.keys(
+    // cloned session storage so can delete safely while parsing
+    JSON.parse(JSON.stringify(window.sessionStorage))
+  ).forEach((thisKey: string) => {
+    if (thisKey !== RESERVED_FROM_WALLET_KEY) {
+      const thisValue = JSON.parse(window.sessionStorage[thisKey])
+      fedValues[thisKey] = thisValue
+
+    // clear all session storage
+      sessionStorage.removeItem(thisKey);
+    }
+  })
+
+  // only update state if there are actual values
+  if (Object.keys(fedValues).length > 0) {
+    const newParams = { ...params, ...fedValues }
+    console.log('new params added:', newParams)
+    setParams(newParams)
+  }
+
+  // safe to add listeners again
+  addListeners(params, setParams)
 }
 
 // curried url change handler
@@ -115,6 +192,7 @@ const handleHashChange = (params: any, setParams: any) => (e: any): void => {
           return finalParamObject
         } else {
           // add changes
+          console.log(thisKey)
           return { ...finalParamObject, [thisKey]: thisValue }
         }
       }
@@ -123,7 +201,7 @@ const handleHashChange = (params: any, setParams: any) => (e: any): void => {
   // only update state if there are new values, avoid pointless rerenders
   if (Object.keys(fedValues).length > 0) {
     const newParams = { ...params, ...fedValues }
-    console.log('new wallet params added:', newParams)
+    console.log('new params added:', newParams)
     setParams(newParams)
   }
 
@@ -148,9 +226,9 @@ const TESTING = (process.env.NODE_ENV === 'development')
 
 const initialTxBuilder: I_TxBuilder = {
   network: null,
-  setVersion: null,
-  setLocktime: null,
-  feeRate: null,
+  setVersion: 2,
+  setLocktime: 0,
+  feeRate: 1.0,
 
   minFeeRate: 1.0,
   maxFeeRate: 1000.0,
@@ -169,6 +247,59 @@ const initialTxBuilder: I_TxBuilder = {
   changeAddress: null
 }
 
+/* -------------------------------------------------------------------------- */
+/*                        dummy example for type checks                       */
+/* -------------------------------------------------------------------------- */
+
+// const dummyInput: I_Input = {
+//   hash: 'abc123',
+//   index: 123,
+//   sequence: 0xfffffffe,
+//   nonWitnessUtxo: Buffer.from(' ', 'utf8'),
+//   witnessScript: Buffer.from(' ', 'utf8'),
+//   redeemScript: Buffer.from(' ', 'utf8'),
+//   inputScript: 'OP_TRUE OP_DROP OP_TRUE',
+//   canJustSign: false,
+//   keyPairs: [ { some: 'object' } ],
+//   sighashTypes: [ 1 ],
+//   address: '123abc',
+//   value: 123,
+//   confirmed: true,
+//   info: 'why'
+// }
+
+// const dummyTxBuilder: I_TxBuilder = {
+//   network: 'testnet',
+//   setVersion: 2,
+//   setLocktime: 0,
+//   feeRate: 1.0,
+
+//   minFeeRate: 1.0,
+//   maxFeeRate: 1000.0,
+//   minOutputValue: 500,
+
+//   result: {
+//     tx: { bitcoinjslibtxobject: 'returned here' },
+//     hex: 'abc1234',
+//     virtualSize: 123
+//   },
+
+//   inputs: {
+//     // eslint-disable-next-line no-useless-computed-key
+//     ['1']: dummyInput
+//   },
+//   fillInputs: [dummyInput],
+
+//   outputs: {
+//     // eslint-disable-next-line no-useless-computed-key
+//     ['1']: {
+//       address: 'abc',
+//       script: Buffer.from(' ', 'utf8'),
+//       value: 123
+//     }
+//   },
+//   changeAddress: 'abc'
+// }
 
 /* -------------------------------------------------------------------------- */
 /*                                    Types                                   */
@@ -176,7 +307,7 @@ const initialTxBuilder: I_TxBuilder = {
 
 // everything I need to build any tx
 // matching as close as possible to bitcoinjs psbt design
-interface I_TxBuilder {
+export interface I_TxBuilder {
   network: 'bitcoin' | 'testnet' | null
   setVersion: number | null
   setLocktime: number | null
@@ -242,12 +373,13 @@ interface I_Input {
 
   // to sign and finalize:
 
-  // ONLY spenders values for script, same format as scripts,
-  // since these can have signatures, have to submit a function that returns script buffer.
-  // key pairs + sighashTypes will become sigs[0+] if needed
-  // e.g. inputScript: {sigs} => { return bitcoin.script.compile([OP_TRUE, sigs[0]]) }
+  // could do from asm and pass as string instead of function
+  // then replace signature<index> publickey<index> with matching
+  // keyPairs[index] and if needed sighashTypes[index], numbers can be encoded
+  // into string before.
+  // https://github.com/bitcoinjs/bitcoinjs-lib/blob/f48abd322f14f6eec8bfc19e7838a1a150eefb56/test/integration/cltv.spec.ts#L43
   // ((TODO): psbt.getHashForSig , .hashForSignature , hashForWitnessV0 , keypair.sign(hash))
-  inputScript: (({ sigs }: { sigs: ObjectOrNull[] | null }) => Buffer) | null
+  inputScript: string | null
 
   // ( (TODO):
   //  canJustSign:

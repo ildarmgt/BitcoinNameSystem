@@ -188,7 +188,7 @@ export const P6Broadcast = () => {
           onClick={ async () => {
             if (tx && tx.hex) {
               try {
-                const res = await txPushAPI(tx.hex, state.network, state.choices.apiPath)
+                const res = await txPushAPI(tx.hex, state.network, state.api.path)
                 setBroadcastStatus({ok: true, txid: res.txid, reason: '' })
               } catch (e) {
                 setBroadcastStatus({ok: false, txid: '', reason: e.message })

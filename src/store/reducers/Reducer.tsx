@@ -10,7 +10,8 @@ const {
   UPDATE_DOMAIN,
   ACTION_FAIL,
   LOAD_STATE,
-  CHOICES_BNS_ACTION
+  CHOICES_BNS_ACTION,
+  SET_API
 } = ActionTypes
 
 /**
@@ -23,6 +24,18 @@ export default function reducer (state: I_State, action: I_Action): I_State {
   const { payload } = action
 
   switch (action.type) {
+
+    case SET_API: {
+      // edit api task queue 
+
+      return {
+        ...state,
+        api: {
+          ...state.api,
+          ...payload
+        }
+      }
+    }
 
     case CHOICES_BNS_ACTION: {
       // BNS action chosen

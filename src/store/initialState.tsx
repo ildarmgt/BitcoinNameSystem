@@ -27,14 +27,19 @@ export const initialState: I_State = {
     checkedLightSearch: false     // if light search was done (no utxo / txhex scan)
   },
   choices: {                      // choices made by user via this app
-    apiPath: {
-      bitcoin: 'https://blockstream.info/api/',
-      testnet: 'https://blockstream.info/testnet/api/'
-    },
     action: {},                   // choices and data for action to take
     feeRate: 1.1,                 // fee rate to use in sat/bByte,
     txHex: '',                    // hex of raw transaction, ideally ready for broadcast
     embedString: ''               // string to embed in op_return
+  },
+  api: {
+    path: {
+      bitcoin: 'https://blockstream.info/api/',
+      testnet: 'https://blockstream.info/testnet/api/'
+    },
+    running: false,
+    tasks: [],
+    rateLimit: 2
   },
   lastTimeStamp: Date.now(),      // last change timestamp, to detect any changes to state or time out
 }

@@ -3,12 +3,14 @@ import { Store } from '../../store/'
 import { useHistory } from 'react-router-dom'
 import styles from './Navbar.module.css'
 import { Wallet } from './../wallet/Wallet'
+import { VisualAPI } from './../wallet/VisualAPI'
+import { setApiAction } from './../../store'
 
 const MAX_BUTTONS_TO_SHOW_UNCOLLAPSED = 4
 
 export const Navbar = (): JSX.Element => {
   // global state
-  const { state } = React.useContext(Store)
+  const { state, dispatch } = React.useContext(Store)
   // url changer
   const history = useHistory()
 
@@ -89,7 +91,6 @@ export const Navbar = (): JSX.Element => {
     document.addEventListener('click', onClickAnywhere)
     return () => { document.removeEventListener('click', onClickAnywhere) }
   }, [nav])
-
 
   // all main buttons
   const buttonsArray = [
@@ -187,8 +188,16 @@ export const Navbar = (): JSX.Element => {
       </div>
 
       <div className={ styles.wallet }>
-        <Wallet />
+        <Wallet
+          txBuilder={ {
+            network: state.network
+          } }
+        />
+        <VisualAPI
+          onApiInit={ () => setApiAction(state, dispatch, { running: true }) }
+        />
       </div>
+
 
       <div
         className={ styles.nav }

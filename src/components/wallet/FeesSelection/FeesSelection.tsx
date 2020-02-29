@@ -34,7 +34,7 @@ export const FeesSelection = () => {
     if (!feeSuggestions.apiSuccess) {
       try {
         // get fee estimates from API
-        const apiSuggest = await getFeeEstimatesAPI(state.network, state.choices.apiPath)
+        const apiSuggest = await getFeeEstimatesAPI(state.network, state.api.path)
         setFeeSuggestions({
           min20: apiSuggest['2'],
           min40: apiSuggest['4'],
