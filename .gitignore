@@ -1,7 +1,6 @@
 # See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
 
 # dependencies
-/notes
 /node_modules
 /.pnp
 .pnp.js
@@ -23,6 +22,9 @@ npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 
-!types.d.ts
+# Is this necessary?
+# !types.d.ts
 
+# my stuff
 test.json
+/notes
