@@ -2,32 +2,30 @@ import React from 'react'
 import styles from './VisualAPI.module.css'
 import { Store } from '../../../store'
 
+// to grab last state
+const last: any = {}
+
+const delay = async ({ callsPerSec = undefined, seconds = undefined } = { seconds: 0.5 }) => {
+  await new Promise(r => setTimeout(r, seconds || (1000 / callsPerSec!)))
+}
+
+
 /**
  * Handles API requests
  */
 export const VisualAPI = (props: any) => {
   // global state
   const { state } = React.useContext(Store)
-
-  // Cloning StateCl that lets me access it inside async loop.
-  // Every other method didn't seem to grab most recent state.
-  // global -> stateCl clone -> st inside loop
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const [stateCl, setStateCl] = React.useState(state)
-  React.useEffect(() => { setStateCl(state) }, [state])
+  last.state = state
 
   /**
    * Main API Loop
    */
   const apiLoop = async () => {
-    let st: any
-    setStateCl((prevState: any) => {
-      st = prevState   // grab cloned state value
-      return prevState // don't actually change it
-    })
-
+    const st = last.state
     if (st) {
       // check first item in queue
+      const nTasks = state.api.tasks.length
       const task = state.api.tasks[0]
 
       if (task) {
@@ -44,26 +42,22 @@ export const VisualAPI = (props: any) => {
         }
       }
     }
+
     // delay for API rate limit
-    await new Promise(r => setTimeout(r, 1000 / (st?.api.rateLimit || 2)))
+
 
     // loop
     apiLoop()
   }
 
-
   // assign props methods to use
   const { onApiInit } = props
-
-
-
-
 
   // launch api loop if haven't already
   const [apiOn, setApiOn] = React.useState(false)
   if (!apiOn) {
-    apiLoop()
     setApiOn(true)
+    apiLoop()
     if (onApiInit) onApiInit()
   }
 
