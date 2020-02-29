@@ -1,18 +1,20 @@
-# Bitcoin Name System (BNS) (NOT DONE)
+# Bitcoin Name System (BNS)
 
 On-chain DNS where easy to read domain name (i.e. alias) can be looked up or created to forward to very long alphanumeric Bitcoin addresses or other network's types of addreses (e.g. ipfs, https, twitter) on the most secure public network ever created.
 
 Used: React (Hooks), TypeScript, Node.js, JavaScript, CSS, HTML.
 
-![pic](https://i.imgur.com/CNdY1Iq.png)
+| | |
+|-:|-|
+| Demo: | [ildarmgt.github.io/BitcoinNameSystem](https://ildarmgt.github.io/BitcoinNameSystem/) |
+| Short url: | [onbtc.me](http://onbtc.me) |
+| Short url by name: | [onbtc.me?satoshi](http://onbtc.me?satoshi) |
+
+![pic](https://i.imgur.com/22AMxLh.png)
 
 This readme and all else is work in progress. I'm open to teaming up.
 
 [Github pages demo](https://ildarmgt.github.io/BitcoinNameSystem/)
-
-Can also open by domain name alias. e.g. `/BitcoinNameSystem/#/id/satoshi` to [autofill & search](https://ildarmgt.github.io/BitcoinNameSystem/#/id/satoshi).
-
-Or with a shorter URL scheme: [http://onbtc.me/?satoshi](http://onbtc.me/?satoshi) .
 
 ## To build project from scratch
 
@@ -82,7 +84,9 @@ This design has neutral costs to prevent domains from being captured en masse, e
 
 (using testnet and short duration testing mode parameters for now)
 
-* Bidding period for domains operational. Refunds on previous bids and minimum increases enforced for validity. Tie breaking at same height via pseudo-random deterministic function based on transaction's block hash gives nobody an advantage.
+* Basic settings allows changing API source to your own node with [esplora](https://github.com/Blockstream/esplora/tree/esplora_v2.00) API.
+
+* Bidding period for domains operational. Refunds on previous bids (by end height) and minimum increases (>= 2x) enforced for validity. Tie breaking at same height via pseudo-random deterministic function based on transaction's block hash gives nobody an advantage.
 
 * Transactions are created and broadcast within the UI based on action chosen and requirements. Tx is summarized on same page as broadcast.
 
