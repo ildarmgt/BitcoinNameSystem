@@ -8,12 +8,14 @@ import { DevPanel } from './components/DevPanel'
 
 // Using for store access and hash router base
 ReactDOM.render(
-  <StoreProvider>
-    <HashRouter>
-      <App />
-    </HashRouter>
-    <DevPanel />
-  </StoreProvider>,
+  <React.StrictMode>
+    <StoreProvider>
+      <HashRouter>
+        <App />
+      </HashRouter>
+      <DevPanel />
+    </StoreProvider>
+  </React.StrictMode>,
   document.getElementById('root')
 )
 

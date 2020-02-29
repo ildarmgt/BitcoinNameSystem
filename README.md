@@ -4,15 +4,17 @@ On-chain DNS where easy to read domain name (i.e. alias) can be looked up or cre
 
 Used: React (Hooks), TypeScript, Node.js, JavaScript, CSS, HTML.
 
+BNS is currently still work in progress.
+
 | | |
 |-:|-|
 | Demo: | [ildarmgt.github.io/BitcoinNameSystem](https://ildarmgt.github.io/BitcoinNameSystem/) |
-| Short url: | [onbtc.me](http://onbtc.me) |
-| Short url by name: | [onbtc.me?satoshi](http://onbtc.me?satoshi) |
+| Short demo url: | [onbtc.me](http://onbtc.me) |
+| Short demo url by name: | [onbtc.me?satoshi](http://onbtc.me?satoshi) |
 
 ![pic](https://i.imgur.com/22AMxLh.png)
 
-This readme and all else is work in progress. I'm open to teaming up.
+I'm open to teaming up.
 
 [Github pages demo](https://ildarmgt.github.io/BitcoinNameSystem/)
 
