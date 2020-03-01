@@ -50,7 +50,7 @@ export const calcTx = (
     [key: string]: any
   },
   networkChoice: string,
-  vBytes: number = 1
+  vBytes = 1
 ): I_Tx_Result => {
   if (wallet.utxoList.length === 0) {
     throw new Error('Wallet has no funds (utxo) to use')
@@ -137,7 +137,7 @@ export const calcTx = (
 
   // prepare extra inputs from other rules
   // adding these first to totalGathered satoshi since have to add them all anyway
-  let toBeUsedUtxoOfNotifications: Array<any> = []
+  const toBeUsedUtxoOfNotifications: Array<any> = []
   // must consume all ACS utxo wallet.address has created
   // get all utxo for notification address
   domain.derivedUtxoList.forEach(utxo => {
@@ -151,7 +151,7 @@ export const calcTx = (
 
   // Adding remaining funds from user's wallet to total Gathered
   // Must always add at least 1 user utxo @ index 0 to indicate ownership
-  let toBeUsedUtxoOfUserWallet: Array<any> = []
+  const toBeUsedUtxoOfUserWallet: Array<any> = []
   wallet.utxoList.forEach((utxo: any) => {
     // while not enough funds or if haven't added a single user utxo yet
     if (totalGathered < valueNeeded || toBeUsedUtxoOfUserWallet.length === 0) {
