@@ -340,9 +340,7 @@ export const refundOtherBidders = (
   ]
 
   const execute = !st
-    ? () => {
-        // need executable void function
-      }
+    ? pass
     : () => {
         console.assert(!!tx, 'Must not execute action without tx')
         subtractRefunds(st, tx)
@@ -397,9 +395,7 @@ export const bidForOwnershipAction = (
   ]
 
   const execute = !st
-    ? () => {
-        // need executable void function
-      }
+    ? pass
     : () => {
         // have to start or add to bidding
         // ownership will be derived through automatic check based on bidding started here
@@ -458,9 +454,7 @@ export const changeAddressAction = (
   ]
 
   const execute = !st
-    ? () => {
-        // need executable void function
-      }
+    ? pass
     : () => {
         const thisCommand = getCommandCalled(st, tx, command)
         const newAddress = thisCommand?.address
@@ -547,9 +541,7 @@ export const sendOwnershipAction = (
   ]
 
   const execute = !st
-    ? () => {
-        // need executable void function
-      }
+    ? pass
     : () => {
         const thisCommand = getCommandCalled(st, tx, command)
         const newAddress = thisCommand?.address
@@ -623,9 +615,7 @@ export const currentOwnerRenewAction = (
   ]
 
   const execute = !st
-    ? () => {
-        // need executable void function
-      }
+    ? pass
     : () => {
         const owner = getOwner(st)
         // set owner's win height to current tx height therefore updating ownership
@@ -677,9 +667,7 @@ export const updateForwardingInfoAction = (
   ]
 
   const execute = !st
-    ? () => {
-        // need executable void function
-      }
+    ? pass
     : () => {
         readEmbeddedData(st, tx)
       }
@@ -753,4 +741,8 @@ export const autoCheckForBiddingWinnerNewOwnerAction = (
       console.log('bidding period is over')
     }
   }
+}
+
+const pass = () => {
+  // empty function that can be executed but does nothing
 }
