@@ -19,25 +19,43 @@
   font-weight: 300;
   src: url('./../assets/fonts/Monstserrat/montserrat-v14-latin-300.eot'); /* IE9 Compat Modes */
   src: local('Montserrat Light'), local('Montserrat-Light'),
-       url('./../assets/fonts/Monstserrat/montserrat-v14-latin-300.eot?#iefix') format('embedded-opentype'), /* IE6-IE8 */
-       url('./../assets/fonts/Monstserrat/montserrat-v14-latin-300.woff2') format('woff2'), /* Super Modern Browsers */
-       url('./../assets/fonts/Monstserrat/montserrat-v14-latin-300.woff') format('woff'), /* Modern Browsers */
-       url('./../assets/fonts/Monstserrat/montserrat-v14-latin-300.ttf') format('truetype'), /* Safari, Android, iOS */
-       url('./../assets/fonts/Monstserrat/montserrat-v14-latin-300.svg#Montserrat') format('svg'); /* Legacy iOS */
+    url('./../assets/fonts/Monstserrat/montserrat-v14-latin-300.eot?#iefix')
+      format('embedded-opentype'),
+    /* IE6-IE8 */
+      url('./../assets/fonts/Monstserrat/montserrat-v14-latin-300.woff2')
+      format('woff2'),
+    /* Super Modern Browsers */
+      url('./../assets/fonts/Monstserrat/montserrat-v14-latin-300.woff')
+      format('woff'),
+    /* Modern Browsers */
+      url('./../assets/fonts/Monstserrat/montserrat-v14-latin-300.ttf')
+      format('truetype'),
+    /* Safari, Android, iOS */
+      url('./../assets/fonts/Monstserrat/montserrat-v14-latin-300.svg#Montserrat')
+      format('svg'); /* Legacy iOS */
 }
 
-
 /* defaults rset */
-body, html, table, i, p, tr,
-td, th, a, span, div, aside {
+body,
+html,
+table,
+i,
+p,
+tr,
+td,
+th,
+a,
+span,
+div,
+aside {
   /* not selectable by default */
   -webkit-user-select: none;
   -moz-user-select: -moz-none;
   -ms-user-select: none;
   user-select: none;
   /* remove default styling */
-  padding:0;
-  margin:0;
+  padding: 0;
+  margin: 0;
   border: 0;
   font-size: 100%;
   font: inherit;
@@ -51,8 +69,8 @@ html {
 
   /* Global CSS variables */
 
-  --s: calc(1.0 * (0.5vw + 0.5vh)); /* base size of all things */
-  --horizontalScale: 0.700;
+  --s: calc(1 * (0.5vw + 0.5vh)); /* base size of all things */
+  --horizontalScale: 0.7;
   --verticalScale: 0.999;
 
   --headerOffset: 4vw;
@@ -62,13 +80,12 @@ html {
 
   /* derived from tetradic rgb colors with blue/orange as base */
   --colorHighlightDark: rgba(85, 153, 255, 0.75);
-  --colorHighlightLight: #FFFF00;
+  --colorHighlightLight: #ffff00;
 
   /* transparent version of blue */
   --colorLightText: rgba(17, 17, 51, 0.35);
   --colorMediumText: rgba(17, 17, 51, 0.5);
   --colorHeavyText: rgba(17, 17, 51, 0.8);
-
 
   --colorButtonText: white;
   --colorBackground: white;
@@ -81,7 +98,6 @@ html {
 
   --colorBrighter8: rgba(255, 255, 255, 0.8);
   --colorBrighter9: rgba(255, 255, 255, 0.9);
-
 
   /* use blue tint */
   --colorDarker0_5: rgba(17, 17, 51, 0.05);
@@ -107,7 +123,6 @@ html {
 }
 
 body {
-
   /* background-repeat: no-repeat;
   background-size: cover;
   background-position: center center; */
@@ -134,15 +149,39 @@ body {
   background-color: var(--colorBackground);
 
   /* consistent gradients */
-  background-image: linear-gradient(135deg, var(--colorGradientTopLeft) 0%, var(--colorGradientBottomRight) 100%);
+  background-image: linear-gradient(
+    135deg,
+    var(--colorGradientTopLeft) 0%,
+    var(--colorGradientBottomRight) 100%
+  );
 
-  background-image: -moz-linear-gradient(-45deg, var(--colorGradientTopLeft) 0%, var(--colorGradientBottomRight) 100%);
-  background-image: -o-linear-gradient(-45deg, var(--colorGradientTopLeft) 0%, var(--colorGradientBottomRight) 100%);
-  background-image: -ms-linear-gradient(-45deg, var(--colorGradientTopLeft) 0%, var(--colorGradientBottomRight) 100%);
-  background-image: -webkit-linear-gradient(-45deg, var(--colorGradientTopLeft) 0%, var(--colorGradientBottomRight) 100%);
-  background-image: -webkit-gradient(linear, left top, right bottom, color-stop(0%, var(--colorGradientTopLeft)), color-stop(100%, var(--colorGradientBottomRight)));
-
-
+  background-image: -moz-linear-gradient(
+    -45deg,
+    var(--colorGradientTopLeft) 0%,
+    var(--colorGradientBottomRight) 100%
+  );
+  background-image: -o-linear-gradient(
+    -45deg,
+    var(--colorGradientTopLeft) 0%,
+    var(--colorGradientBottomRight) 100%
+  );
+  background-image: -ms-linear-gradient(
+    -45deg,
+    var(--colorGradientTopLeft) 0%,
+    var(--colorGradientBottomRight) 100%
+  );
+  background-image: -webkit-linear-gradient(
+    -45deg,
+    var(--colorGradientTopLeft) 0%,
+    var(--colorGradientBottomRight) 100%
+  );
+  background-image: -webkit-gradient(
+    linear,
+    left top,
+    right bottom,
+    color-stop(0%, var(--colorGradientTopLeft)),
+    color-stop(100%, var(--colorGradientBottomRight))
+  );
 }
 
 a {
@@ -194,9 +233,8 @@ textarea {
   height: calc(4.5 * var(--s));
   line-height: calc(2.5 * var(--s));
 
-  padding: calc(0.5 * var(--s)) calc(1.0 * var(--s));
+  padding: calc(0.5 * var(--s)) calc(1 * var(--s));
   padding-bottom: 0;
-
 
   border-radius: calc(0.5 * var(--s));
 
@@ -223,7 +261,6 @@ textarea {
 
   /* edge lol */
   -ms-overflow-style: -ms-autohiding-scrollbar;
-
 }
 
 textarea::placeholder {
@@ -232,7 +269,7 @@ textarea::placeholder {
 }
 
 /* firefox has pixel based scrollbar and covers up text with viewport sized borders */
-@supports (-moz-appearance:none) {
+@supports (-moz-appearance: none) {
   textarea {
     border-top: calc(0 * var(--s)) solid var(--colorBackground);
   }
@@ -241,8 +278,8 @@ textarea::placeholder {
 textarea::-webkit-scrollbar {
   /* chrome scroll bar */
   background: var(--colorTransparent);
-  height: calc(1.0 * var(--s));
-  width: calc(1.0 * var(--s));
+  height: calc(1 * var(--s));
+  width: calc(1 * var(--s));
 }
 
 textarea::-webkit-scrollbar-track {
@@ -253,7 +290,7 @@ textarea::-webkit-scrollbar-track {
 textarea::-webkit-scrollbar-thumb {
   /* scroll bar itself */
   background-color: var(--colorDarker1);
-  border-radius: calc(1.0 * var(--s));
+  border-radius: calc(1 * var(--s));
   box-shadow: inset 0 0 0 calc(0.1 * var(--s)) var(--colorBackground);
 }
 
@@ -326,7 +363,7 @@ textarea:focus {
   /* display: none; */
   /* box-sizing: border-box; */
   font-size: calc(2 * var(--s));
-  content: "";
+  content: '';
   visibility: hidden;
   width: calc(12 * var(--s));
   background-color: var(--colorBitcoinBlue);
@@ -345,7 +382,7 @@ textarea:focus {
 }
 
 .addTooltip aside::after {
-  content: "";
+  content: '';
   position: absolute;
   bottom: calc(97%);
   left: 63%;
@@ -361,7 +398,7 @@ textarea:focus {
   box-sizing: border-box;
   display: inline-block;
   font-size: calc(2 * var(--s));
-  content: "";
+  content: '';
   visibility: hidden;
   width: calc(20 * var(--s));
   background-color: var(--colorBitcoinBlue);
@@ -377,7 +414,7 @@ textarea:focus {
   top: -50%;
 }
 .addTooltipRight aside::after {
-  content: "";
+  content: '';
   position: absolute;
   top: 50%;
   right: calc(100% - 0.1 * var(--s));
@@ -385,7 +422,7 @@ textarea:focus {
   border: calc(0.7 * var(--s)) solid transparent;
   border-right: calc(1 * var(--s)) solid transparent;
   border-style: solid;
-  border-color: transparent var(--colorBitcoinBlue) transparent transparent ;
+  border-color: transparent var(--colorBitcoinBlue) transparent transparent;
 }
 
 .addTooltipRight:hover aside,
@@ -474,23 +511,23 @@ table td p {
 }
 
 .arbitraryFixes {
-    /* various animation fixes */
-    -webkit-backface-visibility: hidden;
-    backface-visibility: hidden;
-    -webkit-filter: blur(0);
-    filter: blur(0);
-    image-rendering: optimizeQuality;           /*                     */
-    image-rendering: -moz-crisp-edges;          /* Firefox             */
-    image-rendering: -o-crisp-edges;            /* Opera               */
-    image-rendering: -webkit-optimize-contrast; /* Chrome (and Safari) */
-    image-rendering: optimize-contrast;         /* CSS3 Proposed       */
-    -ms-interpolation-mode: nearest-neighbor;   /* IE8+                */
-    font-smoothing: antialiased !important;
+  /* various animation fixes */
+  -webkit-backface-visibility: hidden;
+  backface-visibility: hidden;
+  -webkit-filter: blur(0);
+  filter: blur(0);
+  image-rendering: optimizeQuality; /*                     */
+  image-rendering: -moz-crisp-edges; /* Firefox             */
+  image-rendering: -o-crisp-edges; /* Opera               */
+  image-rendering: -webkit-optimize-contrast; /* Chrome (and Safari) */
+  image-rendering: optimize-contrast; /* CSS3 Proposed       */
+  -ms-interpolation-mode: nearest-neighbor; /* IE8+                */
+  font-smoothing: antialiased !important;
 
-    /* this fixes svg text in firefox!!! */
-    stroke: transparent;
+  /* this fixes svg text in firefox!!! */
+  stroke: transparent;
 
-    /* text  hacks */
-    text-shadow: var(--colorDarker1) 0px 1px 1px;
-    -webkit-text-stroke: 1px;
+  /* text  hacks */
+  text-shadow: var(--colorDarker1) 0px 1px 1px;
+  -webkit-text-stroke: 1px;
 }

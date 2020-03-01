@@ -55,7 +55,6 @@
   /* background-color: var(--colorDarker1); */
 }
 
-
 .nextArrowPad {
   /* prevents arrow from wrapping by placing it inside padding */
   padding-right: calc(5 * var(--sizeButton));
@@ -63,13 +62,13 @@
 .nextArrow {
   display: block;
   white-space: nowrap;
-  content: "";
+  content: '';
   float: right;
   vertical-align: top;
   /* prevents arrow from wrapping */
   margin-right: calc(-3 * var(--sizeButton));
   margin-left: calc(-2 * var(--sizeButton));
-  margin-top: calc(1.0 * var(--sizeButton));
+  margin-top: calc(1 * var(--sizeButton));
   width: 0;
   height: 0;
   border-top: calc(0.75 * var(--sizeButton)) solid transparent;
@@ -87,13 +86,13 @@
 
 .backArrow {
   display: inline-block;
-  content: "";
+  content: '';
   float: left;
   vertical-align: middle;
   /* prevents arrow from wrapping */
   margin-left: calc(-3 * var(--sizeButton));
   margin-right: calc(-2 * var(--sizeButton));
-  margin-top: calc(1.0 * var(--sizeButton));
+  margin-top: calc(1 * var(--sizeButton));
   width: 0;
   height: 0;
   border-top: calc(0.75 * var(--sizeButton)) solid transparent;

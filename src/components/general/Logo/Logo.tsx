@@ -7,10 +7,8 @@ import styles from './Logo.module.css'
 export const Logo = (props: any) => {
   return (
     <div {...props}>
-      <div className={ styles.wrapper }>
-        <div
-          className={ styles.logo }
-        >
+      <div className={styles.wrapper}>
+        <div className={styles.logo}>
           <span>₿</span>
         </div>
       </div>

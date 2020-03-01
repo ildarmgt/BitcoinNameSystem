@@ -24,9 +24,8 @@ export default function reducer (state: I_State, action: I_Action): I_State {
   const { payload } = action
 
   switch (action.type) {
-
     case SET_API: {
-      // edit api task queue 
+      // edit api task queue
 
       return {
         ...state,
@@ -194,4 +193,3 @@ export default function reducer (state: I_State, action: I_Action): I_State {
 
 // can split maybe like this later if gets too long
 // https://dev.to/vanderleisilva/global-state-management-with-react-hooks-and-context-5f6h
-

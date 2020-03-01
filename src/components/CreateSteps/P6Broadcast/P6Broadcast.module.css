@@ -7,19 +7,18 @@
   color: var(--colorBitcoinBlue);
   display: grid;
 
-  grid-template-columns:  calc(50% - (2 * var(--s))) calc(50% - (2 * var(--s)));
-  grid-template-rows:     auto auto auto auto auto auto;
+  grid-template-columns: calc(50% - (2 * var(--s))) calc(50% - (2 * var(--s)));
+  grid-template-rows: auto auto auto auto auto auto;
 
   grid-gap: calc(1 * var(--s)) calc(2 * var(--s));
 
   grid-template-areas:
-    "title            title"
-    "fees             fees"
-    "totalCost        totalCost"
-    "status           status"
-    "buttonWrapper    buttonWrapper"
-    "txSummary        txSummary"
-  ;
+    'title            title'
+    'fees             fees'
+    'totalCost        totalCost'
+    'status           status'
+    'buttonWrapper    buttonWrapper'
+    'txSummary        txSummary';
 
   align-items: center;
   margin-bottom: calc(2.5 * var(--s));
@@ -50,7 +49,7 @@
 .title::after {
   box-sizing: border-box;
 
-  content: "";
+  content: '';
   --offset: calc(0.75 * var(--s));
   top: var(--offset);
   right: calc(2 * var(--s));
@@ -82,7 +81,6 @@
 .status {
   grid-area: status;
   width: 100%;
-
 }
 
 .totalCost {
@@ -90,7 +88,6 @@
   box-sizing: border-box;
   padding: calc(2 * var(--s)) calc(1 * var(--s));
   width: 100%;
-
 }
 
 .buttonWrapper {
@@ -118,7 +115,7 @@
 }
 
 .txSummary > div {
-  font-size: calc(2.5 * var(--s))
+  font-size: calc(2.5 * var(--s));
 }
 
 .txSummary table {
@@ -186,16 +183,15 @@
 /* wide screen settings */
 @media screen and (min-aspect-ratio: 12/9) {
   .wrapper {
-    grid-template-columns:  auto calc(2 * var(--s)) calc(40% - (2 * var(--s)));
-    grid-template-rows:     auto auto auto auto auto;
+    grid-template-columns: auto calc(2 * var(--s)) calc(40% - (2 * var(--s)));
+    grid-template-rows: auto auto auto auto auto;
 
     grid-template-areas:
-      "title          title title"
-      "fees           .     totalCost"
-      "txSummary      .     buttonWrapper"
-      "txSummary      .     status"
-      "txSummary      .     ."
-    ;
+      'title          title title'
+      'fees           .     totalCost'
+      'txSummary      .     buttonWrapper'
+      'txSummary      .     status'
+      'txSummary      .     .';
     align-items: flex-start;
     text-align: right;
   }

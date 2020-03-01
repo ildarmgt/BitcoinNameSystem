@@ -26,7 +26,8 @@
     "start": "react-scripts start",
     "build": "react-scripts build && rm -rf docs && mv build docs",
     "test": "react-scripts test",
-    "serve": "serve -s docs -l 3000"
+    "serve": "serve -s docs -l 3000",
+    "format": "prettier-standard --format"
   },
   "eslintConfig": {
     "extends": "react-app"
@@ -43,5 +44,9 @@
       "last 1 safari version"
     ]
   },
-  "homepage": "./"
+  "homepage": "./",
+  "devDependencies": {
+    "eslint-plugin-prettier": "^3.1.2",
+    "prettier": "^1.19.1"
+  }
 }

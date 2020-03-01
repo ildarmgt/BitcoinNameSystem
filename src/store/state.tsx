@@ -18,9 +18,10 @@ import { initialState } from './initialState'
 // Provider makes context available to all child components no matter how deep
 export const Store = React.createContext<any>(initialState)
 
-
 // creates wrapping element for global state
-export function StoreProvider ({ children }: JSX.ElementChildrenAttribute): JSX.Element {
+export function StoreProvider ({
+  children
+}: JSX.ElementChildrenAttribute): JSX.Element {
   const [state, dispatch] = React.useReducer(reducer, initialState)
 
   // dev mode only (npm run start mode only, not built version!)
@@ -29,11 +30,5 @@ export function StoreProvider ({ children }: JSX.ElementChildrenAttribute): JSX.
   //   localStorage.setItem('tempstate', JSON.stringify(state))
   // }
 
-  return (
-    <Store.Provider value={{ state, dispatch }}>
-      { children }
-    </Store.Provider>
-  )
+  return <Store.Provider value={{ state, dispatch }}>{children}</Store.Provider>
 }
-
-

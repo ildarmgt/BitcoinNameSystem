@@ -1,40 +1,39 @@
-
 /* prevents rendering outside page range */
 .cutOverflow {
-  top:                    0%;
-  left:                   0%;
-  width:                  100%;
-  position:               absolute;
-  overflow:               hidden;
-  height:                 15vw;             /* modified by js */
+  top: 0%;
+  left: 0%;
+  width: 100%;
+  position: absolute;
+  overflow: hidden;
+  height: 15vw; /* modified by js */
 }
 
 /* the blue floating bar for style */
 .bar {
-  position:               relative;
-  top:                    0;
-  bottom:                 0;
-  right:                  0;
-  left:                   0;
-  width:                  100%;
-  height:                 15vw;             /* modified by js */
-  transform:              skewY(-6deg);
-  transform-origin:       top left;
-  background-color:       var(--colorBitcoinBlue);
-  z-index:                100;
+  position: relative;
+  top: 0;
+  bottom: 0;
+  right: 0;
+  left: 0;
+  width: 100%;
+  height: 15vw; /* modified by js */
+  transform: skewY(-6deg);
+  transform-origin: top left;
+  background-color: var(--colorBitcoinBlue);
+  z-index: 100;
 }
 
 /* wrapper of the domain name / alias text */
 .domain {
-  display:                block;
-  position:               absolute;
-  top:                    0;
-  left:                   0;
-  padding:                calc(0.5 * var(--s));
-  margin:                 calc(0.1 * var(--s));
-  margin-left:            1vw;
-  margin-bottom:          1vw;
-  z-index:                100;
+  display: block;
+  position: absolute;
+  top: 0;
+  left: 0;
+  padding: calc(0.5 * var(--s));
+  margin: calc(0.1 * var(--s));
+  margin-left: 1vw;
+  margin-bottom: 1vw;
+  z-index: 100;
 }
 
 .alias {
@@ -47,7 +46,8 @@
   color: var(--colorBitcoinOrange);
 }
 
-.alias, .ext {
+.alias,
+.ext {
   transform: translateX(calc(2 * var(--s)));
   cursor: pointer;
 }
@@ -66,6 +66,6 @@
   }
 
   .cutOverflow {
-    width: calc(100vw / var(--horizontalScale))
+    width: calc(100vw / var(--horizontalScale));
   }
 }

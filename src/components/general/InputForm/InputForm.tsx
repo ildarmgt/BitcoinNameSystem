@@ -14,63 +14,63 @@ export const InputForm = (props: any) => {
   // to read from final state which might be a number or further sanitized
   const [textValue, setTextValue] = React.useState()
 
-  if (textValue === undefined){
-    if (props.thisInputOnChange) props.thisInputOnChange({ target: { value: props.thisInitialValue || '' } })
+  if (textValue === undefined) {
+    if (props.thisInputOnChange)
+      props.thisInputOnChange({
+        target: { value: props.thisInitialValue || '' }
+      })
   }
-
 
   React.useEffect(() => {
     setTextValue(props.thisInitialValue || '')
-  }, [props.thisInitialValue] )
+  }, [props.thisInitialValue])
 
   return (
     <div
-      className={ [styles.wrapper, props.className].join(' ') }
-      style={ props.style }
+      className={[styles.wrapper, props.className].join(' ')}
+      style={props.style}
     >
-      <div className={ styles.shiftRight }>
-        <aside className={ styles.label }>
-          { props.thisInputLabel || '' }
-        </aside>
+      <div className={styles.shiftRight}>
+        <aside className={styles.label}>{props.thisInputLabel || ''}</aside>
         <textarea
-          className={ styles.textarea }
-          spellCheck={ false }
+          className={styles.textarea}
+          spellCheck={false}
           value={
             // read what we see in the textarea
             textValue
             // props.thisInputValue
           }
-
-          onChange={ (e?: any) => {
-
+          onChange={(e?: any) => {
             // set what we see in the textarea after removing unwanted chars like nextline
-            const cleanedValue = sanitize(e.target.value, (props.sanitizeFilters || ['oneline']))
+            const cleanedValue = sanitize(
+              e.target.value,
+              props.sanitizeFilters || ['oneline']
+            )
             setTextValue(cleanedValue)
             // update value so it's single line for custom change function below if any
             e.target.value = cleanedValue
 
             // furthermore, run user provided setter
             if (props.thisInputOnChange) props.thisInputOnChange(e)
-
-          } }
+          }}
         ></textarea>
         <RoundButton
-          className={ [
+          className={[
             styles.button,
             props.showButton === 'false' ? styles.invisible : ''
-          ].join(' ') }
-          next={ 'true' }
-          onClick={ (e: any) => {
-            props.thisSubmitButtonOnClick ? props.thisSubmitButtonOnClick(textValue) : (()=>{})()
-          } }
+          ].join(' ')}
+          next={'true'}
+          onClick={(e: any) => {
+            props.thisSubmitButtonOnClick
+              ? props.thisSubmitButtonOnClick(textValue)
+              : (() => {})()
+          }}
         >
           OK
         </RoundButton>
-        { (!!props.showBonusInformation) && (
-          <div className={ styles.bonusInformation }>
-            { props.children }
-          </div>
-        ) }
+        {!!props.showBonusInformation && (
+          <div className={styles.bonusInformation}>{props.children}</div>
+        )}
       </div>
     </div>
   )

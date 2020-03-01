@@ -10,13 +10,13 @@ import {
 } from './actions'
 import { I_BnsState, I_TX, I_Condition } from './../types/'
 
-
-
-
 /**
  * Returns what actions are available for specific user address at current state.
  */
-export const runAllActionPermissionChecks = (st: I_BnsState, address: string) => {
+export const runAllActionPermissionChecks = (
+  st: I_BnsState,
+  address: string
+) => {
   console.log('currentOwnerRenewAction running:')
 
   // Edit this list to include more actions for checks
@@ -33,7 +33,6 @@ export const runAllActionPermissionChecks = (st: I_BnsState, address: string) =>
   // check which actions are doable
   const checkedActions: any[] = []
   allActions.forEach(action => {
-
     // check each permission in each action
     const checkedPermissions: any[] = []
     action.permissions.forEach((permission: any) => {
@@ -55,7 +54,6 @@ export const runAllActionPermissionChecks = (st: I_BnsState, address: string) =>
       actionSuggestions.push(condition)
     })
 
-
     // add to list of all actions with summary of all their permissions checks
     checkedActions.push({
       type: action.type,
@@ -75,28 +73,30 @@ export const runAllActionPermissionChecks = (st: I_BnsState, address: string) =>
  * Nothing returned.
  */
 export const runAllUserActions = (st: I_BnsState, tx: I_TX): void => {
-
   // edit this list (tx here, address not necessary)
   const allUserActions = [
-    updateForwardingInfoAction(st, undefined, tx),  // reads embedded data
-    currentOwnerRenewAction(st, undefined, tx),     // renew ownership
-    bidForOwnershipAction(st, undefined, tx),                   // new ownership
+    updateForwardingInfoAction(st, undefined, tx), // reads embedded data
+    currentOwnerRenewAction(st, undefined, tx), // renew ownership
+    bidForOwnershipAction(st, undefined, tx), // new ownership
 
     // giving up ownership should go last in case user state needs to be edited first
-    sendOwnershipAction(st, undefined, tx),         // give up ownership to another
-    changeAddressAction(st, undefined, tx)          // change your ownership address
+    sendOwnershipAction(st, undefined, tx), // give up ownership to another
+    changeAddressAction(st, undefined, tx) // change your ownership address
   ]
 
   allUserActions.forEach((action: any) => {
-
     // check that all conditions & permissions are true
     const okConditions = action.conditions.reduce(
-      (areAllConditionsMet: boolean, eaCondition: any) => areAllConditionsMet && eaCondition.status()
-    , true)
+      (areAllConditionsMet: boolean, eaCondition: any) =>
+        areAllConditionsMet && eaCondition.status(),
+      true
+    )
 
     const okPermissions = action.permissions.reduce(
-      (areAllPermissionsMet: boolean, eaPermission: any) => areAllPermissionsMet && eaPermission.status()
-    , true)
+      (areAllPermissionsMet: boolean, eaPermission: any) =>
+        areAllPermissionsMet && eaPermission.status(),
+      true
+    )
 
     if (okConditions && okPermissions) action.execute()
   })
@@ -106,8 +106,10 @@ export const runAllUserActions = (st: I_BnsState, tx: I_TX): void => {
  * Executes non-user actions like ownership expiration over time or deriving new UTXO.
  * Nothing returned.
  */
-export const runAllAutomaticActions = (st: I_BnsState, tx: I_TX | undefined): void => {
-
+export const runAllAutomaticActions = (
+  st: I_BnsState,
+  tx: I_TX | undefined
+): void => {
   // list of all automatic actions
   const allAutoChecks = [
     autoCheckForOwnerExpiredAction(st),
@@ -119,9 +121,10 @@ export const runAllAutomaticActions = (st: I_BnsState, tx: I_TX | undefined): vo
     if (!!action) {
       // check that all conditions are true
       const ok = action.conditions.reduce(
-        (areAllConditionsMet: boolean, eaCondition: I_Condition ) => (
-          areAllConditionsMet && eaCondition.status()
-        ), true)
+        (areAllConditionsMet: boolean, eaCondition: I_Condition) =>
+          areAllConditionsMet && eaCondition.status(),
+        true
+      )
       if (ok) action.execute()
     }
   })

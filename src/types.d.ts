@@ -1,4 +1,4 @@
-declare module "bitcoinjs-lib";
-declare module "bip39";
-declare module "qrcode";
-declare module "bs58check";
+declare module 'bitcoinjs-lib'
+declare module 'bip39'
+declare module 'qrcode'
+declare module 'bs58check'

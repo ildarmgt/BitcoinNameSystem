@@ -1,8 +1,7 @@
 import React from 'react'
 import { AboutContent } from './../components/AboutContent'
 
-export function About(): JSX.Element {
-
+export function About (): JSX.Element {
   return (
     <>
       <AboutContent />

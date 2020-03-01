@@ -1,6 +1,4 @@
-
 ## Short term
-
 
 - (PRIORITY 1) stealth addresses proof of concept to send, receive, UI
 
@@ -8,14 +6,14 @@
 
 - (PRIORITY 3) all different transaction types are putting too much complexity into transaction building function. I should create a wallet component that can be reused into any project to respond to queries. Source for query should be customizable and can come from state or even url. Wallet should handle displaying all data in full generic detail and give user option to review, accept, or deny broadcasts. This should allow separating logic for putting rules to do something vs putting together the bytes of transactions properly via 1 or more methods. Ideally I shouldn't have to scan for full tx hex's for all inputs until wallet is ready to build where it can queue api for only necessary tx hex's.
 
-- (PRIORITY 4) if notification is on input, shouldn't be necessary to include it on output! Conditions could check for either, and thus cut down in notification utxo use and smaller/cheaper tx  (modify)
+- (PRIORITY 4) if notification is on input, shouldn't be necessary to include it on output! Conditions could check for either, and thus cut down in notification utxo use and smaller/cheaper tx (modify)
 
 - settings page
 - page navigation improved for hopping and checks
 - detect and fix dust outputs in tx maker
 - standardize lower case on addresses or hex strings used for hash?
 
-- `!a  <# of BTCs>` - Post price to sell (output @0), measured in floating point btc. Owner address (input @0). Similar to challenge period but instead of burning, tx are sent to owner. ~24 hours from time of first bid w/ more left on lease, cannot transfer ownership after first bid. Include notification (output @1) & optional public notification to '':'' address (@output 2). Must be no owner's ACS, use as inputs (inputs @1+). Does not change lease expiration - only burns can extend even if transfered.
+- `!a <# of BTCs>` - Post price to sell (output @0), measured in floating point btc. Owner address (input @0). Similar to challenge period but instead of burning, tx are sent to owner. ~24 hours from time of first bid w/ more left on lease, cannot transfer ownership after first bid. Include notification (output @1) & optional public notification to '':'' address (@output 2). Must be no owner's ACS, use as inputs (inputs @1+). Does not change lease expiration - only burns can extend even if transfered.
 
 - `!ba <last price in floating BTC>` Bid on auction. Must: 1. State price at point of bid via the !buy command in op_return (output @0). 2. Must consume past ACS inputs at that price height (includes the owners public notification at '':'' if used) (inputs @1+). 3. Refund previous valid bidders (outputs @4+). 4. Pay 1.5x last price requested except for original price (output @3). 5. Create notification (output @1). 6. Use desired ownership/refund adderss as first input (input @0). Winner is derived 24 hours after first bid by highest price that followed all the rules. Does not change lease expiration - only burns can extend even if transfered.
 
@@ -34,6 +32,7 @@
 
 - originally use timestamp to approximate how long this owner has been in control. (only relevant if new owner)
   (doesn't require additional API call for current blockheight)
+
   - warn if still bidding period
   - warn if bns alias is available (new or owner expired)
   - full alias ownership history view option
@@ -56,6 +55,7 @@
   - need to show unconfirmed burn amounts
 
 ---
+
 Long term
 
 - show full history of alias (maybe users want to use old values)
@@ -78,6 +78,7 @@ Long term
 - advantages of using Bitcoin - can see full history including time of changes as a warning
 
 ---
+
 Tests
 
 - automate predetermined scenarios and bids to make sure domain owner is always same. no API bc might get throttled.
@@ -89,6 +90,7 @@ Uncertain ideas
 - messages, warnings to addresses
 
 - who should initiate sales?
+
   - owner could post requested price in satoshi & duration in blocks
     if a tx paying to controller address with equal or more bitcoin appears (that notifies the alias address) ownership can be considered transfered. if less, nothing happens. they shouldn't send less.
   - buyer could put bitcoin into a contract that's accessible by owner's sig (can script match to address and not pub key?)
@@ -97,27 +99,27 @@ Uncertain ideas
 - how to store addresses/forwards longer than 80 bytes? (until multiple OP returns are ok)
   1. Could store information on ipfs and include ipfs link instead of xmr link
   2. Could reserve ! symbol for network and split messages e.g. random xmr address
-    xmr!1/2 4B2YGz8aYgZ7R8AWDkkMqc72qgVaCFJhT6GW2T5gEhzyAuQ
-    xmr!2/2 dHschMxdZgY9L6rHix466NR6viA3NFN2x8RcJjrxRE5VwTpm
+     xmr!1/2 4B2YGz8aYgZ7R8AWDkkMqc72qgVaCFJhT6GW2T5gEhzyAuQ
+     xmr!2/2 dHschMxdZgY9L6rHix466NR6viA3NFN2x8RcJjrxRE5VwTpm
   3. ! symbol can also signify encoding type if it saves space. For example,
-    xmr!58m for network could mean xmr network, base 58 encoding xmr style (so bns doesn't interpret bytes as utf8, default, or even base58 bitcoin style)
+     xmr!58m for network could mean xmr network, base 58 encoding xmr style (so bns doesn't interpret bytes as utf8, default, or even base58 bitcoin style)
 
+* BNS as a standard network choice to forward to another BNS alias
 
-- BNS as a standard network choice to forward to another BNS alias
   - (no bns change needed, only in presentation of data have to do 2nd request)
 
-- Remove address re-use. This is not easy since everyone has to keep track of owner address & ignore tx not from owner.
+* Remove address re-use. This is not easy since everyone has to keep track of owner address & ignore tx not from owner.
 
-
-  - option 2: - transfer ownership every tx to new owner address with a flag signifying same owner?
+- option 2: - transfer ownership every tx to new owner address with a flag signifying same owner?
 
 - private tx (that is not xmr or bip47)
+
   0. target shares xpub (like via domain)
   1. use a generic notification address on one output or input no matter who sender/target is
-  2. encrypt used address secret path using targets public key at known path + validation that decryption was successful (2^31 values per derivation step max, so maybe 24bits () 10 times)
-  3. sender sends to the address derived from the xpub and path
-  4. target can scan notifications for embed they can decrypt with private key up to x height.
-  5. they can apply the clear text to derive the wallet path with received funds
+  1. encrypt used address secret path using targets public key at known path + validation that decryption was successful (2^31 values per derivation step max, so maybe 24bits () 10 times)
+  1. sender sends to the address derived from the xpub and path
+  1. target can scan notifications for embed they can decrypt with private key up to x height.
+  1. they can apply the clear text to derive the wallet path with received funds
 
   - Attackers can know xpub so know pub key
   - attacker can't decrypt without private key
@@ -126,11 +128,12 @@ Uncertain ideas
   - notification address used could be combined with more general
   - attacker could poison the tx by sending to a targets address and then following outputs. this could be avoided by immidiately doing submarine swap from each utxo to your LN node (https://submarineswaps.org/) or used in various coinjoin-type scenarios.
 
-  and can't decrypt every notified text, but can encrypt with public key until match found.  as well until finding result of a path
+  and can't decrypt every notified text, but can encrypt with public key until match found. as well until finding result of a path
 
   - bid challenges (kept generic so can be reused for non-burns)
 
   - should winner of bids at same height have to refund losing bids?
+
     - decided on NO - minimize required tx
     - refunds are a way to increase costs for challenges but also help those outbid
     - competing for ownership shouldn't be easy or cheap as that could cause greifing.
@@ -147,15 +150,12 @@ Uncertain ideas
   - allows this now by changing address each tx via commands (page 4)
     - space consuming, can give decoded into bytes option
     - https://github.com/sipa/bech32/tree/master/ref/javascript
-  ideally control address is simply used very rarely for only this purpose
+      ideally control address is simply used very rarely for only this purpose
 
-
-
-- notification tx could also be nonced
+* notification tx could also be nonced
   - would have to request significantly more address data
   - spending it reveals script as anyone can spend
   - could add random noise to tx amount to avoid round numbers
-
 
 - maybe better approach is to assume domains are not private once domain is known
 - store information there that allows some privacy (ln, stealth addresses)
@@ -167,33 +167,35 @@ can connect to LN? spending-only channel creation and sending is safe (?) from l
 
 - how cheap are k=1/2 signatures to use vs script acs.
   choosing k=1/2 allows everyone to compute the private key but that's the point of acs.
-  R = k*G
+  R = k\*G
   r = x coordinate of R
 
 - minimum output amounts for notification might need to include considerations of the fee necessary to spend them rather
   to keep values practical.
 
   test:
+
   - create 2 dummy tx with and without the notification as an input
   - difference in vBytes between them is the minNoticationSizeBasis
-  - at any fee rate (sat/vBytes) the minNotificationSpendingCost = minNoticationSizeBasis * feeRate
+  - at any fee rate (sat/vBytes) the minNotificationSpendingCost = minNoticationSizeBasis \* feeRate
   - any amounts larger than minNotificationSpendingCost in output mean they incentivize spending if network feeRate is same as before
   - any amounts smaller than minNotificationSpendingCost should not be allowed
 
+when checking tx:
 
-  when checking tx:
-  - calculate tx fee used (fees that are included in blockchain means they were high enough to use practically)
-  - get/calculate vBytes of the tx
-  - back calculate feeRate (sat/vByte) used
-  - apply that fee Rate on dummy tx with and without the notification as an input
-  - the difference is the minimum amount of value when spending from that notification costs as much as it provides
-  - amount in notification must be greater or equal to difference in cost of the above test to make them free to spend.
+- calculate tx fee used (fees that are included in blockchain means they were high enough to use practically)
+- get/calculate vBytes of the tx
+- back calculate feeRate (sat/vByte) used
+- apply that fee Rate on dummy tx with and without the notification as an input
+- the difference is the minimum amount of value when spending from that notification costs as much as it provides
+- amount in notification must be greater or equal to difference in cost of the above test to make them free to spend.
 
-  when making tx with notification as output:
-  - use the test's minNoticationSizeBasis and multiply by feeRate chosen by user to get value to put into them
+when making tx with notification as output:
 
-  problem: if original tx is not accepted and has to be pushed via CPFP, it could pay significantly smaller original fee and thus amount in notification. CPFP could be used to create smaller notification outputs but CPFP rules require paying new fee rate for both parent and child, which means sender will still pay same or higher fees. if CPFP is done via notification output spending, it solves the problem it created, but could also be done with another output leaving bad utxo behind - saves purely on # of sats not placed into notification utxo. most rules require cleaning up your own utxo so not too dangerous.
-  CPFP effective fee rate calculations miners do: minerFeeRate = (sum of fees from all tx)/(sum of all sizes of all tx (in vBytes))
+- use the test's minNoticationSizeBasis and multiply by feeRate chosen by user to get value to put into them
+
+problem: if original tx is not accepted and has to be pushed via CPFP, it could pay significantly smaller original fee and thus amount in notification. CPFP could be used to create smaller notification outputs but CPFP rules require paying new fee rate for both parent and child, which means sender will still pay same or higher fees. if CPFP is done via notification output spending, it solves the problem it created, but could also be done with another output leaving bad utxo behind - saves purely on # of sats not placed into notification utxo. most rules require cleaning up your own utxo so not too dangerous.
+CPFP effective fee rate calculations miners do: minerFeeRate = (sum of fees from all tx)/(sum of all sizes of all tx (in vBytes))
 
 - dust limits are currently calculated on mainnet at 3 sat/byte which is easier for witness tx but still very low if fees are 30 sat/vByte.
 
@@ -217,9 +219,10 @@ No privacy advantage, cold/hot key from users personal address implementation wo
       Could add logic to allow cold keys to undo hot keys actions for 24 hours so they can transfer ownership to address they do control.
 
 alternative:
+
 1. Add command to add cold address (no cold key necessary)
-3. Doing #1 activates a delay on changes by hot key
-4. Cold keys can remove hot key access that cancel all pending actions, not vise versa
-5. Cold keys can remove themselves, canceling delay.
+2. Doing #1 activates a delay on changes by hot key
+3. Cold keys can remove hot key access that cancel all pending actions, not vise versa
+4. Cold keys can remove themselves, canceling delay.
 
 By doing delay purely with BNS state derivation, it's much less complex. Multi-address ownership structure needs to be explored. People can already use a multisig address as control address w/ their own UI so alternative is simple and opt-in.

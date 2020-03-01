@@ -14,17 +14,19 @@ import crypto from 'crypto'
 const BOB_ADDRESS = 'tb1q2t7tc7nta5ul6xzd7682jgstxwkap2uflrgu4s'
 
 describe('stealth address implementation', () => {
-
   /* -------------------------------------------------------------------------- */
   /*                            Alice generating xpub                           */
   /* -------------------------------------------------------------------------- */
 
   const network = bitcoin.networks.testnet
 
-  const Alice_strMnemonic = 'grace buddy scene leisure strategy spike hair mammal vanish butter hint olive'
+  const Alice_strMnemonic =
+    'grace buddy scene leisure strategy spike hair mammal vanish butter hint olive'
   const Alice_seedBuffer = bip39.mnemonicToSeed(Alice_strMnemonic)
   const Alice_masterNode = bitcoin.bip32.fromSeed(Alice_seedBuffer, network)
-  const Alice_childNode_m_1001h_0h_0h = Alice_masterNode.derivePath("m/1001'/0'/0'")
+  const Alice_childNode_m_1001h_0h_0h = Alice_masterNode.derivePath(
+    "m/1001'/0'/0'"
+  )
   const Alice_childNode_m_1001h_0h_0h_neutered = Alice_childNode_m_1001h_0h_0h.neutered()
 
   const Alice_xPub_B58 = Alice_childNode_m_1001h_0h_0h_neutered.toBase58()
@@ -53,7 +55,10 @@ describe('stealth address implementation', () => {
   // xpub buffer -> base58
   const Bob_xPub_B58_OfAlice = bs58check.encode(Bob_xPub_Buffer_OfAlice)
   // xpub base58 -> bip32 wallet node
-  const Bob_walletNode_OfAlice = bitcoin.bip32.fromBase58(Bob_xPub_B58_OfAlice, network)
+  const Bob_walletNode_OfAlice = bitcoin.bip32.fromBase58(
+    Bob_xPub_B58_OfAlice,
+    network
+  )
   // bip 32 wallet node -> alice's public key buffer
   const Bob_publicKey_Buffer_OfAlice = Bob_walletNode_OfAlice.publicKey
 
@@ -75,8 +80,8 @@ describe('stealth address implementation', () => {
   //
   // which can be easily checked for any source address by scanning notification address
 
-
-  const Bob_stringForIv = BOB_ADDRESS + Bob_walletNode_OfAlice.publicKey.toString('hex') + '0'
+  const Bob_stringForIv =
+    BOB_ADDRESS + Bob_walletNode_OfAlice.publicKey.toString('hex') + '0'
 
   const Bob_eciesOptions = {
     curveName: 'secp256k1',
@@ -140,7 +145,11 @@ describe('stealth address implementation', () => {
     const reusableNode58 = reusableNode.toBase58()
 
     console.timeEnd('deriveStealthAddressParent')
-    return { base58check: reusableNode58, path: subPathFromNode, node: reusableNode }
+    return {
+      base58check: reusableNode58,
+      path: subPathFromNode,
+      node: reusableNode
+    }
   }
 
   // once we calculate reusable node xpub from shared secret
@@ -149,15 +158,20 @@ describe('stealth address implementation', () => {
   const getStealthAddress = ({ sharedSecretXPub58, timesSent, network }) => {
     console.time('deriveNewStealthAddress')
 
-    if (typeof timesSent !== 'number') throw new Error('Must have timesSent: number')
+    if (typeof timesSent !== 'number')
+      throw new Error('Must have timesSent: number')
 
-    const sharedSecretNode = bitcoin.bip32.fromBase58(sharedSecretXPub58, network)
+    const sharedSecretNode = bitcoin.bip32.fromBase58(
+      sharedSecretXPub58,
+      network
+    )
 
     const oneTimeUseNode = sharedSecretNode.derive(timesSent)
 
     const pubkey = oneTimeUseNode.publicKey
 
-    const newStealthAddress = bitcoin.payments.p2wpkh({ pubkey, network }).address
+    const newStealthAddress = bitcoin.payments.p2wpkh({ pubkey, network })
+      .address
 
     console.timeEnd('deriveNewStealthAddress')
 
@@ -166,16 +180,15 @@ describe('stealth address implementation', () => {
 
   // calculate reusable parent node after shared secret path derivation
   const Bob_calculateAliceSharedSecretXPub = getSharedSecretNode({
-    xNodeCodeBuffer: Bob_xPub_Buffer_OfAlice,   // found posted on BNS - 78 byte long static xpub
-    sharedSecret: Bob_sharedSecret,             // Bob's secret only Alice can find on blockchain
-    network                                     // bitcoin.networks['bitcoin' or 'testnet']
+    xNodeCodeBuffer: Bob_xPub_Buffer_OfAlice, // found posted on BNS - 78 byte long static xpub
+    sharedSecret: Bob_sharedSecret, // Bob's secret only Alice can find on blockchain
+    network // bitcoin.networks['bitcoin' or 'testnet']
   })
 
   console.log(
     'Bob can store string to skip shared secret node derivation for sending to Alice (xpub in base58check):\n',
     Bob_calculateAliceSharedSecretXPub.base58check
   )
-
 
   // first time sending so 0, increase by 1 each time we send to Alice's stealth address
   let timesSent = 0
@@ -198,7 +211,6 @@ describe('stealth address implementation', () => {
     network
   })
 
-
   /* -------------------------------------------------------------------------- */
   /*            Assume Bob posted secret and sent to these addresses            */
   /* -------------------------------------------------------------------------- */
@@ -214,7 +226,12 @@ describe('stealth address implementation', () => {
     { data: crypto.randomBytes(Bob_encryptedSecret.length), from: BOB_ADDRESS },
     { data: crypto.randomBytes(Bob_encryptedSecret.length), from: 'voldemort' },
     { data: Bob_encryptedSecret, from: BOB_ADDRESS },
-    { data: crypto.randomBytes(Bob_encryptedSecret.length), from: BOB_ADDRESS.split().reverse().join() }
+    {
+      data: crypto.randomBytes(Bob_encryptedSecret.length),
+      from: BOB_ADDRESS.split()
+        .reverse()
+        .join()
+    }
   ]
 
   // since "m/1001'/0'/0'" public key was used for encryption
@@ -222,12 +239,11 @@ describe('stealth address implementation', () => {
   const aliceNotificationKeyNode = Alice_childNode_m_1001h_0h_0h
   const privateKeyBuffer = aliceNotificationKeyNode.privateKey
 
-
   // track if found
   let nFound = 0
   let sharedSecretBuffer
 
-  potentialNotifications.forEach((tx) => {
+  potentialNotifications.forEach(tx => {
     // options for decryption
     const Alice_eciesOptions = {
       curveName: 'secp256k1',
@@ -235,11 +251,20 @@ describe('stealth address implementation', () => {
       toIv: tx.from + aliceNotificationKeyNode.publicKey.toString('hex') + '0'
     }
 
-    const decryptAttempt = ecies.decrypt(privateKeyBuffer, tx.data, Alice_eciesOptions)
+    const decryptAttempt = ecies.decrypt(
+      privateKeyBuffer,
+      tx.data,
+      Alice_eciesOptions
+    )
 
     if (decryptAttempt) {
       nFound++
-      console.log('Secret found from', tx.from, 'with byte size of', decryptAttempt.length)
+      console.log(
+        'Secret found from',
+        tx.from,
+        'with byte size of',
+        decryptAttempt.length
+      )
       sharedSecretBuffer = decryptAttempt
     }
   })
@@ -258,45 +283,85 @@ describe('stealth address implementation', () => {
 
   // shared secret node derivation can use same function as Bob used
   const Alice_sharedSecretNode = getSharedSecretNode({
-    xNodeCodeBuffer: bs58check.decode(Alice_childNode_m_1001h_0h_0h.toBase58()),  // from node I derived from my private mnemonic
-    sharedSecret: sharedSecretBuffer,                                             // Alice found on chain & it passed checksum after decryption
+    xNodeCodeBuffer: bs58check.decode(Alice_childNode_m_1001h_0h_0h.toBase58()), // from node I derived from my private mnemonic
+    sharedSecret: sharedSecretBuffer, // Alice found on chain & it passed checksum after decryption
     network
   })
 
   // get private key (WIF format) for first 3 child nodes of shared secret node
-  const Alice_StealthAddress0_WIF = Alice_sharedSecretNode.node.derive(0).toWIF()
-  const Alice_StealthAddress1_WIF = Alice_sharedSecretNode.node.derive(1).toWIF()
-  const Alice_StealthAddress2_WIF = Alice_sharedSecretNode.node.derive(2).toWIF()
+  const Alice_StealthAddress0_WIF = Alice_sharedSecretNode.node
+    .derive(0)
+    .toWIF()
+  const Alice_StealthAddress1_WIF = Alice_sharedSecretNode.node
+    .derive(1)
+    .toWIF()
+  const Alice_StealthAddress2_WIF = Alice_sharedSecretNode.node
+    .derive(2)
+    .toWIF()
 
   // get key pairs
-  const Alice_StealthAddress0_keyPair = bitcoin.ECPair.fromWIF(Alice_StealthAddress0_WIF, network)
-  const Alice_StealthAddress1_keyPair = bitcoin.ECPair.fromWIF(Alice_StealthAddress1_WIF, network)
-  const Alice_StealthAddress2_keyPair = bitcoin.ECPair.fromWIF(Alice_StealthAddress2_WIF, network)
+  const Alice_StealthAddress0_keyPair = bitcoin.ECPair.fromWIF(
+    Alice_StealthAddress0_WIF,
+    network
+  )
+  const Alice_StealthAddress1_keyPair = bitcoin.ECPair.fromWIF(
+    Alice_StealthAddress1_WIF,
+    network
+  )
+  const Alice_StealthAddress2_keyPair = bitcoin.ECPair.fromWIF(
+    Alice_StealthAddress2_WIF,
+    network
+  )
 
   // get addresses
-  const Alice_StealthAddress0 = bitcoin.payments.p2wpkh({ pubkey: Alice_StealthAddress0_keyPair.publicKey, network }).address
-  const Alice_StealthAddress1 = bitcoin.payments.p2wpkh({ pubkey: Alice_StealthAddress1_keyPair.publicKey, network }).address
-  const Alice_StealthAddress2 = bitcoin.payments.p2wpkh({ pubkey: Alice_StealthAddress2_keyPair.publicKey, network }).address
+  const Alice_StealthAddress0 = bitcoin.payments.p2wpkh({
+    pubkey: Alice_StealthAddress0_keyPair.publicKey,
+    network
+  }).address
+  const Alice_StealthAddress1 = bitcoin.payments.p2wpkh({
+    pubkey: Alice_StealthAddress1_keyPair.publicKey,
+    network
+  }).address
+  const Alice_StealthAddress2 = bitcoin.payments.p2wpkh({
+    pubkey: Alice_StealthAddress2_keyPair.publicKey,
+    network
+  }).address
 
   console.log(
-    `Shared (once) secret + Alice's xpub lead to these paths from Alice's master node:`, '\n',
-    "Full path 0: m/1001'/0'/0'/" + Alice_sharedSecretNode.path + '/0)', '\n',
-    "Full path 1: m/1001'/0'/0'/" + Alice_sharedSecretNode.path + '/1)', '\n',
-    "Full path 2: m/1001'/0'/0'/" + Alice_sharedSecretNode.path + '/2)', '\n'
+    `Shared (once) secret + Alice's xpub lead to these paths from Alice's master node:`,
+    '\n',
+    "Full path 0: m/1001'/0'/0'/" + Alice_sharedSecretNode.path + '/0)',
+    '\n',
+    "Full path 1: m/1001'/0'/0'/" + Alice_sharedSecretNode.path + '/1)',
+    '\n',
+    "Full path 2: m/1001'/0'/0'/" + Alice_sharedSecretNode.path + '/2)',
+    '\n'
   )
 
   console.log(
     'Bob calculated 3 stealth addresses to send to from Alice xpub and shared secret:\n',
-    Bob_calculateAliceStealthAddress0, '\n',
-    Bob_calculateAliceStealthAddress1, '\n',
-    Bob_calculateAliceStealthAddress2, '\n',
+    Bob_calculateAliceStealthAddress0,
+    '\n',
+    Bob_calculateAliceStealthAddress1,
+    '\n',
+    Bob_calculateAliceStealthAddress2,
+    '\n'
   )
 
   console.log(
     'Alice attempted to derive those same 3 stealth addresses with private keys for each from decrypted secret message:\n',
-    Alice_StealthAddress0, 'with private key (WIF):', Alice_StealthAddress0_WIF, '\n',
-    Alice_StealthAddress1, 'with private key (WIF):', Alice_StealthAddress1_WIF, '\n',
-    Alice_StealthAddress2, 'with private key (WIF):', Alice_StealthAddress2_WIF, '\n'
+    Alice_StealthAddress0,
+    'with private key (WIF):',
+    Alice_StealthAddress0_WIF,
+    '\n',
+    Alice_StealthAddress1,
+    'with private key (WIF):',
+    Alice_StealthAddress1_WIF,
+    '\n',
+    Alice_StealthAddress2,
+    'with private key (WIF):',
+    Alice_StealthAddress2_WIF,
+    '\n'
   )
 
   test('Alice addresses 0,1,2 matched Bob addresses 0,1,2', () => {
@@ -304,6 +369,4 @@ describe('stealth address implementation', () => {
     expect(Alice_StealthAddress1).toEqual(Bob_calculateAliceStealthAddress1)
     expect(Alice_StealthAddress2).toEqual(Bob_calculateAliceStealthAddress2)
   })
-
-
 })

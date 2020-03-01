@@ -8,5 +8,5 @@ import { encrypt } from './cryptography'
 export const stringByteCount = (data: string): number => {
   const cipher: Buffer = encrypt(data, 'arbitrary key and iv seeding string')
   // returns buffer, so length should be bytesize
-  return cipher.length;
+  return cipher.length
 }

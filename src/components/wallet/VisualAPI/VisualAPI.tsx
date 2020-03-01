@@ -3,17 +3,13 @@ import styles from './VisualAPI.module.css'
 import { Store } from '../../../store'
 
 // to grab last state
+
 const last: any = {}
-
-const delay = async ({ callsPerSec = undefined, seconds = undefined } = { seconds: 0.5 }) => {
-  await new Promise(r => setTimeout(r, seconds || (1000 / callsPerSec!)))
-}
-
 
 /**
  * Handles API requests
  */
-export const VisualAPI = (props: any) => {
+export const VisualAPI = (props: any): any => {
   // global state
   const { state } = React.useContext(Store)
   last.state = state
@@ -25,7 +21,6 @@ export const VisualAPI = (props: any) => {
     const st = last.state
     if (st) {
       // check first item in queue
-      const nTasks = state.api.tasks.length
       const task = state.api.tasks[0]
 
       if (task) {
@@ -35,17 +30,17 @@ export const VisualAPI = (props: any) => {
 
           // run reply callback with response data as parameter
           task.reply({ data })
-
         } catch (error) {
           // reply with error
           task.reply({ error })
         }
       }
+
+      // delay for API rate limit
+      if (!st || st.api.tasks.length === 0) {
+        await delay({ ms: 100 })
+      }
     }
-
-    // delay for API rate limit
-
-
     // loop
     apiLoop()
   }
@@ -62,8 +57,12 @@ export const VisualAPI = (props: any) => {
   }
 
   return (
-    <div className={ styles.wrapper }>
-      API: { state.api.tasks.length } tasks
-    </div>
+    <div className={styles.wrapper}>API: {state.api.tasks.length} tasks</div>
   )
+}
+
+const delay = async (
+  { callsPerSec = undefined, ms = undefined } = { ms: 500 }
+): Promise<any> => {
+  await new Promise(r => setTimeout(r, ms || 1000 / callsPerSec!))
 }

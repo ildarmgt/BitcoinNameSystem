@@ -3,63 +3,63 @@
  * and Array of strings or string describing filter.
  * Returns the string of interst with only characters present in filters selected.
  */
-export default function  sanitize (inputString, stringOrArray) {
+export default function sanitize (inputString, stringOrArray) {
   // get choice input into same form of array of string(s) of choices
-  let choices; // :string | Array<string>
+  let choices // :string | Array<string>
   if (Array.isArray(stringOrArray)) {
-    choices = stringOrArray;
+    choices = stringOrArray
   }
   if (typeof stringOrArray === 'string') {
-    choices = [stringOrArray];
+    choices = [stringOrArray]
   }
 
   // add each choice to filter selection
   // (set object would be fastest but these are only a few letters)
 
   // string mask
-  let filter = '';
+  let filter = ''
   // array of functions
-  const logicFilters = [];
+  const logicFilters = []
 
   choices.forEach(choice => {
-
     // short masks
     if (choice === 'numbers') {
-      filter += '0123456789';
+      filter += '0123456789'
     }
     if (choice === 'fractions' || choice === 'number') {
-      filter += '0123456789.';
+      filter += '0123456789.'
     }
     if (choice === 'decimal_point') {
-      filter += '.';
+      filter += '.'
     }
     if (choice === 'hex') {
-      filter += '0123456789abcdefABCDEF';
+      filter += '0123456789abcdefABCDEF'
     }
     if (choice === 'lowcaps') {
-      filter += 'abcdefghijklmnopqrstuvwxyz';
+      filter += 'abcdefghijklmnopqrstuvwxyz'
     }
     if (choice === 'highcaps') {
-      filter += 'ABCDEFGHIJKLMNOPQRSTUVWYZ';
+      filter += 'ABCDEFGHIJKLMNOPQRSTUVWYZ'
     }
     if (choice === 'spaces') {
-      filter += ' ';
+      filter += ' '
     }
 
     // longer masks
     if (choice === 'base58') {
       // https://en.wikipedia.org/wiki/Base58#cite_note-3
-      filter += '12345689ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz';
+      filter += '12345689ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz'
     }
     if (choice === 'basic') {
-      filter += '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
+      filter += '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ'
     }
     if (choice === 'oneline') {
-      filter += '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ,./-_!`~[]{}|@#%^&()-=?$';
+      filter +=
+        '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ,./-_!`~[]{}|@#%^&()-=?$'
     }
     if (choice === 'url') {
       //  RFC 3986 (Section 2: Characters) 84 total
-      filter += `0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ:/?#[]@!$&'()*+,;=-_.~`;
+      filter += `0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ:/?#[]@!$&'()*+,;=-_.~`
     }
 
     // ========================================================
@@ -68,9 +68,11 @@ export default function  sanitize (inputString, stringOrArray) {
 
     if (choice === 'no_spaces') {
       logicFilters.push(str =>
-        str.split('')
+        str
+          .split('')
           .filter(letter => letter !== ' ')
-          .join(''))
+          .join('')
+      )
     }
 
     if (choice === 'single_space_width') {
@@ -82,28 +84,25 @@ export default function  sanitize (inputString, stringOrArray) {
 
     // keep only first decimal point
     if (choice === 'decimal_point') {
-
       logicFilters.push(str =>
-        (str
+        str
           // splits to array between .
           .split('.')
           // join first 2 elements with ., others with empty string
           // returns a string
           .reduce((resultingString, numbers, index) => {
             // real . goes b/w array's index 0 and 1, even if string had . first
-            const digits = (index === 0 && numbers === '') ? '0' : numbers
-            return (index === 1)
-              ? [ resultingString, digits ].join('.')
-              : [ resultingString, digits ].join('')
+            const digits = index === 0 && numbers === '' ? '0' : numbers
+            return index === 1
+              ? [resultingString, digits].join('.')
+              : [resultingString, digits].join('')
           }, '')
-        )
       )
     }
 
     if (choice === 'no_leading_zeros') {
-
       logicFilters.push(str =>
-        (str
+        str
           // splits to array between .
           .split('.')
           .map((numbers, index) => {
@@ -114,27 +113,24 @@ export default function  sanitize (inputString, stringOrArray) {
             }
           })
           .join('.')
-        )
       )
     }
-
   })
 
   if (filter.length === 0 && logicFilters.length === 0) {
     console.warning('sanitize used w/o any known filters', stringOrArray)
   }
 
-  let outputString = '';
+  let outputString = ''
 
   // apply string mask to only keep characters within filter string
   outputString = inputString
     .split('')
     .filter(letter => filter.indexOf(letter) > -1)
-    .join('');
+    .join('')
 
   // use every selected logic function on the outputString
-  logicFilters.forEach(fn => outputString = fn(outputString))
+  logicFilters.forEach(fn => (outputString = fn(outputString)))
 
-  return outputString;
+  return outputString
 }
-

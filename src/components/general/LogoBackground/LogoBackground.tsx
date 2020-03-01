@@ -7,10 +7,8 @@ import styles from './LogoBackground.module.css'
  */
 export const LogoBackground = (props: any) => {
   return (
-    <div className={ styles.wrapper }>
-      <Logo
-        className={ styles.logo }
-      />
+    <div className={styles.wrapper}>
+      <Logo className={styles.logo} />
     </div>
   )
 }

@@ -44,7 +44,7 @@ export interface I_State {
     address: string
     mnemonic: string
     WIF: string
-    txHistory:  Array<I_TX>
+    txHistory: Array<I_TX>
     utxoList: Array<I_UTXO>
   }
   chain: {
@@ -67,8 +67,8 @@ export interface I_State {
     tasks: any[]
     path: {
       [network: string]: string
-    },
-    rateLimit: number   // calls per second
+    }
+    rateLimit: number // calls per second
   }
   lastTimeStamp: number
 }

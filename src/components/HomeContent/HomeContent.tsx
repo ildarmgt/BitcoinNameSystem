@@ -18,7 +18,7 @@ export const HomeContent = (props: any): JSX.Element => {
   // http://localhost:3000/#/id/satoshi
   const alias = props?.match?.params?.alias
   if (alias) {
-    searchAction({...state, alias}, dispatch, props.history)
+    searchAction({ ...state, alias }, dispatch, props.history)
   }
 
   // is serach done
@@ -35,40 +35,46 @@ export const HomeContent = (props: any): JSX.Element => {
   }, [])
 
   return (
-    <div className={ styles.wrapper }>
-      <div className={
-        !isSearchDone()
-          ? [styles.lblMainTitle].join(' ')
-          : [styles.lblMainTitle, styles.lblMainTitleAfter].join(' ')
-      }>
+    <div className={styles.wrapper}>
+      <div
+        className={
+          !isSearchDone()
+            ? [styles.lblMainTitle].join(' ')
+            : [styles.lblMainTitle, styles.lblMainTitleAfter].join(' ')
+        }
+      >
         <span>Bitcoin</span> Name System
       </div>
-      <div className={
-        !isSearchDone()
-          ? styles.divSearch
-          : [styles.divSearch, styles.divSearchAfter].join(' ')
-      }>
+      <div
+        className={
+          !isSearchDone()
+            ? styles.divSearch
+            : [styles.divSearch, styles.divSearchAfter].join(' ')
+        }
+      >
         <textarea
-          id="txtSearch"
-          className={ styles.txtSearch }
-          cols={ 30 }
-          rows={ 1 }
-          spellCheck={ false }
-          value={ state.alias }
-          placeholder={ 'e.g. satoshi' }
-          ref={ inputEl }
-          onChange={ e => changeAliasAction(state, dispatch, e?.target?.value) }
-          onKeyPress={ e => { e.key === 'Enter' && searchAction(state, dispatch) } }
+          id='txtSearch'
+          className={styles.txtSearch}
+          cols={30}
+          rows={1}
+          spellCheck={false}
+          value={state.alias}
+          placeholder={'e.g. satoshi'}
+          ref={inputEl}
+          onChange={e => changeAliasAction(state, dispatch, e?.target?.value)}
+          onKeyPress={e => {
+            e.key === 'Enter' && searchAction(state, dispatch)
+          }}
         ></textarea>
         <RoundButton
           sizebutton='2.6'
-          onClick={ () => searchAction(state, dispatch) }
+          onClick={() => searchAction(state, dispatch)}
         >
           .btc
         </RoundButton>
       </div>
       <div
-        className={ styles.results }
+        className={styles.results}
         style={{ display: isSearchDone() ? 'block' : 'none' }}
       >
         <SearchResults />

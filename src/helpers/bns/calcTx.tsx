@@ -43,11 +43,15 @@ interface I_Tx_Result {
 export const calcTx = (
   wallet: any,
   domain: I_Domain,
-  choices: { action: I_Checked_Action, feeRate: number, embedString: string, [key: string]: any },
+  choices: {
+    action: I_Checked_Action
+    feeRate: number
+    embedString: string
+    [key: string]: any
+  },
   networkChoice: string,
   vBytes: number = 1
 ): I_Tx_Result => {
-
   if (wallet.utxoList.length === 0) {
     throw new Error('Wallet has no funds (utxo) to use')
   }
@@ -64,42 +68,63 @@ export const calcTx = (
   // calculate funds necessary for this tx, round up sat for more better than being below minimum.
   const fee = Math.ceil(vBytes * feeRate)
 
-
   // output[0]: check special tx rules for max amount required to burn among all of them
-  const burnAmounts = choices.action.suggestions.reduce((allBurnAmounts: any, thisSuggestion: any) => {
-    // console.log('choices.action.suggestions each item:', thisSuggestion)
-    let burnAmountsHere: any = []
+  const burnAmounts = choices.action.suggestions.reduce(
+    (allBurnAmounts: any, thisSuggestion: any) => {
+      // console.log('choices.action.suggestions each item:', thisSuggestion)
+      let burnAmountsHere: any = []
       // if there's a set burn rule, add to list
-      if (('set' in thisSuggestion.info) && (thisSuggestion.info.set.name === 'Bid burn amount')) {
+      if (
+        'set' in thisSuggestion.info &&
+        thisSuggestion.info.set.name === 'Bid burn amount'
+      ) {
         burnAmountsHere = [...burnAmountsHere, thisSuggestion.info.set.value]
       }
       // if there's a user provided get value, add to list
-      if (('get' in thisSuggestion.info) && (thisSuggestion.info.get.name === 'Bid burn amount')) {
-        burnAmountsHere = [...burnAmountsHere, parseInt(thisSuggestion.info.get.value, 10)]
+      if (
+        'get' in thisSuggestion.info &&
+        thisSuggestion.info.get.name === 'Bid burn amount'
+      ) {
+        burnAmountsHere = [
+          ...burnAmountsHere,
+          parseInt(thisSuggestion.info.get.value, 10)
+        ]
       }
-    return [...allBurnAmounts, ...burnAmountsHere]
-  }, [])
+      return [...allBurnAmounts, ...burnAmountsHere]
+    },
+    []
+  )
   const burnAmount = Math.max(...burnAmounts)
 
   // add up any refunds to do for total needed and array of address/amount for generating outputs
   let refundsAmount = 0
-  const refundAmountsArray = choices.action.suggestions.reduce((refundAmounts: any, thisSuggestion: any) => {
-    // console.log('choices.action.suggestions each item:', thisSuggestion)
-    // if there's a refund to do, add to list
-    if (thisSuggestion.info.type === BnsSuggestionType.REFUND_BIDDERS && thisSuggestion.info.get.value === true) {
-      const arrayOfAmountsAndAddresses = thisSuggestion.info.set.value.split('\n')
-      const refunds = arrayOfAmountsAndAddresses.map((thisAmountAndAddress: any) => {
-        const thisAddress = thisAmountAndAddress.split(' ')[1]
-        const thisAmount = parseInt(thisAmountAndAddress.split(' ')[0], 10)
-        refundsAmount += thisAmount
-        return { address: thisAddress, amount: thisAmount }
-      })
+  const refundAmountsArray = choices.action.suggestions.reduce(
+    (refundAmounts: any, thisSuggestion: any) => {
+      // console.log('choices.action.suggestions each item:', thisSuggestion)
+      // if there's a refund to do, add to list
+      if (
+        thisSuggestion.info.type === BnsSuggestionType.REFUND_BIDDERS &&
+        thisSuggestion.info.get.value === true
+      ) {
+        const arrayOfAmountsAndAddresses = thisSuggestion.info.set.value.split(
+          '\n'
+        )
+        const refunds = arrayOfAmountsAndAddresses.map(
+          (thisAmountAndAddress: any) => {
+            const thisAddress = thisAmountAndAddress.split(' ')[1]
+            const thisAmount = parseInt(thisAmountAndAddress.split(' ')[0], 10)
+            refundsAmount += thisAmount
+            return { address: thisAddress, amount: thisAmount }
+          }
+        )
 
-      return [...refundAmounts, ...refunds]
-    } else {
-      return refundAmounts
-    }
-  }, [])
+        return [...refundAmounts, ...refunds]
+      } else {
+        return refundAmounts
+      }
+    },
+    []
+  )
 
   const valueNeeded = refundsAmount + burnAmount + MIN_NOTIFY + fee // sat
 
@@ -124,7 +149,6 @@ export const calcTx = (
     }
   })
 
-
   // Adding remaining funds from user's wallet to total Gathered
   // Must always add at least 1 user utxo @ index 0 to indicate ownership
   let toBeUsedUtxoOfUserWallet: Array<any> = []
@@ -143,20 +167,20 @@ export const calcTx = (
   // there are simply not enough funds to do the tx
   if (totalGathered < valueNeeded) {
     throw new Error(
-      'Not enough funds available (need: '
-      + (valueNeeded / 1e8).toFixed(8)
-      + ' BTC, have: '
-      + (totalGathered / 1e8).toFixed(8) + ' BTC)'
+      'Not enough funds available (need: ' +
+        (valueNeeded / 1e8).toFixed(8) +
+        ' BTC, have: ' +
+        (totalGathered / 1e8).toFixed(8) +
+        ' BTC)'
     )
   }
-
 
   // calculate keys from wallet import format key
   const keyPair = bitcoin.ECPair.fromWIF(wallet.WIF, network)
   // create Partially Signed Bitcoin Transaction object to build tx
   const psbt = new bitcoin.Psbt({ network })
-  psbt.setVersion(2)    // default
-  psbt.setLocktime(0)   // default
+  psbt.setVersion(2) // default
+  psbt.setLocktime(0) // default
 
   // add all inputs to transaction
 
@@ -183,7 +207,9 @@ export const calcTx = (
   toBeUsedUtxoOfNotifications.forEach(utxo => {
     if (!utxo.hex) {
       // abort if missing raw hex
-      throw new Error(`Utxo is missing hex, txid: ${utxo.txid}, vout:${utxo.vout}`)
+      throw new Error(
+        `Utxo is missing hex, txid: ${utxo.txid}, vout:${utxo.vout}`
+      )
     }
     psbt.addInput({
       hash: utxo.txid,
@@ -194,7 +220,6 @@ export const calcTx = (
     })
   })
 
-
   // inputs done
 
   /* -------------------------------------------------------------------------- */
@@ -204,7 +229,7 @@ export const calcTx = (
   // add the op_return output (always index 0)
   // if first time notifying, nonce is '0', otherwise the last blockheight when this user has sent ANY tx to that notification address
   const nonce = getNonce({ domain }, wallet.address).toString()
-  const encryptionKey =  domain.domainName + wallet.address + nonce
+  const encryptionKey = domain.domainName + wallet.address + nonce
   console.log('nonce used to encrypt', domain.domainName, wallet.address, nonce)
 
   const finalEmbedString = choices.embedString
@@ -212,11 +237,9 @@ export const calcTx = (
   const data = encrypt(finalEmbedString, encryptionKey)
   const embed = bitcoin.payments.embed({ data: [data] })
 
-
-
   psbt.addOutput({
     script: embed.output,
-    value: burnAmount,
+    value: burnAmount
   })
   console.log('rules say to burn ', burnAmount)
 
@@ -229,21 +252,26 @@ export const calcTx = (
   // output[2] add change output (anything is fine for output[2] or higher)
   // here we can set an address change where user keeps control as the
   // address to receive the remaining change from this tx
-  const changeAddress = choices.action.type === 'CHANGE_ADDRESS'
-    ? (choices.action.suggestions.find((suggestion: any) => ('get' in suggestion.info))!.info.get!.value)
-    : wallet.address
+  const changeAddress =
+    choices.action.type === 'CHANGE_ADDRESS'
+      ? choices.action.suggestions.find(
+          (suggestion: any) => 'get' in suggestion.info
+        )!.info.get!.value
+      : wallet.address
   const change = totalGathered - valueNeeded
   psbt.addOutput({
     address: changeAddress,
     value: change
   })
 
-  refundAmountsArray.forEach((thisRefund: { address: string, amount: number }) => {
-    psbt.addOutput({
-      address: thisRefund.address,
-      value: thisRefund.amount
-    })
-  })
+  refundAmountsArray.forEach(
+    (thisRefund: { address: string; amount: number }) => {
+      psbt.addOutput({
+        address: thisRefund.address,
+        value: thisRefund.amount
+      })
+    }
+  )
 
   /* -------------------------------------------------------------------------- */
   /*          at this point all inputs & outputs added so ready to sign         */
@@ -255,7 +283,9 @@ export const calcTx = (
     // (TODO) signing ACS inputs will need script
 
     if (!psbt.validateSignaturesOfInput(index)) {
-      throw new Error('Signature validation failed for input index ' + index.toString())
+      throw new Error(
+        'Signature validation failed for input index ' + index.toString()
+      )
     }
   })
 
@@ -296,7 +326,8 @@ export const calcTx = (
     return {
       txid,
       thisVirtualSize,
-      hex, valueNeeded,
+      hex,
+      valueNeeded,
       fee,
       change,
       burnAmount,
@@ -312,11 +343,6 @@ export const calcTx = (
     }
   } else {
     // Redo this tx calculation using the virtual size we just calculated for vByte optional parameter.
-    return calcTx(
-      wallet, domain, choices, networkChoice, thisVirtualSize
-    )
+    return calcTx(wallet, domain, choices, networkChoice, thisVirtualSize)
   }
 }
-
-
-

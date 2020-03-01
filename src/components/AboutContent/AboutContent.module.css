@@ -14,8 +14,6 @@
   margin: calc(2 * var(--s));
   margin-top: calc(4 * var(--s));
   margin-bottom: calc(2 * var(--s));
-
-
 }
 
 .contentWrapper {
@@ -42,7 +40,6 @@
   text-align: left;
 }
 
-
 .title span,
 .contentWrapper p span {
   color: var(--colorBitcoinOrange);
@@ -63,12 +60,10 @@
   margin-bottom: calc(2 * var(--s));
 }
 
-
 .contentWrapper a {
   box-sizing: border-box;
   display: inline-block;
   margin: calc(0.5 * var(--s)) auto;
-
 
   color: var(--colorLightText);
   /* margin-left: calc(1 * var(--s)); */
@@ -81,16 +76,14 @@
   background-color: var(--colorDarker0_5);
 }
 
-
-
 /* unused */
 .wrapper pre {
   font-size: calc(1.5 * var(--s));
   text-align: left;
-  white-space: pre-wrap;       /* css-3 */
-  white-space: -moz-pre-wrap;  /* Mozilla, since 1999 */
-  white-space: -pre-wrap;      /* Opera 4-6 */
-  white-space: -o-pre-wrap;    /* Opera 7 */
+  white-space: pre-wrap; /* css-3 */
+  white-space: -moz-pre-wrap; /* Mozilla, since 1999 */
+  white-space: -pre-wrap; /* Opera 4-6 */
+  white-space: -o-pre-wrap; /* Opera 7 */
   word-wrap: break-word;
   word-break: break-all;
 
@@ -107,6 +100,4 @@
   .wrapper {
     height: calc(100vh - (6 * var(--s) * var(--horizontalScale)));
   }
-
-
 }

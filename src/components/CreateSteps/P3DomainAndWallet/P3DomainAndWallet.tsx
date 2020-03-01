@@ -15,59 +15,59 @@ export const P3DomainAndWallet = () => {
   const { state, dispatch } = React.useContext(Store)
 
   // Local state: keep track if API is busy
-  const [ apiStatus, setApiStatus ] = React.useState('ok')
+  const [apiStatus, setApiStatus] = React.useState('ok')
 
   // on state update detected by timestamp, reset api status
-  React.useEffect(() => { setApiStatus('ok') }, [ state.lastTimeStamp ])
+  React.useEffect(() => {
+    setApiStatus('ok')
+  }, [state.lastTimeStamp])
 
   // most important for domain notificaiton address is the transaction history to know ownership
   // but also the current utxo in case we want to control the domain
   const domainInfo = () => {
     if (state.pageInfo.checkedDomain) {
-      return ('✓')
+      return '✓'
     } else {
-      return ('needs scan')
+      return 'needs scan'
     }
   }
 
   // wallet needs utxo info including raw tx & tx history for nonce
   const walletInfo = () => {
     if (state.pageInfo.checkedWallet) {
-      return ( '✓' )
+      return '✓'
     } else {
-      return ('needs scan')
+      return 'needs scan'
     }
   }
 
   // Conditions to enable next pages.
   const readyStatus = () => {
     if (!state.pageInfo.checkedDomain && !state.pageInfo.checkedWallet) {
-      return { isReady: false,    info: 'Scan both to move on' }
+      return { isReady: false, info: 'Scan both to move on' }
     }
     if (!state.pageInfo.checkedDomain && state.pageInfo.checkedWallet) {
-      return { isReady: false,    info: 'Scan domain to move on' }
+      return { isReady: false, info: 'Scan domain to move on' }
     }
     if (state.pageInfo.checkedDomain && !state.pageInfo.checkedWallet) {
-      return { isReady: false,    info: 'Scan wallet to move on' }
+      return { isReady: false, info: 'Scan wallet to move on' }
     }
     if (state.pageInfo.checkedDomain && state.pageInfo.checkedWallet) {
-      return { isReady: true,     info: '' }
+      return { isReady: true, info: '' }
     }
-    return { isReady: false,      info: 'Unknown status' }
+    return { isReady: false, info: 'Unknown status' }
   }
 
   return (
-    <div className={ styles.wrapper }>
-      <div className={ styles.title }>
-        Wallet and domain history needed
+    <div className={styles.wrapper}>
+      <div className={styles.title}>Wallet and domain history needed</div>
+      <div className={styles.domainInfo}>
+        {apiStatus !== 'domain' && 'Domain ' + domainInfo()}
+        {apiStatus === 'domain' && 'Domain scanning...'}
       </div>
-      <div className={ styles.domainInfo }>
-        { (apiStatus !== 'domain')  && 'Domain ' + domainInfo() }
-        { (apiStatus === 'domain')  && 'Domain scanning...' }
-      </div>
-      <div className={ styles.domainButton }>
+      <div className={styles.domainButton}>
         <RoundButton
-          onClick={ () => {
+          onClick={() => {
             if (apiStatus === 'ok') {
               setApiStatus('domain')
               scanAddressFullyAction(state, dispatch, ActionTypes.UPDATE_DOMAIN)
@@ -77,13 +77,13 @@ export const P3DomainAndWallet = () => {
           API Scan
         </RoundButton>
       </div>
-      <div className={ styles.walletInfo }>
-        { (apiStatus !== 'wallet')  && 'Wallet ' + walletInfo() }
-        { (apiStatus === 'wallet') && 'Wallet scanning...' }
+      <div className={styles.walletInfo}>
+        {apiStatus !== 'wallet' && 'Wallet ' + walletInfo()}
+        {apiStatus === 'wallet' && 'Wallet scanning...'}
       </div>
-      <div className={ styles.walletButton }>
+      <div className={styles.walletButton}>
         <RoundButton
-          onClick={ () => {
+          onClick={() => {
             if (apiStatus === 'ok') {
               setApiStatus('wallet')
               scanAddressFullyAction(state, dispatch, ActionTypes.UPDATE_WALLET)
@@ -93,28 +93,28 @@ export const P3DomainAndWallet = () => {
           API Scan
         </RoundButton>
       </div>
-      <div className={ styles.unspent }>
-        <div className={ styles.balance }>
-          { state.pageInfo.checkedWallet? (getUnspentSum(state.wallet.utxoList) / 1e8).toFixed(8) : 'n/a' }
+      <div className={styles.unspent}>
+        <div className={styles.balance}>
+          {state.pageInfo.checkedWallet
+            ? (getUnspentSum(state.wallet.utxoList) / 1e8).toFixed(8)
+            : 'n/a'}
         </div>
-        { (state.network === 'testnet') ? ' tBTC' : ' BTC' }
+        {state.network === 'testnet' ? ' tBTC' : ' BTC'}
       </div>
-      <div className={ styles.ownership }>
-        { readyStatus().info }
-      </div>
-      <div className={ styles.buttonWrapper }>
+      <div className={styles.ownership}>{readyStatus().info}</div>
+      <div className={styles.buttonWrapper}>
         <RoundButton
           back='true'
-          onClick={ () => {
+          onClick={() => {
             changePageInfoAction(state, dispatch, 2)
           }}
         >
           Back
         </RoundButton>
         <RoundButton
-          show={ readyStatus().isReady ? 'true' : 'false' }
+          show={readyStatus().isReady ? 'true' : 'false'}
           next='true'
-          onClick={ () => {
+          onClick={() => {
             changePageInfoAction(state, dispatch, 4)
           }}
         >
@@ -124,4 +124,3 @@ export const P3DomainAndWallet = () => {
     </div>
   )
 }
-

@@ -12,44 +12,39 @@ import styles from './Details.module.css'
  */
 export const Details = (props: any) => {
   // local state for showing or hiding details
-  const [ showDetails, setShowDetails ] = React.useState(props?.show === 'true' || false)
+  const [showDetails, setShowDetails] = React.useState(
+    props?.show === 'true' || false
+  )
 
   return (
-    <div className={ styles.wrapper }>
-
+    <div className={styles.wrapper}>
       {/* button that toggles whether details are shown or not */}
       <div
-        className={ styles.buttonWrapper }
-        onClick={ () => {
+        className={styles.buttonWrapper}
+        onClick={() => {
           setShowDetails(!showDetails)
-        } }
+        }}
       >
-        <div
-          className={ styles.toggleDetails }
-
-        >
+        <div className={styles.toggleDetails}>
           {/* the text on button coems from title prop */}
-          { props.title || props.description || 'Show details' }
-          </div>
+          {props.title || props.description || 'Show details'}
+        </div>
         {/* the arrow that rotates on click */}
         <div
-          className={ [styles.arrow, showDetails ? styles.down : '' ].join(' ') }
+          className={[styles.arrow, showDetails ? styles.down : ''].join(' ')}
         />
-        </div>
-
+      </div>
 
       {/* the details that is rendered when showDetails = true */}
       <div
-        className={ styles.details }
-        style={ {
-          display: (
-            showDetails ? 'block' : 'none'
-          )
-        } }
+        className={styles.details}
+        style={{
+          display: showDetails ? 'block' : 'none'
+        }}
       >
         {/* any arbitrary content surrounded by this component brackets */}
         {/* if <p></p> tags are used, they will be formated */}
-        { props.children }
+        {props.children}
       </div>
     </div>
   )

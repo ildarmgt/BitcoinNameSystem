@@ -18,18 +18,20 @@ const RESERVED_FROM_WALLET_KEY = 'fromWallet'
 // user can check what's missing
 // user is notified if tx is ready (session storage)
 
-
 /**
  * Reusable component for creating a wallet.
  * Simulates behavior of browser wallet plugins without needing them.
  */
 export const Wallet = (props: any): JSX.Element => {
   // stores and initializes tx builder from initial state and passed props
-  const [txBuilder, setTxBuilder]: [I_TxBuilder | null, any] = React.useState(null)
-  if (txBuilder === null) setTxBuilder({
-    ...initialTxBuilder,
-    ...(!!props.txBuilder ? props.txBuilder : {})
-  })
+  const [txBuilder, setTxBuilder]: [I_TxBuilder | null, any] = React.useState(
+    null
+  )
+  if (txBuilder === null)
+    setTxBuilder({
+      ...initialTxBuilder,
+      ...(!!props.txBuilder ? props.txBuilder : {})
+    })
 
   // gui settings
   const [info, setInfo] = React.useState({ text: '' })
@@ -41,44 +43,44 @@ export const Wallet = (props: any): JSX.Element => {
   React.useEffect(() => handleParams(params, setParams), [params])
 
   // run methods to move new parameters into txBuilder
-  React.useEffect(() => processNewParams(
-    params,
-    setParams,
-    txBuilder,
-    setTxBuilder
-  ), [params, txBuilder])
+  React.useEffect(
+    () => processNewParams(params, setParams, txBuilder, setTxBuilder),
+    [params, txBuilder]
+  )
 
   // on tx builder changes, attempt to create a transaction
-  React.useEffect(() => recalcBuilder({
-    txBuilder,
-    setTxBuilder,
-    setInfo
-  }), [txBuilder])
+  React.useEffect(
+    () =>
+      recalcBuilder({
+        txBuilder,
+        setTxBuilder,
+        setInfo
+      }),
+    [txBuilder]
+  )
 
   return (
-    <div className={ styles.wrapper }
-      onClick={ () => {
+    <div
+      className={styles.wrapper}
+      onClick={() => {
         console.log({ params, txBuilder })
-      } }
+      }}
     >
-      { (TESTING) && (
+      {TESTING && (
         <>
-          <div>B { info.text }</div>
+          <div>B {info.text}</div>
         </>
-      ) }
+      )}
     </div>
   )
 }
-
 
 /* -------------------------------------------------------------------------- */
 /*                              helpers (for now)                             */
 /* -------------------------------------------------------------------------- */
 
-
 // if events not firing need to use
 // window.dispatchEvent(new Event('storage'))
-
 
 // Run methods to handle detection and clean up of parameters passed.
 // Was easiest to do it with access to params.
@@ -110,7 +112,12 @@ const removeListeners = (params: any, setParams: any) => {
   window.removeEventListener('hashchange', handleHashChange(params, setParams))
 }
 
-const processNewParams = (params: any, setParams: any, txBuilder: any, setTxBuilder: any) => {
+const processNewParams = (
+  params: any,
+  setParams: any,
+  txBuilder: any,
+  setTxBuilder: any
+) => {
   // only update state if necessary
   if (Object.keys(params).length > 0) {
     // most basic
@@ -119,18 +126,16 @@ const processNewParams = (params: any, setParams: any, txBuilder: any, setTxBuil
   }
 }
 
-const recalcBuilder = ({txBuilder, setTxBuilder, setInfo}: any) => {
+const recalcBuilder = ({ txBuilder, setTxBuilder, setInfo }: any) => {
   try {
     // attempt to build
     const res = getTx(txBuilder)
     console.log('successful psbt:', res)
-
   } catch (e) {
     console.log('can not do psbt yet:', e.message)
     setInfo({ text: e.message })
   }
 }
-
 
 /**
  * Session storage scan. Key value pairs.
@@ -149,8 +154,8 @@ const handleStorageChange = (params: any, setParams: any) => (e: any): void => {
       const thisValue = JSON.parse(window.sessionStorage[thisKey])
       fedValues[thisKey] = thisValue
 
-    // clear all session storage
-      sessionStorage.removeItem(thisKey);
+      // clear all session storage
+      sessionStorage.removeItem(thisKey)
     }
   })
 
@@ -187,7 +192,7 @@ const handleHashChange = (params: any, setParams: any) => (e: any): void => {
         return finalParamObject
       } else {
         // check if key/value already exist within params
-        if ((thisKey in params) && (params[thisKey] === thisValue)) {
+        if (thisKey in params && params[thisKey] === thisValue) {
           // if so, no need to add
           return finalParamObject
         } else {
@@ -211,14 +216,13 @@ const handleHashChange = (params: any, setParams: any) => (e: any): void => {
 
 // remove params from URL
 const resetUrl = () => {
-  window.history.pushState({}, '', `${ window.location.href.split('?')[0] }`)
+  window.history.pushState({}, '', `${window.location.href.split('?')[0]}`)
   // emit event if param or url change if needs to be detected
   // window.dispatchEvent(new HashChangeEvent("hashchange"));
 }
 
 // if development mode
-const TESTING = (process.env.NODE_ENV === 'development')
-
+const TESTING = process.env.NODE_ENV === 'development'
 
 /* -------------------------------------------------------------------------- */
 /*                               Initial values                               */
@@ -314,9 +318,9 @@ export interface I_TxBuilder {
   feeRate: number | null
 
   // some safety things to check
-  minFeeRate: number | null         // sat/vByte
-  maxFeeRate: number | null         // sat/vByte
-  minOutputValue: number | null     // sats
+  minFeeRate: number | null // sat/vByte
+  maxFeeRate: number | null // sat/vByte
+  minOutputValue: number | null // sats
 
   result: {
     tx: ObjectOrNull
@@ -348,28 +352,24 @@ export interface I_TxBuilder {
       // bitcoin.payments.embed({ data: [bufferOfDataToEmbed] }).output
       script: Buffer | null
 
-      value: number | null  // sats we need to pay
+      value: number | null // sats we need to pay
     }
   }
 
-  changeAddress: string | null      // where left over change goes, adds to outputs if used
-
+  changeAddress: string | null // where left over change goes, adds to outputs if used
 }
 
-type ObjectOrNull = Exclude<
-  { [any: string]: any } | null, undefined
->
+type ObjectOrNull = Exclude<{ [any: string]: any } | null, undefined>
 
 interface I_Input {
   // to create input
 
-  hash: string | null                       // txid (32B, 64 char hex) (dislike little endian buffer)
-  index: number | null                      // vout (integer)
-  sequence: number | null                   // e.g. 0xfffffffe
-  nonWitnessUtxo: Buffer | null             // raw tx buffer, only 1 that works for all types
-  witnessScript: Buffer | null              // original script, via bitcoin.script.compile([opcodes, ...])
-  redeemScript: Buffer | null               // original script, via bitcoin.script.compile([opcodes, ...])
-
+  hash: string | null // txid (32B, 64 char hex) (dislike little endian buffer)
+  index: number | null // vout (integer)
+  sequence: number | null // e.g. 0xfffffffe
+  nonWitnessUtxo: Buffer | null // raw tx buffer, only 1 that works for all types
+  witnessScript: Buffer | null // original script, via bitcoin.script.compile([opcodes, ...])
+  redeemScript: Buffer | null // original script, via bitcoin.script.compile([opcodes, ...])
 
   // to sign and finalize:
 
@@ -427,7 +427,6 @@ interface I_Input {
  *
  */
 
-
 // url parameters after #:
 
 // value could have base58 or similar so it's encoded
@@ -441,10 +440,8 @@ interface I_Input {
 // then the rest is window.hash that includes # and everything after
 // '?' after # are not search params so can be separate
 
-
 // other way to update url:
 // window.history.replaceState({}, '', `${location.pathname}?${params}`);
-
 
 // sessionStorage is bound not only to the origin, but also to the browser tab
 // survives page refresh but not tab close and never seen by another tab

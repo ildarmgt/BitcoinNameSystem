@@ -14,5 +14,4 @@
     /* transform: scale(var(--horizontalScale)); */
     bottom: calc(6 * var(--s) * var(--horizontalScale));
   }
-
 }

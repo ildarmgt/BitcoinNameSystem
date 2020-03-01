@@ -26,60 +26,47 @@ import styles from './RoundButton.module.css'
  *
  * colorbuttontext = var(--colorButtonText).
  */
-export const RoundButton = (props:any): JSX.Element => {
+export const RoundButton = (props: any): JSX.Element => {
   return (
     <div
       // variables defined by string will be available to button & its children for scope
-      style={ {
-        display: (
-          (props?.show === 'false') ? 'none' : 'inline-block'
-        ) as React.CSSProperties,
-        '--colorThisButton': (
-          props.colorbutton ? props.colorbutton : `var(--colorBitcoinOrange)`
-        )  as React.CSSProperties,
-        '--colorThisButtonText': (
-          props.colorbuttontext ? props.colorbuttontext : `var(--colorButtonText)`
-        ) as React.CSSProperties,
-        '--sizeButton': (
-          props.sizebutton
-          // Button was designed at 2.9 * var(--s) scale font so
-          // this just lets user redefine font & everything else proportionally
-            ? `calc(${props.sizebutton}/2.9 * var(--s))`
-            : `calc(2.5/2.9 * var(--s))`
-        ) as React.CSSProperties
-      } }
+      style={{
+        display: (props?.show === 'false'
+          ? 'none'
+          : 'inline-block') as React.CSSProperties,
+        '--colorThisButton': (props.colorbutton
+          ? props.colorbutton
+          : `var(--colorBitcoinOrange)`) as React.CSSProperties,
+        '--colorThisButtonText': (props.colorbuttontext
+          ? props.colorbuttontext
+          : `var(--colorButtonText)`) as React.CSSProperties,
+        '--sizeButton': (props.sizebutton
+          ? // Button was designed at 2.9 * var(--s) scale font so
+            // this just lets user redefine font & everything else proportionally
+            `calc(${props.sizebutton}/2.9 * var(--s))`
+          : `calc(2.5/2.9 * var(--s))`) as React.CSSProperties
+      }}
       {...props}
-      className={ [
+      className={[
         styles.roundButtonWrap,
         props.back ? styles.back : '',
         props.className
-      ].join(' ') }
+      ].join(' ')}
     >
       <div
-        className={ [
+        className={[
           styles.roundButton,
           props.back ? styles.backArrowPad : undefined,
-          props.next ? styles.nextArrowPad : undefined,
-        ].join(' ') }
+          props.next ? styles.nextArrowPad : undefined
+        ].join(' ')}
       >
+        {props.back && <div className={styles.backArrow} />}
 
-        { (props.back) && (
-          <div
-            className={ styles.backArrow }
-          />
-        ) }
+        {props.children}
 
-        { props.children }
+        {props.next && <div className={styles.nextArrow} />}
 
-        { (props.next) && (
-          <div
-            className={ styles.nextArrow }
-          />
-        ) }
-
-        <div
-          className={ styles.overhead }
-        />
+        <div className={styles.overhead} />
       </div>
     </div>
   )

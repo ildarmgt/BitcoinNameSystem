@@ -20,8 +20,8 @@ export const Navbar = (): JSX.Element => {
   const overflowMenuDiv = React.useRef<HTMLDivElement>(null)
 
   // local state for navbar
-  const [ nav, setNav ] = React.useState({
-    buttonWidth: (!!searchButton.current)
+  const [nav, setNav] = React.useState({
+    buttonWidth: !!searchButton.current
       ? searchButton.current.offsetWidth
       : undefined,
     showCollapsed: false,
@@ -31,8 +31,8 @@ export const Navbar = (): JSX.Element => {
   // initialize nav bar measurements
   if (!nav.buttonWidth) {
     window.setTimeout(() => {
-      window.dispatchEvent(new Event('resize'));
-    }, 200);
+      window.dispatchEvent(new Event('resize'))
+    }, 200)
   }
 
   // selection rules for buttons
@@ -42,7 +42,6 @@ export const Navbar = (): JSX.Element => {
   const isSettingsPage = useHistory().location.pathname === '/settings'
   const isWalletPage = useHistory().location.pathname === '/wallet'
 
-
   React.useEffect(() => {
     // place overflow menu and show it
     const updateMenuPosition = () => {
@@ -50,218 +49,237 @@ export const Navbar = (): JSX.Element => {
         const menu = overflowMenuDiv.current.getBoundingClientRect()
         const button = toggleMenuButtonDiv.current.getBoundingClientRect()
 
-        const menuLeft = Math.round(button.left + (0.5 * button.width) - (0.5 * menu.width))
-        const menuTop = Math.round(button.top - menu.height - button.height * 0.4)
+        const menuLeft = Math.round(
+          button.left + 0.5 * button.width - 0.5 * menu.width
+        )
+        const menuTop = Math.round(
+          button.top - menu.height - button.height * 0.4
+        )
         overflowMenuDiv.current!.style.top = menuTop + 'px'
         overflowMenuDiv.current!.style.left = menuLeft + 'px'
         overflowMenuDiv.current!.style.opacity = 'var(--finalOpacity)'
       }
     }
-    window.setTimeout(updateMenuPosition, 200);
+    window.setTimeout(updateMenuPosition, 200)
 
     // resize event
     const onResize = () => {
       if (searchButton.current) {
-        document.body.classList.add("resize-animation-stopper");
-        clearTimeout(nav.resizeTimer);
-        let resizeTimer = setTimeout(
-          () => {
-            document.body.classList.remove("resize-animation-stopper")
+        document.body.classList.add('resize-animation-stopper')
+        clearTimeout(nav.resizeTimer)
+        const resizeTimer = setTimeout(() => {
+          document.body.classList.remove('resize-animation-stopper')
         }, 400)
         setNav({
           ...nav,
-          resizeTimer: (resizeTimer as any),
+          resizeTimer: resizeTimer as any,
           showCollapsed: false,
           buttonWidth: searchButton.current.getBoundingClientRect().width
         })
       }
     }
     // handle resize event listeners
-    window.addEventListener('resize', onResize);
-    return () => window.removeEventListener('resize', onResize);
+    window.addEventListener('resize', onResize)
+    return () => window.removeEventListener('resize', onResize)
   }, [nav])
 
   // click closes menu, outside or inside menu
   React.useEffect(() => {
-    const onClickAnywhere = (e: any) => {
+    const onClickAnywhere = () => {
       if (nav.showCollapsed) {
         setNav({ ...nav, showCollapsed: false })
       }
     }
     document.addEventListener('click', onClickAnywhere)
-    return () => { document.removeEventListener('click', onClickAnywhere) }
+    return () => {
+      document.removeEventListener('click', onClickAnywhere)
+    }
   }, [nav])
 
   // all main buttons
   const buttonsArray = [
     [
-
       <div
-        ref={ searchButton }
-        className={ [styles.button, isHomePage ? styles.selected : ''].join(' ') }
-        onClick={ () => {
+        key={'search'}
+        ref={searchButton}
+        className={[styles.button, isHomePage ? styles.selected : ''].join(' ')}
+        onClick={() => {
           history.push('/')
-        } }
+        }}
       >
         search
       </div>
-
-    ],[
+    ],
+    [
       <div
-        className={ [styles.button, isCreatePage ? styles.selected : ''].join(' ') }
-        onClick={ () => {
+        key={'create'}
+        className={[styles.button, isCreatePage ? styles.selected : ''].join(
+          ' '
+        )}
+        onClick={() => {
           history.push('/create')
-        } }
+        }}
       >
         owners
       </div>
-    ],[
+    ],
+    [
       <div
-        className={ [styles.button].join(' ') }
-        onClick={ () => {
+        key={'git'}
+        className={[styles.button].join(' ')}
+        onClick={() => {
           window.open('https://github.com/ildarmgt/BitcoinNameSystem', '_blank')
-        } }
+        }}
       >
-        &lt;{ 'source' }&gt;
+        &lt;{'source'}&gt;
       </div>
-    ],[
+    ],
+    [
       <div
-        className={ [styles.button, isAboutPage ? styles.selected : ''].join(' ') }
-        onClick={ () => {
+        key={'about'}
+        className={[styles.button, isAboutPage ? styles.selected : ''].join(
+          ' '
+        )}
+        onClick={() => {
           history.push('/about')
-        } }
+        }}
       >
         about
       </div>
-    ],[
+    ],
+    [
       <div
-        className={ [styles.button, isSettingsPage ? styles.selected : ''].join(' ') }
-        onClick={ () => {
+        key={'settings'}
+        className={[styles.button, isSettingsPage ? styles.selected : ''].join(
+          ' '
+        )}
+        onClick={() => {
           history.push('/settings')
-        } }
+        }}
       >
         settings
       </div>
-    ],[
+    ],
+    [
       <div
-        className={ [styles.button, isWalletPage ? styles.selected : ''].join(' ') }
-        onClick={ () => {
+        key={'wallet'}
+        className={[styles.button, isWalletPage ? styles.selected : ''].join(
+          ' '
+        )}
+        onClick={() => {
           history.push('/wallet')
-        } }
+        }}
       >
         wallet
       </div>
-    ],
+    ]
   ]
 
   // using search button as metric, estimate how many buttons to show
   const windowWidth = window.innerWidth
   const stdSizer = 0.005 * (window.innerWidth + window.innerHeight)
-  const safeWidthFraction = 0.8;
-  const howManyButtonsFitSafely = nav.buttonWidth ? Math.min(
-    Math.max(
-      Math.floor(
-        (windowWidth - 18 * stdSizer) * safeWidthFraction / ( nav.buttonWidth + stdSizer)
-      ),
-      1
-    )
-    , MAX_BUTTONS_TO_SHOW_UNCOLLAPSED
-  ) : 1
+  const safeWidthFraction = 0.8
+  const howManyButtonsFitSafely = nav.buttonWidth
+    ? Math.min(
+        Math.max(
+          Math.floor(
+            ((windowWidth - 18 * stdSizer) * safeWidthFraction) /
+              (nav.buttonWidth + stdSizer)
+          ),
+          1
+        ),
+        MAX_BUTTONS_TO_SHOW_UNCOLLAPSED
+      )
+    : 1
 
-  const buttonsOnNavbar = buttonsArray.filter((btn: any, i: number) =>
-    (i <= howManyButtonsFitSafely - 1)
+  const buttonsOnNavbar = buttonsArray.filter(
+    (btn: any, i: number) => i <= howManyButtonsFitSafely - 1
   )
-  const buttonsOverflow = buttonsArray.filter((btn: any, i: number) =>
-    (i > howManyButtonsFitSafely - 1)
-  ) || []
+  const buttonsOverflow =
+    buttonsArray.filter(
+      (btn: any, i: number) => i > howManyButtonsFitSafely - 1
+    ) || []
 
-  const TESTING = (process.env.NODE_ENV === 'development')
+  const TESTING = process.env.NODE_ENV === 'development'
 
   return (
     <>
-      <div
-        className={ styles.warning }
-      >
-        { state.network }<br />
-        {(TESTING) && (<>development mode <br /></>)}
+      <div className={styles.warning}>
+        {state.network}
+        <br />
+        {TESTING && (
+          <>
+            development mode <br />
+          </>
+        )}
         not reviewed for use
       </div>
 
-      <div className={ styles.wallet }>
+      <div className={styles.wallet}>
         <Wallet
-          txBuilder={ {
+          txBuilder={{
             network: state.network
-          } }
+          }}
         />
         <VisualAPI
-          onApiInit={ () => setApiAction(state, dispatch, { running: true }) }
+          onApiInit={() => setApiAction(state, dispatch, { running: true })}
         />
       </div>
 
-
-      <div
-        className={ styles.nav }
-      >
+      <div className={styles.nav}>
         {/* page numbers (on tx creating pages) */}
-        { isCreatePage && (
-          <div className={ styles.pageNum }>
-            { state.pageInfo.current }/6
-          </div>
-        ) }
+        {isCreatePage && (
+          <div className={styles.pageNum}>{state.pageInfo.current}/6</div>
+        )}
 
         {/* collapsed menu toggle button */}
-        { (!!buttonsOverflow.length) && (
+        {!!buttonsOverflow.length && (
           <div
-            className={ [
+            className={[
               styles.collapsitron,
               // styles.button,
               nav.showCollapsed ? styles.menuShown : ''
-            ].join(' ') }
-            ref= { toggleMenuButtonDiv }
-            onClick={ () => {
+            ].join(' ')}
+            ref={toggleMenuButtonDiv}
+            onClick={() => {
               setNav({ ...nav, showCollapsed: !nav.showCollapsed })
-            } }
+            }}
           >
             &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-            <div className={ styles.dots }><div /></div>
-
+            <div className={styles.dots}>
+              <div />
+            </div>
           </div>
-        ) }
+        )}
 
         {/* regular nav bar */}
-        { buttonsOnNavbar.map((thisButton: any, index: number) => {
-          return (
-            <React.Fragment
-              key={ 'nevbarbuttons' + index }
-            >
-              { thisButton[0] }
-            </React.Fragment>
-          )
-        }).reverse()}
-
+        {buttonsOnNavbar
+          .map((thisButton: any, index: number) => {
+            return (
+              <React.Fragment key={'nevbarbuttons' + index}>
+                {thisButton[0]}
+              </React.Fragment>
+            )
+          })
+          .reverse()}
       </div>
 
       {/* collapsed menu window */}
-      { (nav.showCollapsed) && (
-        <div
-          className={ styles.overflowMenu }
-          ref={ overflowMenuDiv }
-        >
+      {nav.showCollapsed && (
+        <div className={styles.overflowMenu} ref={overflowMenuDiv}>
           <div>
-            { buttonsOverflow.map((thisButton: any, index: number) => {
+            {buttonsOverflow
+              .map((thisButton: any, index: number) => {
                 return (
-                  <React.Fragment
-                    key={ 'overflowbuttons' + index }
-                  >
-                    { thisButton[0] }
+                  <React.Fragment key={'overflowbuttons' + index}>
+                    {thisButton[0]}
                   </React.Fragment>
                 )
-              }).reverse()
-            }
+              })
+              .reverse()}
           </div>
         </div>
-      ) }
-
+      )}
     </>
   )
 }

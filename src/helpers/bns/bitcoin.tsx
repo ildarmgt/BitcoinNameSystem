@@ -1,7 +1,6 @@
 import * as bitcoin from 'bitcoinjs-lib'
 import bip39 from 'bip39'
-const varuint = require('varuint-bitcoin');
-
+const varuint = require('varuint-bitcoin')
 
 /**
  * Make new mnemonic for p2wpkh m/44'/0'/0'/0/0 address and WIF.
@@ -17,12 +16,15 @@ export const createNewWallet = (strNetwork: string) => {
   // create derivation master node
   const masterNode = bitcoin.bip32.fromSeed(seedBuffer, network)
   // derive m/44'/0'/0'/0 /0 node
-  const childNode0 = masterNode.derivePath("m/44'/0'/0'").derivePath("0/0")
+  const childNode0 = masterNode.derivePath("m/44'/0'/0'").derivePath('0/0')
   // get private key in wallet import format for that child node
   const WIF = childNode0.toWIF()
   // derive a standard p2wpkh address from that WIF
   const keyPair = bitcoin.ECPair.fromWIF(WIF, network)
-  const address = bitcoin.payments.p2wpkh({ pubkey: keyPair.publicKey, network }).address
+  const address = bitcoin.payments.p2wpkh({
+    pubkey: keyPair.publicKey,
+    network
+  }).address
 
   return { mnemonic, WIF, address }
 }
@@ -40,16 +42,18 @@ export const loadWallet = (strMnemonic: string, strNetwork: string) => {
   // create derivation master node
   const masterNode = bitcoin.bip32.fromSeed(seedBuffer, network)
   // derive m/44'/0'/0'/0 /0 node
-  const childNode0 = masterNode.derivePath("m/44'/0'/0'").derivePath("0/0")
+  const childNode0 = masterNode.derivePath("m/44'/0'/0'").derivePath('0/0')
   // get private key in wallet import format for that child node
   const WIF = childNode0.toWIF()
   // derive a standard p2wpkh address from that WIF
   const keyPair = bitcoin.ECPair.fromWIF(WIF, network)
-  const address = bitcoin.payments.p2wpkh({ pubkey: keyPair.publicKey, network }).address
+  const address = bitcoin.payments.p2wpkh({
+    pubkey: keyPair.publicKey,
+    network
+  }).address
 
   return { mnemonic: strMnemonic, WIF, address }
 }
-
 
 //
 /**
@@ -57,15 +61,12 @@ export const loadWallet = (strMnemonic: string, strNetwork: string) => {
  * @param     {Array}    utxoArray      Array of UTXO objects with '.value' field in satoshi.
  * @returns   {number}                  Total number of unspent satoshi.
  */
-export function getUnspentSum(utxoArray: Array<any>): number {
-
-  const sumSats = utxoArray?.reduce(
-    (sum: number, utxo: any) => sum + utxo.value
-    , 0) || 0
+export function getUnspentSum (utxoArray: Array<any>): number {
+  const sumSats =
+    utxoArray?.reduce((sum: number, utxo: any) => sum + utxo.value, 0) || 0
 
   return sumSats
 }
-
 
 /**
  * Finalize outputs that require custom scripts.
@@ -78,10 +79,10 @@ export const getFinalScripts = ({ inputScript, network }: any) => {
     script: Buffer,
     isSegwit: boolean,
     isP2SH: boolean,
-    isP2WSH: boolean,
+    isP2WSH: boolean
   ): {
-    finalScriptSig: Buffer | undefined;
-    finalScriptWitness: Buffer | undefined;
+    finalScriptSig: Buffer | undefined
+    finalScriptWitness: Buffer | undefined
   } {
     // Step 1: Check to make sure the meaningful script matches what you expect.
 
@@ -89,47 +90,47 @@ export const getFinalScripts = ({ inputScript, network }: any) => {
     let payment: any = {
       network,
       output: script,
-      input: inputScript,
-    };
+      input: inputScript
+    }
     if (isP2WSH && isSegwit)
       payment = bitcoin.payments.p2wsh({
         network,
-        redeem: payment,
-      });
+        redeem: payment
+      })
     if (isP2SH)
       payment = bitcoin.payments.p2sh({
         network,
-        redeem: payment,
-      });
+        redeem: payment
+      })
 
-    function witnessStackToScriptWitness(witness: Buffer[]): Buffer {
-      let buffer = Buffer.allocUnsafe(0);
+    function witnessStackToScriptWitness (witness: Buffer[]): Buffer {
+      let buffer = Buffer.allocUnsafe(0)
 
-      function writeSlice(slice: Buffer): void {
-        buffer = Buffer.concat([buffer, Buffer.from(slice)]);
+      function writeSlice (slice: Buffer): void {
+        buffer = Buffer.concat([buffer, Buffer.from(slice)])
       }
 
-      function writeVarInt(i: number): void {
-        const currentLen = buffer.length;
-        const varintLen = varuint.encodingLength(i);
+      function writeVarInt (i: number): void {
+        const currentLen = buffer.length
+        const varintLen = varuint.encodingLength(i)
 
-        buffer = Buffer.concat([buffer, Buffer.allocUnsafe(varintLen)]);
-        varuint.encode(i, buffer, currentLen);
+        buffer = Buffer.concat([buffer, Buffer.allocUnsafe(varintLen)])
+        varuint.encode(i, buffer, currentLen)
       }
 
-      function writeVarSlice(slice: Buffer): void {
-        writeVarInt(slice.length);
-        writeSlice(slice);
+      function writeVarSlice (slice: Buffer): void {
+        writeVarInt(slice.length)
+        writeSlice(slice)
       }
 
-      function writeVector(vector: Buffer[]): void {
-        writeVarInt(vector.length);
-        vector.forEach(writeVarSlice);
+      function writeVector (vector: Buffer[]): void {
+        writeVarInt(vector.length)
+        vector.forEach(writeVarSlice)
       }
 
-      writeVector(witness);
+      writeVector(witness)
 
-      return buffer;
+      return buffer
     }
 
     return {
@@ -137,7 +138,7 @@ export const getFinalScripts = ({ inputScript, network }: any) => {
       finalScriptWitness:
         payment.witness && payment.witness.length > 0
           ? witnessStackToScriptWitness(payment.witness)
-          : undefined,
-    };
+          : undefined
+    }
   }
 }

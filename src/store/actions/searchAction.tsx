@@ -2,7 +2,7 @@ import { I_State, Dispatch, ActionTypes } from '../../interfaces'
 import { calcP2WSH, calcBnsState } from '../../helpers/bns'
 import { getAddressHistoryAPI, getHeightAPI } from './../../api/blockstream'
 // import { addNewApiTaskAction } from './addNewApiTaskAction'
-const { STORE_SEARCH_RESULTS_FAIL, STORE_SEARCH_RESULTS } = ActionTypes;
+const { STORE_SEARCH_RESULTS_FAIL, STORE_SEARCH_RESULTS } = ActionTypes
 
 /**
  * Get address,
@@ -12,7 +12,11 @@ const { STORE_SEARCH_RESULTS_FAIL, STORE_SEARCH_RESULTS } = ActionTypes;
  * send/dispatch to reducer to store important data found
  * (No UTXO nor raw TX scan for speed in front page search necessary yet)
  */
-export const searchAction = async (state: I_State, dispatch: Dispatch, router: any = undefined) => {
+export const searchAction = async (
+  state: I_State,
+  dispatch: Dispatch,
+  router: any = undefined
+) => {
   const domainName = state.alias + state.extension
   // stop if no alias submitted, nothing to save to state
   if (!state.alias) return undefined
@@ -21,14 +25,17 @@ export const searchAction = async (state: I_State, dispatch: Dispatch, router: a
   const { notificationsAddress } = calcP2WSH(domainName, state.network)
 
   try {
-
     // 1. Get current blockheight from API so ownership is using latest possible info
     const currentHeight = await getHeightAPI(state.network, state.api.path)
 
     // 2. Get API response for all tx history of this address
     // This will grab all tx that "notified" this address by sending to it
     // Upon failure error should be caught in this function
-    const notificationsTxHistory = await getAddressHistoryAPI(notificationsAddress, state.network, state.api.path)
+    const notificationsTxHistory = await getAddressHistoryAPI(
+      notificationsAddress,
+      state.network,
+      state.api.path
+    )
 
     // calculate bns data from this history via helper functions
     const { domain } = calcBnsState(
@@ -39,7 +46,9 @@ export const searchAction = async (state: I_State, dispatch: Dispatch, router: a
     )
 
     // 3. if navigated via id, use router to navigate home w/o id in url
-    if (router) { router?.push('/') }
+    if (router) {
+      router?.push('/')
+    }
 
     // store data
     return dispatch({
@@ -52,22 +61,23 @@ export const searchAction = async (state: I_State, dispatch: Dispatch, router: a
         }
       }
     })
-
   } catch (e) {
     console.log('searchAction issue found:', e)
 
     // if navigated via url id, use router to navigate home w/o id in url
     // even if api call failed, should navigate away or will be stuck in a loop
-    if (router) { router?.push('/') }
+    if (router) {
+      router?.push('/')
+    }
 
     // still updating the notification address
     return dispatch({
       type: STORE_SEARCH_RESULTS_FAIL,
       payload: {
-        alias: state.alias,               // can save alias
+        alias: state.alias, // can save alias
         domainName,
-        notificationsAddress              // can save this easy derivation
+        notificationsAddress // can save this easy derivation
       }
-    });
+    })
   }
 }

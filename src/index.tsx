@@ -1,8 +1,8 @@
-import React from 'react';
-import ReactDOM from 'react-dom';
-import { HashRouter } from 'react-router-dom';
-import './css/global.css';
-import App from './App';
+import React from 'react'
+import ReactDOM from 'react-dom'
+import { HashRouter } from 'react-router-dom'
+import './css/global.css'
+import App from './App'
 import { StoreProvider } from './store/'
 import { DevPanel } from './components/DevPanel'
 
@@ -24,3 +24,4 @@ ReactDOM.render(
 // Learn more about service workers: https://bit.ly/CRA-PWA
 // serviceWorker.register();
 // import * as serviceWorker from './serviceWorker';
+// serviceWorker.unregister();

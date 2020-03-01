@@ -6,10 +6,8 @@ import { scanEveryActionForCommand } from './../actions/batch'
  * Otherwise, returns undefined.
  */
 export const interpretCommand = (key: string, value: string) => {
-
   // grab all basic action objects
   const allActions = scanEveryActionForCommand()
-
 
   // scan each for matching commmand
   let action
@@ -39,5 +37,4 @@ export const interpretCommand = (key: string, value: string) => {
     getterName,
     value
   }
-
 }

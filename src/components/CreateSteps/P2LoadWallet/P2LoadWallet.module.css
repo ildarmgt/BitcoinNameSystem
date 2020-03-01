@@ -8,7 +8,6 @@
   flex-wrap: wrap;
   align-items: stretch;
   text-align: right;
-
 }
 
 .title {
@@ -32,7 +31,7 @@
 .title::after {
   box-sizing: border-box;
 
-  content: "";
+  content: '';
   --offset: calc(0.75 * var(--s));
   top: var(--offset);
   right: calc(2.5 * var(--s));
@@ -80,7 +79,7 @@
 }
 
 .orange {
-  color: var(--colorBitcoinOrange);;
+  color: var(--colorBitcoinOrange);
   text-shadow: none;
 }
 

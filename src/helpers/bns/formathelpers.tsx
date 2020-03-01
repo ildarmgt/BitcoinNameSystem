@@ -6,17 +6,26 @@ import {
   CHALLENGE_PERIOD_DURATION_BY_BLOCKS,
   CHALLENGE_MIN_MULTIPLY
 } from './constants'
-import { I_User, I_Forward, I_BnsState, I_TX, I_UTXO, I_Bid, BnsBidType } from './types/'
+import {
+  I_User,
+  I_Forward,
+  I_BnsState,
+  I_TX,
+  I_UTXO,
+  I_Bid,
+  BnsBidType
+} from './types/'
 import { decrypt } from './cryptography'
 import { deterministicRandomBid } from './deterministicRandom'
-
 
 /* -------------------------------------------------------------------------- */
 /*                              helper functions                              */
 /* -------------------------------------------------------------------------- */
 
-export const existsCurrentOwner = (st: I_BnsState): boolean => st.domain.currentOwner !== ''
-export const existsUser = (st: I_BnsState, address: string): boolean => !!st.domain.users[address]
+export const existsCurrentOwner = (st: I_BnsState): boolean =>
+  st.domain.currentOwner !== ''
+export const existsUser = (st: I_BnsState, address: string): boolean =>
+  !!st.domain.users[address]
 
 export const createNewUser = (st: I_BnsState, address: string): void => {
   // create new user
@@ -25,16 +34,20 @@ export const createNewUser = (st: I_BnsState, address: string): void => {
   st.domain.users[address].address = address
 }
 
-export const getOwnerAddress = (st: I_BnsState): string => st.domain.currentOwner || ''
+export const getOwnerAddress = (st: I_BnsState): string =>
+  st.domain.currentOwner || ''
 
 export const setOwner = (st: I_BnsState, newOwnerAddress: string) => {
   st.domain.currentOwner = newOwnerAddress
 }
 
-
 export const getUser = (st: I_BnsState, address: string): I_User => {
   if (!existsUser(st, address)) {
-    console.warn('You called', getUser, 'without checking if user exists via existsUser()')
+    console.warn(
+      'You called',
+      getUser,
+      'without checking if user exists via existsUser()'
+    )
   }
   return st.domain.users[address]
 }
@@ -46,26 +59,36 @@ export const getOwner = (st: I_BnsState) => {
 }
 
 export const updateOwnerHistory = (st: I_BnsState): void => {
-  st.domain.ownersHistory.push(getOwner(st) || JSON.parse(JSON.stringify(newUser)))
+  st.domain.ownersHistory.push(
+    getOwner(st) || JSON.parse(JSON.stringify(newUser))
+  )
 }
 
-export const clearOwner = (st: I_BnsState): void => { st.domain.currentOwner = '' }
+export const clearOwner = (st: I_BnsState): void => {
+  st.domain.currentOwner = ''
+}
 
-export const getCurrentHeight = (st: I_BnsState): number => st.chain?.currentHeight || 0
-export const getParsedHeight = (st: I_BnsState): number => st.chain?.parsedHeight || 0
+export const getCurrentHeight = (st: I_BnsState): number =>
+  st.chain?.currentHeight || 0
+export const getParsedHeight = (st: I_BnsState): number =>
+  st.chain?.parsedHeight || 0
 export const setParsedHeight = (st: I_BnsState, height: number): void => {
   st.chain && (st.chain.parsedHeight = height)
 }
 
-export const getNotificationAddress = (st: I_BnsState): string => st.domain.notificationAddress || ''
+export const getNotificationAddress = (st: I_BnsState): string =>
+  st.domain.notificationAddress || ''
 
-export const getLastOwnerBurnedValue = (st: I_BnsState): number => getOwner(st)?.burnAmount || 0
+export const getLastOwnerBurnedValue = (st: I_BnsState): number =>
+  getOwner(st)?.burnAmount || 0
 
 export const isOwnerExpired = (st: I_BnsState): boolean => {
   if (!existsCurrentOwner(st)) return true // no owner same as expired
   const owner = getOwner(st)
   if (!owner) {
-    console.log('isOwnerExpired: owner exists but no user with such address stored')
+    console.log(
+      'isOwnerExpired: owner exists but no user with such address stored'
+    )
     return true
   }
   const blocksSinceUpdate = getParsedHeight(st) - owner.winHeight
@@ -86,28 +109,31 @@ export const getNonce = (st: I_BnsState, address: string): number => {
   }
 }
 
-
 // ===== tx functions (getters) =====================
 
 export const getTxTimestamp = (tx: I_TX): number => tx.status.block_time || 0
 export const getTxHeight = (tx: I_TX): number => tx.status.block_height || 0
 
-export const getTxOutput0BurnValue = (tx: I_TX): number => tx.vout[0]?.value || 0
-export const getTxOutput0Data = (tx: I_TX):string => {
+export const getTxOutput0BurnValue = (tx: I_TX): number =>
+  tx.vout[0]?.value || 0
+export const getTxOutput0Data = (tx: I_TX): string => {
   if (isOpreturnOutput0(tx)) {
     // remove 'OP_RETURN OP_PUSHBYTES_5 ' from it and return the rest
-    return tx.vout[0].scriptpubkey_asm.split(' ').slice(2).join('')
+    return tx.vout[0].scriptpubkey_asm
+      .split(' ')
+      .slice(2)
+      .join('')
   }
   return ''
 }
 
-export const getTxOutput1NotifyValue = (tx: I_TX): number => tx.vout[1]?.value || 0
-export const getTxOutput1NotifyAddress = (tx: I_TX): string => tx.vout[1]?.scriptpubkey_address || ''
+export const getTxOutput1NotifyValue = (tx: I_TX): number =>
+  tx.vout[1]?.value || 0
+export const getTxOutput1NotifyAddress = (tx: I_TX): string =>
+  tx.vout[1]?.scriptpubkey_address || ''
 
-export const getTxInput0SourceUserAddress = (tx: I_TX): string => (
+export const getTxInput0SourceUserAddress = (tx: I_TX): string =>
   tx.vin[0]?.prevout.scriptpubkey_address || ''
-)
-
 
 // ======= update state from tx (setters) ========
 
@@ -140,7 +166,7 @@ export const addToUserForwards = (
 }
 
 // parse embedded data and store in forwards
-export const readEmbeddedData = (st: I_BnsState, tx: I_TX):void => {
+export const readEmbeddedData = (st: I_BnsState, tx: I_TX): void => {
   // only go on if there is op_return with embedded data on output 0
   if (!isOpreturnOutput0(tx)) {
     console.log(getTxHeight(tx), ': no op_return found for txid')
@@ -187,10 +213,10 @@ export const readEmbeddedData = (st: I_BnsState, tx: I_TX):void => {
         // majority of usecases do not need special characters
         // for special cases users can just
         // create a rule for specific network to decodeURIComponent & handle carefully
-        network:          encodeURIComponent(networkPiece),
-        address:          encodeURIComponent(forwardingAddressPiece),
-        updateHeight:     getTxHeight(tx),
-        updateTimestamp:  getTxTimestamp(tx)
+        network: encodeURIComponent(networkPiece),
+        address: encodeURIComponent(forwardingAddressPiece),
+        updateHeight: getTxHeight(tx),
+        updateTimestamp: getTxTimestamp(tx)
       }
       forwardsInThisTx.push(thisForward)
     }
@@ -206,21 +232,22 @@ export const readEmbeddedData = (st: I_BnsState, tx: I_TX):void => {
 export const atLeastTwoOutputs = (tx: I_TX): boolean => tx.vout.length >= 2
 
 // Describe:    Is [0] output OP_RETURN type
-export const isOpreturnOutput0 = (tx: I_TX): boolean => (
+export const isOpreturnOutput0 = (tx: I_TX): boolean =>
   tx.vout[0].scriptpubkey_asm.split(' ')[0] === 'OP_RETURN'
-)
 
 // Describe:    Is [1] output this domain's notification address?
-export const isNotify =  (st: I_BnsState, tx: I_TX): boolean => (
+export const isNotify = (st: I_BnsState, tx: I_TX): boolean =>
   getTxOutput1NotifyAddress(tx) === getNotificationAddress(st)
-)
 
 // Describe:    At least minimum amount used in notification output? (Dust level is main danger)
-export const didNotifyMin = (tx: I_TX): boolean => getTxOutput1NotifyValue(tx) >= MIN_NOTIFY
+export const didNotifyMin = (tx: I_TX): boolean =>
+  getTxOutput1NotifyValue(tx) >= MIN_NOTIFY
 
 // Describe:    Is address the current domain owner?
-export const isAddressTheCurrentOwner = (st: I_BnsState, address: string): boolean =>
-  getOwnerAddress(st) === address
+export const isAddressTheCurrentOwner = (
+  st: I_BnsState,
+  address: string
+): boolean => getOwnerAddress(st) === address
 
 // Describe:    Is tx sender the current domain owner (input [0], id'ed by address)?
 export const isSenderTheCurrentOwner = (st: I_BnsState, tx: I_TX): boolean =>
@@ -231,9 +258,8 @@ export const didBurnMin = (tx: I_TX): boolean =>
   getTxOutput0BurnValue(tx) >= MIN_BURN
 
 // Describe:    Burned at least as much as previously burnt
-export const burnedPreviousRateMin = (st: I_BnsState, tx: I_TX): boolean => (
+export const burnedPreviousRateMin = (st: I_BnsState, tx: I_TX): boolean =>
   getTxOutput0BurnValue(tx) >= getLastOwnerBurnedValue(st)
-)
 
 /**
  * Checks if this command exists at tx height from tx user.
@@ -242,7 +268,7 @@ export const isCommandCalled = (
   st: I_BnsState,
   tx: I_TX,
   command: string
-): boolean  => {
+): boolean => {
   return !!getCommandCalled(st, tx, command)
 }
 
@@ -253,8 +279,7 @@ export const getCommandCalled = (
   st: I_BnsState,
   tx: I_TX,
   command: string
-): I_Forward | undefined  => {
-
+): I_Forward | undefined => {
   // get tx height (only current height is relevant for commands)
   const txHeight = getTxHeight(tx)
   // who sent the tx
@@ -263,7 +288,6 @@ export const getCommandCalled = (
   const user = getUser(st, fromAddress)
   // array of forwards
   const forwards = user.forwards
-
 
   // scan height and name of each forward
   for (let thisForward of forwards) {
@@ -294,9 +318,9 @@ export const updateUtxoFromTx = (st: I_BnsState, tx: I_TX): void => {
       const txid = input.txid
       const vout = input.vout
       // find first match with these values in derivedUtxoList
-      const spentUtxoIndex = st.domain.derivedUtxoList.findIndex(utxo => (
-        utxo.txid === txid && utxo.vout === vout
-      ))
+      const spentUtxoIndex = st.domain.derivedUtxoList.findIndex(
+        utxo => utxo.txid === txid && utxo.vout === vout
+      )
       // remove element at the position found
       // utxo can only be spent once so first match ok
       st.domain.derivedUtxoList.splice(spentUtxoIndex, 1)
@@ -322,7 +346,10 @@ export const updateUtxoFromTx = (st: I_BnsState, tx: I_TX): void => {
 // returns true only if there are no utxo (at notification address)
 // where the sender address (input[0] in the past) is the same as
 // the sender address of this tx (input[0])
-export const noUnspentUserNotificationsUtxo = (st: I_BnsState, tx: I_TX): boolean => {
+export const noUnspentUserNotificationsUtxo = (
+  st: I_BnsState,
+  tx: I_TX
+): boolean => {
   // sender address of this tx
   const userOfTxAddress = getTxInput0SourceUserAddress(tx)
   const txHeight = getTxHeight(tx)
@@ -340,11 +367,12 @@ export const noUnspentUserNotificationsUtxo = (st: I_BnsState, tx: I_TX): boolea
     const isInThePast = utxoHeight < txHeight
 
     // all utxo in derived set should have from address
-    !userThatCreatedThisUtxo && console.log(
-      'st.domain.derivedUtxoList for some reason has undefined from_scriptpubkey_address'
-    )
+    !userThatCreatedThisUtxo &&
+      console.log(
+        'st.domain.derivedUtxoList for some reason has undefined from_scriptpubkey_address'
+      )
     // if even 1 matches, the check failed
-    if ((userThatCreatedThisUtxo === userOfTxAddress) && isInThePast) {
+    if (userThatCreatedThisUtxo === userOfTxAddress && isInThePast) {
       return false
     }
   }
@@ -352,7 +380,6 @@ export const noUnspentUserNotificationsUtxo = (st: I_BnsState, tx: I_TX): boolea
   // only gets this far if no utxo creators match our current tx user
   return true
 }
-
 
 /**
  * Reset bidding.
@@ -375,14 +402,19 @@ export const startBidding = (st: I_BnsState, tx: I_TX, type: BnsBidType) => {
   st.domain.bidding.endHeight = txHeight + CHALLENGE_PERIOD_DURATION_BY_BLOCKS
   st.domain.bidding.type = type
 
-  console.log('Bidding period started at height', txHeight, 'until', txHeight + CHALLENGE_PERIOD_DURATION_BY_BLOCKS)
+  console.log(
+    'Bidding period started at height',
+    txHeight,
+    'until',
+    txHeight + CHALLENGE_PERIOD_DURATION_BY_BLOCKS
+  )
 }
 
 /**
  * Add new bid.
  */
 export const addBid = (st: I_BnsState, tx: I_TX, type: BnsBidType): void => {
-  const userAddress = getTxInput0SourceUserAddress(tx);
+  const userAddress = getTxInput0SourceUserAddress(tx)
   const txHeight = getTxHeight(tx)
   const burnValue = getTxOutput0BurnValue(tx)
 
@@ -417,7 +449,7 @@ export const isBiddingOver = (st: I_BnsState): boolean => {
   const endHeight = st.domain.bidding.endHeight
 
   // real bidding type still assigned but height is at or above end height for bidding
-  if ((biddingType !== BnsBidType.NULL) && (endHeight <= parsedHeight)) {
+  if (biddingType !== BnsBidType.NULL && endHeight <= parsedHeight) {
     return true
   }
   return false
@@ -427,7 +459,7 @@ export const isBiddingOver = (st: I_BnsState): boolean => {
  * Return true if there's a current bidding period.
  */
 export const isBiddingOngoing = (st: I_BnsState): boolean => {
-  if (!st.chain) throw new Error ('called st.chain without it defined')
+  if (!st.chain) throw new Error('called st.chain without it defined')
 
   // current parsed height (updated elsewhere)
   const parsedHeight = st.chain!.parsedHeight
@@ -437,7 +469,11 @@ export const isBiddingOngoing = (st: I_BnsState): boolean => {
   const startHeight = st.domain.bidding.startHeight
 
   // real bidding type still assigned but height is at or above end height for bidding
-  if ((biddingType !== BnsBidType.NULL) && (parsedHeight < endHeight) && (parsedHeight >= startHeight)) {
+  if (
+    biddingType !== BnsBidType.NULL &&
+    parsedHeight < endHeight &&
+    parsedHeight >= startHeight
+  ) {
     console.log('', parsedHeight, 'Action falls within bidding period.')
     return true
   }
@@ -445,9 +481,12 @@ export const isBiddingOngoing = (st: I_BnsState): boolean => {
 }
 
 /**
-* Return true if address is one of the bidders.
-*/
-export const isAddressACurrentBidder = (st: I_BnsState, address: string): boolean => {
+ * Return true if address is one of the bidders.
+ */
+export const isAddressACurrentBidder = (
+  st: I_BnsState,
+  address: string
+): boolean => {
   if (!isBiddingOngoing) return false
 
   for (let i = 0; i < st.domain.bidding.bids.length; i++) {
@@ -459,7 +498,6 @@ export const isAddressACurrentBidder = (st: I_BnsState, address: string): boolea
   return false // no match found
 }
 
-
 /**
  * Return true if user is one of the bidders.
  */
@@ -468,11 +506,10 @@ export const isSenderACurrentBidder = (st: I_BnsState, tx: I_TX): boolean => {
   return isAddressACurrentBidder(st, userAddress)
 }
 
-
 /**
  * Subtract refunded amounts from active bids.
  */
-export const subtractRefunds = (st: I_BnsState, tx: I_TX):void => {
+export const subtractRefunds = (st: I_BnsState, tx: I_TX): void => {
   const txUserAddress = getTxInput0SourceUserAddress(tx)
   const bids = st.domain.bidding.bids
 
@@ -484,13 +521,14 @@ export const subtractRefunds = (st: I_BnsState, tx: I_TX):void => {
     const toAmount = output.value
 
     if (
-      (toAddress !== undefined) &&    // type of output that has an target address
-      (txUserAddress !== toAddress)   // isn't from the same address (sender === receiver is change, not refund)
+      toAddress !== undefined && // type of output that has an target address
+      txUserAddress !== toAddress // isn't from the same address (sender === receiver is change, not refund)
     ) {
       // set paid amount or add onto existing
-      paidTo[toAddress] ? (paidTo[toAddress] += toAmount) : (paidTo[toAddress] = toAmount)
+      paidTo[toAddress]
+        ? (paidTo[toAddress] += toAmount)
+        : (paidTo[toAddress] = toAmount)
     }
-
   }
   // paidTo object done
 
@@ -499,16 +537,24 @@ export const subtractRefunds = (st: I_BnsState, tx: I_TX):void => {
     const thisBid = bids[i]
     const thisBidAddress = thisBid.address
 
-    console.assert(thisBid.height >= st.domain.bidding.startHeight, `Bid height outside allowed range.`)
-    console.assert(thisBid.height < st.domain.bidding.endHeight, `Bid height outside allowed range.`)
+    console.assert(
+      thisBid.height >= st.domain.bidding.startHeight,
+      `Bid height outside allowed range.`
+    )
+    console.assert(
+      thisBid.height < st.domain.bidding.endHeight,
+      `Bid height outside allowed range.`
+    )
 
     // if paid to this address
     if (paidTo[thisBidAddress] !== undefined) {
-
       // each counted refund falls within range
       // [0, min(total refunds paid, left to refund for this bid)]
       // so valueLeftToRefund is 0 or positive only
-      const refund = Math.max(Math.min(paidTo[thisBidAddress], thisBid.valueLeftToRefund), 0)
+      const refund = Math.max(
+        Math.min(paidTo[thisBidAddress], thisBid.valueLeftToRefund),
+        0
+      )
 
       // subtract out the refund from both paid amount and valueLeftToRefund
       thisBid.valueLeftToRefund -= refund
@@ -533,7 +579,9 @@ export const unrefundedBidsOnly = (st: I_BnsState): Array<I_Bid> => {
 /**
  * Return object with only addresses to refund as key and amounts left to refund as value.
  */
-export const unrefundedAmounts = (st: I_BnsState): { [key: string]: number } => {
+export const unrefundedAmounts = (
+  st: I_BnsState
+): { [key: string]: number } => {
   const unrefundedBids = unrefundedBidsOnly(st)
 
   const amounts = unrefundedBids.reduce((refundsLeft: any, thisBid: I_Bid) => {
@@ -541,8 +589,8 @@ export const unrefundedAmounts = (st: I_BnsState): { [key: string]: number } => 
     const amount = thisBid.valueLeftToRefund
     // sums up amount left to refund per address
     return refundsLeft[address]
-      ? {...refundsLeft, [address]: refundsLeft[address] + amount}
-      : {...refundsLeft, [address]: amount }
+      ? { ...refundsLeft, [address]: refundsLeft[address] + amount }
+      : { ...refundsLeft, [address]: amount }
   }, {})
 
   // console.log('unrefunded amounts:', amounts)
@@ -572,24 +620,30 @@ export const endBidding = (st: I_BnsState): void => {
   const goodBidsThatRefunded: Array<I_Bid> = []
 
   for (let thisBid of bids) {
-
-    console.assert(thisBid.height >= st.domain.bidding.startHeight, `Bid height outside allowed range.`)
-    console.assert(thisBid.height < st.domain.bidding.endHeight, `Bid height outside allowed range.`)
-
+    console.assert(
+      thisBid.height >= st.domain.bidding.startHeight,
+      `Bid height outside allowed range.`
+    )
+    console.assert(
+      thisBid.height < st.domain.bidding.endHeight,
+      `Bid height outside allowed range.`
+    )
 
     const thisBidHeight = thisBid.height
 
     // check if any unrefunded past bids
-    const hasUnrefundedPastBids = unrefundedBids.some((thisUnrefundedBid: I_Bid) => {
-      // return false if this isn't an unrefunded bid that matters
+    const hasUnrefundedPastBids = unrefundedBids.some(
+      (thisUnrefundedBid: I_Bid) => {
+        // return false if this isn't an unrefunded bid that matters
 
-      // must not have unrefunded bids at lower height
-      if (thisUnrefundedBid.height >= thisBidHeight) return false
-      // only different addresses matter
-      if (thisUnrefundedBid.address === thisBid.address) return false
+        // must not have unrefunded bids at lower height
+        if (thisUnrefundedBid.height >= thisBidHeight) return false
+        // only different addresses matter
+        if (thisUnrefundedBid.address === thisBid.address) return false
 
-      return true
-    })
+        return true
+      }
+    )
 
     // if no unrefunded bids in the past, add to goodBidsThatRefunded
     if (!hasUnrefundedPastBids) {
@@ -631,7 +685,8 @@ export const endBidding = (st: I_BnsState): void => {
 
     // only push into bids array if it meets minimum criteria
     // compared with winner of lower height calculated this round or before
-    const hasThisBidPaidEnough = thisBid.value >= (CHALLENGE_MIN_MULTIPLY * winner.value)
+    const hasThisBidPaidEnough =
+      thisBid.value >= CHALLENGE_MIN_MULTIPLY * winner.value
 
     if (hasThisBidPaidEnough) {
       validBidsAtLastHeight.push(thisBid)
@@ -654,12 +709,18 @@ export const endBidding = (st: I_BnsState): void => {
     getOwner(st)!.burnAmount = winner.value
     getOwner(st)!.winHeight = winner.height
     getOwner(st)!.winTimestamp = winner.timestamp
-    console.log('', winner.height, 'Bidding winner and new owner is', winner.address)
+    console.log(
+      '',
+      winner.height,
+      'Bidding winner and new owner is',
+      winner.address
+    )
 
     // resets all active bidding info, sets it to null values
     resetBidding(st)
-
   } else {
-    throw new Error('There should be no cases without a winner since at least 1st bid wins')
+    throw new Error(
+      'There should be no cases without a winner since at least 1st bid wins'
+    )
   }
 }

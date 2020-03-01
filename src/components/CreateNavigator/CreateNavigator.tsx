@@ -23,14 +23,14 @@ export const CreateNavigator = () => {
   return (
     <>
       <CreateHeader />
-      <div className={ [styles.wrapper, 'scrollbar'].join(' ') }>
-        <div className={ styles.horizontalScaler } >
-          { (page === 1) && <P1RestoreOrBackup /> }
-          { (page === 2) && <P2LoadWallet /> }
-          { (page === 3) && <P3DomainAndWallet /> }
-          { (page === 4) && <P4ActionChoice /> }
-          { (page === 5) && <P5CustomForwards /> }
-          { (page === 6) && <P6Broadcast /> }
+      <div className={[styles.wrapper, 'scrollbar'].join(' ')}>
+        <div className={styles.horizontalScaler}>
+          {page === 1 && <P1RestoreOrBackup />}
+          {page === 2 && <P2LoadWallet />}
+          {page === 3 && <P3DomainAndWallet />}
+          {page === 4 && <P4ActionChoice />}
+          {page === 5 && <P5CustomForwards />}
+          {page === 6 && <P6Broadcast />}
         </div>
       </div>
     </>

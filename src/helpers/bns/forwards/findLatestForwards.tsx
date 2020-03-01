@@ -3,7 +3,9 @@ import { I_Forward } from '../types'
  * Returns array with only latest forwards from array of all forwards.
  * Removes actions, ones that start with "!" and ones that are blank addresses.
  */
-export const findLatestForwards = (forwards: Array<I_Forward>): Array<I_Forward> => {
+export const findLatestForwards = (
+  forwards: Array<I_Forward>
+): Array<I_Forward> => {
   // simplest would be to go through object where keys of cloned network would overwrite
   // sort first for simplicity
   const sortedForwards = [...forwards].sort((prev, next) => {
@@ -13,7 +15,7 @@ export const findLatestForwards = (forwards: Array<I_Forward>): Array<I_Forward>
     return prevHeight - nextHeight
   })
   // now just overwrite values for same networks in order of sorted array
-  const currentNetworks: {[key: string]: I_Forward} = {}
+  const currentNetworks: { [key: string]: I_Forward } = {}
   sortedForwards.forEach(eaForward => {
     // add all networks that are not commands or blank network name
     const isNotCommand = !eaForward.network.startsWith('!')

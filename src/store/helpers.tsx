@@ -31,7 +31,8 @@ export const getBidding = (st: I_State) => {
 }
 
 // show BTC balance with styling and proper units based on network
-export const unitsBTC = (st: I_State) => (st.network === 'testnet') ? 'tBTC' : 'BTC'
+export const unitsBTC = (st: I_State) =>
+  st.network === 'testnet' ? 'tBTC' : 'BTC'
 
 export const satsToBTC = (sats: number): string => (sats / 1e8).toFixed(8)
 

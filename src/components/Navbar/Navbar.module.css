@@ -1,4 +1,4 @@
- /* total height: padding 2s, 2.5s button text line, 2s button padding = 6.0s */
+/* total height: padding 2s, 2.5s button text line, 2s button padding = 6.0s */
 .nav {
   box-sizing: border-box;
   display: inline-block;
@@ -43,7 +43,7 @@
 
 .overflowMenu {
   opacity: 0;
-  --finalOpacity: 1.0;
+  --finalOpacity: 1;
 
   flex-basis: 100%;
   flex-wrap: wrap;
@@ -51,8 +51,10 @@
   border-radius: calc(0.5 * var(--s));
   transition: opacity 0.15s;
 
-  -webkit-backdrop-filter: blur(calc(0.5 * var(--s))) opacity(1) brightness(1.1) saturate(90%) contrast(0.8);
-  backdrop-filter: blur(calc(0.5 * var(--s))) opacity(1) brightness(1.1) saturate(90%) contrast(0.8);
+  -webkit-backdrop-filter: blur(calc(0.5 * var(--s))) opacity(1) brightness(1.1)
+    saturate(90%) contrast(0.8);
+  backdrop-filter: blur(calc(0.5 * var(--s))) opacity(1) brightness(1.1)
+    saturate(90%) contrast(0.8);
 
   transform-origin: top left;
   transform: scale(1.15);
@@ -97,7 +99,6 @@
   background-color: var(--colorBrighter9);
 }
 
-
 .nav .selected {
   background-color: var(--colorDarker0_5);
 }
@@ -105,8 +106,6 @@
 .overflowMenu .selected {
   background-color: var(--colorBrighter9);
 }
-
-
 
 .pageNum {
   display: inline-block;
@@ -135,15 +134,19 @@
   box-shadow: inset 0 0 0 calc(0.25 * var(--s)) var(--colorDarker1);
 }
 
-
 @supports not (backdrop-filter: blur(1px)) {
   /* firefox doesn't support backdrop filters unless manually turned on... */
   .overflowMenu {
     background-color: rgba(199, 206, 218, 0.91);
-    --col1: rgba(255,255,255, 0.7);
-    --col2: rgba(255,255,255, 0.9);
-    background: linear-gradient(-45deg,  var(--col1) 0%, var(--col2) 33%, var(--col1) 66%, var(--col2) 100%);
-
+    --col1: rgba(255, 255, 255, 0.7);
+    --col2: rgba(255, 255, 255, 0.9);
+    background: linear-gradient(
+      -45deg,
+      var(--col1) 0%,
+      var(--col2) 33%,
+      var(--col1) 66%,
+      var(--col2) 100%
+    );
   }
   .overflowMenu > div {
     background-color: var(--colorBrighter8);
@@ -155,7 +158,6 @@
     background-color: var(--colorDarker0_5);
   }
 }
-
 
 /* -------------------------------------------------------------------------- */
 /*                                 menu button                                */
@@ -175,7 +177,7 @@
   --iconSize: calc(2.2 * var(--s));
 
   /* smallest unit */
-  --radius: calc(0.10 * var(--iconSize));
+  --radius: calc(0.1 * var(--iconSize));
 
   /* only for centering */
   --centerX: calc(50% - var(--radius));
@@ -189,20 +191,19 @@
   -webkit-filter: blur(0);
   filter: blur(0);
 
-  image-rendering: optimizeSpeed;             /*                     */
-  image-rendering: -moz-crisp-edges;          /* Firefox             */
-  image-rendering: -o-crisp-edges;            /* Opera               */
+  image-rendering: optimizeSpeed; /*                     */
+  image-rendering: -moz-crisp-edges; /* Firefox             */
+  image-rendering: -o-crisp-edges; /* Opera               */
   image-rendering: -webkit-optimize-contrast; /* Chrome (and Safari) */
-  image-rendering: optimize-contrast;         /* CSS3 Proposed       */
-  -ms-interpolation-mode: nearest-neighbor;   /* IE8+                */
+  image-rendering: optimize-contrast; /* CSS3 Proposed       */
+  -ms-interpolation-mode: nearest-neighbor; /* IE8+                */
   font-smoothing: antialiased !important;
 
-
   /* risky filters */
-  filter: blur(0.0) opacity(0.2) brightness(100%);
+  filter: blur(0) opacity(0.2) brightness(100%);
 
   /* animation */
-  transform: translateZ(0.0) scale(1.00, 1.00) rotate(0.001deg) ;
+  transform: translateZ(0) scale(1, 1) rotate(0.001deg);
   transition: transform 0.3s;
 }
 
@@ -221,10 +222,10 @@
 
   transform-origin: center;
 
-  transform: translateZ(0.0) scale(1.00, 1.00) translate(0.0, 0.0) rotate(0.01deg);
+  transform: translateZ(0) scale(1, 1) translate(0, 0) rotate(0.01deg);
 
   /* animation */
-  transition: transform 0.3s, width 0.3s,
+  transition: transform 0.3s, width 0.3s;
 }
 
 .dots > div {
@@ -234,7 +235,7 @@
 
 .dots > div:before,
 .dots > div:after {
-  content: "";
+  content: '';
   top: 0;
   left: 0;
 }
@@ -250,29 +251,32 @@
 /* once active */
 
 .menuShown .dots {
-  transform: translateZ(0.0) scale(1.00, 1.00) translate(0, 0) rotate(179deg);
-  filter: blur(0.0) opacity(0.2) brightness(100%) ;
+  transform: translateZ(0) scale(1, 1) translate(0, 0) rotate(179deg);
+  filter: blur(0) opacity(0.2) brightness(100%);
 }
 
 .menuShown .dots > div,
 .menuShown .dots > div:before,
 .menuShown .dots > div:after {
-
 }
 
 .menuShown .dots > div {
-  transform: translateZ(0.0) scale(1.00, 1.00) translate(0, 0) rotate(0deg);
+  transform: translateZ(0) scale(1, 1) translate(0, 0) rotate(0deg);
 }
 
-
 .menuShown .dots > div:before {
-
-  transform: translateZ(0.0) scale(1.00, 1.00) translate(calc(-2 * var(--radius)), calc(0 * var(--radius))) rotate(135deg);
+  transform: translateZ(0) scale(1, 1)
+    translate(calc(-2 * var(--radius)), calc(0 * var(--radius))) rotate(135deg);
   width: calc(2.82 * var(--offsetsXY));
 }
 
 .menuShown .dots > div:after {
-  transform: translateZ(0.0) scale(1.00, 1.00) translate(calc(-2 * var(--offsetsXY) - 2 * var(--radius)), calc(0 * var(--radius))) rotate(45deg);
+  transform: translateZ(0) scale(1, 1)
+    translate(
+      calc(-2 * var(--offsetsXY) - 2 * var(--radius)),
+      calc(0 * var(--radius))
+    )
+    rotate(45deg);
   width: calc(2.82 * var(--offsetsXY));
 }
 
@@ -282,13 +286,13 @@
 
 @keyframes blurme {
   %0 {
-    filter: blur(0.0) opacity(0.2) brightness(100%) ;
+    filter: blur(0) opacity(0.2) brightness(100%);
   }
   50% {
-    filter: blur(calc(0.7 * var(--radius))) opacity(0.2) brightness(100%) ;
+    filter: blur(calc(0.7 * var(--radius))) opacity(0.2) brightness(100%);
   }
   100% {
-    filter: blur(0.0) opacity(0.2) brightness(100%) ;
+    filter: blur(0) opacity(0.2) brightness(100%);
   }
 }
 
@@ -305,8 +309,3 @@
     transform-origin: top left;
   }
 }
-
-
-
-
-

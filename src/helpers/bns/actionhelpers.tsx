@@ -1,4 +1,3 @@
-
 import { I_Checked_Action, I_Condition } from './types'
 
 /**
@@ -7,8 +6,8 @@ import { I_Checked_Action, I_Condition } from './types'
  * Within array, each getter is at suggestion.info.get.
  */
 export const getGetters = (action: I_Checked_Action): Array<I_Condition> => {
-  const getters = action.suggestions.filter((thisSuggestion:any) => {
-    return ('get' in thisSuggestion.info)
+  const getters = action.suggestions.filter((thisSuggestion: any) => {
+    return 'get' in thisSuggestion.info
   })
   return getters
 }
@@ -19,8 +18,8 @@ export const getGetters = (action: I_Checked_Action): Array<I_Condition> => {
  * Within array, each setter is at suggestion.info.set.
  */
 export const getSetters = (action: I_Checked_Action): Array<I_Condition> => {
-  const setters = action.suggestions.filter((thisSuggestion:any) => {
-    return ('set' in thisSuggestion.info)
+  const setters = action.suggestions.filter((thisSuggestion: any) => {
+    return 'set' in thisSuggestion.info
   })
   return setters
 }

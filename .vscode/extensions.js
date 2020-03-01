@@ -1,0 +1,13 @@
+// akamud.vscode-theme-onedark-2.1.0               jcbuisson.vue-0.1.5
+// christian-kohler.path-intellisense-1.4.2        lenconda.theme-darkplusplusplus-0.1.2
+// coenraads.bracket-pair-colorizer-1.0.61         liquori.material-minimal-dark-0.0.8
+// coenraads.bracket-pair-colorizer-2-0.0.29       maosantaella.night-wolf-1.8.2
+// compulim.indent4to2-0.1.2                       michelemelluso.gitignore-1.0.1
+// dbaeumer.vscode-eslint-2.1.1                    ms-vscode-remote.remote-wsl-0.42.3
+// dsznajder.es7-react-js-snippets-2.6.0           octref.vetur-0.23.0
+// equinusocio.vsc-community-material-theme-1.4.1  pkief.material-icon-theme-3.9.3
+// equinusocio.vsc-material-theme-32.5.0           romanrei.material-dark-1.1.0
+// equinusocio.vsc-material-theme-icons-1.1.4      sdras.night-owl-1.1.3
+// feego.night-owl-light-bold-0.0.11               skyran.js-jsx-snippets-10.0.0
+// hollowtree.vue-snippets-0.1.11                  svipas.night-owl-plus-1.6.3
+// hookyqr.beautify-1.5.0                          thedavej.night-owl-black-1.1.1

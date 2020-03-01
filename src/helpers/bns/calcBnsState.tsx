@@ -8,7 +8,7 @@ import {
   updateSourceUserFromTx,
   getTxHeight,
   updateOwnerHistory
- } from './formathelpers'
+} from './formathelpers'
 
 /**
  * Returns ownership and notification information objects.
@@ -24,17 +24,18 @@ export const calcBnsState = (
   currentHeight: number,
   networkChoice: string
 ): I_BnsState => {
-
   // initialize temporary derivation state
-  const st = JSON.parse(JSON.stringify(newState)); // deep object clone
+  const st = JSON.parse(JSON.stringify(newState)) // deep object clone
   st.domain.domainName = domainName
   st.chain && (st.chain.currentHeight = currentHeight)
-  st.domain.notificationAddress = calcP2WSH(domainName, networkChoice)?.notificationsAddress || ''
+  st.domain.notificationAddress =
+    calcP2WSH(domainName, networkChoice)?.notificationsAddress || ''
 
   // Sorting history from earliest to latest
   // reversing should speed it up if not complete it
-  st.domain.txHistory = (notificationsHistory
-    .slice().reverse()
+  st.domain.txHistory = notificationsHistory
+    .slice()
+    .reverse()
     .filter((tx: any) => getTxHeight(tx) >= EARLIEST_NOTIFICATION_HEIGHT)
     .sort((prev, next) => {
       const prevBlockHeight = prev.status.block_height
@@ -42,12 +43,9 @@ export const calcBnsState = (
       return prevBlockHeight - nextBlockHeight
     })
 
-  )
-
   // iterate with blockheights of relevant tx to derive st state
   // Each tx blockheight serves as reference time
   st.domain.txHistory.forEach((tx: any) => {
-
     // update current chain's parsed height based on tx confirmed height
     setParsedHeight(st, getTxHeight(tx))
 
@@ -78,4 +76,3 @@ export const calcBnsState = (
 
   return st
 }
-

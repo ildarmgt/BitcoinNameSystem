@@ -3,8 +3,16 @@ import { RoundButton } from '../../general/RoundButton'
 import { Details } from './../../general/Details'
 import styles from './P5CustomForwards.module.css'
 import { Store, getOwner } from '../../../store/'
-import { changePageInfoAction, changeChoicesBNSAction } from '../../../store/actions'
-import { stringByteCount, BYTES_MAX, findLatestForwards, interpretCommand } from '../../../helpers/bns'
+import {
+  changePageInfoAction,
+  changeChoicesBNSAction
+} from '../../../store/actions'
+import {
+  stringByteCount,
+  BYTES_MAX,
+  findLatestForwards,
+  interpretCommand
+} from '../../../helpers/bns'
 import sanitize from '../../../helpers/sanitize'
 
 type Planned_Changes = { [key: string]: string }
@@ -20,8 +28,10 @@ export const P5CustomForwards = () => {
   // string to embed located at state.choices.embedString
 
   // local state for content in textboxes for new network address changes
-  const [textboxContent, setTextboxContent] = React.useState({network: '', address: '' })
-
+  const [textboxContent, setTextboxContent] = React.useState({
+    network: '',
+    address: ''
+  })
 
   // Check if the main action requires space in the embed string.
   // Return necessary string. No extra spaces.
@@ -49,7 +59,7 @@ export const P5CustomForwards = () => {
   }
 
   // set global state's string to embed from an object of planned changes
-  const setPlannedChanges = (objForwards: Planned_Changes  = {}) => {
+  const setPlannedChanges = (objForwards: Planned_Changes = {}) => {
     let forwardsString = ''
     Object.keys(objForwards).forEach(fwNetwork => {
       forwardsString += fwNetwork + ' ' + objForwards[fwNetwork] + ' '
@@ -78,12 +88,11 @@ export const P5CustomForwards = () => {
     let actionRequirementsString = getActionEmbedRequirements()
 
     // combine (later string values are given priority)
-    const finalString = (
-      forwardsString
+    const finalString =
+      forwardsString +
       // if either are blank, no need to separate with space
-      + ((actionRequirementsString === '' || forwardsString === '') ? '' : ' ')
-      + actionRequirementsString
-    )
+      (actionRequirementsString === '' || forwardsString === '' ? '' : ' ') +
+      actionRequirementsString
 
     // convert all changes to object so same networks overwrite themselves as keys.
     const changesObject = finalString.split(' ').reduce(
@@ -96,19 +105,16 @@ export const P5CustomForwards = () => {
         // out of this array of words
         words: Array<string>
       ): Planned_Changes => {
-
         if (index % 2 === 1) {
           return { ...plannedChangesSoFar, [words[index - 1]]: word }
         } else {
           return plannedChangesSoFar
         }
-
       },
       {} // initial value for plannedChangesSoFar
     )
     return changesObject
   }
-
 
   // If embed string is empty (to minimize calculations per render), call setPlannedChanges to initialize it
   // since it doesn't update state unless it's necessary, no refresh is triggered each render
@@ -116,7 +122,9 @@ export const P5CustomForwards = () => {
 
   // Array of past {[network]:forwardingAddress} objects.
   // Display only active ones with latest higher.
-  const pastForwards = findLatestForwards(getOwner(state)?.forwards || []).reverse()
+  const pastForwards = findLatestForwards(
+    getOwner(state)?.forwards || []
+  ).reverse()
 
   // count # of bytes in string
   const bytesOfChanges = stringByteCount(state.choices.embedString)
@@ -124,8 +132,6 @@ export const P5CustomForwards = () => {
   const bytesLeft = BYTES_MAX - bytesOfChanges
   // if no more space
   const isSpaceFull = bytesLeft < 0
-
-
 
   /**
    * Render explanation of the change with submitted forwards network name
@@ -137,25 +143,28 @@ export const P5CustomForwards = () => {
     const bytes = stringByteCount(fwNetwork + ' ' + value)
     const thisByteCostEstimate = (
       <i>
-        {' '}({ bytes }-{ bytes + 1 }B)
+        {' '}
+        ({bytes}-{bytes + 1}B)
       </i>
     )
 
     // return first match for explanation content
     const interpretation = () => {
-
       // if it was a command
       if (fwNetwork.startsWith('!')) {
         const cmd = interpretCommand(fwNetwork, value)
         return {
           content: (
             <>
-              { cmd ? (
+              {cmd ? (
                 <>
-                 { cmd.info } user action. { cmd.getterName } is set to <span>{ cmd.value }</span>.
+                  {cmd.info} user action. {cmd.getterName} is set to{' '}
+                  <span>{cmd.value}</span>.
                 </>
-               ) : 'User action' }
-              { thisByteCostEstimate }
+              ) : (
+                'User action'
+              )}
+              {thisByteCostEstimate}
             </>
           ),
           allowRemoval: false
@@ -167,9 +176,9 @@ export const P5CustomForwards = () => {
         return {
           content: (
             <>
-              Updating forwarding on <span>{ ' ' + fwNetwork + ' ' }</span>
-              network to address of <span>{ ' ' + value + ' ' }</span>
-              { thisByteCostEstimate }
+              Updating forwarding on <span>{' ' + fwNetwork + ' '}</span>
+              network to address of <span>{' ' + value + ' '}</span>
+              {thisByteCostEstimate}
             </>
           ),
           allowRemoval: true
@@ -182,8 +191,8 @@ export const P5CustomForwards = () => {
           content: (
             <>
               Deleting previously set forwarding information for
-              <span>{ ' ' + fwNetwork + ' '}</span> network
-              { thisByteCostEstimate }
+              <span>{' ' + fwNetwork + ' '}</span> network
+              {thisByteCostEstimate}
             </>
           ),
           allowRemoval: true
@@ -191,128 +200,125 @@ export const P5CustomForwards = () => {
       }
 
       return { content: '' }
-   }
-
+    }
 
     return (
       <div
-        className={ styles.updateItem }
-        key={ fwNetwork }
-        onClick={ () => {
+        className={styles.updateItem}
+        key={fwNetwork}
+        onClick={() => {
           // fill in the edit field with these values in case
           setTextboxContent({ network: fwNetwork, address: value })
-        } }
+        }}
       >
-        <div
-          className={ styles.updateInfo }
-        >
-          {
-            interpretation().content
-          }
-        </div>
+        <div className={styles.updateInfo}>{interpretation().content}</div>
         {/* removal button. only render removal button if allowed */}
-        { (interpretation().allowRemoval) && (
+        {interpretation().allowRemoval && (
           <div
-            className={ ['btnCircle', styles.updateCancel, 'addTooltipRight'].join(' ') }
-            onClick={ (e) => {
+            className={[
+              'btnCircle',
+              styles.updateCancel,
+              'addTooltipRight'
+            ].join(' ')}
+            onClick={e => {
               const newData = { ...getPlannedChanges() }
               delete newData[fwNetwork]
               setPlannedChanges(newData)
               // block event from also clicking onto the updateItem
               e.stopPropagation()
-            } }
+            }}
           >
             <span>×</span>
             <aside>Remove from planned changes</aside>
           </div>
-        ) }
+        )}
       </div>
     )
   }
 
-
   console.log('bytes to embed', bytesOfChanges)
 
   return (
-    <div className={ styles.wrapper }>
+    <div className={styles.wrapper}>
+      <div className={styles.title}>Update forwarding information</div>
 
-      <div className={ styles.title }>
-        Update forwarding information
+      <div className={styles.subtitle}>
+        BNS action: {state.choices.action.info}
       </div>
 
-      <div
-          className={ styles.subtitle }
-        >
-        BNS action: { state.choices.action.info }
-      </div>
-
-      <div className={ styles.changes }>
-
-        {/* bytes info */ }
-        { (Object.keys(getPlannedChanges()).length === 0) && 'No forwarding updates' }
-        { (!isSpaceFull) &&
-          <div className={ styles.bytesLeft }>
-            { bytesLeft } Bytes left
+      <div className={styles.changes}>
+        {/* bytes info */}
+        {Object.keys(getPlannedChanges()).length === 0 &&
+          'No forwarding updates'}
+        {!isSpaceFull && (
+          <div className={styles.bytesLeft}>{bytesLeft} Bytes left</div>
+        )}
+        {isSpaceFull && (
+          <div className={styles.bytesOver}>
+            Too much by {Math.abs(bytesLeft)} Bytes
           </div>
-        }
-        { (isSpaceFull) &&
-          <div className={ styles.bytesOver }>
-            Too much by { Math.abs(bytesLeft) } Bytes
-          </div>
-        }
+        )}
 
         {/* Show, explain, and allow editing and removing of each added key/value pair to embed */}
-        { Object.keys(getPlannedChanges()).map((fwNetwork: any) => explainForwards(fwNetwork)) }
-
+        {Object.keys(getPlannedChanges()).map((fwNetwork: any) =>
+          explainForwards(fwNetwork)
+        )}
       </div>
 
-      <div className={ styles.editor } >
-        { (textboxContent.network.length > 0) &&
+      <div className={styles.editor}>
+        {textboxContent.network.length > 0 && (
           <div
-            className={ [styles.btnDelete, 'canPress'].join(' ') }
-            onClick={ () => {
+            className={[styles.btnDelete, 'canPress'].join(' ')}
+            onClick={() => {
               setPlannedChanges({
                 ...getPlannedChanges(),
                 [textboxContent.network]: ''
               })
               setTextboxContent({ network: '', address: '' })
-            } }
+            }}
           >
             delete old
           </div>
-        }
-        <div
-          className={ styles.editorNetwork }
-        >
+        )}
+        <div className={styles.editorNetwork}>
           <aside>Network</aside>
           <textarea
-            spellCheck={ false }
-            value={ textboxContent.network }
-            placeholder={ 'e.g. btc' }
-            onChange={ (e) => {
-              const cleanText = sanitize(e.target.value, ['oneline', 'no_spaces'])
+            spellCheck={false}
+            value={textboxContent.network}
+            placeholder={'e.g. btc'}
+            onChange={e => {
+              const cleanText = sanitize(e.target.value, [
+                'oneline',
+                'no_spaces'
+              ])
               setTextboxContent({ ...textboxContent, network: cleanText })
-            } }
+            }}
           ></textarea>
         </div>
-        <div
-          className={ styles.editorAddress }
-        >
+        <div className={styles.editorAddress}>
           <aside>Forwarding address</aside>
           <textarea
-            spellCheck={ false }
-            value={ textboxContent.address }
-            placeholder={ 'e.g. your btc address' }
-            onChange={ (e) => {
-              const cleanText = sanitize(e.target.value, ['oneline', 'no_spaces'])
+            spellCheck={false}
+            value={textboxContent.address}
+            placeholder={'e.g. your btc address'}
+            onChange={e => {
+              const cleanText = sanitize(e.target.value, [
+                'oneline',
+                'no_spaces'
+              ])
               setTextboxContent({ ...textboxContent, address: cleanText })
               console.log('forwarding satnitized:', '"' + cleanText + '"')
-            } }
+            }}
           ></textarea>
         </div>
         <div
-          className={ ['btnCircle', styles.btnAdd, 'canPress', 'addTooltip'].join(' ') }
-          onClick={ () => {
+          className={[
+            'btnCircle',
+            styles.btnAdd,
+            'canPress',
+            'addTooltip'
+          ].join(' ')}
+          onClick={() => {
             if (textboxContent.network !== '') {
               setPlannedChanges({
                 ...getPlannedChanges(),
@@ -320,49 +326,52 @@ export const P5CustomForwards = () => {
               })
               setTextboxContent({ network: '', address: '' })
             }
-          } }
+          }}
         >
           <span>+</span>
           <aside>Add to planned changes</aside>
         </div>
       </div>
-      <div className={ styles.pastList } >
-        <Details
-          description={ 'What\'s this?' }
-        >
+      <div className={styles.pastList}>
+        <Details description={"What's this?"}>
           <p>
-            Enter the forwarding addresses you want to use (e.g. long bitcoin address) and specify on which network that address should be used (e.g. btc) when someone wants to reach you after looking up your domain alias.<br />
+            Enter the forwarding addresses you want to use (e.g. long bitcoin
+            address) and specify on which network that address should be used
+            (e.g. btc) when someone wants to reach you after looking up your
+            domain alias.
             <br />
-            Submit new updates by hitting [+] button. Remove updates by hitting [x] buttons.<br />
             <br />
-            Below, the currently active forwarding addresses are shown, if any.<br />
+            Submit new updates by hitting [+] button. Remove updates by hitting
+            [x] buttons.
             <br />
-            Edit them by reusing the exact same network or remove by setting forwarding address to nothing or hitting [no address] button under network name text.
+            <br />
+            Below, the currently active forwarding addresses are shown, if any.
+            <br />
+            <br />
+            Edit them by reusing the exact same network or remove by setting
+            forwarding address to nothing or hitting [no address] button under
+            network name text.
           </p>
         </Details>
-        { pastForwards.map((fw: any, i: number) => {
+        {pastForwards.map((fw: any, i: number) => {
           return (
             <div
-              className={ styles.pastPair }
-              key={ i }
-              onClick={ () => {
+              className={styles.pastPair}
+              key={i}
+              onClick={() => {
                 setTextboxContent({ network: fw.network, address: fw.address })
-              } }
+              }}
             >
-              <div className={ styles.pastNetwork } >
-                { fw.network }
-              </div>
-              <div className={ styles.pastAddress } >
-                { fw.address }
-              </div>
+              <div className={styles.pastNetwork}>{fw.network}</div>
+              <div className={styles.pastAddress}>{fw.address}</div>
             </div>
           )
-        }) }
+        })}
       </div>
-      <div className={ styles.buttonWrapper }>
+      <div className={styles.buttonWrapper}>
         <RoundButton
           back='true'
-          onClick={ () => {
+          onClick={() => {
             changePageInfoAction(state, dispatch, 4)
           }}
         >
@@ -370,8 +379,8 @@ export const P5CustomForwards = () => {
         </RoundButton>
         <RoundButton
           next='true'
-          show={ bytesOfChanges > BYTES_MAX ? 'false' : 'true' }
-          onClick={ () => {
+          show={bytesOfChanges > BYTES_MAX ? 'false' : 'true'}
+          onClick={() => {
             changePageInfoAction(state, dispatch, 6)
           }}
         >
@@ -381,4 +390,3 @@ export const P5CustomForwards = () => {
     </div>
   )
 }
-

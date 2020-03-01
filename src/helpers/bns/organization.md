@@ -6,14 +6,13 @@
 calcBnsState -> Batch Calls -> BNS Actions -> BNS Conditions -> State getters/setters
 ```
 
-
 ## Deriving BNS State
 
 `calcBnsState` - calculates the state of the Bitcoin Name System from transaction history, followed by final update of current block height.
 
-  * calls batch process `runAllAutomaticActions` at each tx height.
+- calls batch process `runAllAutomaticActions` at each tx height.
 
-  * calls batch process `runAllUserActions` for each tx.
+- calls batch process `runAllUserActions` for each tx.
 
 ## Batch Processes
 
@@ -60,10 +59,3 @@ State setters and getters that deal with the specific state format are described
 This is where the complexity is placed in dealing with parsing and changing BNS state's format.
 
 The formats are typed with enums and interfaces described in `bns/types/types.tsx`
-
-
-
-
-
-
-

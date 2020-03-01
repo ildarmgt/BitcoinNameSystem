@@ -1,0 +1,128 @@
+{
+  "terminal.integrated.shell.windows": "C:\\\\WINDOWS\\\\System32\\\\bash.exe",
+  "window.zoomLevel": -1,
+  "git.ignoreMissingGitWarning": true,
+  "editor.tabSize": 2,
+  "files.trimTrailingWhitespace": true,
+  "files.autoSave": "afterDelay",
+  "files.autoSaveDelay": 5000,
+  "editor.renderWhitespace": "all",
+  "editor.wordWrap": "on",
+  "editor.detectIndentation": false,
+  "editor.acceptSuggestionOnEnter": "off",
+  "editor.acceptSuggestionOnCommitCharacter": false,
+  "eslint.run": "onSave",
+  "eslint.alwaysShowStatus": true,
+  "eslint.validate": [
+    "vue",
+    "html",
+    "javascript"
+  ],
+  "workbench.colorCustomizations": {
+    "editor.background": "#202020"
+  },
+  "editor.tokenColorCustomizations": {
+    "textMateRules": [{
+        "scope": "keyword.other.unit",
+        "settings": {
+          "foreground": "#7bff82"
+        }
+      },
+      {
+        "scope": [
+          "variable",
+          "entity",
+          "keyword",
+          "storage",
+          "comment",
+          "constant",
+          "invalid",
+          "emphasis",
+          "markup",
+          "meta",
+          "string",
+          "support",
+          "strong"
+        ],
+        "settings": {
+          "fontStyle": ""
+        }
+      },
+      {
+        "scope": [
+          "keyword.operator.type.tsx",
+          "support.type.primitive.tsx",
+          "meta.type.annotation.tsx",
+          "keyword.operator.type.annotation.tsx",
+          "meta.return.type.tsx",
+          "punctuation.definition.typeparameters.begin.tsx",
+          "punctuation.definition.typeparameters.end.tsx",
+          "variable.object.property.tsx"
+        ],
+        "settings": {
+          "foreground": "#6b6b6b"
+        }
+      }
+    ]
+  },
+  "editor.renderControlCharacters": false,
+  "editor.minimap.enabled": true,
+  "breadcrumbs.enabled": true,
+  "css.lint.emptyRules": "ignore",
+  "css.validate": false,
+  "css.lint.unknownProperties": "ignore",
+  "editor.fontFamily": "'Fira Mono'",
+  "workbench.view.alwaysShowHeaderActions": true,
+  "workbench.fontAliasing": "auto",
+  "vsintellicode.modify.editor.suggestSelection": "automaticallyOverrodeDefaultValue",
+  "workbench.iconTheme": "material-icon-theme",
+  "editor.occurrencesHighlight": false,
+  "editor.minimap.maxColumn": 80,
+  "importCost.smallPackageColor": "#666666",
+  "importCost.mediumPackageColor": "#886666",
+  "importCost.largePackageColor": "#992222",
+  "explorer.compactFolders": false,
+  "remote.WSL.fileWatcher.polling": true,
+  "workbench.editor.labelFormat": "short",
+  "editor.formatOnType": true,
+  "javascript.format.insertSpaceAfterOpeningAndBeforeClosingJsxExpressionBraces": true,
+  "editor.minimap.showSlider": "always",
+  "editor.cursorWidth": 3,
+  "path-intellisense.showHiddenFiles": true,
+  "editor.suggestSelection": "first",
+  "path-autocomplete.extensionOnImport": true,
+  "path-autocomplete.ignoredFilesPattern": "*.+(tsx|js)",
+  "typescript.format.insertSpaceAfterOpeningAndBeforeClosingTemplateStringBraces": true,
+  "typescript.format.insertSpaceAfterOpeningAndBeforeClosingJsxExpressionBraces": true,
+  "javascript.format.insertSpaceAfterOpeningAndBeforeClosingTemplateStringBraces": true,
+  "javascript.format.insertSpaceAfterConstructor": true,
+  "spaces-inside-braces.enableForAngle": false,
+  "spaces-inside-braces.enableForParens": false,
+  "spaces-inside-braces.enableForBrackets": false,
+  "javascript.implicitProjectConfig.checkJs": true,
+  "prettier.jsxSingleQuote": true,
+  "prettier.singleQuote": true,
+  "vetur.format.enable": true,
+  "bookmarks.useWorkaroundForFormatters": true,
+  "editor.formatOnSave": true,
+  "eslint.format.enable": true,
+  "prettier.semi": false,
+  "remote.WSL.debug": true,
+  "editor.formatOnPaste": false,
+  "typescript.implementationsCodeLens.enabled": true,
+  "typescript.referencesCodeLens.enabled": true,
+  "typescript.referencesCodeLens.showOnAllFunctions": true,
+  "typescript.suggest.completeFunctionCalls": true,
+  "[typescriptreact]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  "[javascript]": {
+    "editor.defaultFormatter": "numso.prettier-standard-vscode"
+  },
+  "javascript.referencesCodeLens.enabled": true,
+  "javascript.referencesCodeLens.showOnAllFunctions": true,
+  "typescript.preferences.renameShorthandProperties": false,
+  "[css]": {
+    "editor.defaultFormatter": "numso.prettier-standard-vscode"
+  }
+}

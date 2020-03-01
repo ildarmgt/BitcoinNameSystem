@@ -8,12 +8,12 @@ import crypto from 'crypto'
 // ecies.encrypt() or ecies.decrypt()
 
 interface I_Options {
-  hashName?: string                                       // 'sha256' (default)
-  curveName?: string                                      // e.g. 'secp256k1' (default)
-  symmetricCypherName?: string                            // e.g. 'aes-256-crt' or 'aes-256-ecb' (default)
-  iv?: Buffer | null                                      // 16 byte buffer or null
-  toIv?: Buffer | string                                  // will get hashed to derive iv
-  keyFormat?: "compressed" | "uncompressed" | "hybrid"    // e.g. 'compressed' (default)
+  hashName?: string // 'sha256' (default)
+  curveName?: string // e.g. 'secp256k1' (default)
+  symmetricCypherName?: string // e.g. 'aes-256-crt' or 'aes-256-ecb' (default)
+  iv?: Buffer | null // 16 byte buffer or null
+  toIv?: Buffer | string // will get hashed to derive iv
+  keyFormat?: 'compressed' | 'uncompressed' | 'hybrid' // e.g. 'compressed' (default)
 }
 
 /**
@@ -25,12 +25,20 @@ interface I_Options {
  * @param     {object}      [options={}]        Object with options.
  * @returns   {Buffer | undefined}              Encrypted message buffer, undefined if error.
  */
-const encrypt = (publicKey: Buffer, message: Buffer, options: I_Options = {}) => {
+const encrypt = (
+  publicKey: Buffer,
+  message: Buffer,
+  options: I_Options = {}
+) => {
   options = makeUpOptions(options)
 
   try {
     // add 4 byte checksum to end of cleartext to check later
-    const checkSum = crypto.createHash('sha256').update(message).digest().slice(0, 4)
+    const checkSum = crypto
+      .createHash('sha256')
+      .update(message)
+      .digest()
+      .slice(0, 4)
     const checkSummedMessage = Buffer.concat([message, checkSum])
 
     const ecdh = crypto.createECDH(options.curveName!)
@@ -48,13 +56,17 @@ const encrypt = (publicKey: Buffer, message: Buffer, options: I_Options = {}) =>
 
     // encrypts the message:
     // c = E(Ke m)
-    const cipherText = symmetricEncrypt(options.symmetricCypherName!, options.iv, encryptionKey, checkSummedMessage)
+    const cipherText = symmetricEncrypt(
+      options.symmetricCypherName!,
+      options.iv,
+      encryptionKey,
+      checkSummedMessage
+    )
 
     // console.log('ecies encryption success with', { R, cipherText })
 
     // outputs R || c
     return Buffer.concat([R, cipherText])
-
   } catch (e) {
     return undefined
   }
@@ -68,19 +80,29 @@ const encrypt = (publicKey: Buffer, message: Buffer, options: I_Options = {}) =>
  * @param     {object}      [options={}]        Object with options.
  * @returns   {Buffer | undefined}              Cleartext if decrypted, otherwise undefined.
  */
-const decrypt = (privateKey: Buffer, encryptedMessage: Buffer, options: I_Options = {}) => {
+const decrypt = (
+  privateKey: Buffer,
+  encryptedMessage: Buffer,
+  options: I_Options = {}
+) => {
   options = makeUpOptions(options)
 
   const ecdh = crypto.createECDH(options.curveName!)
-  ecdh.setPrivateKey(privateKey);
+  ecdh.setPrivateKey(privateKey)
 
   try {
     // null error avoided via hex buffer
-    const publicKeyLength = Buffer.from(ecdh.getPublicKey('hex', options.keyFormat), 'hex').length
+    const publicKeyLength = Buffer.from(
+      ecdh.getPublicKey('hex', options.keyFormat),
+      'hex'
+    ).length
     // R (provided)
     const R = encryptedMessage.slice(0, publicKeyLength)
     // c (provided)
-    const cipherText = encryptedMessage.slice(publicKeyLength, encryptedMessage.length)
+    const cipherText = encryptedMessage.slice(
+      publicKeyLength,
+      encryptedMessage.length
+    )
     // S (calculated)
     const sharedSecret = ecdh.computeSecret(R)
 
@@ -91,23 +113,34 @@ const decrypt = (privateKey: Buffer, encryptedMessage: Buffer, options: I_Option
     const encryptionKey = hash
 
     // console.log({ R, cipherText })
-    const decryptedMessagecheckSummed = symmetricDecrypt(options.symmetricCypherName!, options.iv, encryptionKey, cipherText)
+    const decryptedMessagecheckSummed = symmetricDecrypt(
+      options.symmetricCypherName!,
+      options.iv,
+      encryptionKey,
+      cipherText
+    )
 
     // check the last 4 bytes of checksum
     const checkSum = decryptedMessagecheckSummed.slice(-4)
     const decryptedMessage = decryptedMessagecheckSummed.slice(0, -4)
-    const newCheckSum = crypto.createHash('sha256').update(decryptedMessage).digest().slice(0, 4)
+    const newCheckSum = crypto
+      .createHash('sha256')
+      .update(decryptedMessage)
+      .digest()
+      .slice(0, 4)
 
     // if not equal or either are too short
-    if (Buffer.compare(checkSum, newCheckSum) !== 0 || checkSum.length !== 4 || newCheckSum.length !== 4) {
+    if (
+      Buffer.compare(checkSum, newCheckSum) !== 0 ||
+      checkSum.length !== 4 ||
+      newCheckSum.length !== 4
+    ) {
       throw new Error('checkSum failed')
     }
 
     // console.log('ecies decryption success from', { R, cipherText })
     return decryptedMessage
-
   } catch (e) {
-
     return undefined
   }
 }
@@ -119,12 +152,16 @@ export const ecies = { encrypt, decrypt }
 /* -------------------------------------------------------------------------- */
 
 // E
-function symmetricEncrypt(cypherName: string, iv: Buffer | null | undefined, key: Buffer, plaintext: Buffer) {
+function symmetricEncrypt (
+  cypherName: string,
+  iv: Buffer | null | undefined,
+  key: Buffer,
+  plaintext: Buffer
+) {
   let cipher
   if (iv) {
     cipher = crypto.createCipheriv(cypherName, key, iv)
-  }
-  else {
+  } else {
     cipher = crypto.createCipher(cypherName, key)
   }
   const firstChunk = cipher.update(plaintext)
@@ -133,14 +170,17 @@ function symmetricEncrypt(cypherName: string, iv: Buffer | null | undefined, key
 }
 
 // E-1
-function symmetricDecrypt(cypherName: string, iv: Buffer | null | undefined, key: Buffer, ciphertext: Buffer) {
+function symmetricDecrypt (
+  cypherName: string,
+  iv: Buffer | null | undefined,
+  key: Buffer,
+  ciphertext: Buffer
+) {
   let cipher
   if (iv) {
     cipher = crypto.createDecipheriv(cypherName, key, iv)
-  }
-  else {
+  } else {
     cipher = crypto.createDecipher(cypherName, key)
-
   }
   const firstChunk = cipher.update(ciphertext)
   const secondChunk = cipher.final()
@@ -148,12 +188,14 @@ function symmetricDecrypt(cypherName: string, iv: Buffer | null | undefined, key
 }
 
 // KDF
-function hashMessage(cypherName: string, message: Buffer) {
-  return crypto.createHash(cypherName).update(message).digest()
+function hashMessage (cypherName: string, message: Buffer) {
+  return crypto
+    .createHash(cypherName)
+    .update(message)
+    .digest()
 }
 
-function makeUpOptions(options: I_Options = {}) {
-
+function makeUpOptions (options: I_Options = {}) {
   if (options.hashName === undefined) {
     options.hashName = 'sha256'
   }
@@ -164,11 +206,12 @@ function makeUpOptions(options: I_Options = {}) {
     options.symmetricCypherName = 'aes-256-ecb'
     options.iv = null
   }
-  if ((options.iv === undefined) && !!options.toIv) {
-    options.iv = crypto.createHash('sha256')
-      .update(options.toIv)     // value to hash
-      .digest()                 // hash
-      .slice(0, 16)             // first 16 bytes
+  if (options.iv === undefined && !!options.toIv) {
+    options.iv = crypto
+      .createHash('sha256')
+      .update(options.toIv) // value to hash
+      .digest() // hash
+      .slice(0, 16) // first 16 bytes
   }
   if (options.keyFormat === undefined) {
     options.keyFormat = 'compressed'
@@ -176,4 +219,3 @@ function makeUpOptions(options: I_Options = {}) {
 
   return options
 }
-

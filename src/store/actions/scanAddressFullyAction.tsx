@@ -1,6 +1,11 @@
 import { I_State, Dispatch, ActionTypes } from '../../interfaces'
 import { calcP2WSH, calcBnsState } from '../../helpers/bns'
-import { getAddressHistoryAPI, getUTXOListAPI, addRawTxToArrayAPI, getHeightAPI } from '../../api/blockstream'
+import {
+  getAddressHistoryAPI,
+  getUTXOListAPI,
+  addRawTxToArrayAPI,
+  getHeightAPI
+} from '../../api/blockstream'
 const { UPDATE_WALLET, UPDATE_DOMAIN, ACTION_FAIL } = ActionTypes
 
 /**
@@ -23,21 +28,33 @@ export const scanAddressFullyAction = async (
     // wallet address
 
     try {
-
       // 1. get address TX history
 
       const walletAddress = state.wallet.address
-      const walletTxHistory = await getAddressHistoryAPI(walletAddress, state.network, state.api.path)
+      const walletTxHistory = await getAddressHistoryAPI(
+        walletAddress,
+        state.network,
+        state.api.path
+      )
 
       // 2. get address UTXO list (could also calculate from tx history or API)
 
-      const utxoListWalletAddress = await getUTXOListAPI(walletAddress, state.network, state.api.path)
+      const utxoListWalletAddress = await getUTXOListAPI(
+        walletAddress,
+        state.network,
+        state.api.path
+      )
 
       // 3. get raw tx for each UTXO (psbt requirement for creating new tx later)
 
-      const { utxoList, erroredOutputs } = await addRawTxToArrayAPI(utxoListWalletAddress, state.network, state.api.path)
+      const { utxoList, erroredOutputs } = await addRawTxToArrayAPI(
+        utxoListWalletAddress,
+        state.network,
+        state.api.path
+      )
 
-      !!erroredOutputs && console.log('API had issues during hex utxo scan:', erroredOutputs)
+      !!erroredOutputs &&
+        console.log('API had issues during hex utxo scan:', erroredOutputs)
 
       return dispatch({
         type: UPDATE_WALLET,
@@ -48,7 +65,6 @@ export const scanAddressFullyAction = async (
           }
         }
       })
-
     } catch (e) {
       console.log('Wallet address scan failed')
       console.log(e)
@@ -56,16 +72,13 @@ export const scanAddressFullyAction = async (
       return dispatch({
         type: ACTION_FAIL,
         payload: {}
-      });
+      })
     }
   }
 
   // notification address scan
   if (addressType === UPDATE_DOMAIN) {
-
-
     try {
-
       // 1. get current blockheight from API so ownership is using latest possible info
 
       const currentHeight = await getHeightAPI(state.network, state.api.path)
@@ -73,8 +86,11 @@ export const scanAddressFullyAction = async (
       // 2. get address TX history
 
       const { notificationsAddress } = calcP2WSH(domainName, state.network)
-      const notificationsTxHistory = await getAddressHistoryAPI(notificationsAddress, state.network, state.api.path)
-
+      const notificationsTxHistory = await getAddressHistoryAPI(
+        notificationsAddress,
+        state.network,
+        state.api.path
+      )
 
       // 3. derive new BNS domain state & utxo
       const { domain: newDomain } = calcBnsState(
@@ -84,7 +100,6 @@ export const scanAddressFullyAction = async (
         state.network
       )
 
-
       // 4. get raw tx for each UTXO (psbt requirement for creating new tx later)
 
       const { erroredOutputs } = await addRawTxToArrayAPI(
@@ -93,7 +108,8 @@ export const scanAddressFullyAction = async (
         state.api.path
       )
 
-      !!erroredOutputs && console.log('API had issues during hex utxo scan:', erroredOutputs)
+      !!erroredOutputs &&
+        console.log('API had issues during hex utxo scan:', erroredOutputs)
 
       return dispatch({
         type: UPDATE_DOMAIN,
@@ -104,7 +120,6 @@ export const scanAddressFullyAction = async (
           }
         }
       })
-
     } catch (e) {
       console.log('Notification address scan failed')
       console.log(e)
@@ -112,9 +127,8 @@ export const scanAddressFullyAction = async (
       return dispatch({
         type: ACTION_FAIL,
         payload: {}
-      });
+      })
     }
-
   }
 
   throw new Error('unexpected address type')

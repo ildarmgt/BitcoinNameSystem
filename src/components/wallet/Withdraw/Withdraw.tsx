@@ -4,7 +4,7 @@ import styles from './Withdraw.module.css'
 import { RoundButton } from './../../general/RoundButton'
 import { ActionTypes } from './../../../interfaces'
 import {
-  scanAddressFullyAction,
+  scanAddressFullyAction
   // changePageInfoAction
 } from './../../../store/actions'
 // import { useHistory } from 'react-router-dom'
@@ -20,14 +20,12 @@ export const Withdraw = () => {
   const { state, dispatch } = React.useContext(Store)
 
   // Local state: keep track if API is busy
-  const [ apiStatus, setApiStatus ] = React.useState('ok')
+  const [apiStatus, setApiStatus] = React.useState('ok')
 
-  const showBTC = (sats: number = 0): JSX.Element => (
+  const showBTC = (sats = 0): JSX.Element => (
     <>
-      <span className={ styles.balance }>
-        { satsToBTCSpaced(sats) }
-      </span>
-      { ' ' + unitsBTC(state) + ' ' }
+      <span className={styles.balance}>{satsToBTCSpaced(sats)}</span>
+      {' ' + unitsBTC(state) + ' '}
     </>
   )
 
@@ -39,58 +37,44 @@ export const Withdraw = () => {
   // }
 
   return (
-    <div className={ styles.wrapper }>
-
+    <div className={styles.wrapper}>
       <LogoBackground />
-
       (NOT DONE)
-
-      <div className={ styles.title }>
-        Withdraw from wallet
-      </div>
-
-      <div className={ styles.request }>
-        { !state.pageInfo.checkedWallet && (
+      <div className={styles.title}>Withdraw from wallet</div>
+      <div className={styles.request}>
+        {!state.pageInfo.checkedWallet && (
           <>
             <RoundButton
-              onClick={ () => {
+              onClick={() => {
                 if (apiStatus === 'ok') {
                   setApiStatus('wallet')
-                  scanAddressFullyAction(state, dispatch, ActionTypes.UPDATE_WALLET)
+                  scanAddressFullyAction(
+                    state,
+                    dispatch,
+                    ActionTypes.UPDATE_WALLET
+                  )
                 }
               }}
             >
               Scan wallet
             </RoundButton>
           </>
-        ) }
+        )}
       </div>
-
-      { state.pageInfo.checkedWallet && (
-        <div className={ styles.fees }>
+      {state.pageInfo.checkedWallet && (
+        <div className={styles.fees}>
           <FeesSelection />
         </div>
-      ) }
-
-      { state.pageInfo.checkedWallet && (
-        <div className={ styles.total }>
-          { showBTC(
-            getUnspentSum(state.wallet.utxoList)
-          ) }
+      )}
+      {state.pageInfo.checkedWallet && (
+        <div className={styles.total}>
+          {showBTC(getUnspentSum(state.wallet.utxoList))}
         </div>
-      ) }
-      <div>
-        to address
-      </div>
-      <div>
-        to amount
-      </div>
-      <div>
-        returned amount
-      </div>
-      <div>
-        broadcast button
-      </div>
+      )}
+      <div>to address</div>
+      <div>to amount</div>
+      <div>returned amount</div>
+      <div>broadcast button</div>
     </div>
   )
 }

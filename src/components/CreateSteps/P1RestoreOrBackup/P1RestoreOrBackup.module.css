@@ -18,13 +18,12 @@
   max-width: calc(50 * var(--s));
   padding-right: calc(6 * var(--s));
   margin-top: calc(-6 * var(--s));
-
 }
 
 .title::after {
   box-sizing: border-box;
 
-  content: "";
+  content: '';
   --offset: calc(0.75 * var(--s));
   top: var(--offset);
   right: calc(2.5 * var(--s));
@@ -39,7 +38,6 @@
   align-items: flex-end;
   padding: calc(2 * var(--s));
   justify-content: flex-end;
-
 }
 
 .buttonWrapper {
@@ -65,7 +63,7 @@
 }
 
 .orange {
-  color: var(--colorBitcoinOrange);;
+  color: var(--colorBitcoinOrange);
   text-shadow: none;
 }
 
@@ -107,8 +105,6 @@
 }
 
 @media screen and (min-aspect-ratio: 12/9) {
-
-
   .contentWrapper {
     /* align-items: center; */
   }
@@ -117,6 +113,4 @@
     /* margin-right: 0; */
     /* align-items: center; */
   }
-
-
 }

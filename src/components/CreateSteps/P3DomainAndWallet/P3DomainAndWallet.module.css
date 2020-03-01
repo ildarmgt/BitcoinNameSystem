@@ -3,26 +3,24 @@
   font-size: calc(2.5 * var(--s));
   color: var(--colorBitcoinBlue);
   display: grid;
-  grid-template-columns:  0% auto 50%;
-  grid-template-rows:     auto calc(2 * var(--s)) auto auto auto auto auto;
+  grid-template-columns: 0% auto 50%;
+  grid-template-rows: auto calc(2 * var(--s)) auto auto auto auto auto;
 
   grid-gap: calc(2 * var(--s)) calc(1 * var(--s));
 
   grid-template-areas:
-    ".  title            title"
-    ".  .                ."
-    ".  walletInfo       walletButton"
-    ".  domainInfo       domainButton"
-    ".  unspent          unspent"
-    ".  ownership         ownership"
-    ".  buttonWrapper    buttonWrapper"
-  ;
+    '.  title            title'
+    '.  .                .'
+    '.  walletInfo       walletButton'
+    '.  domainInfo       domainButton'
+    '.  unspent          unspent'
+    '.  ownership         ownership'
+    '.  buttonWrapper    buttonWrapper';
 
   align-items: center;
 }
 
 .contentWrapper {
-
 }
 
 .title {
@@ -31,7 +29,6 @@
 
 .domainInfo {
   grid-area: domainInfo;
-
 }
 
 .domainButton {
@@ -70,7 +67,6 @@
   grid-area: ownership;
 }
 
-
 .title {
   box-sizing: border-box;
   display: inline-block;
@@ -86,13 +82,12 @@
   margin-top: calc(-6 * var(--s));
   margin-left: auto;
   margin-right: calc(-2 * var(--s));
-
 }
 
 .title::after {
   box-sizing: border-box;
 
-  content: "";
+  content: '';
   --offset: calc(0.75 * var(--s));
   top: var(--offset);
   right: calc(2.5 * var(--s));
@@ -100,7 +95,6 @@
   position: absolute;
   border-right: solid calc(2 * var(--s)) var(--colorBitcoinBlue);
 }
-
 
 .balance {
   display: inline-flex;
@@ -117,17 +111,16 @@
 
 @media screen and (min-aspect-ratio: 12/9) {
   .wrapper {
-    grid-template-columns:  auto calc(25 * var(--s)) calc(35 * var(--s));
+    grid-template-columns: auto calc(25 * var(--s)) calc(35 * var(--s));
 
     grid-template-areas:
-      "title            title             title"
-      ".                .                 ."
-      "walletInfo       walletButton      unspent"
-      "domainInfo       domainButton      ownership"
-      ".                .                 ."
-      ".                .                 ."
-      ".                buttonWrapper     buttonWrapper"
-    ;
+      'title            title             title'
+      '.                .                 .'
+      'walletInfo       walletButton      unspent'
+      'domainInfo       domainButton      ownership'
+      '.                .                 .'
+      '.                .                 .'
+      '.                buttonWrapper     buttonWrapper';
   }
   .wrapper > div {
     text-align: right;
@@ -141,6 +134,4 @@
   .buttonWrapper {
     align-self: end;
   }
-
 }
-

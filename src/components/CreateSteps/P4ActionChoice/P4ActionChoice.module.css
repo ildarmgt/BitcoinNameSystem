@@ -5,16 +5,15 @@
   color: var(--colorBitcoinBlue);
 
   display: grid;
-  grid-template-columns:  49% 49%;
-  grid-template-rows:     auto auto auto auto auto;
+  grid-template-columns: 49% 49%;
+  grid-template-rows: auto auto auto auto auto;
   grid-gap: calc(2.5 * var(--s)) 2%;
   grid-template-areas:
-    "title                      title"
-    "availableActions           availableActions"
-    ".                          .   "
-    "unavailableActions         unavailableActions"
-    "buttonWrapper              buttonWrapper"
-  ;
+    'title                      title'
+    'availableActions           availableActions'
+    '.                          .   '
+    'unavailableActions         unavailableActions'
+    'buttonWrapper              buttonWrapper';
 
   align-items: center;
 }
@@ -50,13 +49,11 @@
 .okButton {
   margin-top: calc(2 * var(--s));
   margin-bottom: calc(2 * var(--s));
-
 }
 
 .availableActions > div {
   margin: calc(2 * var(--s));
   margin-top: 0;
-
 }
 
 .unavailableActions {
@@ -94,13 +91,12 @@
   padding-right: calc(6 * var(--s));
   margin-top: calc(-6 * var(--s));
   margin-left: auto;
-
 }
 
 .title::after {
   box-sizing: border-box;
 
-  content: "";
+  content: '';
   --offset: calc(0.75 * var(--s));
   top: var(--offset);
   right: calc(2.5 * var(--s));
@@ -110,7 +106,7 @@
 }
 
 .orange {
-  color: var(--colorBitcoinOrange);;
+  color: var(--colorBitcoinOrange);
   text-shadow: none;
 }
 
@@ -167,21 +163,18 @@
   word-break: break-all;
 }
 
-
 @media screen and (min-aspect-ratio: 12/9) {
   .wrapper {
-
     /* grid-template-columns:  auto calc(60 * var(--s)); */
-    grid-template-columns:  39% 59%;
-    grid-template-rows:     auto auto auto auto auto;
+    grid-template-columns: 39% 59%;
+    grid-template-rows: auto auto auto auto auto;
 
     grid-template-areas:
-      ".                          title"
-      "unavailableActions         availableActions"
-      "unavailableActions         availableActions   "
-      "unavailableActions         buttonWrapper"
-      "unavailableActions         ."
-    ;
+      '.                          title'
+      'unavailableActions         availableActions'
+      'unavailableActions         availableActions   '
+      'unavailableActions         buttonWrapper'
+      'unavailableActions         .';
   }
   .title {
     text-align: right;

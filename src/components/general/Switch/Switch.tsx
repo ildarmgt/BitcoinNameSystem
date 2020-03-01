@@ -8,12 +8,23 @@ import styles from './Switch.module.css'
  * onClick - pass clicking event to use
  */
 export const Switch = (props: any) => {
-
-  const [ selection, setSelection ] = React.useState()
+  const [selection, setSelection] = React.useState()
 
   const defaultChoices = [
-    { value: true,    display: 'yes',   do: () => { console.log('default true chosen') } },
-    { value: false,   display: 'no',    do: () => { console.log('default false chosen') } }
+    {
+      value: true,
+      display: 'yes',
+      do: () => {
+        console.log('default true chosen')
+      }
+    },
+    {
+      value: false,
+      display: 'no',
+      do: () => {
+        console.log('default false chosen')
+      }
+    }
   ]
   const choices: Array<any> = props.choices || defaultChoices
 
@@ -26,25 +37,18 @@ export const Switch = (props: any) => {
   }
 
   return (
-    <div
-      className={ [styles.wrapper, props.className].join(' ') }
-    >
-      <div className={ styles.shiftRight }>
-        <div className={ styles.label }>
-          { props.thisInputLabel || ''}
-        </div>
-        <div className={ styles.choiceArea }>
-          { choices.map((thisChoice: any, index: number) => (
-
+    <div className={[styles.wrapper, props.className].join(' ')}>
+      <div className={styles.shiftRight}>
+        <div className={styles.label}>{props.thisInputLabel || ''}</div>
+        <div className={styles.choiceArea}>
+          {choices.map((thisChoice: any, index: number) => (
             <div
-              key={ index }
-
-              className={ [
+              key={index}
+              className={[
                 styles.choice,
                 selection === index ? styles.selected : ''
-              ].join(' ') }
-
-              onClick={ (e) => {
+              ].join(' ')}
+              onClick={e => {
                 // change local state of selection
                 setSelection(index)
                 // do the corresponding action
@@ -52,14 +56,16 @@ export const Switch = (props: any) => {
                 // do other stuff passed in onClick
                 if (props.onClick) props.onClick(e)
 
-                console.log('', thisChoice.display || String(thisChoice.value), 'chosen')
-              } }
+                console.log(
+                  '',
+                  thisChoice.display || String(thisChoice.value),
+                  'chosen'
+                )
+              }}
             >
-
-              { thisChoice.display || String(thisChoice.value) }
-
+              {thisChoice.display || String(thisChoice.value)}
             </div>
-          )) }
+          ))}
         </div>
       </div>
     </div>

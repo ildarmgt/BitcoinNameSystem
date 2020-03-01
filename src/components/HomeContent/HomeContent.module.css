@@ -1,6 +1,6 @@
 .lblMainTitle {
   display: block;
-  font-size: calc(5.0 * var(--s));
+  font-size: calc(5 * var(--s));
   color: var(--colorBitcoinBlue);
   margin-top: 25vh;
 }

@@ -6,7 +6,9 @@ import { I_Bid } from './types'
  * Takes array of bids or empty array and returns a winner if possible, otherwise undefined.
  * Winner is derived through deterministic weighted random number weighted by bid values.
  */
-export const deterministicRandomBid = (bidArray: Array<I_Bid>): I_Bid | undefined => {
+export const deterministicRandomBid = (
+  bidArray: Array<I_Bid>
+): I_Bid | undefined => {
   // easy cases
   if (bidArray === undefined) return undefined
   if (bidArray.length === 0) return undefined
@@ -17,7 +19,7 @@ export const deterministicRandomBid = (bidArray: Array<I_Bid>): I_Bid | undefine
   // max weight summed up across all elements
   let maxRange = 0
   // array of each element including their range based on weight (value)
-  let ranges = bidArray.map(thisBid => {
+  const ranges = bidArray.map(thisBid => {
     const thisRange = {
       min: maxRange,
       max: maxRange + thisBid.value,
@@ -35,7 +37,10 @@ export const deterministicRandomBid = (bidArray: Array<I_Bid>): I_Bid | undefine
 
   // quickly check that all block hashes are same
   if (bidArray.some(thisBid => thisBid.blockHash !== blockHash)) {
-    console.warn('bidArray should have same height txs but txs contained different block hashes!!!', bidArray)
+    console.warn(
+      'bidArray should have same height txs but txs contained different block hashes!!!',
+      bidArray
+    )
   }
 
   // convert block hash to hex BigInt can read and create BigInt
@@ -57,6 +62,11 @@ export const deterministicRandomBid = (bidArray: Array<I_Bid>): I_Bid | undefine
     }
   }
 
-  console.warn('something went wrong and no winner was found', ranges, bidArray, maxRange)
+  console.warn(
+    'something went wrong and no winner was found',
+    ranges,
+    bidArray,
+    maxRange
+  )
   return undefined
 }
