@@ -1,6 +1,6 @@
 import * as bitcoin from 'bitcoinjs-lib'
 import bip39 from 'bip39'
-const varuint = require('varuint-bitcoin')
+import varuint from 'varuint-bitcoin'
 
 /**
  * Make new mnemonic for p2wpkh m/44'/0'/0'/0/0 address and WIF.
@@ -55,7 +55,6 @@ export const loadWallet = (strMnemonic: string, strNetwork: string) => {
   return { mnemonic: strMnemonic, WIF, address }
 }
 
-//
 /**
  * Parse UTXO array to get total unspent balance in satoshi.
  * @param     {Array}    utxoArray      Array of UTXO objects with '.value' field in satoshi.

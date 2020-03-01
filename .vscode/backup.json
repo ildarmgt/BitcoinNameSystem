@@ -13,16 +13,13 @@
   "editor.acceptSuggestionOnCommitCharacter": false,
   "eslint.run": "onSave",
   "eslint.alwaysShowStatus": true,
-  "eslint.validate": [
-    "vue",
-    "html",
-    "javascript"
-  ],
+  "eslint.validate": ["vue", "html", "javascript"],
   "workbench.colorCustomizations": {
     "editor.background": "#202020"
   },
   "editor.tokenColorCustomizations": {
-    "textMateRules": [{
+    "textMateRules": [
+      {
         "scope": "keyword.other.unit",
         "settings": {
           "foreground": "#7bff82"

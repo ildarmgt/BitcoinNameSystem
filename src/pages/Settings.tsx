@@ -7,7 +7,7 @@ import { ActionTypes } from './../interfaces/'
 /**
  * Settings path page. (temporarily used for testing)
  */
-export const Settings = (props: any): JSX.Element => {
+export const Settings = (): JSX.Element => {
   // global state
   const { state, dispatch } = React.useContext(Store)
 

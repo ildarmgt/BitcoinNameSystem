@@ -15,7 +15,7 @@ const API_RATE_LIMIT = 0.5 // guessing calls per second cap
 
 const rateLimit = () => new Promise(r => setTimeout(r, 1000.0 / API_RATE_LIMIT))
 
-export async function getFeeEstimatesAPI(
+export async function getFeeEstimatesAPI (
   strNetwork: string,
   path: { [network: string]: string }
 ) {
@@ -34,7 +34,7 @@ export async function getFeeEstimatesAPI(
   }
 }
 
-export async function getHeightAPI(
+export async function getHeightAPI (
   strNetwork: string,
   path: { [network: string]: string }
 ) {
@@ -59,7 +59,7 @@ export async function getHeightAPI(
  * @param     {string}    strNetwork      Network type: 'bitcoin' or 'testnet'.
  * @returns   {object}                    { arrayTx: arrayTx w/ .hex, error: string, fails: number }
  */
-export async function addRawTxToArrayAPI(
+export async function addRawTxToArrayAPI (
   utxoList: Array<any>,
   strNetwork: string,
   path: { [any: string]: string }
@@ -132,7 +132,7 @@ export async function addRawTxToArrayAPI(
  * @param     {string}    strNetwork    Network type: 'bitcoin' or 'testnet'.
  * @returns   {Array}                   Array of UTXO.
  */
-export async function getUTXOListAPI(
+export async function getUTXOListAPI (
   address: string,
   strNetwork: string,
   path: { [any: string]: string }
@@ -165,7 +165,7 @@ export async function getUTXOListAPI(
  * @param   {string} network    - 'testnet' or 'bitcoin' to match bitcoinjs-lib.
  * @returns {Array<object>}     -  Array of tx objects.
  */
-export async function getAddressHistoryAPI(
+export async function getAddressHistoryAPI (
   address: string,
   strNetwork: string,
   path: { [any: string]: string }
@@ -200,7 +200,7 @@ export async function getAddressHistoryAPI(
  * @param   {string}  network  - 'testnet' or 'bitcoin' to match bitcoinjs-lib.
  * @returns {string}           - Successful broadcast returns txid, otherwise error reason.
  */
-export async function txPushAPI(
+export async function txPushAPI (
   content: string,
   strNetwork: string,
   path: { [any: string]: string }

@@ -236,7 +236,7 @@ const addInputs = ({ tb, psbt }: { tb: any; psbt: any }) => {
  * https://github.com/bitcoinjs/bitcoinjs-lib/blob/master/test/integration/csv.spec.ts
  */
 export const getFinalScripts = ({ inputScript, network }: any) => {
-  return function(
+  return function (
     inputIndex: number,
     input: any,
     script: Buffer,
@@ -266,14 +266,14 @@ export const getFinalScripts = ({ inputScript, network }: any) => {
         redeem: payment
       })
 
-    function witnessStackToScriptWitness(witness: Buffer[]): Buffer {
+    function witnessStackToScriptWitness (witness: Buffer[]): Buffer {
       let buffer = Buffer.allocUnsafe(0)
 
-      function writeSlice(slice: Buffer): void {
+      function writeSlice (slice: Buffer): void {
         buffer = Buffer.concat([buffer, Buffer.from(slice)])
       }
 
-      function writeVarInt(i: number): void {
+      function writeVarInt (i: number): void {
         const currentLen = buffer.length
         const varintLen = varuint.encodingLength(i)
 
@@ -281,12 +281,12 @@ export const getFinalScripts = ({ inputScript, network }: any) => {
         varuint.encode(i, buffer, currentLen)
       }
 
-      function writeVarSlice(slice: Buffer): void {
+      function writeVarSlice (slice: Buffer): void {
         writeVarInt(slice.length)
         writeSlice(slice)
       }
 
-      function writeVector(vector: Buffer[]): void {
+      function writeVector (vector: Buffer[]): void {
         writeVarInt(vector.length)
         vector.forEach(writeVarSlice)
       }

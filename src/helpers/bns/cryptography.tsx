@@ -27,7 +27,7 @@ export const encrypt = (
     .digest()
     .slice(0, 16) // 16 bytes
 
-  let cipher = crypto.createCipheriv('aes-256-ctr', key, iv)
+  const cipher = crypto.createCipheriv('aes-256-ctr', key, iv)
   let encrypted = cipher.update(Buffer.from(stringText))
 
   encrypted = Buffer.concat([encrypted, cipher.final()])
@@ -57,7 +57,7 @@ export const decrypt = (
     .digest()
     .slice(0, 16) // 16 bytes
 
-  let decipher = crypto.createDecipheriv('aes-256-ctr', key, iv)
+  const decipher = crypto.createDecipheriv('aes-256-ctr', key, iv)
 
   // first part
   let decrypted = decipher.update(bufferCypher)

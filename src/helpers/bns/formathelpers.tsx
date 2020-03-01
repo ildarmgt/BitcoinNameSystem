@@ -22,6 +22,9 @@ import { deterministicRandomBid } from './deterministicRandom'
 /*                              helper functions                              */
 /* -------------------------------------------------------------------------- */
 
+/**
+ * Returns true if owner exists.
+ */
 export const existsCurrentOwner = (st: I_BnsState): boolean =>
   st.domain.currentOwner !== ''
 export const existsUser = (st: I_BnsState, address: string): boolean =>
@@ -290,7 +293,7 @@ export const getCommandCalled = (
   const forwards = user.forwards
 
   // scan height and name of each forward
-  for (let thisForward of forwards) {
+  for (const thisForward of forwards) {
     const network = thisForward.network
     const forwardHeight = thisForward.updateHeight
     if (forwardHeight === txHeight) {
@@ -355,7 +358,7 @@ export const noUnspentUserNotificationsUtxo = (
   const txHeight = getTxHeight(tx)
 
   // go through all derived utxo and make sure none are from this sender
-  for (let utxo of st.domain.derivedUtxoList) {
+  for (const utxo of st.domain.derivedUtxoList) {
     // user that created this utxo
     const userThatCreatedThisUtxo = utxo.from_scriptpubkey_address
 
@@ -385,7 +388,9 @@ export const noUnspentUserNotificationsUtxo = (
  * Reset bidding.
  */
 export const resetBidding = (st: I_BnsState): void => {
-  st.domain.bidding = { ...JSON.parse(JSON.stringify(newState.domain.bidding)) }
+  st.domain.bidding = {
+    ...JSON.parse(JSON.stringify(newState.domain.bidding))
+  }
 }
 
 /**
@@ -516,7 +521,7 @@ export const subtractRefunds = (st: I_BnsState, tx: I_TX): void => {
   // create paidTo object with addresses as key for all refunds in the tx
   // (step to prevent O(N^2) scaling)
   const paidTo: { [address: string]: number } = {}
-  for (let output of tx.vout) {
+  for (const output of tx.vout) {
     const toAddress = output.scriptpubkey_address
     const toAmount = output.value
 
@@ -619,7 +624,7 @@ export const endBidding = (st: I_BnsState): void => {
   // get all bids that refunded priors
   const goodBidsThatRefunded: Array<I_Bid> = []
 
-  for (let thisBid of bids) {
+  for (const thisBid of bids) {
     console.assert(
       thisBid.height >= st.domain.bidding.startHeight,
       `Bid height outside allowed range.`
@@ -664,7 +669,7 @@ export const endBidding = (st: I_BnsState): void => {
   }
   let validBidsAtLastHeight: Array<I_Bid> = []
   let lastHeight = 0
-  let maxBidIndex = goodBidsThatRefunded.length - 1
+  const maxBidIndex = goodBidsThatRefunded.length - 1
   for (let bidIndex = 0; bidIndex <= maxBidIndex; bidIndex++) {
     const thisBid = goodBidsThatRefunded[bidIndex]
 
