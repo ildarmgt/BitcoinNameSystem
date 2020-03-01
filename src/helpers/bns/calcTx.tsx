@@ -201,6 +201,8 @@ export const calcTx = (
     op.OP_DROP
   ])
 
+  // script to feed to witness script to spend
+  // anyone can spend (ACS), literally
   const inputScript = bitcoin.script.compile([op.OP_TRUE])
 
   // add each utxo to inputs
