@@ -32,10 +32,7 @@ module.exports = {
         }
       }
     ],
-
-    // good rules but exported arrow functions are in scope after the file is imported
-    // and I prefer to have helper functions under main function
-    'no-use-before-define': 'off',
+    'no-use-before-define': ['warn', { variables: false }],
     '@typescript-eslint/no-use-before-define': 'off'
   },
   settings: {

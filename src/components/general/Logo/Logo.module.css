@@ -3,6 +3,7 @@
 /* -------------------------------------------------------------------------- */
 
 .outershell2 {
+  font-size: calc(11 * var(--u));
   display: inline-block;
   padding: 0;
   margin: 0;
@@ -29,7 +30,7 @@
 .logo2 {
   font-family: 'Ubuntu';
   align-items: center;
-  background: var(--colorBitcoinOrange);
+  background-color: var(--colorBitcoinOrange);
   border-radius: 50%;
   box-sizing: border-box;
   color: var(--colorBackground);
@@ -41,7 +42,6 @@
 }
 
 .logo2 span {
-  font-size: calc(11 * var(--u));
   line-height: calc(10 * var(--u));
   width: calc(10 * var(--u));
   transform: rotate(0.01deg);
