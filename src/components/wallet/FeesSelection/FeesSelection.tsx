@@ -3,7 +3,11 @@ import styles from './FeesSelection.module.css'
 import { Store } from '../../../store/'
 import { RoundButton } from './../../general/RoundButton'
 import sanitize from './../../../helpers/sanitize'
-import { changeChoicesBNSAction } from './../../../store/actions'
+import {
+  addNewApiTaskAction,
+  changeChoicesBNSAction
+} from './../../../store/actions'
+
 import { getFeeEstimatesAPI } from './../../../api/blockstream'
 
 /**
@@ -31,9 +35,8 @@ export const FeesSelection = () => {
     if (!feeSuggestions.apiSuccess) {
       try {
         // get fee estimates from API
-        const apiSuggest = await getFeeEstimatesAPI(
-          state.network,
-          state.api.path
+        const apiSuggest: any = await addNewApiTaskAction(state, dispatch, () =>
+          getFeeEstimatesAPI(state.network, state.api.path)
         )
         setFeeSuggestions({
           min20: apiSuggest['2'],

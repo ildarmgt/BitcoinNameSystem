@@ -13,9 +13,11 @@ const API_RATE_LIMIT = 0.5 // guessing calls per second cap
 // Meanwhile calling function can use its own busy flag to ensure promises are resolved before repeats.
 // RawTx requests and multipage history (length > 25) are main risks.
 
-const rateLimit = () => new Promise(r => setTimeout(r, 1000.0 / API_RATE_LIMIT))
+/* -------------------------------------------------------------------------- */
+/*                             getFeeEstimatesAPI                             */
+/* -------------------------------------------------------------------------- */
 
-export async function getFeeEstimatesAPI (
+export async function getFeeEstimatesAPI(
   strNetwork: string,
   path: { [network: string]: string }
 ) {
@@ -29,12 +31,16 @@ export async function getFeeEstimatesAPI (
     return res.data
   } catch (e) {
     console.warn(e)
-    await rateLimit()
+
     throw new Error('Blockstream.info API getFeeEstimates failed')
   }
 }
 
-export async function getHeightAPI (
+/* -------------------------------------------------------------------------- */
+/*                                getHeightAPI                                */
+/* -------------------------------------------------------------------------- */
+
+export async function getHeightAPI(
   strNetwork: string,
   path: { [network: string]: string }
 ) {
@@ -48,10 +54,14 @@ export async function getHeightAPI (
     return res.data
   } catch (e) {
     console.warn(e)
-    await rateLimit()
+
     throw new Error('Blockstream.info API height get failed')
   }
 }
+
+/* -------------------------------------------------------------------------- */
+/*                             addRawTxToArrayAPI                             */
+/* -------------------------------------------------------------------------- */
 
 /**
  * API request for each UTXO in array to get the raw tx necessary for psbt.
@@ -59,10 +69,11 @@ export async function getHeightAPI (
  * @param     {string}    strNetwork      Network type: 'bitcoin' or 'testnet'.
  * @returns   {object}                    { arrayTx: arrayTx w/ .hex, error: string, fails: number }
  */
-export async function addRawTxToArrayAPI (
+export async function addRawTxToArrayAPI(
   utxoList: Array<any>,
   strNetwork: string,
-  path: { [any: string]: string }
+  path: { [any: string]: string },
+  delay: () => void = msDelay
 ) {
   if (utxoList === undefined)
     throw new Error('undefined utxoList when addRawTxToArray was called')
@@ -117,13 +128,17 @@ export async function addRawTxToArrayAPI (
         erroredOutputs += indexString + ' '
       }
 
-      await rateLimit()
+      await delay()
     }
   }
 
   // return summary object
   return { utxoList, erroredOutputs }
 }
+
+/* -------------------------------------------------------------------------- */
+/*                               getUTXOListAPI                               */
+/* -------------------------------------------------------------------------- */
 
 /**
  * API request for all utxo for this address.
@@ -132,7 +147,7 @@ export async function addRawTxToArrayAPI (
  * @param     {string}    strNetwork    Network type: 'bitcoin' or 'testnet'.
  * @returns   {Array}                   Array of UTXO.
  */
-export async function getUTXOListAPI (
+export async function getUTXOListAPI(
   address: string,
   strNetwork: string,
   path: { [any: string]: string }
@@ -147,16 +162,18 @@ export async function getUTXOListAPI (
     const res = await axios.get(API_PATH)
     console.warn('Blockstream.info API getUTXOList', res.data)
 
-    await rateLimit()
-
     // for now lets filter out the unconfirmed tx
     return res.data.filter((utxo: any) => utxo.status.confirmed)
   } catch (e) {
     console.warn(e)
-    await rateLimit()
+
     throw new Error('Blockstream.info API access failed')
   }
 }
+
+/* -------------------------------------------------------------------------- */
+/*                            getAddressHistoryAPI                            */
+/* -------------------------------------------------------------------------- */
 
 /**
  * API request all transactions for a specific address.
@@ -165,7 +182,7 @@ export async function getUTXOListAPI (
  * @param   {string} network    - 'testnet' or 'bitcoin' to match bitcoinjs-lib.
  * @returns {Array<object>}     -  Array of tx objects.
  */
-export async function getAddressHistoryAPI (
+export async function getAddressHistoryAPI(
   address: string,
   strNetwork: string,
   path: { [any: string]: string }
@@ -193,6 +210,10 @@ export async function getAddressHistoryAPI (
   }
 }
 
+/* -------------------------------------------------------------------------- */
+/*                                  txPushAPI                                 */
+/* -------------------------------------------------------------------------- */
+
 /**
  * Broadcasts content onto the blockchain.
  * parameters: (content, network).
@@ -200,7 +221,7 @@ export async function getAddressHistoryAPI (
  * @param   {string}  network  - 'testnet' or 'bitcoin' to match bitcoinjs-lib.
  * @returns {string}           - Successful broadcast returns txid, otherwise error reason.
  */
-export async function txPushAPI (
+export async function txPushAPI(
   content: string,
   strNetwork: string,
   path: { [any: string]: string }
@@ -234,5 +255,5 @@ export async function txPushAPI (
   }
 }
 
-// Slow down based on rate limit.
-// Convert hz to time in milliseconds.
+const msDelay = (msDelay = 1000.0 / API_RATE_LIMIT) =>
+  new Promise(r => setTimeout(r, msDelay))

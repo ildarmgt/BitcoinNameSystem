@@ -69,6 +69,7 @@ export interface I_State {
       [network: string]: string
     }
     rateLimit: number // calls per second
+    processId: number | null
   }
   lastTimeStamp: number
 }

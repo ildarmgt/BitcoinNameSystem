@@ -2,7 +2,10 @@ import React from 'react'
 import { Store } from '../../../store/'
 import { RoundButton } from '../../general/RoundButton'
 import styles from './P6Broadcast.module.css'
-import { changePageInfoAction } from '../../../store/actions'
+import {
+  changePageInfoAction,
+  addNewApiTaskAction
+} from '../../../store/actions'
 import { calcTx } from './../../../helpers/bns/'
 import { txPushAPI } from './../../../api/blockstream'
 import { getUnspentSum } from '../../../helpers/bns/bitcoin'
@@ -20,7 +23,7 @@ export const P6Broadcast = () => {
 
   // tx calculation
   let tx: any
-  let txIssue: string = ''
+  let txIssue = ''
   try {
     tx = calcTx(state.wallet, state.domain, state.choices, state.network)
   } catch (e) {
@@ -35,7 +38,7 @@ export const P6Broadcast = () => {
   const numberOfUpdates = state.choices.embedString
     .split(' ')
     .reduce(
-      (countSoFar: number, word: string, index: number, words: Array<string>) =>
+      (countSoFar: number, word: string, index: number) =>
         index % 2 === 1 ? countSoFar + 1 : countSoFar,
       0
     )
@@ -49,7 +52,7 @@ export const P6Broadcast = () => {
 
   // show BTC balance with styling and proper units based on network
   const unitBTC = state.network === 'testnet' ? ' tBTC ' : ' BTC '
-  const showBTC = (sats: number = 0): JSX.Element => (
+  const showBTC = (sats = 0): JSX.Element => (
     <>
       <span className={styles.balance}>{(sats / 1e8).toFixed(8)}</span>
       {unitBTC}
@@ -201,10 +204,10 @@ export const P6Broadcast = () => {
           onClick={async () => {
             if (tx && tx.hex) {
               try {
-                const res = await txPushAPI(
-                  tx.hex,
-                  state.network,
-                  state.api.path
+                const res: any = await addNewApiTaskAction(
+                  state,
+                  dispatch,
+                  () => txPushAPI(tx.hex, state.network, state.api.path)
                 )
                 setBroadcastStatus({ ok: true, txid: res.txid, reason: '' })
               } catch (e) {

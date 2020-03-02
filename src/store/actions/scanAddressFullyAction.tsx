@@ -6,6 +6,7 @@ import {
   addRawTxToArrayAPI,
   getHeightAPI
 } from '../../api/blockstream'
+import { addNewApiTaskAction } from './../'
 const { UPDATE_WALLET, UPDATE_DOMAIN, ACTION_FAIL } = ActionTypes
 
 /**
@@ -31,26 +32,32 @@ export const scanAddressFullyAction = async (
       // 1. get address TX history
 
       const walletAddress = state.wallet.address
-      const walletTxHistory = await getAddressHistoryAPI(
-        walletAddress,
-        state.network,
-        state.api.path
+      const walletTxHistory: any = await addNewApiTaskAction(
+        state,
+        dispatch,
+        () => getAddressHistoryAPI(walletAddress, state.network, state.api.path)
       )
 
       // 2. get address UTXO list (could also calculate from tx history or API)
 
-      const utxoListWalletAddress = await getUTXOListAPI(
-        walletAddress,
-        state.network,
-        state.api.path
+      const utxoListWalletAddress: any = await addNewApiTaskAction(
+        state,
+        dispatch,
+        () => getUTXOListAPI(walletAddress, state.network, state.api.path)
       )
 
       // 3. get raw tx for each UTXO (psbt requirement for creating new tx later)
 
-      const { utxoList, erroredOutputs } = await addRawTxToArrayAPI(
-        utxoListWalletAddress,
-        state.network,
-        state.api.path
+      const { utxoList, erroredOutputs }: any = await addNewApiTaskAction(
+        state,
+        dispatch,
+        ({ delay }: any) =>
+          addRawTxToArrayAPI(
+            utxoListWalletAddress,
+            state.network,
+            state.api.path,
+            delay // passing delay here as this requires many steps
+          )
       )
 
       !!erroredOutputs &&
@@ -81,15 +88,24 @@ export const scanAddressFullyAction = async (
     try {
       // 1. get current blockheight from API so ownership is using latest possible info
 
-      const currentHeight = await getHeightAPI(state.network, state.api.path)
+      const currentHeight: any = await addNewApiTaskAction(
+        state,
+        dispatch,
+        () => getHeightAPI(state.network, state.api.path)
+      )
 
       // 2. get address TX history
 
       const { notificationsAddress } = calcP2WSH(domainName, state.network)
-      const notificationsTxHistory = await getAddressHistoryAPI(
-        notificationsAddress,
-        state.network,
-        state.api.path
+      const notificationsTxHistory: any = await addNewApiTaskAction(
+        state,
+        dispatch,
+        () =>
+          getAddressHistoryAPI(
+            notificationsAddress,
+            state.network,
+            state.api.path
+          )
       )
 
       // 3. derive new BNS domain state & utxo
@@ -102,10 +118,16 @@ export const scanAddressFullyAction = async (
 
       // 4. get raw tx for each UTXO (psbt requirement for creating new tx later)
 
-      const { erroredOutputs } = await addRawTxToArrayAPI(
-        newDomain.derivedUtxoList,
-        state.network,
-        state.api.path
+      const { erroredOutputs }: any = await addNewApiTaskAction(
+        state,
+        dispatch,
+        ({ delay }: any) =>
+          addRawTxToArrayAPI(
+            newDomain.derivedUtxoList,
+            state.network,
+            state.api.path,
+            delay // passing delay as it requires many steps
+          )
       )
 
       !!erroredOutputs &&

@@ -222,10 +222,18 @@ export const Navbar = (): JSX.Element => {
           }}
         />
         <VisualAPI
-          onApiInit={() => setApiAction(state, dispatch, { running: true })}
+          processId={state.api.processId}
+          tasks={state.api.tasks}
+          setTasks={(tasks: any) => setApiAction(state, dispatch, { tasks })}
+          delayBusy={1000 / state.api.rateLimit}
+          delayStandby={100}
+          onApiInit={(processId: any) => {
+            if (processId)
+              setApiAction(state, dispatch, { running: true, processId })
+          }}
         />
       </div>
-
+      {/* processId={state.api.processId} */}
       <div className={styles.nav}>
         {/* page numbers (on tx creating pages) */}
         {isCreatePage && (

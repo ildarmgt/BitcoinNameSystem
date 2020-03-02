@@ -20,13 +20,12 @@ const {
  * type describes what type of changes to global state to make.
  * payload contains data provided to make those changes.
  */
-export default function reducer (state: I_State, action: I_Action): I_State {
+export default function reducer(state: I_State, action: I_Action): I_State {
   const { payload } = action
 
   switch (action.type) {
     case SET_API: {
       // edit api task queue
-
       return {
         ...state,
         api: {

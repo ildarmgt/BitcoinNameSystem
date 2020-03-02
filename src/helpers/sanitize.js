@@ -57,7 +57,7 @@ export default function sanitize (inputString, stringOrArray) {
       filter +=
         '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ,./-_!`~[]{}|@#%^&()-=?$'
     }
-    if (choice === 'url') {
+    if (choice === 'url' || choice === 'string') {
       //  RFC 3986 (Section 2: Characters) 84 total
       filter += `0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ:/?#[]@!$&'()*+,;=-_.~`
     }
@@ -118,7 +118,7 @@ export default function sanitize (inputString, stringOrArray) {
   })
 
   if (filter.length === 0 && logicFilters.length === 0) {
-    console.warning('sanitize used w/o any known filters', stringOrArray)
+    console.warn('sanitize used w/o any known filters', stringOrArray)
   }
 
   let outputString = ''

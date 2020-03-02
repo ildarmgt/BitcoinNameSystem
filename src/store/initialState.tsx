@@ -42,7 +42,8 @@ export const initialState: I_State = {
     },
     running: false,
     tasks: [],
-    rateLimit: 2
+    rateLimit: 2,
+    processId: null
   },
   lastTimeStamp: Date.now() // last change timestamp, to detect any changes to state or time out
 }
