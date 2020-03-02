@@ -163,7 +163,7 @@
   word-break: break-all;
 }
 
-@media screen and (min-aspect-ratio: 12/9) {
+@media screen and (min-aspect-ratio: 14/10) {
   .wrapper {
     /* grid-template-columns:  auto calc(60 * var(--s)); */
     grid-template-columns: 39% 59%;

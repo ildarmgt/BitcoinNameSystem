@@ -203,7 +203,7 @@
   /* transform: scale(var(--verticalScale)); */
 }
 
-@media screen and (min-aspect-ratio: 12/9) {
+@media screen and (min-aspect-ratio: 14/10) {
   .listContainer {
     /* justify-content: space-evenly; */
     /* transform: scale(var(--horizontalScale)); */

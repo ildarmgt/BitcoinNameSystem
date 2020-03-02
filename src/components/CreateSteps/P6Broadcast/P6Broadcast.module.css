@@ -181,7 +181,7 @@
 }
 
 /* wide screen settings */
-@media screen and (min-aspect-ratio: 12/9) {
+@media screen and (min-aspect-ratio: 14/10) {
   .wrapper {
     grid-template-columns: auto calc(2 * var(--s)) calc(40% - (2 * var(--s)));
     grid-template-rows: auto auto auto auto auto;

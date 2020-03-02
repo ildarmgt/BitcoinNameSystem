@@ -70,7 +70,7 @@
   z-index: 50;
 }
 
-@media screen and (min-aspect-ratio: 12/9) {
+@media screen and (min-aspect-ratio: 14/10) {
   .wrapper > * {
     transform: scale(var(--horizontalScale));
   }

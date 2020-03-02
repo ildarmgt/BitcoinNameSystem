@@ -16,7 +16,7 @@
 }
 
 /* wide screen settings */
-@media screen and (min-aspect-ratio: 12/9) {
+@media screen and (min-aspect-ratio: 14/10) {
   .content {
     /* makes room for nav bar */
     bottom: calc(var(--navbarHeight) * var(--horizontalScale));

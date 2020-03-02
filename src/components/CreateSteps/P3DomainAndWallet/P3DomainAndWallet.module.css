@@ -109,7 +109,7 @@
   padding: calc(0.5 * var(--s)) calc(0.5 * var(--s));
 }
 
-@media screen and (min-aspect-ratio: 12/9) {
+@media screen and (min-aspect-ratio: 14/10) {
   .wrapper {
     grid-template-columns: auto calc(25 * var(--s)) calc(35 * var(--s));
 

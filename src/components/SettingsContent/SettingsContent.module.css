@@ -4,7 +4,7 @@
 }
 
 /* wide screen settings */
-@media screen and (min-aspect-ratio: 12/9) {
+@media screen and (min-aspect-ratio: 14/10) {
   .contentWrapper {
     transform-origin: top;
     transform: scale(var(--horizontalScale));

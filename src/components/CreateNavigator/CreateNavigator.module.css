@@ -40,7 +40,7 @@
   transform: scale(var(--verticalScale));
 }
 
-@media screen and (min-aspect-ratio: 12/9) {
+@media screen and (min-aspect-ratio: 14/10) {
   .scroller {
     padding-top: calc(var(--headerWhitespace) * var(--horizontalScale));
   }

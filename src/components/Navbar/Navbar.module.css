@@ -297,7 +297,7 @@
 }
 
 /* wide screen settings */
-@media screen and (min-aspect-ratio: 12/9) {
+@media screen and (min-aspect-ratio: 14/10) {
   .nav {
     transform-origin: bottom right;
     transform: scale(var(--horizontalScale));

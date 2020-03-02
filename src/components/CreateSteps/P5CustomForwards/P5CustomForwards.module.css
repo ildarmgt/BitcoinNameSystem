@@ -289,7 +289,7 @@
 }
 
 /* wide screen settings */
-@media screen and (min-aspect-ratio: 12/9) {
+@media screen and (min-aspect-ratio: 14/10) {
   .wrapper {
     grid-template-areas:
       'editor       title'
