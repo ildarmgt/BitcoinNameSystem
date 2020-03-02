@@ -1,4 +1,87 @@
+/* -------------------------------------------------------------------------- */
+/*                                     v2                                     */
+/* -------------------------------------------------------------------------- */
+
+.outershell2 {
+  display: inline-block;
+  padding: 0;
+  margin: 0;
+}
+
+.wrapper2 {
+  font-family: 'Ubuntu';
+  display: inline-block;
+  padding: calc(0.1 * var(--u));
+  box-sizing: border-box;
+
+  overflow: hidden;
+  overflow-x: hidden;
+  overflow-y: hidden;
+}
+
+.rotater2 {
+  box-sizing: border-box;
+  display: block;
+  position: relative;
+  transform: rotate(20deg);
+}
+
+.logo2 {
+  font-family: 'Ubuntu';
+  align-items: center;
+  background: var(--colorBitcoinOrange);
+  border-radius: 50%;
+  box-sizing: border-box;
+  color: var(--colorBackground);
+  display: flex;
+  font-style: normal;
+  font-weight: bold;
+  justify-content: center;
+  padding: calc(1.613 * var(--u));
+}
+
+.logo2 span {
+  font-size: calc(11 * var(--u));
+  line-height: calc(10 * var(--u));
+  width: calc(10 * var(--u));
+  transform: rotate(0.01deg);
+}
+
+.rotater2:before {
+  content: '';
+  position: absolute;
+  height: calc(9.7 * var(--u));
+  /* var(--colorBackground) */
+  border: var(--colorBackground) solid calc(0.85 * var(--u));
+  border-top: none;
+  border-bottom: none;
+  width: calc(0.6 * var(--u));
+  top: calc(6.4 * var(--u));
+  transform: translate(calc(-1.4 * var(--u)), calc(-4.4 * var(--u)));
+}
+
+.logo2:before {
+  /* background-color: rgba(0, 0, 255, 0.76); */
+  content: '';
+  box-sizing: border-box;
+  position: absolute;
+  background-color: var(--colorBitcoinOrange);
+  border-radius: calc(4 * var(--u));
+  top: calc(6.75 * var(--u));
+  left: calc(6.4 * var(--u));
+  width: 0;
+  height: 0;
+  padding: calc(3.8 * var(--u));
+  transform: translate(calc(-3.65 * var(--u)), calc(-3.65 * var(--u)));
+}
+
+/* -------------------------------------------------------------------------- */
+/*                                     v1                                     */
+/* -------------------------------------------------------------------------- */
+
+/*
 .wrapper {
+  font-family: 'Ubuntu';
   display: inline-block;
   margin: 0;
   padding: 0;
@@ -15,12 +98,12 @@
   font-style: normal;
   font-weight: bold;
   justify-content: center;
-  padding: calc(1.613 * var(--s));
+  padding: calc(1.613 * var(--u));
 }
 
 .logo span {
-  font-size: calc(10 * var(--s));
-  line-height: calc(10 * var(--s));
-  width: calc(10 * var(--s));
+  font-size: calc(10 * var(--u));
+  line-height: calc(10 * var(--u));
+  width: calc(10 * var(--u));
   transform: rotate(20deg);
-}
+} */

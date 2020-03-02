@@ -1,7 +1,7 @@
 import React from 'react'
 import styles from './Wallet.module.css'
 import { getTx } from './getTx'
-
+import { Logo } from './../../general/Logo/'
 const RESERVED_FROM_WALLET_KEY = 'fromWallet'
 
 // logic flow
@@ -68,7 +68,7 @@ export const Wallet = (props: any): JSX.Element => {
     >
       {TESTING && (
         <>
-          <div>B {info.text}</div>
+          <Logo size='calc(0.5 * (0.5vh + 0.5vw))' className={styles.logo} />
         </>
       )}
     </div>

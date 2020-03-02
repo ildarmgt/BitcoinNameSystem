@@ -12,7 +12,7 @@ const { NEW_WALLET } = ActionTypes
 export const createNewWalletAction = async (
   state: I_State,
   dispatch: Dispatch,
-  strMnemonic: string = ''
+  strMnemonic = ''
 ) => {
   // load all the wallet info from mnemonic or generate new random mnemonic to do it
   const { mnemonic, WIF, address } =

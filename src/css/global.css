@@ -1,18 +1,21 @@
 /* Global CSS settings */
 
 /* ubuntu-300 - latin */
-/* @font-face {
+/* font-family: 'Ubuntu'; */
+@font-face {
   font-family: 'Ubuntu';
   font-style: normal;
   font-weight: 300;
   src: url('./../assets/fonts/Ubuntu/ubuntu-v14-latin-300.eot');
   src: local('Ubuntu Light'), local('Ubuntu-Light'),
-       url('./../assets/fonts/Ubuntu/ubuntu-v14-latin-300.eot?#iefix') format('embedded-opentype'),
-       url('./../assets/fonts/Ubuntu/ubuntu-v14-latin-300.woff2') format('woff2'),
-       url('./../assets/fonts/Ubuntu/ubuntu-v14-latin-300.woff') format('woff'),
-       url('./../assets/fonts/Ubuntu/ubuntu-v14-latin-300.ttf') format('truetype'),
-       url('./../assets/fonts/Ubuntu/ubuntu-v14-latin-300.svg#Ubuntu') format('svg');
-} */
+    url('./../assets/fonts/Ubuntu/ubuntu-v14-latin-300.eot?#iefix')
+      format('embedded-opentype'),
+    url('./../assets/fonts/Ubuntu/ubuntu-v14-latin-300.woff2') format('woff2'),
+    url('./../assets/fonts/Ubuntu/ubuntu-v14-latin-300.woff') format('woff'),
+    url('./../assets/fonts/Ubuntu/ubuntu-v14-latin-300.ttf') format('truetype'),
+    url('./../assets/fonts/Ubuntu/ubuntu-v14-latin-300.svg#Ubuntu')
+      format('svg');
+}
 
 /* montserrat-300 - latin */
 @font-face {
