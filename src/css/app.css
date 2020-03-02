@@ -4,11 +4,12 @@
   top: 0;
   left: 0;
   /* right: 0; */
-  width: 99.6%;
+  width: 100%;
 
   /* makes room for nav bar */
   bottom: var(--navbarHeight);
-  margin: 0.2% 0.2%;
+  box-sizing: border-box;
+  padding: 0.2% 0.2%;
 
   overflow: hidden;
   overflow-y: hidden;

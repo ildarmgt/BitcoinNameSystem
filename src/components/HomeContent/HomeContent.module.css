@@ -2,14 +2,9 @@
   display: block;
   font-size: calc(5 * var(--s));
   color: var(--colorBitcoinBlue);
-  margin-top: 25vh;
 }
 .lblMainTitle span {
   color: var(--colorBitcoinOrange);
-}
-
-.lblMainTitleAfter {
-  margin-top: 10vh;
 }
 
 .results {
@@ -20,16 +15,11 @@
 .divSearch {
   display: inline-block;
   width: 100%;
-  margin-top: 5vh;
-}
-
-.divSearchAfter {
-  margin-top: 3vh;
 }
 
 .txtSearch {
   color: var(--colorBitcoinOrange);
-  width: 50vw;
+  width: 66vw;
   caret-color: var(--colorBitcoinOrange);
 }
 
@@ -39,6 +29,26 @@
 
 .txtSearch::placeholder {
   color: var(--colorBitcoinOrange);
+}
+
+/* -------------------------------------------------------------------------- */
+/*                               search changes                               */
+/* -------------------------------------------------------------------------- */
+
+.lblMainTitle {
+  margin-top: 33vh;
+}
+
+.lblMainTitleAfter {
+  margin-top: 10vh;
+}
+
+.divSearch {
+  margin-top: 3vh;
+}
+
+.divSearchAfter {
+  margin-top: 2vh;
 }
 
 /* -------------------------------------------------------------------------- */
