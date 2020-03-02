@@ -10,6 +10,10 @@ On-chain DNS where easy to read domain name (i.e. alias) can be looked up or cre
 
 ![pic](https://i.imgur.com/22AMxLh.png)
 
+![pic](https://i.imgur.com/Blx5Rfv.png)
+
+1 domain name on BNS can provide many forwarding addresses for any network.
+
 BNS is currently still work in progress. I'm open to teaming up.
 
 ## Tools used
@@ -75,10 +79,6 @@ Wasn't sure what's better: Bitcoin Name Service, Bitcoin Name System, Bitcoin Na
 ## Terminology and definitions
 
 Located here: [Terminology and definitions](extras/Definitions.md)
-
-1 domain name on BNS can provide many forwarding addresses for any network
-
-![pic](https://i.imgur.com/Blx5Rfv.png)
 
 ## Payments
 
