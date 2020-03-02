@@ -1,15 +1,38 @@
 .wrapper {
-  padding: 0;
-  padding-top: 14vh;
   box-sizing: border-box;
-  margin: 0 calc(0.2 * var(--s));
-  /* doesn't change measured width if scroll bar appears or not */
-  overflow-y: scroll;
-  overflow-x: hidden;
-  height: calc(100vh - var(--headerOffset) - calc(6 * var(--s)));
+
+  padding: 0;
+  /* padding-top: 14vh; */
+  /* margin: 0 calc(0.2 * var(--s)); */
+
+  /* height: calc(var(--dh) - var(--headerOffset) - calc(6 * var(--s))); */
+  height: 100%;
+  width: 100%;
 }
 
+/*
+  content will be scrolled,
+  scrollbar starts at bottom of headder spacer,
+  padding in scroller ensures no text at top,
+  scrollbar ends at navbar,
+  overflow-y: scroll makes sure no resizing on scrollbar showing
+*/
+.scroller {
+  padding-top: 14vh;
+
+  height: 100%;
+  width: 100%;
+
+  overflow-y: scroll;
+  overflow-x: hidden;
+}
+
+/* content will get scaled */
 .horizontalScaler {
+  width: 100%;
+
+  /* doesn't change measured width if scroll bar appears or not */
+
   transform-origin: top;
   transform: scale(var(--verticalScale));
 }
@@ -20,8 +43,8 @@
     transform: scale(var(--horizontalScale));
   }
   .wrapper {
-    height: calc(
-      100vh - var(--headerOffset) - (6 * var(--s) * var(--horizontalScale))
-    );
+    /* height: calc(
+      var(--dh) - var(--headerOffset) - (6 * var(--s) * var(--horizontalScale))
+    ); */
   }
 }

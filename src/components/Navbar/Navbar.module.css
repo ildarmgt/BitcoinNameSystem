@@ -281,7 +281,7 @@
 }
 
 .menuShown .dots:not(:active) {
-  animation: blurme 0.3s forwards;
+  animation: blurme 0.3s steps(10) forwards;
 }
 
 @keyframes blurme {

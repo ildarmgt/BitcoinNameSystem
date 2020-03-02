@@ -19,7 +19,7 @@
   align-items: left;
   margin: 0 calc(2 * var(--s));
 
-  height: calc(100vh - 13.5vh - (29 * var(--s)));
+  height: calc(var(--dh) - 13.5vh - (29 * var(--s)));
 
   color: var(--colorDarkText);
 
@@ -184,7 +184,7 @@
 
   .scrollbars {
     height: calc(
-      ((100vh - 12.5vh) / var(--horizontalScale)) - ((29.5 * var(--s)))
+      ((var(--dh) - 12.5vh) / var(--horizontalScale)) - ((29.5 * var(--s)))
     );
   }
 }

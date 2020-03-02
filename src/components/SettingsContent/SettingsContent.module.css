@@ -1,0 +1,16 @@
+.wrapper {
+  height: 100%;
+  width: 100%;
+}
+
+/* wide screen settings */
+@media screen and (min-aspect-ratio: 12/9) {
+  .contentWrapper {
+    transform-origin: top;
+    transform: scale(var(--horizontalScale));
+  }
+
+  .wrapper {
+    /* height: calc(var(--dh) - (6 * var(--s) * var(--horizontalScale))); */
+  }
+}

@@ -21,7 +21,7 @@
   filter: opacity(0.07) blur(calc(0.09 * var(--s)));
   transform: translate(0, 0) scale(10) rotate(0deg);
 
-  animation: rotateMe 500s infinite linear;
+  animation: rotateMe 100s infinite linear;
 }
 
 @keyframes rotateMe {

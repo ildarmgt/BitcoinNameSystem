@@ -1,5 +1,29 @@
 # Dev Blog
 
+### 2020-03-01
+
+Where to place wallet has been difficult challenge without having resusable universal bitcoin wallet that can get input from browsers. I dislike the idea of browser plugins due to difficulty checking them, possible ninja updates or takeovers, access to all pages people browse, inability to install your own (easily). Not sure it's good idea to use weird desktop wallets that could expose the system. I like sandboxing of browsers to keep system (phone/pc) safe from others code, some built in CORS protections, and universal readability on macs, pc, linux, phone - what java originally intended to be.
+
+Independent js wallet (currently implemented as react component but can be remade with basics for easier review with minimal dependencies) is what I have been working on that can be used anywhere and get data from events. Great for developing and implementing different ideas. Downside as just imported js is it's not so great for users: if different website claims to use it, their version might be modified. Ideally do not have to always be reviewing or trusting wallet implementations in addition to contract implementations on different websites. I'll likely just use it directly as is for now built into the page.
+
+For use with my other app and elsewhere I had to consider making it reusable for users as well. Making a custom wallet GUI/logic for inheritance app, bns, and now bns stealth addresses in addition to contract GUI/logic is very time consuming. Stealth address use and search would need completely different design of transactions and logic and thus different forms, inputs, outputs.
+
+One option was to use in browser wallet with cross tab cross origin communication or basic web sockets.
+
+https://github.com/wingify/across-tabs
+
+It could even be opened from copy on desktop and communicate with application, only between ones that choose to do. Then it could be closed. Then wallet version could be held constant and reused.
+
+Second option is putting all tx data into qr image (up to 3kb possible) and scanning it with browser wallet on mobile that handles the signing (and maybe api and broadcasts) Apparently browsers already have access to camera via HTML5 so can process QR codes themselves without any servers. If using webapp on mobile would have to pass data to wallet webapp some other way. I thought this would be nice to use old offline phone as means to sign the transactions separate from hot app wallet. Problem I have is psbt implementation I use requires full hex of previous transacitons, which could put data necessary to transmit to cold phone over 3kb limits of qr codes, but I guess possible to do it more than once if necessary. With each tx often ~250 bytes, fewer inputs means just 1 qr code will still work usually. Either way could work as an option to sign using reusable separate device and webapp between different bitcoin scripts.
+
+https://www.html5rocks.com/en/tutorials/getusermedia/intro/
+
+https://www.sitepoint.com/create-qr-code-reader-mobile-website/
+
+I'll worry about this later while trying to keep wallet design as generalized as possible.
+
+Downsides of browsers make me want to recommend somewhere in app few ideas such as how to open guest or incongnito mode sessions without any extensions. Browsers also would have trouble doing anything more than an SPV node, which is already done elsewhere. The new setting of being able to run and link to your own full node to interface with app is another step for security. Once the wallet is done, I can alter the flow a bit so no keys are necessary until tx is ready to sign, so keys could be signed completely offline. I'll also look into spv browser implementation I really want to sync backwards to check header hashes to progressively older and more secure known hashes - should allow faster use of app without full node but with more security depending on how long the sync is allowed to run for.
+
 ### 2020-02-25
 
 Thinking a lot on what is acceptable to do in my implementation. For example, I think using any design that gives me an advantage would put into question both the technical design and my ethics. This is why there will not be any rules about paying me. But if the design allows some funding for improving the bitcoin ecosystem without any security compromise I'm aware of. My desire to take advantage of it would also give others reason to make incompatible implementation that's neutral or where they are the recepient. The biggest danger is too many confusing standards.

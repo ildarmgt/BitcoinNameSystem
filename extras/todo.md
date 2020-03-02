@@ -226,3 +226,5 @@ alternative:
 4. Cold keys can remove themselves, canceling delay.
 
 By doing delay purely with BNS state derivation, it's much less complex. Multi-address ownership structure needs to be explored. People can already use a multisig address as control address w/ their own UI so alternative is simple and opt-in.
+
+Can I use this to show user any communication attempts on the page? https://developer.mozilla.org/en-US/docs/Web/API/FetchEvent

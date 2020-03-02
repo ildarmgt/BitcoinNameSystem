@@ -5,7 +5,7 @@ import styles from './LogoBackground.module.css'
 /**
  * Turn logo into background.
  */
-export const LogoBackground = (props: any) => {
+export const LogoBackground = () => {
   return (
     <div className={styles.wrapper}>
       <Logo className={styles.logo} />
