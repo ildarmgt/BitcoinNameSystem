@@ -121,10 +121,10 @@ const apiLoop = async ({
     // delay for API rate limit
   }
   // no tasks (array is empty) use standby rate, otherwise busy rate
-  await delay({ ms: delayStandby })
-  // await delay(
-  //   !tasks || tasks.length === 0 ? { ms: delayStandby } : { ms: delayBusy }
-  // )
+  await delay(
+    !tasks || tasks.length === 0 ? { ms: delayStandby } : { ms: delayBusy }
+  )
+
   // loop self
   apiLoop({ delayStandby, delayBusy, id })
 }

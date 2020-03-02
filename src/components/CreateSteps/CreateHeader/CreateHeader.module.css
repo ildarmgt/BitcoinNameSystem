@@ -1,13 +1,3 @@
-/* prevents rendering outside page range */
-.cutOverflow {
-  top: 0%;
-  left: 0%;
-  width: 100%;
-  position: absolute;
-  overflow: hidden;
-  height: 15vw; /* modified by js */
-}
-
 /* the blue floating bar for style */
 .bar {
   position: relative;
@@ -52,17 +42,37 @@
   cursor: pointer;
 }
 
+/* -------------------------------------------------------------------------- */
+/*                                   @media                                   */
+/* -------------------------------------------------------------------------- */
+
+/* prevents rendering outside page range */
+.cutOverflow {
+  top: 0%;
+  left: 0%;
+  position: absolute;
+  overflow: hidden;
+  height: 15vw; /* modified by js */
+
+  width: 100%;
+}
+
 .spacer {
   display: block;
   position: static;
   /* 8vw old value */
-  margin-bottom: var(--headerOffset);
+  height: var(--headerOffset);
+}
+
+.wrapper > * {
+  transform-origin: top left;
+  transform: scale(var(--verticalScale));
+  z-index: 50;
 }
 
 @media screen and (min-aspect-ratio: 12/9) {
   .wrapper > * {
     transform: scale(var(--horizontalScale));
-    transform-origin: top left;
   }
 
   .cutOverflow {

@@ -128,6 +128,7 @@ export async function addRawTxToArrayAPI(
         erroredOutputs += indexString + ' '
       }
 
+      // since each utxo is separate call, injected delay very important here
       await delay()
     }
   }

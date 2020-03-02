@@ -227,4 +227,37 @@ alternative:
 
 By doing delay purely with BNS state derivation, it's much less complex. Multi-address ownership structure needs to be explored. People can already use a multisig address as control address w/ their own UI so alternative is simple and opt-in.
 
+---
+
 Can I use this to show user any communication attempts on the page? https://developer.mozilla.org/en-US/docs/Web/API/FetchEvent
+
+onbtc.me/@satoshi for another name design?
+
+what about automatic short url forwarding?
+
+while staying offline file system friendly, possible to use subdomains? url.onbtc.me?satoshi
+
+automatic forwarding to linked website:
+
+onbtc.me?satoshi.url
+
+onbtc.me?satoshi?url
+
+or maybe since exclamations are reserved, those are better? question marks look dumb as a phrase. ! more exciting. = decent.
+but ! is not uri encoded so might collide
+
+since uri encoded, choice of escaped symbols maybe best: ;,/?:@&=+\$ which cannot collide with standard then
+
+why not this?
+
+onbtc.me/=alice
+
+"on bitcoin I am alice" is easily readable, not a question, statement.
+
+and for subdomains, add an @ similar to email with minor subdomain first:
+
+onbtc.me/=url@alice - decent but not as readable
+
+onbtc.me/=alice/url - seems more inline with url formats, minor things later, alice is the "me", url is property of alice.
+
+"on bitcoin I am alice with this link for URL"

@@ -77,8 +77,10 @@ html {
   --horizontalScale: 0.7;
   /* multiplier for transform scale on vertical orientation */
   --verticalScale: 0.999;
-  /* amount of offset from vertical bar to content */
-  --headerOffset: calc(6 * var(--s));
+  /* amount of offset from vertical bar to scroll bar and content */
+  --headerOffset: calc(3 * var(--s));
+  /* padding for white space at top under header ( with scrollbar) */
+  --headerWhitespace: calc(18 * var(--s));
   /* navbar height */
   --navbarHeight: calc(6 * var(--s));
   /*

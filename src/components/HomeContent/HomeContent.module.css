@@ -14,6 +14,7 @@
 
 .results {
   padding-top: calc(2 * var(--s));
+  height: 100%;
 }
 
 .divSearch {
@@ -40,16 +41,41 @@
   color: var(--colorBitcoinOrange);
 }
 
+/* -------------------------------------------------------------------------- */
+/*                           @media values below only                         */
+/* -------------------------------------------------------------------------- */
+
+.wrapper {
+  box-sizing: border-box;
+  transform-origin: top left;
+
+  /* fixed makes children with fixed work better */
+  position: fixed;
+
+  transform: scale(var(--verticalScale));
+  width: 100%;
+  height: calc(var(--dh));
+}
+
+.lblMainTitle,
+.divSearch {
+  box-sizing: border-box;
+
+  transform-origin: top;
+  transform: scale(var(--verticalScale));
+  --correction: 1.1;
+}
+
 @media screen and (min-aspect-ratio: 12/9) {
   .wrapper {
-    transform-origin: top;
     transform: scale(var(--horizontalScale));
+    width: calc(100% / var(--horizontalScale));
+    height: calc((var(--dh) / var(--horizontalScale)));
   }
-  /* search bar could use a bit less scaling  */
+
+  /* search bar & title could use a bit less scaling  */
+  .divSearch,
   .lblMainTitle {
-    transform: scale(1.1);
-  }
-  .divSearch {
-    transform: scale(1.2);
+    transform: scale(var(--correction));
   }
 }

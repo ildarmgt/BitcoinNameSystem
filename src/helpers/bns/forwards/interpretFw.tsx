@@ -5,7 +5,7 @@ import { I_Forward } from '../types'
  * as where the forwarding address should be used, what it is, and what link to use.
  * Returns {what: string, where: string, link: string, render: boolean}.
  */
-export function interpretFw (fw: I_Forward, blockchain?: string) {
+export function interpretFw(fw: I_Forward, blockchain?: string) {
   // blank address means it was removed
   // ! at start means it's a command, not a network
   if (fw.network === '' || fw.address === '' || fw.network.startsWith('!')) {
@@ -72,6 +72,15 @@ export function interpretFw (fw: I_Forward, blockchain?: string) {
       where: 'youtu.be/',
       what: fw.address,
       link: 'https://www.youtube.com/watch?v=' + fw.address,
+      render: true
+    }
+  }
+
+  if (onNetwork === 'email' || onNetwork === 'e-mail') {
+    return {
+      where: 'mailto:',
+      what: fw.address.replace('%40', '@'),
+      link: 'mailto:' + fw.address,
       render: true
     }
   }

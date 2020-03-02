@@ -45,6 +45,7 @@ export const P1RestoreOrBackup = () => {
             </>
           )}
         </div>
+
         <div className={styles.contentWrapper}>
           <Details description={'Explain'}>
             <p>
@@ -72,6 +73,7 @@ export const P1RestoreOrBackup = () => {
             </p>
           </Details>
         </div>
+
         <div className={styles.buttonWrapper}>
           <RoundButton
             show={state.wallet.mnemonic.length > 0 ? 'false' : 'true'}

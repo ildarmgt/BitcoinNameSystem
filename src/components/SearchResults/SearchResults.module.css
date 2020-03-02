@@ -1,25 +1,36 @@
 .wrapper {
   font-size: (2 * var(--s));
-}
-
-.matches {
-  padding: calc(0 * var(--s)) calc(4 * var(--s));
-  padding-top: calc(2 * var(--s));
-  padding-bottom: calc(2 * var(--s));
-  margin-right: auto;
-  color: var(--colorLightText);
-  text-align: left;
+  position: relative;
+  height: 100%;
+  width: 100%;
 }
 
 .scrollbars {
-  display: flex;
+  transform: scale(var(--verticalScale));
 
+  box-sizing: border-box;
+  display: flex;
   flex-direction: column;
   text-align: left;
-  align-items: left;
-  margin: 0 calc(2 * var(--s));
 
-  height: calc(var(--dh) - 13.5vh - (29 * var(--s)));
+  margin: 0 calc(2 * var(--s));
+  left: 0;
+  right: 0;
+
+  /*
+  1. percentage units only had working scroll with position fixed
+  percentage units var(--dh) was introduced for mobile height
+  that is different from vh due to pop up bars.
+  2. when parent has transform scale applied, coordinate system
+  becomes warped and makes it ~impossible to resize.
+  Have to make sure no transforms on parents of scrolls.
+  */
+  position: fixed;
+  /* top: 100px; */
+
+  bottom: var(--navbarHeight);
+  top: calc(13.5vh + (23.5 * var(--s)));
+  /* height: calc(var(--dh) - 13.5vh - (29.5 * var(--s))); */
 
   color: var(--colorDarkText);
 
@@ -177,14 +188,43 @@
   cursor: pointer;
 }
 
+/* -------------------------------------------------------------------------- */
+/*                                   @media                                   */
+/* -------------------------------------------------------------------------- */
+
+.matches {
+  box-sizing: border-box;
+  color: var(--colorLightText);
+  text-align: left;
+  padding: calc(2 * var(--s)) calc(4 * var(--s));
+  width: 100%;
+
+  /* transform-origin: top left; */
+  /* transform: scale(var(--verticalScale)); */
+}
+
 @media screen and (min-aspect-ratio: 12/9) {
   .listContainer {
-    justify-content: space-evenly;
+    /* justify-content: space-evenly; */
+    /* transform: scale(var(--horizontalScale)); */
   }
 
-  .scrollbars {
-    height: calc(
+  .listContainer {
+    /* transform-origin: top; */
+
+    /* height: calc(
       ((var(--dh) - 12.5vh) / var(--horizontalScale)) - ((29.5 * var(--s)))
-    );
+    ); */
+    /* position: fixed; */
+    /* bottom: var(--navbarHeight); */
+    /* min-height: calc(var(--dh) - 13.5vh - (29.5 * var(--s))); */
+    /* height: 300px; */
+  }
+
+  .matches {
+    /* transform: scale(var(--horizontalScale)); */
+    /* width: calc(100% / var(--horizontalScale)); */
+    /* padding: calc(2 * var(--s) * var(--horizontalScale))
+      calc(4 * var(--s) * var(--horizontalScale)); */
   }
 }

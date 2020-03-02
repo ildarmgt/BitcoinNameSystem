@@ -2,12 +2,9 @@
   box-sizing: border-box;
 
   padding: 0;
-  /* padding-top: 14vh; */
-  /* margin: 0 calc(0.2 * var(--s)); */
-
-  /* height: calc(var(--dh) - var(--headerOffset) - calc(6 * var(--s))); */
-  height: 100%;
+  height: calc(var(--dh));
   width: 100%;
+  z-index: 0;
 }
 
 /*
@@ -18,33 +15,37 @@
   overflow-y: scroll makes sure no resizing on scrollbar showing
 */
 .scroller {
-  padding-top: 14vh;
+  box-sizing: border-box;
 
-  height: 100%;
+  height: calc(var(--dh) - var(--headerOffset));
   width: 100%;
 
   overflow-y: scroll;
   overflow-x: hidden;
 }
 
+/* -------------------------------------------------------------------------- */
+/*                                   @media                                   */
+/* -------------------------------------------------------------------------- */
+
+.scroller {
+  padding-top: calc(var(--headerWhitespace));
+}
+
 /* content will get scaled */
 .horizontalScaler {
   width: 100%;
-
-  /* doesn't change measured width if scroll bar appears or not */
 
   transform-origin: top;
   transform: scale(var(--verticalScale));
 }
 
 @media screen and (min-aspect-ratio: 12/9) {
-  .horizontalScaler {
-    transform-origin: top;
-    transform: scale(var(--horizontalScale));
+  .scroller {
+    padding-top: calc(var(--headerWhitespace) * var(--horizontalScale));
   }
-  .wrapper {
-    /* height: calc(
-      var(--dh) - var(--headerOffset) - (6 * var(--s) * var(--horizontalScale))
-    ); */
+
+  .horizontalScaler {
+    transform: scale(var(--horizontalScale));
   }
 }
