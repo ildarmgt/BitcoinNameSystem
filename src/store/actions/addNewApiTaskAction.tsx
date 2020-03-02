@@ -5,14 +5,14 @@ const { SET_API } = ActionTypes
 /**
  * Adds 1 api task and returns a promise of the result.
  * newTaskFunction must be a callback function (delayFunc)=>{ return something }
+ * Example: (delay param is optional, based on prop used to create component)
+ * const getUltra = await addNewApiTaskAction(state, dispatch, ({delay}) => ultraAPI(stuffForUltraAPI, delay))
  */
 export const addNewApiTaskAction = async (
   state: I_State,
   dispatch: Dispatch,
   newTaskFunction: any
 ) => {
-
-
   return new Promise((resolve: any, reject: any) => {
     // wrapping task with resolve and reject
     const newTask = {
