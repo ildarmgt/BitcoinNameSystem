@@ -2,21 +2,23 @@
 
 On-chain DNS where easy to read domain name (i.e. alias) can be looked up or created to forward to very long alphanumeric Bitcoin addresses or other network's types of addreses (e.g. ipfs, https, twitter) on the most secure public network ever created.
 
-Used: React (Hooks), TypeScript, Node.js, JavaScript, CSS, HTML.
-
-BNS is currently still work in progress.
-
-|                         |                                                                                       |
-| ----------------------: | ------------------------------------------------------------------------------------- |
-|                   Demo: | [ildarmgt.github.io/BitcoinNameSystem](https://ildarmgt.github.io/BitcoinNameSystem/) |
-|         Short demo url: | [onbtc.me](http://onbtc.me)                                                           |
-| Short demo url by name: | [onbtc.me?satoshi](http://onbtc.me?satoshi)                                           |
+|                           |                                                                                       |
+| ------------------------: | ------------------------------------------------------------------------------------- |
+|           Short demo url: | [onbtc.me](http://onbtc.me)                                                           |
+|      Short url with name: | [onbtc.me?satoshi](http://onbtc.me?satoshi)                                           |
+| Full final path for demo: | [ildarmgt.github.io/BitcoinNameSystem](https://ildarmgt.github.io/BitcoinNameSystem/) |
 
 ![pic](https://i.imgur.com/22AMxLh.png)
 
-I'm open to teaming up.
+BNS is currently still work in progress. I'm open to teaming up.
 
-[Github pages demo](https://ildarmgt.github.io/BitcoinNameSystem/)
+## Tools used
+
+React (Hooks), TypeScript, Node.js, JavaScript, CSS, HTML
+
+bitcoinjs-lib, blockstream API (open source, editable url)
+
+more listed in `package.json`
 
 ## To build project from scratch
 
