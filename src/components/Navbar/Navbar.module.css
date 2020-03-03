@@ -18,27 +18,87 @@
   font-size: calc(2.5 * var(--s));
 }
 
-.wallet {
+.leftCorner {
+  bottom: calc(0 * var(--s));
+  left: calc(0 * var(--s));
+  /* height: var(--navbarHeight); */
   position: absolute;
-  display: inline-block;
-  bottom: calc(14 * var(--s));
-  left: calc(2 * var(--s));
-  color: var(--colorLightText);
-  font-size: calc(2 * var(--s));
-  opacity: 0.5;
+  display: grid;
+  grid:
+    'wallet api' auto
+    / auto auto;
+  justify-items: center;
+  align-items: end;
+}
+
+.leftCorner > .wallet {
+  box-sizing: border-box;
+  min-height: calc(var(--navbarHeight));
+  grid-area: wallet;
+  padding: calc(0.75 * var(--s)) calc(1 * var(--s));
+  z-index: 5;
+}
+
+.leftCorner > .api {
+  box-sizing: border-box;
+  position: relative;
+  /* height: calc(var(--navbarHeight)); */
+  padding: 0 calc(2 * var(--s));
+  grid-area: api;
 }
 
 .warning {
   display: inline-block;
-  position: absolute;
-  bottom: calc(6 * var(--s));
-  left: calc(2 * var(--s));
-  color: rgba(180, 12, 12, 0.685);
-  font-size: calc(2 * var(--s));
+  position: fixed;
+  bottom: calc(var(--navbarHeight) + (3 * var(--s)));
+  left: calc(0 * var(--s));
+  /* background-color: var(--colorWarning); */
+  /* border: calc(0.2 * var(--s)) solid var(--colorButtonText); */
+  font-size: calc(1.5 * var(--s));
   /* margin-left: calc(1 * var(--s)); */
+  color: var(--colorWarning);
   vertical-align: middle;
-  opacity: 0.6;
   text-align: left;
+  opacity: 0.5;
+  /* z-index: 1000; */
+  border-radius: calc(0.5 * var(--s));
+}
+.warning > div {
+  padding: calc(1 * var(--s)) calc(2 * var(--s));
+  padding-right: calc(3.2 * var(--s));
+}
+.warning > input {
+  visibility: hidden;
+  position: absolute;
+}
+.warning > label {
+  display: inline-block;
+  position: absolute;
+  top: 0;
+  right: 0;
+  font-size: calc(1.2 * var(--s));
+  height: 0;
+  font-weight: bold;
+  width: 0;
+  line-height: 0;
+  margin: calc(0.75 * var(--s));
+  padding: calc(1 * var(--s));
+  border-radius: 50%;
+  box-sizing: border-box;
+  text-align: center;
+  text-indent: calc(-0.5 * var(--s));
+  cursor: pointer;
+  opacity: 0.6;
+}
+.warning > label:hover {
+  background-color: var(--colorDarker0_5);
+  opacity: 1;
+}
+.warning > label:active {
+  transform: translateY(calc(0.1 * var(--s)));
+}
+.warning > input[type='checkbox']:checked ~ * {
+  display: none;
 }
 
 .overflowMenu {
@@ -124,7 +184,7 @@
   text-align: center;
   cursor: pointer;
   padding: calc(0.5 * var(--s)) calc(2.5 * var(--s));
-  margin: calc(0 * var(--s)) calc(2 * var(--s));
+  margin: calc(0 * var(--s)) calc(0.5 * var(--s));
 
   vertical-align: middle;
   border-radius: calc(0.5 * var(--s));
@@ -298,7 +358,8 @@
 
 /* wide screen settings */
 @media screen and (min-aspect-ratio: 14/10) {
-  .nav {
+  .nav,
+  .warning {
     transform-origin: bottom right;
     transform: scale(var(--horizontalScale));
     width: calc(100% / var(--horizontalScale));
@@ -307,5 +368,9 @@
   .overflowMenu {
     transform: scale(calc(1.1 * var(--horizontalScale)));
     transform-origin: top left;
+  }
+  .leftCorner {
+    transform-origin: bottom left;
+    transform: scale(var(--horizontalScale));
   }
 }

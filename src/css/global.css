@@ -1,5 +1,29 @@
 /* Global CSS settings */
 
+/*
+<homecontent>
+  <.lblMainTitle (+ .lblMainTitleAfter)
+    33vh (10vh) margin top
+    5s font size (horizontal 1.1x correction)
+  />
+  <.divSearch (+.divSearchAfter)
+  3vh (2vh) margin top
+  2.5s font size textbox (horizontal 1.1x correction)
+  />
+  <.results>
+  <SearchResults>
+    <.matches
+      2s padding
+      2s fontsize
+    >
+
+
+*/
+
+/* -------------------------------------------------------------------------- */
+/*                                    fonts                                   */
+/* -------------------------------------------------------------------------- */
+
 /* ubuntu-300 - latin */
 /* font-family: 'Ubuntu'; */
 @font-face {
@@ -80,12 +104,27 @@ html {
   --horizontalScale: 0.7;
   /* multiplier for transform scale on vertical orientation */
   --verticalScale: 0.999;
-  /* amount of offset from vertical bar to scroll bar and content */
+  /* to track when horizontal */
+  --currentScale: var(--verticalScale);
+
+  /* lblMainTitle margin top */
+  --bnsTitleTopMargin: calc(33vh - calc(7 * var(--s)));
+  --bnsTitleTopMarginAfter: 10vh;
+  /* searchbar margin top (3vh/2vh before) */
+  --searchBarTopMargin: calc(3 * var(--s));
+  --searchBarTopMarginAfter: calc(2 * var(--s));
+  /* search results top */
+  --searchResultsTop: calc(var(--bnsTitleTopMarginAfter) + (23.5 * var(--s)));
+
+  /*
+    On create pages,
+    amount of offset from vertical bar to scroll bar and content
+  */
   --headerOffset: calc(3 * var(--s));
   /* padding for white space at top under header ( with scrollbar) */
   --headerWhitespace: calc(18 * var(--s));
   /* navbar height */
-  --navbarHeight: calc(6 * var(--s));
+  --navbarHeight: calc(6.1 * var(--s));
   /*
     height of display
     height: 100vh on mobile does not account for
@@ -134,7 +173,7 @@ html {
   --colorDarker8: rgba(17, 17, 51, 0.8);
   --colorDisabled: rgba(17, 17, 51, 0.5);
 
-  --colorWarning: rgba(153, 17, 62, 0.75);
+  --colorWarning: rgba(180, 12, 12, 0.685);
 
   --colorGradientTopLeft: rgba(45, 154, 255, 0.15);
   --colorGradientBottomRight: rgba(212, 145, 37, 0.07);
@@ -571,6 +610,33 @@ table td p {
   stroke: transparent;
 
   /* text  hacks */
-  text-shadow: var(--colorDarker1) 0px 1px 1px;
-  -webkit-text-stroke: 1px;
+  /* text-shadow: var(--colorDarker1) 0px 1px 1px; */
+  /* -webkit-text-stroke: 1px; */
+
+  /* wobbly css */
+  /* width: 100%; */
+  /* display: table; */
+}
+
+/*
+  small screen helpers
+  e.g. when phone keyboard is out so easier to see
+*/
+@media screen and (max-width: 600px) {
+  @media screen and (max-height: 600px) {
+    html {
+      --s: calc(1.6 * (0.5vw + 0.5vh));
+    }
+    html,
+    textarea {
+      -webkit-text-stroke: 0.35px;
+      text-shadow: var(--colorDarker1) 0px 0.45px 0.45px;
+    }
+  }
+}
+
+@media screen and (min-aspect-ratio: 14/10) {
+  html {
+    --currentScale: var(--horizontalScale);
+  }
 }

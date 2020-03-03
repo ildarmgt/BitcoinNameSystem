@@ -8,8 +8,8 @@
 }
 
 .results {
-  padding-top: calc(2 * var(--s));
-  height: 100%;
+  /* padding-top: calc(2 * var(--s)); */
+  /* height: 100%; */
 }
 
 .divSearch {
@@ -32,28 +32,26 @@
 }
 
 /* -------------------------------------------------------------------------- */
-/*                               search changes                               */
+/*                           @media & changes below only                      */
 /* -------------------------------------------------------------------------- */
 
 .lblMainTitle {
-  margin-top: 33vh;
+  margin-top: var(--bnsTitleTopMargin);
 }
 
+/* after search */
 .lblMainTitleAfter {
-  margin-top: 10vh;
+  margin-top: var(--bnsTitleTopMarginAfter);
 }
 
 .divSearch {
-  margin-top: 3vh;
+  margin-top: var(--searchBarTopMargin);
 }
 
+/* after search */
 .divSearchAfter {
-  margin-top: 2vh;
+  margin-top: var(--searchBarTopMarginAfter);
 }
-
-/* -------------------------------------------------------------------------- */
-/*                           @media values below only                         */
-/* -------------------------------------------------------------------------- */
 
 .wrapper {
   box-sizing: border-box;
@@ -77,6 +75,10 @@
 }
 
 @media screen and (min-aspect-ratio: 14/10) {
+  .lblMainTitle:not(.lblMainTitleAfter) {
+    margin-top: calc(var(--bnsTitleTopMargin) / var(--horizontalScale));
+  }
+
   .wrapper {
     transform: scale(var(--horizontalScale));
     width: calc(100% / var(--horizontalScale));

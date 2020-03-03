@@ -73,12 +73,12 @@ export const HomeContent = (props: any): JSX.Element => {
           .btc
         </RoundButton>
       </div>
-      <div
+      {/* <div
         className={styles.results}
         style={{ display: isSearchDone() ? 'block' : 'none' }}
-      >
-        <SearchResults />
-      </div>
+      > */}
+      {!!isSearchDone() && <SearchResults />}
+      {/* </div> */}
     </div>
   )
 }

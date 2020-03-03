@@ -120,7 +120,7 @@ export const Navbar = (): JSX.Element => {
           history.push('/create')
         }}
       >
-        owners
+        users
       </div>
     ],
     [
@@ -175,16 +175,23 @@ export const Navbar = (): JSX.Element => {
     ]
   ]
 
+  /* -------------------------------------------------------------------------- */
+  /*                           adding/removing buttons                          */
+  /* -------------------------------------------------------------------------- */
+
   // using search button as metric, estimate how many buttons to show
   const windowWidth = window.innerWidth
+  // calc(1*var(--s)), --s 0.5v 0.5w calculation
   const stdSizer = 0.005 * (window.innerWidth + window.innerHeight)
-  const safeWidthFraction = 0.8
+  const margin = 0.25 * stdSizer
+  const safeWidthFraction = 0.5 // fraction of screen to use
+  // adding extra 0.5 width for the ... button
   const howManyButtonsFitSafely = nav.buttonWidth
     ? Math.min(
         Math.max(
           Math.floor(
-            ((windowWidth - 18 * stdSizer) * safeWidthFraction) /
-              (nav.buttonWidth + stdSizer)
+            (windowWidth * safeWidthFraction) /
+              (nav.buttonWidth * 1.5 + 2 * margin)
           ),
           1
         ),
@@ -205,35 +212,44 @@ export const Navbar = (): JSX.Element => {
   return (
     <>
       <div className={styles.warning}>
-        {state.network}
-        <br />
-        {TESTING && (
-          <>
-            development mode <br />
-          </>
-        )}
-        not reviewed for use
+        <input type='checkbox' id={'closewarning'} />
+        <label htmlFor='closewarning'>✕</label>
+        <div>
+          {state.network}
+          <br />
+          {TESTING && (
+            <>
+              development mode <br />
+            </>
+          )}
+          not reviewed for use
+        </div>
       </div>
 
-      <div className={styles.wallet}>
-        <Wallet
-          txBuilder={{
-            network: state.network
-          }}
-        />
-        <VisualAPI
-          processId={state.api.processId}
-          tasks={state.api.tasks}
-          setTasks={(tasks: any) => setApiAction(state, dispatch, { tasks })}
-          delayBusy={1000 / state.api.rateLimit}
-          delayStandby={100}
-          onApiInit={(processId: any) => {
-            if (processId)
-              setApiAction(state, dispatch, { running: true, processId })
-          }}
-        />
+      <div className={styles.leftCorner}>
+        <div className={styles.wallet}>
+          <Wallet
+            txBuilder={{
+              network: state.network
+            }}
+          />
+        </div>
+
+        <div className={styles.api}>
+          <VisualAPI
+            processId={state.api.processId}
+            setProcessId={(processId: any) => {
+              if (processId)
+                setApiAction(state, dispatch, { running: true, processId })
+            }}
+            tasks={state.api.tasks}
+            setTasks={(tasks: any) => setApiAction(state, dispatch, { tasks })}
+            delayBusy={1000 / state.api.rateLimit}
+            delayStandby={100}
+          />
+        </div>
       </div>
-      {/* processId={state.api.processId} */}
+
       <div className={styles.nav}>
         {/* page numbers (on tx creating pages) */}
         {isCreatePage && (

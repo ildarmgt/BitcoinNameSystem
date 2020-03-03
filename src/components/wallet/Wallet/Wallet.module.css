@@ -1,3 +1,16 @@
+.wrapper {
+  line-height: 0;
+}
+
 .logo {
-  display: inline-block;
+  --wallet__logo_size: calc((7 * var(--s)));
+  text-rendering: geometricPrecision; /* firefox improvement */
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  opacity: 0.4;
+}
+
+.logo:hover * {
+  opacity: 1;
+  cursor: pointer;
 }

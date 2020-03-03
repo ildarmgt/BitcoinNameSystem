@@ -59,16 +59,22 @@ export const Wallet = (props: any): JSX.Element => {
     [txBuilder]
   )
 
+  /* -------------------------------------------------------------------------- */
+  /*                                  Rendering                                 */
+  /* -------------------------------------------------------------------------- */
   return (
     <div
-      className={styles.wrapper}
+      className={[styles.wrapper, props.className || ''].join(' ')}
       onClick={() => {
         console.log({ params, txBuilder })
       }}
     >
       {TESTING && (
         <>
-          <Logo size='calc(0.5 * (0.5vh + 0.5vw))' className={styles.logo} />
+          <Logo
+            size='var(--wallet__logo_size)'
+            className={[styles.logo, 'arbitraryFixes'].join(' ')}
+          />
         </>
       )}
     </div>

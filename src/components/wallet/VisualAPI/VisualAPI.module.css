@@ -1,0 +1,5 @@
+.wrapper {
+  color: var(--colorLightText);
+  margin-bottom: calc(var(--navbarHeight) / 2);
+  transform: translateY(50%);
+}
