@@ -3,7 +3,7 @@
 }
 
 .logo {
-  --wallet__logo_size: calc((7 * var(--s)));
+  --wallet__logo_size: calc((5 * var(--s)));
   text-rendering: geometricPrecision; /* firefox improvement */
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
