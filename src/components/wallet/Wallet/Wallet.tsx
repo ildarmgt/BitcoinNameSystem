@@ -34,6 +34,7 @@ export const Wallet = (props: any): JSX.Element => {
     })
 
   // gui settings
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [info, setInfo] = React.useState({ text: '' })
 
   // stores fed params
@@ -132,7 +133,7 @@ const processNewParams = (
   }
 }
 
-const recalcBuilder = ({ txBuilder, setTxBuilder, setInfo }: any) => {
+const recalcBuilder = ({ txBuilder, setInfo }: any) => {
   try {
     // attempt to build
     const res = getTx(txBuilder)
@@ -147,6 +148,8 @@ const recalcBuilder = ({ txBuilder, setTxBuilder, setInfo }: any) => {
  * Session storage scan. Key value pairs.
  */
 const handleStorageChange = (params: any, setParams: any) => (e: any): void => {
+  if (e) console.warn(e)
+
   // do not want spam of events going off in middle of this
   removeListeners(params, setParams)
 
@@ -178,6 +181,8 @@ const handleStorageChange = (params: any, setParams: any) => (e: any): void => {
 
 // curried url change handler
 const handleHashChange = (params: any, setParams: any) => (e: any): void => {
+  if (e) console.warn(e)
+
   // convert url string starting with # into key/value pair object
   // #/ok/?a=b&c=d becomes { a:b, c:d }
   const fedValues = window.location.hash

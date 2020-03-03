@@ -1,6 +1,6 @@
 # Bitcoin Name System (BNS)
 
-On-chain DNS where easy to read domain name (i.e. alias) can be looked up or created to forward to very long alphanumeric Bitcoin addresses or other network's types of addreses (e.g. ipfs, https, twitter) on the most secure public network ever created.
+On-chain DNS where easy to read domain name (i.e. alias) can be looked up or shared to forward to many very long alphanumeric Bitcoin addresses or other types of addreses (e.g. ipfs, https, twitter) on the most secure public network ever created.
 
 |                           |                                                                                       |
 | ------------------------: | ------------------------------------------------------------------------------------- |
@@ -10,11 +10,9 @@ On-chain DNS where easy to read domain name (i.e. alias) can be looked up or cre
 
 ![pic](https://i.imgur.com/22AMxLh.png)
 
-![pic](https://i.imgur.com/Blx5Rfv.png)
-
 1 domain name on BNS can provide many forwarding addresses for any network.
 
-BNS is currently still work in progress. I'm open to teaming up.
+BNS is currently still work in progress. I'm open to teaming up, seeking feedback.
 
 ## Tools used
 
@@ -53,6 +51,8 @@ https://bitcoinfaucet.uo1.net/send.php (segwit compatible)
 
 ## Method used for BNS
 
+![pic](https://i.imgur.com/Blx5Rfv.png)
+
 Majority of rules will be implemented here (future npm library):
 
 `src/helpers/bns/`
@@ -66,15 +66,13 @@ Until I copy all rules here, basic premise is:
 
 - Anyone can spend outputs used for that, so require cleanup of utxo for it to count.
 
-- domain-name-to-forwarding look-up is one way (one way hash function).
+- domain-name-to-forwarding look-up is one way - a hash of the domain name is used to determine a unique address via the a hash function - easy to do, hard to find what was hashed.
 
 - ~1 year of blocks duration, ~24 hour of blocks challenge period with clean up & reimbersement required.
 
 - Burns are kept small but non-0 (for miners) and at least double on each challenge.
 
 Tons more stuff to list here and do in the app.
-
-Wasn't sure what's better: Bitcoin Name Service, Bitcoin Name System, Bitcoin Name System Service, Bitcoin Domains
 
 ## Terminology and definitions
 
@@ -216,6 +214,10 @@ Domains and forwards are the one usecase that specifically does greatly benefit 
 ## How is it different?
 
 I am not aware of any other solutions without compromises that are pure Bitcoin based. It works through derivation entirely from always available public [replicated](http://luke.dashjr.org/programs/bitcoin/files/charts/services.html) Bitcoin blockchain data. There's no specialized indexing service needed (or possible) to scan every transaction with embedded messages to derive specific domain's state. Only a small domain-unique subset of transactions are relevant. BNS is using generic indexing by addresses already available in probably all standard Bitcoin node and explorer implementations.
+
+## Names
+
+The name was chosen to imply it's neutral system rather than service. I really don't know if tehre's a better one: Bitcoin Name Service, Bitcoin Name System, Bitcoin Name System Service, Bitcoin Domains, Bitcoin Domain Service, world's most expensive url shortener, world's most absurdly secure url shortener ^^, BitcoinNameService (BNS), Me on Bitcoin
 
 ## Donations
 

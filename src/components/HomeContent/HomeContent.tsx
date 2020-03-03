@@ -68,7 +68,10 @@ export const HomeContent = (props: any): JSX.Element => {
         ></textarea>
         <RoundButton
           sizebutton='2.6'
-          onClick={() => searchAction(state, dispatch)}
+          onClick={() => {
+            console.time('searchtimelog')
+            searchAction(state, dispatch)
+          }}
         >
           .btc
         </RoundButton>

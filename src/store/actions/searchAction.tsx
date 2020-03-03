@@ -54,6 +54,8 @@ export const searchAction = async (
       router?.push('/')
     }
 
+    console.timeEnd('searchtimelog')
+
     // store data
     return dispatch({
       type: STORE_SEARCH_RESULTS,
@@ -73,7 +75,7 @@ export const searchAction = async (
     if (router) {
       router?.push('/')
     }
-
+    console.timeEnd('searchtimelog')
     // still updating the notification address
     return dispatch({
       type: STORE_SEARCH_RESULTS_FAIL,
