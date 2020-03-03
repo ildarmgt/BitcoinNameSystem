@@ -358,8 +358,7 @@
 
 /* wide screen settings */
 @media screen and (min-aspect-ratio: 14/10) {
-  .nav,
-  .warning {
+  .nav {
     transform-origin: bottom right;
     transform: scale(var(--horizontalScale));
     width: calc(100% / var(--horizontalScale));
@@ -369,7 +368,8 @@
     transform: scale(calc(1.1 * var(--horizontalScale)));
     transform-origin: top left;
   }
-  .leftCorner {
+  .leftCorner,
+  .warning {
     transform-origin: bottom left;
     transform: scale(var(--horizontalScale));
   }

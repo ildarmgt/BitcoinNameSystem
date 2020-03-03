@@ -7,10 +7,14 @@
   text-rendering: geometricPrecision; /* firefox improvement */
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  opacity: 0.4;
+  opacity: 0.3;
 }
 
-.logo:hover * {
-  opacity: 1;
+.logo:hover {
   cursor: pointer;
+  opacity: 0.9;
+}
+
+.logo:active {
+  transform: translateY(calc(0.1 * var(--s)));
 }
