@@ -74,7 +74,9 @@ export const VisualAPI = (props: any) => {
     >
       <div className={styles.text}>
         {/* temp */}
-        {props.tasks.length > 0 && <>API: {props.tasks.length} tasks</>}
+        {(false || props.tasks.length > 0) && (
+          <>API: {props.tasks.length} tasks</>
+        )}
       </div>
     </div>
   )

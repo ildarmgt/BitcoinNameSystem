@@ -16,6 +16,7 @@
   overflow-x: hidden;
   overflow-y: hidden;
   font-size: calc(2.5 * var(--s));
+  transform: scale(var(--verticalScale));
 }
 
 .leftCorner {
@@ -25,10 +26,12 @@
   position: absolute;
   display: grid;
   grid:
-    'wallet api' auto
-    / auto auto;
+    'wallet pageNum api' auto
+    / auto auto auto;
   justify-items: center;
   align-items: end;
+  transform: scale(0.999);
+  z-index: 9;
 }
 
 .leftCorner > .wallet {
@@ -36,7 +39,23 @@
   min-height: calc(var(--navbarHeight));
   grid-area: wallet;
   padding: calc(0.75 * var(--s)) calc(1 * var(--s));
-  z-index: 5;
+  /* z-index: 5; */
+  transform: scale(0.999);
+}
+
+.leftCorner > .pageNum {
+  grid-area: pageNum;
+  box-sizing: border-box;
+  bottom: calc(var(--navbarHeight) / 2);
+  transform: translateY(50%);
+  color: var(--colorLightText);
+  box-sizing: border-box;
+  position: relative;
+  font-size: calc(2.3 * var(--s));
+  line-height: calc(2.5 * var(--s));
+  float: left;
+  padding: 0 calc(2 * var(--s));
+  vertical-align: middle;
 }
 
 .leftCorner > .api {
@@ -54,7 +73,7 @@
   left: calc(0 * var(--s));
   /* background-color: var(--colorWarning); */
   /* border: calc(0.2 * var(--s)) solid var(--colorButtonText); */
-  font-size: calc(1.5 * var(--s));
+  font-size: calc(1.8 * var(--s));
   /* margin-left: calc(1 * var(--s)); */
   color: var(--colorWarning);
   vertical-align: middle;
@@ -91,7 +110,7 @@
   opacity: 0.6;
 }
 .warning > label:hover {
-  background-color: var(--colorDarker0_5);
+  box-shadow: 0 0 0 calc(0.05 * var(--s)) var(--colorWarning);
   opacity: 1;
 }
 .warning > label:active {
@@ -165,16 +184,6 @@
 
 .overflowMenu .selected {
   background-color: var(--colorBrighter9);
-}
-
-.pageNum {
-  display: inline-block;
-  font-size: calc(2.3 * var(--s));
-  line-height: calc(2.5 * var(--s));
-  float: left;
-  margin: 0 calc(0.25 * var(--s));
-  padding: calc(0.75 * var(--s)) calc(1 * var(--s));
-  vertical-align: middle;
 }
 
 /* "..." for handling menu options outside visible range */

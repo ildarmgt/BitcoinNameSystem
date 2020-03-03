@@ -2,7 +2,8 @@ import React, { useState, useEffect } from 'react'
 import styles from './DevPanel.module.css'
 import { Store } from '../../store/'
 import { ActionTypes } from './../../interfaces/'
-const json = require('./../../utils/test.json')
+import json from './../../utils/test.json'
+// const json = require('./../../utils/test.json')
 
 interface I_State {
   blShow: boolean
@@ -41,7 +42,7 @@ export const DevPanel = (props: any): JSX.Element => {
   }, [hidden])
 
   const onOutlineClick = () => {
-    const id: string = 'outliner'
+    const id = 'outliner'
     const sheet: HTMLElement | null = document.getElementById(id)
     if (!sheet) {
       const outlineCss = '* {box-shadow: 0 0 0 1px red;}'
@@ -56,13 +57,13 @@ export const DevPanel = (props: any): JSX.Element => {
   }
 
   const dlState = () => {
-    let data =
+    const data =
       'text/json;charset=utf-8,' + encodeURIComponent(JSON.stringify(state))
-    let a = document.createElement('a')
+    const a = document.createElement('a')
     a.href = 'data:' + data
     a.download = 'test.json'
     a.innerHTML = 'download JSON'
-    let container = document.getElementById('container')
+    const container = document.getElementById('container')
     container?.appendChild(a)
     a.click()
     a.remove()

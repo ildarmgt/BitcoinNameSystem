@@ -60,7 +60,7 @@ export const Navbar = (): JSX.Element => {
         overflowMenuDiv.current!.style.opacity = 'var(--finalOpacity)'
       }
     }
-    window.setTimeout(updateMenuPosition, 200)
+    window.setTimeout(updateMenuPosition, 100)
 
     // resize event
     const onResize = () => {
@@ -235,6 +235,11 @@ export const Navbar = (): JSX.Element => {
           />
         </div>
 
+        {/* page numbers (on tx creating pages) */}
+        {isCreatePage && (
+          <div className={styles.pageNum}>Page {state.pageInfo.current}/6</div>
+        )}
+
         <div className={styles.api}>
           <VisualAPI
             processId={state.api.processId}
@@ -251,11 +256,6 @@ export const Navbar = (): JSX.Element => {
       </div>
 
       <div className={styles.nav}>
-        {/* page numbers (on tx creating pages) */}
-        {isCreatePage && (
-          <div className={styles.pageNum}>{state.pageInfo.current}/6</div>
-        )}
-
         {/* collapsed menu toggle button */}
         {!!buttonsOverflow.length && (
           <div
