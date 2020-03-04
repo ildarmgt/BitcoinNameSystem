@@ -10,7 +10,6 @@ import {
 // import { useHistory } from 'react-router-dom'
 import { getUnspentSum } from '../../../helpers/bns/bitcoin'
 import { FeesSelection } from './../FeesSelection'
-import { LogoBackground } from './../../general/LogoBackground'
 
 /**
  * Allow withdrawals
@@ -38,7 +37,6 @@ export const Withdraw = () => {
 
   return (
     <div className={styles.wrapper}>
-      <LogoBackground />
       (NOT DONE)
       <div className={styles.title}>Withdraw from wallet</div>
       <div className={styles.request}>

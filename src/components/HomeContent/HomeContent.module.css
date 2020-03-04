@@ -2,6 +2,7 @@
   display: block;
   font-size: calc(5 * var(--s));
   color: var(--colorBitcoinBlue);
+  white-space: nowrap;
 }
 .lblMainTitle span {
   color: var(--colorBitcoinOrange);
@@ -19,7 +20,7 @@
 
 .txtSearch {
   color: var(--colorBitcoinOrange);
-  width: 50vw;
+  width: 60vw;
   caret-color: var(--colorBitcoinOrange);
 }
 
@@ -89,5 +90,9 @@
   .divSearch,
   .lblMainTitle {
     transform: scale(var(--correction));
+  }
+
+  .txtSearch {
+    width: calc(60 * var(--s));
   }
 }
