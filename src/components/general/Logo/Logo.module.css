@@ -3,116 +3,70 @@
 /* -------------------------------------------------------------------------- */
 
 .outershell2 {
-  /* by passing size and converting to u can set exact icon height */
-  --btcLogoUnit: calc(var(--btcLogoInputSize) / 13.25);
+}
+
+/* all divs get this for reset */
+.btcLogo {
+  /* btcLogoInputSize becomes height & width, u is 1/1000 that */
+  --btcLogoUnit: calc(var(--btcLogoInputSize, 50vmin) / 1000);
+  --colorBitcoinOrange: rgb(255, 155, 0);
+  --colorText: white;
+  /* --btcLogoInputSize: 80vh; */
+  display: inline-block;
+  position: absolute;
+  transform: scale(0.99999) rotate(0.00001deg) translate(0, 0) translateZ(0);
+  opacity: 0.99999;
+  filter: blur(0);
+  width: var(--btcLogoInputSize, 50vmin);
+  height: var(--btcLogoInputSize, 50vmin);
+  font-size: var(--btcLogoInputSize, 50vmin);
+  line-height: 0;
+  transform-origin: top left;
+  font-family: 'Ubuntu';
+  font-weight: bold;
+  top: 0;
+  left: 0;
   padding: 0;
   margin: 0;
-  width: calc(13.25 * var(--btcLogoUnit));
-  height: calc(13.25 * var(--btcLogoUnit));
+  box-sizing: border-box;
+  text-align: left;
+  vertical-align: top;
 }
 
-.wrapper2 {
-  font-family: 'Ubuntu';
-  display: inline-block;
-  padding: calc(0.1 * var(--btcLogoUnit));
-  box-sizing: border-box;
-
-  overflow: hidden;
-  overflow-x: hidden;
-  overflow-y: hidden;
-}
-
-.rotater2 {
-  box-sizing: border-box;
-  display: block;
+/* need 1 div to cut off extra stuff and serve as wrapper */
+.cutoffs {
+  /* becomes relative coods for others */
   position: relative;
-  transform: rotate(20deg);
+  /* hide stuff */
+  overflow: hidden;
+  overflow-y: hidden;
+  overflow-x: hidden;
 }
 
-.logo2 {
-  font-family: 'Ubuntu';
-  align-items: center;
+/* need 1 div to to make yellow background and slight offset */
+.background {
+  border-radius: var(--btcLogoInputSize, 50vmin);
   background-color: var(--colorBitcoinOrange);
-  border-radius: calc(50 * var(--btcLogoUnit));
-  box-sizing: border-box;
-  color: var(--colorBackground);
-  display: flex;
-  font-style: normal;
-  font-weight: bold;
-  justify-content: center;
-  padding: calc(1.6 * var(--btcLogoUnit));
+  transform: scale(0.99) rotate(0.00001deg)
+    translate(calc(5 * var(--btcLogoUnit)), calc(5 * var(--btcLogoUnit)));
 }
 
-.logo2 span {
-  font-size: calc(11 * var(--btcLogoUnit));
-  line-height: calc(10 * var(--btcLogoUnit));
-  width: calc(10 * var(--btcLogoUnit));
-  transform: rotate(0.01deg);
+.theB {
+  color: var(--colorText);
+  background-color: transparent;
+
+  width: calc(85 * var(--btcLogoUnit));
+  height: calc(120 * var(--btcLogoUnit));
+
+  box-shadow: calc(345 * var(--btcLogoUnit)) calc(358 * var(--btcLogoUnit)) 0 0
+      var(--colorText),
+    calc(185 * var(--btcLogoUnit)) calc(358 * var(--btcLogoUnit)) 0 0
+      var(--colorText),
+    calc(345 * var(--btcLogoUnit)) calc(-425 * var(--btcLogoUnit)) 0 0
+      var(--colorText),
+    calc(185 * var(--btcLogoUnit)) calc(-425 * var(--btcLogoUnit)) 0 0
+      var(--colorText);
+
+  transform: scale(0.83) rotate(20deg)
+    translate(calc(460 * var(--btcLogoUnit)), calc(333 * var(--btcLogoUnit)));
 }
-
-.rotater2:before {
-  content: '';
-  position: absolute;
-  height: calc(9.7 * var(--btcLogoUnit));
-  /* var(--colorBackground) */
-  border: var(--colorBackground) solid calc(0.85 * var(--btcLogoUnit));
-  border-top: none;
-  border-bottom: none;
-  width: calc(0.6 * var(--btcLogoUnit));
-  top: calc(6.4 * var(--btcLogoUnit));
-  transform: translate(
-    calc(-1.4 * var(--btcLogoUnit)),
-    calc(-4.4 * var(--btcLogoUnit))
-  );
-}
-
-.logo2:before {
-  /* background-color: rgba(0, 0, 255, 0.76); */
-  content: '';
-  box-sizing: border-box;
-  position: absolute;
-  background-color: var(--colorBitcoinOrange);
-  border-radius: calc(4 * var(--btcLogoUnit));
-  top: calc(6.75 * var(--btcLogoUnit));
-  left: calc(6.4 * var(--btcLogoUnit));
-  width: 0;
-  height: 0;
-  padding: calc(3.8 * var(--btcLogoUnit));
-  transform: translate(
-    calc(-3.65 * var(--btcLogoUnit)),
-    calc(-3.65 * var(--btcLogoUnit))
-  );
-}
-
-/* -------------------------------------------------------------------------- */
-/*                                     v1                                     */
-/* -------------------------------------------------------------------------- */
-
-/*
-.wrapper {
-  font-family: 'Ubuntu';
-  display: inline-block;
-  margin: 0;
-  padding: 0;
-}
-
-.logo {
-  align-items: center;
-  background: var(--colorBitcoinOrange);
-  border-radius: 50%;
-  box-sizing: border-box;
-  color: var(--colorBackground);
-  display: flex;
-  font-family: sans-serif;
-  font-style: normal;
-  font-weight: bold;
-  justify-content: center;
-  padding: calc(1.613 * var(--btcLogoUnit));
-}
-
-.logo span {
-  font-size: calc(10 * var(--btcLogoUnit));
-  line-height: calc(10 * var(--btcLogoUnit));
-  width: calc(10 * var(--btcLogoUnit));
-  transform: rotate(20deg);
-} */

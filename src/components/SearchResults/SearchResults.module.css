@@ -203,6 +203,6 @@
 
 @media screen and (min-aspect-ratio: 14/10) {
   .listContainer {
-    justify-content: space-between;
+    justify-content: space-around;
   }
 }

@@ -72,10 +72,9 @@ export const Wallet = (props: any): JSX.Element => {
     >
       {TESTING && (
         <>
-          <Logo
-            size='var(--wallet__logo_size)'
-            className={[styles.logo, 'arbitraryFixes'].join(' ')}
-          />
+          <div>
+            <Logo className={styles.logo} size='var(--wallet__logo_size)' />
+          </div>
         </>
       )}
     </div>

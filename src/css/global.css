@@ -285,7 +285,7 @@ a:hover,
 
 a:active,
 .canPress:active {
-  transform: translateY(calc(0.2 * var(--s)));
+  transform: translateY(calc(0.1 * var(--s)));
 }
 
 /* mark selectable where necessary */

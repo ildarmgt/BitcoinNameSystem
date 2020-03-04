@@ -34,7 +34,8 @@
 }
 
 .roundButtonWrap:active {
-  transform: translateY(calc(0.2 * var(--sizeButton)));
+  /* transform: translateY(calc(0.2 * var(--sizeButton))); */
+  transform: translateY(calc(0.1 * var(--s)));
 }
 
 .overhead {

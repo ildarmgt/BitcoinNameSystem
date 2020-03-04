@@ -16,12 +16,9 @@ export const Logo = (props: any) => {
         } as React.CSSProperties
       }
     >
-      <div className={styles.wrapper2}>
-        <div className={styles.rotater2}>
-          <div className={styles.logo2}>
-            <span>B</span>
-          </div>
-        </div>
+      <div className={[styles.btcLogo, styles.cutoffs].join(' ')}>
+        <div className={[styles.btcLogo, styles.background].join(' ')}></div>
+        <div className={[styles.btcLogo, styles.theB].join(' ')}>B</div>
       </div>
     </div>
   )

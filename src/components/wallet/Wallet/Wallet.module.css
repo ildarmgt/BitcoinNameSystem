@@ -3,20 +3,24 @@
 }
 
 .logo {
-  --wallet__logo_size: calc((7 * var(--s)));
+  --wallet__logo_size: calc((10 * var(--s)) + 1px);
   text-rendering: geometricPrecision; /* firefox improvement */
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  opacity: 0.3;
+  opacity: 0.2;
   filter: saturate(0.1);
+  transform: translateY(calc(0 * var(--s))) scale(0.7);
+  transform-origin: bottom left;
 }
 
 .logo:hover {
   cursor: pointer;
   opacity: 0.9;
   filter: saturate(1);
+  transform: translateY(calc(0 * var(--s))) scale(0.7);
 }
 
 .logo:active {
-  transform: translateY(calc(0.1 * var(--s)));
+  /* transform-origin: center; */
+  transform: translateY(calc(0.1 * var(--s))) scale(0.68);
 }

@@ -19,7 +19,7 @@
 
 .txtSearch {
   color: var(--colorBitcoinOrange);
-  width: 66vw;
+  width: 50vw;
   caret-color: var(--colorBitcoinOrange);
 }
 

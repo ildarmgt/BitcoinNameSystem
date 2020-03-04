@@ -186,6 +186,10 @@
   background-color: var(--colorBrighter9);
 }
 
+.button:active {
+  transform: translateY(calc(0.1 * var(--s))) scale(0.95);
+}
+
 /* "..." for handling menu options outside visible range */
 .collapsitron {
   display: inline-block;
