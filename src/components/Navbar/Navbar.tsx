@@ -104,7 +104,7 @@ export const Navbar = (): JSX.Element => {
         ref={searchButton}
         className={[styles.button, isHomePage ? styles.selected : ''].join(' ')}
         onClick={() => {
-          history.push('/')
+          !isHomePage && history.push('/')
         }}
       >
         search
@@ -117,7 +117,7 @@ export const Navbar = (): JSX.Element => {
           ' '
         )}
         onClick={() => {
-          history.push('/create')
+          !isCreatePage && history.push('/create')
         }}
       >
         users
@@ -141,7 +141,7 @@ export const Navbar = (): JSX.Element => {
           ' '
         )}
         onClick={() => {
-          history.push('/about')
+          !isAboutPage && history.push('/about')
         }}
       >
         about
@@ -154,7 +154,7 @@ export const Navbar = (): JSX.Element => {
           ' '
         )}
         onClick={() => {
-          history.push('/settings')
+          !isSettingsPage && history.push('/settings')
         }}
       >
         settings
@@ -167,7 +167,7 @@ export const Navbar = (): JSX.Element => {
           ' '
         )}
         onClick={() => {
-          history.push('/wallet')
+          !isWalletPage && history.push('/wallet')
         }}
       >
         wallet

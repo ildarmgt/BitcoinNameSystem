@@ -32,6 +32,7 @@
   align-items: end;
   transform: scale(0.999);
   z-index: 9;
+  pointer-events: none;
 }
 
 .leftCorner > .wallet {
@@ -41,6 +42,7 @@
   padding: calc(0.75 * var(--s)) calc(1 * var(--s));
   /* z-index: 5; */
   transform: scale(0.999);
+  pointer-events: visible;
 }
 
 .leftCorner > .pageNum {

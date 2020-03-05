@@ -147,7 +147,7 @@ const recalcBuilder = ({ txBuilder, setInfo }: any) => {
  * Session storage scan. Key value pairs.
  */
 const handleStorageChange = (params: any, setParams: any) => (e: any): void => {
-  if (e) console.warn(e)
+  // if (e) console.warn(e)
 
   // do not want spam of events going off in middle of this
   removeListeners(params, setParams)
@@ -180,7 +180,7 @@ const handleStorageChange = (params: any, setParams: any) => (e: any): void => {
 
 // curried url change handler
 const handleHashChange = (params: any, setParams: any) => (e: any): void => {
-  if (e) console.warn(e)
+  // if (e) console.warn(e)
 
   // convert url string starting with # into key/value pair object
   // #/ok/?a=b&c=d becomes { a:b, c:d }

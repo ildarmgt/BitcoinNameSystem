@@ -1,23 +1,23 @@
 self.__precacheManifest = (self.__precacheManifest || []).concat([
   {
-    "revision": "6995d0a0c1d3a6799955a823e4f12e1c",
+    "revision": "fbed831c9ac7098335a412e3a3666763",
     "url": "./index.html"
   },
   {
-    "revision": "626608fa87fb0e97bc35",
-    "url": "./static/css/main.e54e8918.chunk.css"
+    "revision": "4ada67008a8c8c40d121",
+    "url": "./static/css/main.7517b132.chunk.css"
   },
   {
-    "revision": "9874bdad74768af8368e",
-    "url": "./static/js/2.85ebce65.chunk.js"
+    "revision": "c0effcd6ff3abceb052c",
+    "url": "./static/js/2.fed7ee12.chunk.js"
   },
   {
     "revision": "5d1b8067085602e259fd0862f57df793",
-    "url": "./static/js/2.85ebce65.chunk.js.LICENSE"
+    "url": "./static/js/2.fed7ee12.chunk.js.LICENSE"
   },
   {
-    "revision": "626608fa87fb0e97bc35",
-    "url": "./static/js/main.63c71ee9.chunk.js"
+    "revision": "4ada67008a8c8c40d121",
+    "url": "./static/js/main.1aac4c1f.chunk.js"
   },
   {
     "revision": "af7245be922ad18f7d40",
@@ -46,5 +46,25 @@ self.__precacheManifest = (self.__precacheManifest || []).concat([
   {
     "revision": "8dc95fab9cf98d02ca8d76e97d3dff60",
     "url": "./static/media/montserrat-v14-latin-300.8dc95fab.woff"
+  },
+  {
+    "revision": "16a73d944d9825af5a5c1a1f55de8f28",
+    "url": "./static/media/ubuntu-v14-latin-300.16a73d94.woff2"
+  },
+  {
+    "revision": "1d78262dd49a4677830582ed949bb6a4",
+    "url": "./static/media/ubuntu-v14-latin-300.1d78262d.svg"
+  },
+  {
+    "revision": "a4ac003800b0614c5fea55bd06c8f493",
+    "url": "./static/media/ubuntu-v14-latin-300.a4ac0038.eot"
+  },
+  {
+    "revision": "ee4afab8127f94ac1db1014c13f4048a",
+    "url": "./static/media/ubuntu-v14-latin-300.ee4afab8.ttf"
+  },
+  {
+    "revision": "f47318810718978402787f6c97d80b3c",
+    "url": "./static/media/ubuntu-v14-latin-300.f4731881.woff"
   }
 ]);
