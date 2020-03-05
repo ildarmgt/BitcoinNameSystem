@@ -45,9 +45,12 @@ npm run serve
 
 This makes it accessible locally at http://localhost:3000
 
-## Testnet bitcoin faucets (free testnet coins)
+## Testnet bitcoin faucets
 
-https://bitcoinfaucet.uo1.net/send.php (segwit compatible)
+free testnet coins, segwit compatible
+
+- https://bitcoinfaucet.uo1.net/send.php
+- https://testnet-faucet.mempool.co/
 
 ## Method used for BNS
 
