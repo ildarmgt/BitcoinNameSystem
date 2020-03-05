@@ -39,6 +39,12 @@ describe('stealth address implementation', () => {
     expect(Buffer.isBuffer(Alice_xPub_Buffer)).toEqual(true)
   })
 
+  console.log(
+    'Alice xpub for stealth address\n',
+    'base58:' + Alice_xPub_B58,
+    'byte length:' + Alice_xPub_Buffer.length
+  )
+
   /* -------------------------------------------------------------------------- */
   /*                     Alice uploads xPub (binary) to BNS                     */
   /* -------------------------------------------------------------------------- */

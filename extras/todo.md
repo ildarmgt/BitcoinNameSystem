@@ -13,6 +13,7 @@
 - detect and fix dust outputs in tx maker
 - standardize lower case on addresses or hex strings used for hash?
 - say when no available actions exist on page 4 instead of NOTHING
+- set ubuntu font as fallback for special unicode characters since other one almost surely doesn't have it! (check U+0271 and aprox equal symbols) - [this method for utf ranges](https://stackoverflow.com/a/11395766/12695295) [and/or this method](https://24ways.org/2011/creating-custom-font-stacks-with-unicode-range/)
 
 - `!a <# of BTCs>` - Post price to sell (output @0), measured in floating point btc. Owner address (input @0). Similar to challenge period but instead of burning, tx are sent to owner. ~24 hours from time of first bid w/ more left on lease, cannot transfer ownership after first bid. Include notification (output @1) & optional public notification to '':'' address (@output 2). Must be no owner's ACS, use as inputs (inputs @1+). Does not change lease expiration - only burns can extend even if transfered.
 
