@@ -65,6 +65,7 @@ export const Navbar = (): JSX.Element => {
     // resize event
     const onResize = () => {
       if (searchButton.current) {
+        //adds a class to get rid of any animations / transitions while resizing just for that moment
         document.body.classList.add('resize-animation-stopper')
         clearTimeout(nav.resizeTimer)
         const resizeTimer = setTimeout(() => {
@@ -76,10 +77,16 @@ export const Navbar = (): JSX.Element => {
           showCollapsed: false,
           buttonWidth: searchButton.current.getBoundingClientRect().width
         })
+
+        //measure viewport height for mobile to size pages (disabled for now)
+        // const dh2 = window.innerHeight * 0.01
+        // document.documentElement.style.setProperty('--dh2', `${dh2}px`)
       }
     }
     // handle resize event listeners
     window.addEventListener('resize', onResize)
+
+    // return happens on onloading of this div before rerender
     return () => window.removeEventListener('resize', onResize)
   }, [nav])
 

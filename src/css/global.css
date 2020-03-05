@@ -125,14 +125,24 @@ html {
   --headerWhitespace: calc(18 * var(--s));
   /* navbar height */
   --navbarHeight: calc(6.1 * var(--s));
+
   /*
-    height of display
+    display height
     height: 100vh on mobile does not account for
-    appearing/disappearing bars but actual
-    visible height is necessary for keeping things visible.
+    appearing/disappearing bars (good for fonts)
+    but actual visible height is necessary for keeping things visible
+    and not being able to scroll outside the page.
     https://bugs.chromium.org/p/chromium/issues/detail?id=844848#c4
+    This still does not work on brave browser - content overflows.
+    Chrome & firefox on mobile are good.
   */
   --dh: 100%;
+
+  /*
+    var(--dh2) can be set for height via javascript
+    https://css-tricks.com/the-trick-to-viewport-units-on-mobile/
+    For now not sure it's worth it.
+  */
 
   /* -------------------------------------------------------------------------- */
   /*                               global colors                                */
@@ -625,12 +635,12 @@ table td p {
 @media screen and (max-width: 600px) {
   @media screen and (max-height: 600px) {
     html {
-      --s: calc(1.6 * (0.5vw + 0.5vh));
+      --s: calc(1.1 * (0.5vw + 0.5vh));
     }
     html,
     textarea {
-      -webkit-text-stroke: 0.35px;
-      text-shadow: var(--colorDarker1) 0px 0.45px 0.45px;
+      -webkit-text-stroke: 0.15px;
+      text-shadow: var(--colorDarker1) 0px 0.35px 0.35px;
     }
   }
 }
