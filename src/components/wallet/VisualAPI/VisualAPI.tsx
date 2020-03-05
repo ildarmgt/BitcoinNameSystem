@@ -124,7 +124,7 @@ const apiLoop = async ({
   // check if you got a termination request
   if (last.loops[id.toString()]?.terminate) {
     // terminate. sad.
-    console.log(`apiloop #${id} following termination request`)
+    console.log(`apiloop #${id} following termination request`, last)
     return undefined
   }
 
@@ -141,7 +141,7 @@ const apiLoop = async ({
   // check if you got a termination request
   if (last.loops[id.toString()]?.terminate) {
     // terminate. sad.
-    console.log(`apiloop #${id} following termination request`)
+    console.log(`apiloop #${id} following termination request`, last)
     return undefined
   }
 
@@ -158,7 +158,7 @@ const apiLoop = async ({
         // run task with rate limit passed along if necessary
         console.log(
           `apiloop #${id} executing api call`,
-          JSON.stringify(last.loops, null, 2)
+          JSON.stringify(last, null, 2)
         )
         const res = await task.run({
           delay: () => delay({ ms: delayBusy })
@@ -173,6 +173,11 @@ const apiLoop = async ({
       // remove first task from queue
       setTasks(tasks.slice(1))
 
+      // force delay before letting go of busy state
+      // to prevent another async process
+      // from running it too often
+      delay({ ms: delayBusy })
+
       // update you're not using it
       last.props.setBusy(false)
     }
@@ -180,10 +185,10 @@ const apiLoop = async ({
 
   /* --------------------------- task execution end --------------------------- */
 
-  // no tasks (array is empty) use standby rate, otherwise busy rate
-  await delay(
-    !tasks || tasks.length === 0 ? { ms: delayStandby } : { ms: delayBusy }
-  )
+  // no tasks (array is empty) use standby rate
+  if (!tasks || tasks.length === 0) {
+    await delay({ ms: delayStandby })
+  }
 
   // loop self, no await, this call should terminate asap
   apiLoop({ delayStandby, delayBusy, id })
@@ -207,10 +212,15 @@ const figureOutNewProcessId = ({
       // incorrect loops that timed out can be terminated if older
       // than this loop (consensus by id) leaving only 1 unterminated
       if (id > otherLoop.id) {
-        console.log(`
+        otherLoop.terminate = true
+
+        console.log(
+          `
         loop id #${id} detected another #${otherLoop.id}
         older loop so setting it to terminate
-        `)
+        `,
+          last
+        )
         otherLoop.terminate = true
       }
     }
@@ -220,7 +230,11 @@ const figureOutNewProcessId = ({
   // 0 means you and everyone else has timed out but
   // if still processing this, good enough to claim
   if (nLoopsAlive === 0) {
-    console.log(`${id} is new api loop`, JSON.stringify(last.loops, null, 2))
+    console.log(
+      `${id} is new api loop replacing ${processId}`,
+      JSON.stringify(last.loops, null, 2),
+      last
+    )
     last.props.setProcessId(id)
   }
 }
