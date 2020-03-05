@@ -22,6 +22,8 @@ export const VisualAPI = (props: any) => {
   last.props.setProcessId = props.setProcessId
   last.props.tasks = props.tasks
   last.props.setTasks = props.setTasks
+  last.props.setBusy = props.setBusy
+  last.props.busy = props.busy
 
   /* -------------------------------------------------------------------------- */
   /*                           api loop initialization                          */
@@ -38,7 +40,9 @@ export const VisualAPI = (props: any) => {
       last.props.processId !== undefined &&
       last.props.setProcessId !== undefined &&
       last.props.tasks !== undefined &&
-      last.props.setTasks !== undefined
+      last.props.setTasks !== undefined &&
+      last.props.setBusy !== undefined &&
+      last.props.busy !== undefined
     ) {
       if (processId === null) {
         // if no process id during rerender,
@@ -127,25 +131,35 @@ const apiLoop = async ({
   // report if you're still alive
   const time = Date.now()
   const me = { id, time, terminate: false }
-  last.loops = {
-    [id.toString()]: me
-  }
+  last.loops[id.toString()] = me
 
   // check if the loop doesn't match processId externally
   if (processId && id !== processId) {
     figureOutNewProcessId({ time, processId, id })
   }
 
+  // check if you got a termination request
+  if (last.loops[id.toString()]?.terminate) {
+    // terminate. sad.
+    console.log(`apiloop #${id} following termination request`)
+    return undefined
+  }
+
   /* -------------------------- task execution start -------------------------- */
 
-  if (tasks) {
+  if (tasks && processId && id === processId && !last.props.busy) {
     // check first item in queue
     const task = tasks[0]
 
     if (task) {
       try {
+        // set as busy
+        last.props.setBusy(true)
         // run task with rate limit passed along if necessary
-
+        console.log(
+          `apiloop #${id} executing api call`,
+          JSON.stringify(last.loops, null, 2)
+        )
         const res = await task.run({
           delay: () => delay({ ms: delayBusy })
         })
@@ -156,9 +170,11 @@ const apiLoop = async ({
         // reject promise
         task.reject(error)
       }
-
       // remove first task from queue
       setTasks(tasks.slice(1))
+
+      // update you're not using it
+      last.props.setBusy(false)
     }
   }
 
@@ -186,18 +202,6 @@ const figureOutNewProcessId = ({
   Object.keys(last.loops).forEach((idKey: string) => {
     const otherLoop = last.loops[idKey]
     if (time - otherLoop.time < LOOP_TIMEOUT) {
-      // if another loop hasn't timed out
-      if (otherLoop.id === processId) {
-        // and it matches correct id, set self to terminate
-        last.loops[id.toString()].terminate = true
-        console.log(`
-          other living loop id #${id} matches processId ${processId}
-          and the correct loop so terminating self
-        `)
-      } else {
-        // if other loop(s) are not correct either do
-        // nothing until they time out
-      }
       nLoopsAlive++ // count living loops
     } else {
       // incorrect loops that timed out can be terminated if older
@@ -213,9 +217,11 @@ const figureOutNewProcessId = ({
   })
   // if you're the last living loop that isn't timed out,
   // update external processId reference
-  if (nLoopsAlive === 1) {
+  // 0 means you and everyone else has timed out but
+  // if still processing this, good enough to claim
+  if (nLoopsAlive === 0) {
+    console.log(`${id} is new api loop`, JSON.stringify(last.loops, null, 2))
     last.props.setProcessId(id)
-    console.log(`${id} is new api loop`, last.loops)
   }
 }
 

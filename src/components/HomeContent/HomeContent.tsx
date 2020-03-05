@@ -2,6 +2,7 @@ import React, { useEffect, useRef } from 'react'
 import { RoundButton } from './../general/RoundButton'
 import { Store } from '../../store/'
 import { searchAction, changeAliasAction } from './../../store/actions/'
+import { useHistory, Redirect } from 'react-router-dom'
 import { SearchResults } from './../SearchResults'
 import styles from './HomeContent.module.css'
 
@@ -10,6 +11,8 @@ import styles from './HomeContent.module.css'
  */
 export const HomeContent = (props: any): JSX.Element => {
   const { state, dispatch } = React.useContext(Store)
+  // url changer
+  const history = useHistory()
 
   // if page is loaded with #/id/:alias format
   // this will change alias to that one
@@ -17,8 +20,10 @@ export const HomeContent = (props: any): JSX.Element => {
   // and then it will do search with new alias
   // http://localhost:3000/#/id/satoshi
   const alias = props?.match?.params?.alias
-  if (alias) {
-    searchAction({ ...state, alias }, dispatch, props.history)
+  const hash = window.location.hash
+  if (alias && hash !== '#/') {
+    console.log('alias id detected in url:', alias, hash)
+    searchAction({ ...state, alias }, dispatch, history)
   }
 
   // is serach done
@@ -36,6 +41,9 @@ export const HomeContent = (props: any): JSX.Element => {
 
   return (
     <div className={styles.wrapper}>
+      {/* only way routing asap doesn't give "cant change state during render..." */}
+      {alias && hash !== '#/' && <Redirect to='/' />}
+
       <div
         className={
           !isSearchDone()
@@ -69,7 +77,6 @@ export const HomeContent = (props: any): JSX.Element => {
         <RoundButton
           sizebutton='2.6'
           onClick={() => {
-            console.time('searchtimelog')
             searchAction(state, dispatch)
           }}
         >

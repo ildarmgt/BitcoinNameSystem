@@ -244,11 +244,15 @@ export const Navbar = (): JSX.Element => {
           <VisualAPI
             processId={state.api.processId}
             setProcessId={(processId: any) => {
-              if (processId)
-                setApiAction(state, dispatch, { running: true, processId })
+              if (processId) setApiAction(state, dispatch, { processId })
             }}
             tasks={state.api.tasks}
             setTasks={(tasks: any) => setApiAction(state, dispatch, { tasks })}
+            busy={state.api.running}
+            setBusy={(running: boolean) => {
+              setApiAction(state, dispatch, { running })
+              console.log('setbusy:', running)
+            }}
             delayBusy={1000 / state.api.rateLimit}
             delayStandby={100}
           />

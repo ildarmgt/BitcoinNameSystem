@@ -21,7 +21,10 @@ export const searchAction = async (
   const apiPath = state.api.path
 
   // stop if no alias submitted, nothing to save to state
-  if (!state.alias) return undefined
+  if (!state.alias) {
+    console.log('lost alias')
+    return undefined
+  }
 
   // find address for this alias
   const { notificationsAddress } = calcP2WSH(domainName, state.network)
@@ -49,15 +52,8 @@ export const searchAction = async (
       state.network
     )
 
-    // 3. if navigated via id, use router to navigate home w/o id in url
-    if (router) {
-      router?.push('/')
-    }
-
-    console.timeEnd('searchtimelog')
-
     // store data
-    return dispatch({
+    dispatch({
       type: STORE_SEARCH_RESULTS,
       payload: {
         alias: state.alias,
@@ -67,17 +63,13 @@ export const searchAction = async (
         }
       }
     })
+
+    if (window.location.hash !== '#/') router.push('/')
   } catch (e) {
     console.log('searchAction issue found:', e)
 
-    // if navigated via url id, use router to navigate home w/o id in url
-    // even if api call failed, should navigate away or will be stuck in a loop
-    if (router) {
-      router?.push('/')
-    }
-    console.timeEnd('searchtimelog')
     // still updating the notification address
-    return dispatch({
+    dispatch({
       type: STORE_SEARCH_RESULTS_FAIL,
       payload: {
         alias: state.alias, // can save alias
@@ -85,5 +77,6 @@ export const searchAction = async (
         notificationsAddress // can save this easy derivation
       }
     })
+    if (window.location.hash !== '#/') router.push('/')
   }
 }
