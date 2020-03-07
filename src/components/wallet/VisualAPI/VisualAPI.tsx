@@ -76,11 +76,20 @@ export const VisualAPI = (props: any) => {
       onClick={props.onClick}
       className={[styles.wrapper, props.className || ''].join(' ')}
     >
-      <div className={styles.text}>
+      <div
+        className={styles.text}
+        onClick={() => {
+          console.log(
+            Object.keys(last.loops).map((loopKey: any) => ({
+              ...last.loops[loopKey],
+              timedOut: Date.now() - last.loops[loopKey].time > LOOP_TIMEOUT
+            }))
+          )
+        }}
+      >
         {/* temp */}
-        {(false || props.tasks.length > 0) && (
-          <>API: {props.tasks.length} tasks</>
-        )}
+        {props.tasks.length > 0 && <>{props.tasks.length} tasks</>}
+        {props.tasks.length === 0 && <>BNS ready</>}
       </div>
     </div>
   )
@@ -135,7 +144,7 @@ const apiLoop = async ({
 
   // check if the loop doesn't match processId externally
   if (processId && id !== processId) {
-    figureOutNewProcessId({ time, processId, id })
+    handleWrongProcessId({ time, processId, id })
   }
 
   // check if you got a termination request
@@ -147,7 +156,9 @@ const apiLoop = async ({
 
   /* -------------------------- task execution start -------------------------- */
 
-  if (tasks && processId && id === processId && !last.props.busy) {
+  const canRunTask = tasks && processId && id === processId && !last.props.busy
+
+  if (canRunTask) {
     // check first item in queue
     const task = tasks[0]
 
@@ -186,7 +197,7 @@ const apiLoop = async ({
   /* --------------------------- task execution end --------------------------- */
 
   // no tasks (array is empty) use standby rate
-  if (!tasks || tasks.length === 0) {
+  if (!canRunTask || tasks.length === 0) {
     await delay({ ms: delayStandby })
   }
 
@@ -194,8 +205,10 @@ const apiLoop = async ({
   apiLoop({ delayStandby, delayBusy, id })
 }
 
-// assigns new processId, terminates older by initialization loops
-const figureOutNewProcessId = ({
+/* -------------------------------------------------------------------------- */
+/*                             if wrong process id                            */
+/* -------------------------------------------------------------------------- */
+const handleWrongProcessId = ({
   time,
   processId,
   id
@@ -206,23 +219,13 @@ const figureOutNewProcessId = ({
   let nLoopsAlive = 0
   Object.keys(last.loops).forEach((idKey: string) => {
     const otherLoop = last.loops[idKey]
+    // count living loops
     if (time - otherLoop.time < LOOP_TIMEOUT) {
-      nLoopsAlive++ // count living loops
-    } else {
-      // incorrect loops that timed out can be terminated if older
-      // than this loop (consensus by id) leaving only 1 unterminated
-      if (id > otherLoop.id) {
-        otherLoop.terminate = true
-
-        console.log(
-          `
-        loop id #${id} detected another #${otherLoop.id}
-        older loop so setting it to terminate
-        `,
-          last
-        )
-        otherLoop.terminate = true
-      }
+      nLoopsAlive++
+    }
+    // terminate timed out older loops
+    if (otherLoop.id < id && time - otherLoop.time >= LOOP_TIMEOUT) {
+      otherLoop.terminate = true
     }
   })
   // if you're the last living loop that isn't timed out,

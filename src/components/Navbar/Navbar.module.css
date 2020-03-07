@@ -32,6 +32,8 @@
   align-items: end;
   transform: scale(0.999);
   z-index: 9;
+
+  /* so it doesn't block view clicking */
   pointer-events: none;
 }
 
@@ -42,7 +44,9 @@
   padding: calc(0.75 * var(--s)) calc(1 * var(--s));
   /* z-index: 5; */
   transform: scale(0.999);
-  pointer-events: visible;
+
+  /* allow clicking */
+  pointer-events: auto;
 }
 
 .leftCorner > .pageNum {
@@ -66,6 +70,9 @@
   /* height: calc(var(--navbarHeight)); */
   padding: 0 calc(2 * var(--s));
   grid-area: api;
+
+  /* allow clicking */
+  pointer-events: auto;
 }
 
 .warning {
