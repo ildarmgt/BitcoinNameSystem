@@ -131,11 +131,7 @@ const apiLoop = async ({
   const processId = last.props.processId
 
   // check if you got a termination request
-  if (last.loops[id.toString()]?.terminate) {
-    // terminate. sad.
-    console.log(`apiloop #${id} following termination request`, last)
-    return undefined
-  }
+  checkSelfTerminate(id)
 
   // report if you're still alive
   const time = Date.now()
@@ -143,16 +139,9 @@ const apiLoop = async ({
   last.loops[id.toString()] = me
 
   // check if the loop doesn't match processId externally
-  if (processId && id !== processId) {
-    handleWrongProcessId({ time, processId, id })
-  }
-
-  // check if you got a termination request
-  if (last.loops[id.toString()]?.terminate) {
-    // terminate. sad.
-    console.log(`apiloop #${id} following termination request`, last)
-    return undefined
-  }
+  //if (processId && id !== processId) {
+  handleWrongProcessIds({ time, processId, id })
+  //}
 
   /* -------------------------- task execution start -------------------------- */
 
@@ -208,7 +197,16 @@ const apiLoop = async ({
 /* -------------------------------------------------------------------------- */
 /*                             if wrong process id                            */
 /* -------------------------------------------------------------------------- */
-const handleWrongProcessId = ({
+
+const checkSelfTerminate = (id: number) => {
+  if (last.loops[id.toString()]?.terminate) {
+    // terminate. sad.
+    console.log(`apiloop #${id} following termination request`, last)
+    return undefined
+  }
+}
+
+const handleWrongProcessIds = ({
   time,
   processId,
   id
@@ -216,23 +214,30 @@ const handleWrongProcessId = ({
   [k: string]: number
 }) => {
   // check if there are other loops registering recently
-  let nLoopsAlive = 0
+
+  let isProcessIdLoopAlive = false
+  let isThisTheNewestLoop = true
   Object.keys(last.loops).forEach((idKey: string) => {
     const otherLoop = last.loops[idKey]
-    // count living loops
     if (time - otherLoop.time < LOOP_TIMEOUT) {
-      nLoopsAlive++
+      // note if there's an existing active process loop
+      if (processId && otherLoop.id !== processId) isProcessIdLoopAlive = true
     }
-    // terminate all older loops
+
+    // terminate all older loops, note if you're newest
     if (otherLoop.id < id) {
       otherLoop.terminate = true
+      isThisTheNewestLoop = false
     }
   })
   // if you're the last living loop that isn't timed out,
   // update external processId reference
-  // 0 means you and everyone else has timed out but
-  // if still processing this, good enough to claim
-  if (nLoopsAlive === 0) {
+  if (
+    processId && // process id exists
+    id !== processId && // you are not it yet
+    !isProcessIdLoopAlive && // neither is any other living loop
+    isThisTheNewestLoop // you are last loop
+  ) {
     console.log(
       `${id} is new api loop replacing ${processId}`,
       JSON.stringify(last.loops, null, 2),
@@ -241,6 +246,9 @@ const handleWrongProcessId = ({
     last.loops[id.toString()].terminate = false
     last.props.setProcessId(id)
   }
+
+  // check again if you got a termination request
+  checkSelfTerminate(id)
 }
 
 /* -------------------------------------------------------------------------- */
