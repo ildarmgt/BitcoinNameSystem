@@ -130,8 +130,8 @@ const apiLoop = async ({
   const setTasks = last.props.setTasks
   const processId = last.props.processId
 
-  // check if you got a termination request
-  checkSelfTerminate(id)
+  // terminate if you got request
+  if (checkSelfTerminate(id)) return undefined
 
   // report if you're still alive
   const time = Date.now()
@@ -190,6 +190,9 @@ const apiLoop = async ({
     await delay({ ms: delayStandby })
   }
 
+  // terminate if you got request
+  if (checkSelfTerminate(id)) return undefined
+
   // loop self, no await, this call should terminate asap
   apiLoop({ delayStandby, delayBusy, id })
 }
@@ -201,8 +204,13 @@ const apiLoop = async ({
 const checkSelfTerminate = (id: number) => {
   if (last.loops[id.toString()]?.terminate) {
     // terminate. sad.
-    console.log(`apiloop #${id} following termination request`, last)
-    return undefined
+    console.log(
+      `apiloop #${id} following termination request`,
+      JSON.stringify(last, null, 2)
+    )
+    return true
+  } else {
+    return false
   }
 }
 
@@ -246,9 +254,6 @@ const handleWrongProcessIds = ({
     last.loops[id.toString()].terminate = false
     last.props.setProcessId(id)
   }
-
-  // check again if you got a termination request
-  checkSelfTerminate(id)
 }
 
 /* -------------------------------------------------------------------------- */
