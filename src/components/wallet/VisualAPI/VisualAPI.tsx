@@ -223,8 +223,8 @@ const handleWrongProcessId = ({
     if (time - otherLoop.time < LOOP_TIMEOUT) {
       nLoopsAlive++
     }
-    // terminate timed out older loops
-    if (otherLoop.id < id && time - otherLoop.time >= LOOP_TIMEOUT) {
+    // terminate all older loops
+    if (otherLoop.id < id) {
       otherLoop.terminate = true
     }
   })
@@ -238,6 +238,7 @@ const handleWrongProcessId = ({
       JSON.stringify(last.loops, null, 2),
       last
     )
+    last.loops[id.toString()].terminate = false
     last.props.setProcessId(id)
   }
 }
