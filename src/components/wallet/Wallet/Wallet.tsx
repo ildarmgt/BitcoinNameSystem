@@ -27,12 +27,13 @@ export const Wallet = (props: any): JSX.Element => {
   const [txBuilder, setTxBuilder]: [I_TxBuilder | null, any] = React.useState(
     null
   )
-  if (txBuilder === null)
+  if (txBuilder === null) {
     setTxBuilder({
       ...initialTxBuilder,
       ...(!!props.txBuilder ? props.txBuilder : {})
     })
-
+  }
+  
   // gui settings
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [info, setInfo] = React.useState({ text: '' })
@@ -71,11 +72,9 @@ export const Wallet = (props: any): JSX.Element => {
       }}
     >
       {TESTING && (
-        <>
-          <div>
-            <Logo className={styles.logo} size='var(--wallet__logo_size)' />
-          </div>
-        </>
+        <div>
+          <Logo className={styles.logo} size='var(--wallet__logo_size)' />
+        </div>
       )}
     </div>
   )
@@ -104,6 +103,10 @@ const handleParams = (params: any, setParams: any) => {
   }
 }
 
+/* -------------------------------------------------------------------------- */
+/*                               event listeners                              */
+/* -------------------------------------------------------------------------- */
+
 const addListeners = (params: any, setParams: any) => {
   // even to detect session storage edit
   window.addEventListener('storage', handleStorageChange(params, setParams))
@@ -118,6 +121,10 @@ const removeListeners = (params: any, setParams: any) => {
   window.removeEventListener('hashchange', handleHashChange(params, setParams))
 }
 
+
+/* -------------------------------------------------------------------------- */
+/*                convert matching params to wallet properties                */
+/* -------------------------------------------------------------------------- */
 const processNewParams = (
   params: any,
   setParams: any,
@@ -132,6 +139,9 @@ const processNewParams = (
   }
 }
 
+/* -------------------------------------------------------------------------- */
+/*                             attempt to build tx                            */
+/* -------------------------------------------------------------------------- */
 const recalcBuilder = ({ txBuilder, setInfo }: any) => {
   try {
     // attempt to build
@@ -143,10 +153,14 @@ const recalcBuilder = ({ txBuilder, setInfo }: any) => {
   }
 }
 
+/* -------------------------------------------------------------------------- */
+/*                    reading params from sessions storage                    */
+/* -------------------------------------------------------------------------- */
+
 /**
  * Session storage scan. Key value pairs.
  */
-const handleStorageChange = (params: any, setParams: any) => (e: any): void => {
+const handleStorageChange = (params: any, setParams: any) => (): void => {
   // if (e) console.warn(e)
 
   // do not want spam of events going off in middle of this
@@ -178,8 +192,12 @@ const handleStorageChange = (params: any, setParams: any) => (e: any): void => {
   addListeners(params, setParams)
 }
 
+/* -------------------------------------------------------------------------- */
+/*                           reading params from url                          */
+/* -------------------------------------------------------------------------- */
+
 // curried url change handler
-const handleHashChange = (params: any, setParams: any) => (e: any): void => {
+const handleHashChange = (params: any, setParams: any) => (): void => {
   // if (e) console.warn(e)
 
   // convert url string starting with # into key/value pair object

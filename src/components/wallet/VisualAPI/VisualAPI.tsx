@@ -87,9 +87,8 @@ export const VisualAPI = (props: any) => {
           )
         }}
       >
-        {/* temp */}
-        {props.tasks.length > 0 && <>{props.tasks.length} tasks</>}
-        {props.tasks.length === 0 && <>BNS ready</>}
+        {props.message}
+        {props.tasks.length > 0 && <> ({props.tasks.length})</>}
       </div>
     </div>
   )

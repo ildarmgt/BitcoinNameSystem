@@ -222,8 +222,6 @@ export const Navbar = (): JSX.Element => {
         <input type='checkbox' id={'closewarning'} />
         <label htmlFor='closewarning'>✕</label>
         <div>
-          {state.network}
-          <br />
           {TESTING && (
             <>
               development mode <br />
@@ -262,6 +260,7 @@ export const Navbar = (): JSX.Element => {
             }}
             delayBusy={1000 / state.api.rateLimit}
             delayStandby={100}
+            message={state.network}
           />
         </div>
       </div>
