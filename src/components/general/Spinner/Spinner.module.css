@@ -3,7 +3,7 @@
   --colorSpinner: #fff;
 
   width: var(--widthSpinner);
-  height: calc(0.2 * var(--widthSpinner));
+  height: calc(0.25 * var(--widthSpinner));
   /* position: relative; */
 
   overflow: hidden;
@@ -23,6 +23,7 @@
   );
 
   -webkit-backface-visibility: hidden;
+  filter: drop-shadow(2px 2px 5px #00000009);
 }
 
 .block {
@@ -49,7 +50,7 @@
   background-color: var(--colorSpinner);
   position: absolute;
   top: calc(0.1 * var(--widthSpinner));
-  left: 0;
+  left: -1px;
   transform: translate(0, -50%);
 }
 
