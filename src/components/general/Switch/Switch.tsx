@@ -8,7 +8,7 @@ import styles from './Switch.module.css'
  * onClick - pass clicking event to use
  */
 export const Switch = (props: any) => {
-  const [selection, setSelection] = React.useState()
+  const [selection, setSelection] = React.useState<number | undefined>()
 
   const defaultChoices = [
     {

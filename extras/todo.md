@@ -1,12 +1,16 @@
 ## Short term
 
-- (PRIORITY 1) stealth addresses proof of concept to send, receive, UI
+- loading animation for search now that it's longer for multipage calls
 
-- (PRIORITY 2) independent single task queue for (each) api. visually might be easiest to handle them as a component, pass api functions as props, and even show history of all api calls and results for clarity or progress of calls. Component can be placed high up on tree to limit redraws and with persistent state. Editing api settings would could just render another component with different props killing previous. Combined with wallet component, these could then even be deployed as stand alone app, browser plugin, or reused in another app.
+- bns should be separated into a separate npm library, was already segregated to src/helpers/bns folder with that in mind, but basics are done already
 
-- (PRIORITY 3) all different transaction types are putting too much complexity into transaction building function. I should create a wallet component that can be reused into any project to respond to queries. Source for query should be customizable and can come from state or even url. Wallet should handle displaying all data in full generic detail and give user option to review, accept, or deny broadcasts. This should allow separating logic for putting rules to do something vs putting together the bytes of transactions properly via 1 or more methods. Ideally I shouldn't have to scan for full tx hex's for all inputs until wallet is ready to build where it can queue api for only necessary tx hex's.
+- stealth addresses proof of concept to send, receive, UI
 
-- (PRIORITY 4) if notification is on input, shouldn't be necessary to include it on output! Conditions could check for either, and thus cut down in notification utxo use and smaller/cheaper tx (modify)
+- independent single task queue for (each) api. visually might be easiest to handle them as a component, pass api functions as props, and even show history of all api calls and results for clarity or progress of calls. Component can be placed high up on tree to limit redraws and with persistent state. Editing api settings would could just render another component with different props killing previous. Combined with wallet component, these could then even be deployed as stand alone app, browser plugin, or reused in another app.
+
+- all different transaction types are putting too much complexity into transaction building function. I should create a wallet component that can be reused into any project to respond to queries. Source for query should be customizable and can come from state or even url. Wallet should handle displaying all data in full generic detail and give user option to review, accept, or deny broadcasts. This should allow separating logic for putting rules to do something vs putting together the bytes of transactions properly via 1 or more methods. Ideally I shouldn't have to scan for full tx hex's for all inputs until wallet is ready to build where it can queue api for only necessary tx hex's.
+
+- if notification is on input, shouldn't be necessary to include it on output! Conditions could check for either, and thus cut down in notification utxo use and smaller/cheaper tx (modify)
 
 - settings page
 - page navigation improved for hopping and checks

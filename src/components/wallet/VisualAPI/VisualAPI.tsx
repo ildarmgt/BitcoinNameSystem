@@ -1,5 +1,7 @@
 import React from 'react'
 import styles from './VisualAPI.module.css'
+import { Spinner } from './../../general/Spinner'
+
 console.log('VisualApi component imported')
 
 const LOOP_TIMEOUT = 2000 // ms when loop is considered timed out
@@ -72,25 +74,28 @@ export const VisualAPI = (props: any) => {
   /*                                  rendering                                 */
   /* -------------------------------------------------------------------------- */
   return (
-    <div
-      onClick={props.onClick}
-      className={[styles.wrapper, props.className || ''].join(' ')}
-    >
+    <>
       <div
-        className={styles.text}
-        onClick={() => {
-          console.log(
-            Object.keys(last.loops).map((loopKey: any) => ({
-              ...last.loops[loopKey],
-              timedOut: Date.now() - last.loops[loopKey].time > LOOP_TIMEOUT
-            }))
-          )
-        }}
+        onClick={props.onClick}
+        className={[styles.wrapper, props.className || ''].join(' ')}
       >
-        {props.message}
-        {props.tasks.length > 0 && <> ({props.tasks.length})</>}
+        <div
+          className={styles.text}
+          onClick={() => {
+            console.log(
+              Object.keys(last.loops).map((loopKey: any) => ({
+                ...last.loops[loopKey],
+                timedOut: Date.now() - last.loops[loopKey].time > LOOP_TIMEOUT
+              }))
+            )
+          }}
+        >
+          {props.message}
+          {/* {props.tasks.length > 0 && <> ({props.tasks.length})</>} */}
+        </div>
       </div>
-    </div>
+      {props.tasks.length > 0 && <Spinner className={styles.spinner} />}
+    </>
   )
 }
 

@@ -3,3 +3,21 @@
   margin-bottom: calc(var(--navbarHeight) / 2);
   transform: translateY(50%);
 }
+
+.spinner {
+  display: block;
+  position: fixed;
+  top: -25vh;
+  left: 40vw;
+  z-index: 1000;
+}
+
+/* have to undo scaling */
+@media screen and (min-aspect-ratio: 14/10) {
+  .spinner {
+    transform-origin: bottom left;
+    left: calc(40vw / var(--horizontalScale));
+    top: calc(-25vh / var(--horizontalScale));
+    transform: scale(calc(1 / var(--horizontalScale)));
+  }
+}
