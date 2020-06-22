@@ -1,6 +1,7 @@
 import axios from 'axios'
 
 // Documentation
+// https://github.com/Blockstream/esplora/blob/master/API.md
 // https://github.com/Blockstream/esplora/blob/esplora_v2.00/API.md
 // https://github.com/Blockstream/esplora/blob/master/API.md#post-tx
 
@@ -194,17 +195,46 @@ export async function getAddressHistoryAPI(
   // GET /address/:address/txs/chain[/:last_seen_txid]
   // Get confirmed transaction history for the specified address/scripthash, sorted with newest first.
   // Returns 25 transactions per page. More can be requested by specifying the last txid seen by the previous query.
+  const MAX_TX = 25
+  let lastTxid = ''
+  const allTx = []
 
-  const CONFIRMED_PAGES_ADDON = '/txs/chain'
+  const CONFIRMED_PAGES_ADDON = '/txs/chain/'
   const API_PATH =
     path[strNetwork] + 'address/' + address + CONFIRMED_PAGES_ADDON
   console.warn(API_PATH)
 
   try {
-    const res = await axios.get(API_PATH)
-    console.warn('blockstream.info API getAddressHistory', res.data)
+    do {
+      const res = await axios.get(API_PATH + lastTxid)
+      console.warn(
+        'blockstream.info API getAddressHistory',
+        API_PATH + lastTxid,
+        '\n',
+        res.data
+      )
 
-    return res.data
+      // add these tx to the list of tx
+      allTx.push(...res.data)
+
+      if (res.data.length >= MAX_TX) {
+        lastTxid = res.data.slice(-1)[0].txid // last txid
+
+        console.log(
+          'Multiple pages of tx detected, lastTxid received is',
+          lastTxid
+        )
+
+        await msDelay()
+      } else {
+        lastTxid = ''
+      }
+
+
+      // repeat until lastTxid is empty if not already
+    } while (lastTxid !== '')
+
+    return allTx
   } catch (e) {
     console.warn(e)
     throw new Error('Blockstream.info API access failed')

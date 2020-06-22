@@ -63,7 +63,7 @@ export interface I_State {
     embedString: string
   }
   api: {
-    running: boolean      // whether it's busy
+    running: boolean // whether it's busy
     tasks: any[]
     path: {
       [network: string]: string
