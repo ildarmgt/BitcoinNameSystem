@@ -77,7 +77,7 @@
   cursor: default;
   color: var(--colorBitcoinBlue);
   text-align: right;
-  max-width: calc(50 * var(--s));
+  max-width: calc(60 * var(--s));
   padding-right: calc(6 * var(--s));
   margin-top: calc(-6 * var(--s));
   margin-left: auto;

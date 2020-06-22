@@ -60,7 +60,9 @@ export const P3DomainAndWallet = () => {
 
   return (
     <div className={styles.wrapper}>
-      <div className={styles.title}>Wallet and domain history needed</div>
+      <div className={styles.title}>
+        Must scan the domain and owner addresses
+      </div>
       <div className={styles.domainInfo}>
         {apiStatus !== 'domain' && 'Domain ' + domainInfo()}
         {apiStatus === 'domain' && 'Domain scanning...'}

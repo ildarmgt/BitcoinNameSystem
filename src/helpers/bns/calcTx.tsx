@@ -94,7 +94,7 @@ export const calcTx = (
     },
     []
   )
-  const burnAmount = Math.max(...burnAmounts)
+  const burnAmount = Math.max(...burnAmounts, 0)
 
   // add up any refunds to do for total needed and array of address/amount for generating outputs
   let refundsAmount = 0

@@ -116,11 +116,11 @@ export const DevPanel = (props: any): JSX.Element => {
       <div
         className={[styles.button].join(' ')}
         onClick={() => {
-          const state = localStorage.getItem('state')
+          const state = JSON.parse(localStorage.getItem('state') || '')
           if (state) {
             dispatch({
               type: ActionTypes.LOAD_STATE,
-              payload: JSON.parse(state)
+              payload: { ...state, api: { ...state.api, processId: null } }
             })
           }
         }}

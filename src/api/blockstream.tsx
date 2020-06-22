@@ -202,7 +202,7 @@ export async function getAddressHistoryAPI(
 
   try {
     const res = await axios.get(API_PATH)
-    console.warn('blockstream.info API getAddressHistory', res)
+    console.warn('blockstream.info API getAddressHistory', res.data)
 
     return res.data
   } catch (e) {
