@@ -2,6 +2,8 @@
 
 On-chain DNS where easy to read domain name (i.e. alias) can be looked up or shared to forward to many very long alphanumeric Bitcoin addresses or other types of addreses (e.g. ipfs, https, twitter) on the most secure public network ever created.
 
+Currently set to testnet by default.
+
 |                           |                                                                                       |
 | ------------------------: | ------------------------------------------------------------------------------------- |
 |           Short demo url: | [onbtc.me](http://onbtc.me)                                                           |
@@ -131,11 +133,11 @@ All data is on the Bitcoin blockchain. You choose how to fetch that data dependi
 
 - rely on generic public bitcoin explorers via API interface (in demo)
 
-- compare between many public API's
+- run your own full Bitcoin node with your own [open source API](https://github.com/Blockstream/esplora/tree/esplora_v2.00) interface matching what demo uses
 
-- neutrino or spv light clients with merkle tree proofs
+- compare between many public API's (not done)
 
-- run your own full bitcoin node (and even your own open source API interface matching what demo uses)
+- neutrino or spv light clients with merkle tree proofs (planned, not done yet)
 
 Decentralization works on the principle of not being forced to trust backends. BNS can be read with help of any Bitcoin full node, with early demo implementations relying on open source 3rd party API explorer interface, but can be replaced by personal full nodes to accomplish same thing. The goal is to provide multiple options ranging fast 3rd party API to implementations relying solely on your own Bitcoin full node to use BNS.
 
