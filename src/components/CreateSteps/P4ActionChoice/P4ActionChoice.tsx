@@ -26,9 +26,11 @@ export const P4ActionChoice = () => {
   const { state, dispatch } = React.useContext(Store)
 
   // local state for special cases where form is attempting to get data from user
-  const [extraFormData, setExtraFormData] = React.useState()
+  const [extraFormData, setExtraFormData] = React.useState<{
+    [key: string]: { show: boolean }
+  }>()
   // local state for permission scan so can be used directly and becomes reactive
-  const [checkActions, setCheckActions] = React.useState()
+  const [checkActions, setCheckActions] = React.useState<I_Checked_Action[]>()
 
   // calculate and get all permissions (once)
   if (!checkActions) {
@@ -151,10 +153,13 @@ export const P4ActionChoice = () => {
     // only do if undefined local state (once)
     if (!extraFormData) {
       // go through each action, set key to .info and set show status to false
-      const showStatus: { [key: string]: { show: boolean } } = {}
-      checkActions.forEach((action: any) => {
-        showStatus[action.info] = { show: false }
-      })
+      const showStatus: {
+        [key: string]: { show: boolean }
+      } = {}
+      checkActions &&
+        checkActions.forEach(action => {
+          showStatus[action.info] = { show: false }
+        })
       setExtraFormData(showStatus)
     }
   }, [checkActions, extraFormData])
@@ -228,12 +233,12 @@ export const P4ActionChoice = () => {
                       checkActions
                         .find(
                           (thisAction: any) => thisAction.type === action.type
-                        )
+                        )!
                         .suggestions.find(
                           (thisSuggestion: any) =>
                             thisSuggestion.info.describe ===
                             suggestionToGet.info.describe
-                        ).info.get.value = value
+                        )!.info!.get!.value = value
                       // update local state with edited object
                       setCheckActions([...checkActions])
                     }
@@ -322,12 +327,12 @@ export const P4ActionChoice = () => {
                             .find(
                               (thisAction: any) =>
                                 thisAction.type === action.type
-                            )
+                            )!
                             .suggestions.find(
                               (thisSuggestion: any) =>
                                 thisSuggestion.info.describe ===
                                 suggestionToGet.info.describe
-                            ).info.get.value = cleanInput
+                            )!.info.get!.value = cleanInput
 
                           // update local state with edited object
                           setCheckActions([...checkActions])
