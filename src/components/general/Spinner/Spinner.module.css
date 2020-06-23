@@ -1,14 +1,16 @@
 .spinner {
   /* --widthSpinner: 20vw; */
   --colorSpinner: #fff;
+  --colorSpinnerBackground: #0003;
 
   width: var(--widthSpinner);
-  height: calc(0.25 * var(--widthSpinner));
-  /* position: relative; */
-
+  height: calc(0.24 * var(--widthSpinner));
+  background-color: var(--colorSpinnerBackground);
+  box-shadow: 0 0 0 calc(0.1 * var(--widthSpinner))
+    var(--colorSpinnerBackground);
   overflow: hidden;
 
-  -webkit-mask-image: linear-gradient(
+  /* -webkit-mask-image: linear-gradient(
     to right,
     transparent 0%,
     black 50%,
@@ -20,17 +22,16 @@
     transparent 15%,
     black 40%,
     black 100%
-  );
+  ); */
 
   -webkit-backface-visibility: hidden;
-  filter: drop-shadow(2px 2px 5px #00000009);
 }
 
 .block {
   width: calc(0.2 * var(--widthSpinner));
   height: calc(0.2 * var(--widthSpinner));
   position: absolute;
-  top: calc(0.1 * var(--widthSpinner));
+  top: calc(0.12 * var(--widthSpinner));
   left: 0;
   background-color: #0000;
   box-shadow: calc((0.2 + 0) * var(--widthSpinner)) 0 var(--colorSpinner),
@@ -41,7 +42,7 @@
   transform: translate(calc(-100% - 0 * var(--widthSpinner)), -50%);
 
   will-change: transform;
-  animation: moveit ease-in-out 1s infinite forwards;
+  animation: moveit ease-in-out 0.5s infinite forwards;
 }
 
 .chain {
@@ -49,7 +50,7 @@
   height: calc(0.03 * var(--widthSpinner));
   background-color: var(--colorSpinner);
   position: absolute;
-  top: calc(0.1 * var(--widthSpinner));
+  top: calc(0.12 * var(--widthSpinner));
   left: -1px;
   transform: translate(0, -50%);
 }

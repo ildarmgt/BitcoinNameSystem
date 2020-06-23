@@ -94,7 +94,9 @@ export const VisualAPI = (props: any) => {
           {/* {props.tasks.length > 0 && <> ({props.tasks.length})</>} */}
         </div>
       </div>
-      { props.tasks.length > 0 && <Spinner className={ styles.spinner } />}
+      {props.tasks.length > 0 && (
+        <Spinner className={styles.spinner} width='calc(15 * var(--s))' />
+      )}
     </>
   )
 }
