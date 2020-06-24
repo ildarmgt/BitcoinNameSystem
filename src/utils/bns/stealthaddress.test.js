@@ -1,7 +1,7 @@
 import * as bitcoin from 'bitcoinjs-lib'
 import bip39 from 'bip39'
 import bs58check from 'bs58check'
-import { ecies } from './../../helpers/bns'
+import { ecies, encryptFromBuffer } from './../../helpers/bns'
 import crypto from 'crypto'
 
 // heavily borrowing from bip47 but
@@ -20,16 +20,23 @@ describe('stealth address implementation', () => {
 
   const network = bitcoin.networks.testnet
 
+  // will use this for private keys
   const Alice_strMnemonic =
     'grace buddy scene leisure strategy spike hair mammal vanish butter hint olive'
+  // convert from string to seed equivalent
   const Alice_seedBuffer = bip39.mnemonicToSeed(Alice_strMnemonic)
+  // create HD wallet master node from seed
   const Alice_masterNode = bitcoin.bip32.fromSeed(Alice_seedBuffer, network)
+  // derive m/1001'/0'/0' path from seeded master node
+  // ' means hardened, so if private key of child is leaked, just change to m/1000'/0'/1'
   const Alice_childNode_m_1001h_0h_0h = Alice_masterNode.derivePath(
     "m/1001'/0'/0'"
   )
+  // remove private keys (making it xpub)
   const Alice_childNode_m_1001h_0h_0h_neutered = Alice_childNode_m_1001h_0h_0h.neutered()
-
+  // from js object to base58 number
   const Alice_xPub_B58 = Alice_childNode_m_1001h_0h_0h_neutered.toBase58()
+  // convert to data bytes buffer from number
   const Alice_xPub_Buffer = bs58check.decode(Alice_xPub_B58)
 
   // this xPub is a payment code Alice can share in order to get paid
@@ -39,10 +46,26 @@ describe('stealth address implementation', () => {
     expect(Buffer.isBuffer(Alice_xPub_Buffer)).toEqual(true)
   })
 
+  test('Alice xpub buffer is <= 80 bytes', () => {
+    expect(Alice_xPub_Buffer.length <= 80).toEqual(true)
+  })
+
+  // Alice_xPub_Buffer goes into OP_RETURN ? xpubbuffer
+  // need to test encrypting and forming a tx and then decrypting it
+  const encryptedXPubBuffer = encryptFromBuffer(
+    Alice_xPub_Buffer,
+    'placeholderforencryptionstringsourcebasedonalice'
+  )
+
+  test('Alice encrypted xpub buffer is <= 80 bytes', () => {
+    expect(encryptedXPubBuffer.length <= 80).toEqual(true)
+  })
+
   console.log(
-    'Alice xpub for stealth address\n',
-    'base58:' + Alice_xPub_B58,
-    'byte length:' + Alice_xPub_Buffer.length
+    'Alice xpub for stealth address',
+    '\nbase58:' + Alice_xPub_B58,
+    '\nxpub buffer (bytes):' + Alice_xPub_Buffer.length,
+    '\nencrypted xpub buffer (bytes):' + encryptedXPubBuffer.length
   )
 
   /* -------------------------------------------------------------------------- */
@@ -65,7 +88,7 @@ describe('stealth address implementation', () => {
     Bob_xPub_B58_OfAlice,
     network
   )
-  // bip 32 wallet node -> alice's public key buffer
+  // bip 32 wallet node -> alice's public key buffer (at level of xpub shared)
   const Bob_publicKey_Buffer_OfAlice = Bob_walletNode_OfAlice.publicKey
 
   // Bob now has the public key to use

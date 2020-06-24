@@ -1,7 +1,5 @@
 ## Short term
 
-- loading animation for search now that it's longer for multipage calls
-
 - bns should be separated into a separate npm library, was already segregated to src/helpers/bns folder with that in mind, but basics are done already
 
 - stealth addresses proof of concept to send, receive, UI
