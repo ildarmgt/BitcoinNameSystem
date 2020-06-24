@@ -1,7 +1,7 @@
 import * as bitcoin from 'bitcoinjs-lib'
 import bip39 from 'bip39'
 import bs58check from 'bs58check'
-import { ecies, encryptFromBuffer } from './../../helpers/bns'
+import { ecies, encryptFromBuffer, decryptToBuffer } from './../../helpers/bns'
 import crypto from 'crypto'
 
 // heavily borrowing from bip47 but
@@ -50,23 +50,27 @@ describe('stealth address implementation', () => {
     expect(Alice_xPub_Buffer.length <= 80).toEqual(true)
   })
 
-  // Alice_xPub_Buffer goes into OP_RETURN ? xpubbuffer
-  // need to test encrypting and forming a tx and then decrypting it
-  const encryptedXPubBuffer = encryptFromBuffer(
-    Alice_xPub_Buffer,
+  // need to test encrypting for size
+  const standardBNSEncryptionKeyForAlice =
     'placeholderforencryptionstringsourcebasedonalice'
+  const Alice_xPub_Buffer_Encrypted = encryptFromBuffer(
+    Alice_xPub_Buffer,
+    standardBNSEncryptionKeyForAlice
   )
 
   test('Alice encrypted xpub buffer is <= 80 bytes', () => {
-    expect(encryptedXPubBuffer.length <= 80).toEqual(true)
+    expect(Alice_xPub_Buffer_Encrypted.length <= 80).toEqual(true)
   })
 
   console.log(
     'Alice xpub for stealth address',
     '\nbase58:' + Alice_xPub_B58,
     '\nxpub buffer (bytes):' + Alice_xPub_Buffer.length,
-    '\nencrypted xpub buffer (bytes):' + encryptedXPubBuffer.length
+    '\nencrypted xpub buffer (bytes):' + Alice_xPub_Buffer_Encrypted.length
   )
+
+  // encryptedXPubBuffer goes into Bitcoin tx of type OP_FALSE OP_RETURN '?' encryptedXPubBuffer
+  // ? is chosen 'network' symbol for stealth address
 
   /* -------------------------------------------------------------------------- */
   /*                     Alice uploads xPub (binary) to BNS                     */
@@ -76,13 +80,18 @@ describe('stealth address implementation', () => {
   /*                    Bob gets xPub from alice.btc on BNS                     */
   /* -------------------------------------------------------------------------- */
 
-  // Bob gets the xpub
-  const Bob_xPub_Buffer_OfAlice = Alice_xPub_Buffer
+  // Bob gets the xpub by decrypting the data in OP_RETURN tx
+  const Bob_xPub_Buffer_OfAlice = decryptToBuffer(
+    // Alice_xPub_Buffer
+    Alice_xPub_Buffer_Encrypted,
+    standardBNSEncryptionKeyForAlice
+  )
 
   // Bob now needs to calculate Alice's public key to encrypt notification with
 
   // xpub buffer -> base58
   const Bob_xPub_B58_OfAlice = bs58check.encode(Bob_xPub_Buffer_OfAlice)
+
   // xpub base58 -> bip32 wallet node
   const Bob_walletNode_OfAlice = bitcoin.bip32.fromBase58(
     Bob_xPub_B58_OfAlice,
