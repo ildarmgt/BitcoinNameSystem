@@ -164,7 +164,10 @@ export const P4ActionChoice = () => {
     }
   }, [checkActions, extraFormData])
 
-  // list available actions for render
+  /* -------------------------------------------------------------------------- */
+  /*                      list available actions for render                     */
+  /* -------------------------------------------------------------------------- */
+
   const listAvailableActions = () =>
     !!checkActions &&
     checkActions.map((action: any) => {
@@ -411,7 +414,10 @@ export const P4ActionChoice = () => {
       }
     })
 
-  // list unavailable actions for render
+  /* -------------------------------------------------------------------------- */
+  /*                     list unavailable actions for render                    */
+  /* -------------------------------------------------------------------------- */
+
   const listUnavailableActions = () =>
     !!checkActions &&
     checkActions.map((action: any) => {
@@ -454,6 +460,10 @@ export const P4ActionChoice = () => {
         return ''
       }
     })
+
+  /* -------------------------------------------------------------------------- */
+  /*                                   render                                   */
+  /* -------------------------------------------------------------------------- */
 
   return (
     <div className={styles.wrapper}>

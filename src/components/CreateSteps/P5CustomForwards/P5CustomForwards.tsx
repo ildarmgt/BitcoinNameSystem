@@ -82,10 +82,10 @@ export const P5CustomForwards = () => {
   // global state embedString and action choice
   const getPlannedChanges = () => {
     // this is string that's going to be embedded
-    let forwardsString = state.choices.embedString
+    const forwardsString = state.choices.embedString
 
     // get required by actions string as well
-    let actionRequirementsString = getActionEmbedRequirements()
+    const actionRequirementsString = getActionEmbedRequirements()
 
     // combine (later string values are given priority)
     const finalString =
@@ -248,8 +248,9 @@ export const P5CustomForwards = () => {
 
       <div className={styles.changes}>
         {/* bytes info */}
-        {Object.keys(getPlannedChanges()).length === 0 &&
-          'No forwarding updates'}
+        {Object.keys(getPlannedChanges()).length === 0
+          ? 'no forwarding updates'
+          : 'planned forwarding updates'}
         {!isSpaceFull && (
           <div className={styles.bytesLeft}>{bytesLeft} Bytes left</div>
         )}
@@ -333,7 +334,7 @@ export const P5CustomForwards = () => {
         </div>
       </div>
       <div className={styles.pastList}>
-        <Details description={"What's this?"}>
+        <Details description={'Current forwards (expand for info):'}>
           <p>
             Enter the forwarding addresses you want to use (e.g. long bitcoin
             address) and specify on which network that address should be used
@@ -349,7 +350,7 @@ export const P5CustomForwards = () => {
             <br />
             <br />
             Edit them by reusing the exact same network or remove by setting
-            forwarding address to nothing or hitting [no address] button under
+            forwarding address to nothing or hitting [delete old] button under
             network name text.
           </p>
         </Details>
