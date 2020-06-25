@@ -187,6 +187,10 @@ export const SearchResults = () => {
   // calculate latest forwards
   const latestForwards = owner ? findLatestForwards(owner.forwards) : []
 
+  /* -------------------------------------------------------------------------- */
+  /*                                   render                                   */
+  /* -------------------------------------------------------------------------- */
+
   return (
     <div className={styles.wrapper}>
       {/* summarize search */}
@@ -226,8 +230,12 @@ export const SearchResults = () => {
               expandableTable(tabledOwnershipData, 'Owned domain details')}
           </div>
 
-          {/* general search results */}
+          {/* -------------------------------------------------------------------------- */}
+          {/*                           search result forwards                           */}
+          {/* -------------------------------------------------------------------------- */}
+
           {latestForwards.map((fw: any) => {
+            // convert forward info to specifics of what to display and link to for this front-end
             const ifw = interpretFw(fw)
             if (ifw.render) {
               return (

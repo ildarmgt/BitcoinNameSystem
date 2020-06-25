@@ -39,7 +39,8 @@ export function interpretFw(fw: I_Forward, blockchain?: string) {
     onNetwork === 'http' ||
     onNetwork === 'https' ||
     onNetwork === 'url' ||
-    onNetwork === 'web'
+    onNetwork === 'web' ||
+    onNetwork === 'forums'
   ) {
     return {
       where: 'https://',
