@@ -54,18 +54,18 @@ export const DevPanel = (props: any): JSX.Element => {
     }
   }
 
-  const dlState = () => {
-    const data =
-      'text/json;charset=utf-8,' + encodeURIComponent(JSON.stringify(state))
-    const a = document.createElement('a')
-    a.href = 'data:' + data
-    a.download = 'test.json'
-    a.innerHTML = 'download JSON'
-    const container = document.getElementById('container')
-    container?.appendChild(a)
-    a.click()
-    a.remove()
-  }
+  // const dlState = () => {
+  //   const data =
+  //     'text/json;charset=utf-8,' + encodeURIComponent(JSON.stringify(state))
+  //   const a = document.createElement('a')
+  //   a.href = 'data:' + data
+  //   a.download = 'test.json'
+  //   a.innerHTML = 'download JSON'
+  //   const container = document.getElementById('container')
+  //   container?.appendChild(a)
+  //   a.click()
+  //   a.remove()
+  // }
 
   /* -------------------------------------------------------------------------- */
   /*                                   render                                   */
