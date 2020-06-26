@@ -2,8 +2,6 @@ import React, { useState, useEffect } from 'react'
 import styles from './DevPanel.module.css'
 import { Store } from '../../store/'
 import { ActionTypes } from './../../interfaces/'
-import json from './../../utils/test.json'
-// const json = require('./../../utils/test.json')
 
 interface I_State {
   blShow: boolean
@@ -69,6 +67,10 @@ export const DevPanel = (props: any): JSX.Element => {
     a.remove()
   }
 
+  /* -------------------------------------------------------------------------- */
+  /*                                   render                                   */
+  /* -------------------------------------------------------------------------- */
+
   return (
     <div
       className={[styles.divDev, !hidden ? styles.hidden : ''].join(' ')}
@@ -78,7 +80,7 @@ export const DevPanel = (props: any): JSX.Element => {
         <b>DevPanel</b>
       </div>
 
-      <div
+      {/* <div
         className={styles.button}
         onClick={() => {
           dlState()
@@ -95,7 +97,7 @@ export const DevPanel = (props: any): JSX.Element => {
         }}
       >
         Load File State
-      </div>
+      </div> */}
 
       <div
         className={[styles.btnOutline, styles.button].join(' ')}
