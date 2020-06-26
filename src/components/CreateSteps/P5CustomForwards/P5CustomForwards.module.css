@@ -324,6 +324,7 @@
   }
   .buttonWrapper {
     justify-self: right;
+    text-align: right;
   }
   .editor {
     justify-self: right;

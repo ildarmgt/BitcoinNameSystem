@@ -308,7 +308,7 @@ export const P5CustomForwards = () => {
                 'no_spaces'
               ])
               setTextboxContent({ ...textboxContent, address: cleanText })
-              console.log('forwarding satnitized:', '"' + cleanText + '"')
+              console.log('forwarding sanitized:', '"' + cleanText + '"')
             }}
           ></textarea>
         </div>
@@ -387,6 +387,18 @@ export const P5CustomForwards = () => {
         >
           Ready
         </RoundButton>
+        {/* if no stealth address, show button */}
+        {/* (TODO) replace with constant for this type of network */}
+        {!pastForwards.some(fw => fw.network === '?') && (
+          <RoundButton
+            colorbutton={'var(--colorHighlightDark)'}
+            onClick={() => {
+              console.log('stealth address button clicked')
+            }}
+          >
+            Add a stealth address
+          </RoundButton>
+        )}
       </div>
     </div>
   )
