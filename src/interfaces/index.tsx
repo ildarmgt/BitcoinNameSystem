@@ -61,6 +61,7 @@ export interface I_State {
     feeRate: number
     txHex: string
     embedString: string
+    embedBuffers: []
   }
   api: {
     running: boolean // whether it's busy

@@ -11,8 +11,10 @@ import {
   stringByteCount,
   BYTES_MAX,
   findLatestForwards,
-  interpretCommand
+  interpretCommand,
+  getStealthAddress
 } from '../../../helpers/bns'
+
 import sanitize from '../../../helpers/sanitize'
 
 type Planned_Changes = { [key: string]: string }
@@ -25,6 +27,7 @@ type Planned_Changes = { [key: string]: string }
 export const P5CustomForwards = () => {
   // global state
   const { state, dispatch } = React.useContext(Store)
+
   // string to embed located at state.choices.embedString
 
   // local state for content in textboxes for new network address changes
@@ -394,6 +397,10 @@ export const P5CustomForwards = () => {
             colorbutton={'var(--colorHighlightDark)'}
             onClick={() => {
               console.log('stealth address button clicked')
+              setPlannedChanges({
+                ...getPlannedChanges(),
+                '?': getStealthAddress(state.wallet.mnemonic, state.network)
+              })
             }}
           >
             Add a stealth address

@@ -152,7 +152,7 @@ export const ecies = { encrypt, decrypt }
 /* -------------------------------------------------------------------------- */
 
 // E
-function symmetricEncrypt (
+function symmetricEncrypt(
   cypherName: string,
   iv: Buffer | null | undefined,
   key: Buffer,
@@ -170,7 +170,7 @@ function symmetricEncrypt (
 }
 
 // E-1
-function symmetricDecrypt (
+function symmetricDecrypt(
   cypherName: string,
   iv: Buffer | null | undefined,
   key: Buffer,
@@ -188,14 +188,14 @@ function symmetricDecrypt (
 }
 
 // KDF
-function hashMessage (cypherName: string, message: Buffer) {
+function hashMessage(cypherName: string, message: Buffer) {
   return crypto
     .createHash(cypherName)
     .update(message)
     .digest()
 }
 
-function makeUpOptions (options: I_Options = {}) {
+function makeUpOptions(options: I_Options = {}) {
   if (options.hashName === undefined) {
     options.hashName = 'sha256'
   }
