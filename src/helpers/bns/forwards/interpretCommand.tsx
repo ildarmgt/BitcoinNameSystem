@@ -4,6 +4,7 @@ import { scanEveryActionForCommand } from './../actions/batch'
  * Can grab simple words that explain what command does/did for visualization if found.
  * Only useful to grab text not dependent on any state.
  * Otherwise, returns undefined.
+ * For example: interpretCommand('!ca', 'banana')
  */
 export const interpretCommand = (key: string, value: string) => {
   // grab all basic action objects

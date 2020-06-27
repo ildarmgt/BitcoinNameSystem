@@ -17,10 +17,10 @@ import {
 
 import sanitize from '../../../helpers/sanitize'
 
-type Planned_Changes = { [key: string]: string }
+type Planned_Changes = { [key: string]: string | Buffer }
 
 /**
- * Component to edit custom forwards information.
+ * Component for page where user can edit custom forwards information.
  * state - global state.
  * textboxContent - text content inside the network and address textareas.
  */
@@ -63,9 +63,15 @@ export const P5CustomForwards = () => {
 
   // set global state's string to embed from an object of planned changes
   const setPlannedChanges = (objForwards: Planned_Changes = {}) => {
+    const forwardBuffers = []
     let forwardsString = ''
     Object.keys(objForwards).forEach(fwNetwork => {
-      forwardsString += fwNetwork + ' ' + objForwards[fwNetwork] + ' '
+      const forward = objForwards[fwNetwork]
+      if (Buffer.isBuffer(forward)) {
+        forwardBuffers.push({ [fwNetwork]: forward })
+      } else {
+        forwardsString += fwNetwork + ' ' + forward + ' '
+      }
     })
     // remove extra space from end ('' stays '')
     forwardsString = forwardsString.slice(0, -1)
@@ -151,17 +157,17 @@ export const P5CustomForwards = () => {
       </i>
     )
 
-    // return first match for explanation content
+    // return explanation of embedded content
     const interpretation = () => {
       // if it was a command
-      if (fwNetwork.startsWith('!')) {
+      if (fwNetwork.startsWith('!') && !Buffer.isBuffer(value)) {
         const cmd = interpretCommand(fwNetwork, value)
         return {
           content: (
             <>
               {cmd ? (
                 <>
-                  {cmd.info} user action. {cmd.getterName} is set to{' '}
+                  "{cmd.info}" user action. {cmd.getterName} is set to{' '}
                   <span>{cmd.value}</span>.
                 </>
               ) : (
@@ -205,13 +211,16 @@ export const P5CustomForwards = () => {
       return { content: '' }
     }
 
+    // return a div that onclick fills in the contents of planned changes into textboxes
     return (
       <div
         className={styles.updateItem}
         key={fwNetwork}
         onClick={() => {
           // fill in the edit field with these values in case
-          setTextboxContent({ network: fwNetwork, address: value })
+          // (only if it's not a command)
+          if (!fwNetwork.startsWith('!'))
+            setTextboxContent({ network: fwNetwork, address: String(value) })
         }}
       >
         <div className={styles.updateInfo}>{interpretation().content}</div>
@@ -392,20 +401,21 @@ export const P5CustomForwards = () => {
         </RoundButton>
         {/* if no stealth address, show button */}
         {/* (TODO) replace with constant for this type of network */}
-        {!pastForwards.some(fw => fw.network === '?') && (
-          <RoundButton
-            colorbutton={'var(--colorHighlightDark)'}
-            onClick={() => {
-              console.log('stealth address button clicked')
-              setPlannedChanges({
-                ...getPlannedChanges(),
-                '?': getStealthAddress(state.wallet.mnemonic, state.network)
-              })
-            }}
-          >
-            Add a stealth address
-          </RoundButton>
-        )}
+        {!pastForwards.some(fw => fw.network === '?') &&
+          process.env.NODE_ENV === 'development' && (
+            <RoundButton
+              colorbutton={'var(--colorHighlightDark)'}
+              onClick={() => {
+                console.log('stealth address button clicked')
+                setPlannedChanges({
+                  ...getPlannedChanges(),
+                  '?': getStealthAddress(state.wallet.mnemonic, state.network)
+                })
+              }}
+            >
+              Add a stealth address
+            </RoundButton>
+          )}
       </div>
     </div>
   )

@@ -33,7 +33,7 @@ export const initialState: I_State = {
     action: {}, // choices and data for action to take
     feeRate: 1.1, // fee rate to use in sat/bByte,
     txHex: '', // hex of raw transaction, ideally ready for broadcast
-    embedString: '', // string to embed in op_return,
+    embedString: '', // string to embed in op_return
     embedBuffers: [] // buffers to embed in op_return
   },
   api: {

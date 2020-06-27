@@ -9,7 +9,7 @@ export const getGetters = (action: I_Checked_Action): Array<I_Condition> => {
   const getters = action.suggestions.filter((thisSuggestion: any) => {
     return 'get' in thisSuggestion.info
   })
-  return getters
+  return getters || []
 }
 
 /**
@@ -21,5 +21,5 @@ export const getSetters = (action: I_Checked_Action): Array<I_Condition> => {
   const setters = action.suggestions.filter((thisSuggestion: any) => {
     return 'set' in thisSuggestion.info
   })
-  return setters
+  return setters || []
 }

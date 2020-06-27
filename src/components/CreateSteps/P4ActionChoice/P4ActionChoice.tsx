@@ -19,7 +19,7 @@ import { Switch } from './../../general/Switch'
 import sanitize from '../../../helpers/sanitize'
 
 /**
- * Bid on network.
+ * Page to handle choice of action to perform with a domain.
  */
 export const P4ActionChoice = () => {
   // global state
@@ -29,6 +29,7 @@ export const P4ActionChoice = () => {
   const [extraFormData, setExtraFormData] = React.useState<{
     [key: string]: { show: boolean }
   }>()
+
   // local state for permission scan so can be used directly and becomes reactive
   const [checkActions, setCheckActions] = React.useState<I_Checked_Action[]>()
 
@@ -179,14 +180,14 @@ export const P4ActionChoice = () => {
         )
           return ''
         // check if there's data needed from user for this action
-        const suggestionsToGet =
-          action.suggestions.filter(
-            (suggestion: any) => 'get' in suggestion.info
-          ) || []
+        const suggestionsToGet = getGetters(action)
+        // action.suggestions.filter(
+        //   (suggestion: any) => 'get' in suggestion.info
+        // ) || []
 
-        console.log('action:', action.info)
-        console.log('getters:', getGetters(action))
-        console.log('setters:', getSetters(action))
+        // onsole.log('action:', action.info)
+        // onsole.log('getters:', getGetters(action))
+        // onsole.log('setters:', getSetters(action))
 
         const haveGettersOrSetters =
           suggestionsToGet.length > 0 || getSetters(action).length > 0
@@ -209,7 +210,8 @@ export const P4ActionChoice = () => {
                   changePageInfoAction(state, dispatch, 5)
                 } else {
                   // if special action with extra data needed,
-                  // toggle form showing instead based on action info as key
+                  // toggle form showing instead:
+                  // action.info is the key for extraFormData local state, .show toggles visibility
                   if (extraFormData) {
                     const { show } = extraFormData[action.info]
                     setExtraFormData({
@@ -224,14 +226,14 @@ export const P4ActionChoice = () => {
               {haveGettersOrSetters ? <>&nbsp;...</> : ''}
             </RoundButton>
 
-            {/* create input forms if shown */}
+            {/* create input forms if extraFormData local state has it set to shown for this action */}
 
             {extraFormData && extraFormData[action.info].show && (
               <>
                 {suggestionsToGet.map((suggestionToGet: any) => {
                   if (typeof suggestionToGet.info.get.value === 'boolean') {
                     const onChangeFunction = (value: boolean) => {
-                      console.log(value)
+                      console.log('updated boolean:', value)
                       // find and change action setting
                       checkActions
                         .find(
@@ -246,6 +248,7 @@ export const P4ActionChoice = () => {
                       setCheckActions([...checkActions])
                     }
 
+                    /* -------------------- render a switch for boolean input ------------------- */
                     return (
                       <Switch
                         key={suggestionToGet.info.describe}
@@ -262,6 +265,7 @@ export const P4ActionChoice = () => {
                       />
                     )
                   } else {
+                    /* ------------------- render an input form for data input ------------------ */
                     return (
                       <InputForm
                         key={suggestionToGet.info.describe}
@@ -321,16 +325,21 @@ export const P4ActionChoice = () => {
                             }
                           } else {
                             // if string, just make sure no spaces
-                            cleanInput = sanitize(e.target.value, ['no_spaces'])
+                            cleanInput = sanitize(e.target.value, [
+                              'basic',
+                              'no_spaces'
+                            ])
                           }
 
                           // add changed value to checkActions current object
                           // find and edit the value
                           checkActions
+                            // find array index where this action is
                             .find(
                               (thisAction: any) =>
                                 thisAction.type === action.type
                             )!
+                            // find array index where this data request/suggestion is
                             .suggestions.find(
                               (thisSuggestion: any) =>
                                 thisSuggestion.info.describe ===
@@ -339,11 +348,19 @@ export const P4ActionChoice = () => {
 
                           // update local state with edited object
                           setCheckActions([...checkActions])
+
+                          console.log(
+                            'Updated suggestionToGet.info.get:',
+                            suggestionToGet.info.get
+                          )
                         }}
                       />
                     )
                   }
                 })}
+
+                {/* also render the fixed requirements (getters) for this action */}
+
                 {getSetters(action).length > 0 && (
                   <Details description={'Details...'} show={'false'}>
                     <p>
