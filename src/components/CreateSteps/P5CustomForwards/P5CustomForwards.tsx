@@ -200,13 +200,27 @@ export const P5CustomForwards = () => {
         }
       }
 
+      // forwarding for stealth addresses
+      if (fwNetwork === '?') {
+        return {
+          content: (
+            <>
+              Updating <span>stealth address</span> to an address
+              <span>{' ' + value + ' '}</span>
+              {thisByteCostEstimate}
+            </>
+          ),
+          allowRemoval: true
+        }
+      }
+
       // regular forwarding: network's forwarding address was provided
       if (value !== '') {
         return {
           content: (
             <>
               Updating forwarding on <span>{' ' + fwNetwork + ' '}</span>
-              network to address of <span>{' ' + value + ' '}</span>
+              network to an address of <span>{' ' + value + ' '}</span>
               {thisByteCostEstimate}
             </>
           ),
