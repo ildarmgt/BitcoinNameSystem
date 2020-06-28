@@ -267,9 +267,21 @@ export const P5CustomForwards = () => {
               'addTooltipRight'
             ].join(' ')}
             onClick={e => {
-              const newData = { ...getPlannedChanges() }
-              delete newData[fwNetwork]
-              setPlannedChanges(newData)
+              if (embededBuffer) {
+                // remove this embedded buffer from array
+                const newEmbedBuffers = state.choices.embedBuffers.filter(
+                  (el: any) => embededBuffer.network !== el.network
+                )
+                // update front end state
+                changeChoicesBNSAction(state, dispatch, {
+                  embedBuffers: newEmbedBuffers
+                })
+              } else {
+                // embedded string
+                const newData = { ...getPlannedChanges() }
+                delete newData[fwNetwork]
+                setPlannedChanges(newData)
+              }
               // block event from also clicking onto the updateItem
               e.stopPropagation()
             }}
@@ -294,7 +306,8 @@ export const P5CustomForwards = () => {
 
       <div className={styles.changes}>
         {/* bytes info */}
-        {Object.keys(getPlannedChanges()).length === 0
+        {state.choices.embedString.length === 0 &&
+        state.choices.embedBuffers.length === 0
           ? 'no forwarding updates'
           : 'planned forwarding updates'}
         {!isSpaceFull && (
@@ -438,7 +451,7 @@ export const P5CustomForwards = () => {
         </RoundButton>
         {/* if no stealth address, show button */}
         {/* (TODO) replace with constant for this type of network */}
-        {!pastForwards.some(fw => fw.network === '?') &&
+        {!state.choices.embedBuffers.some((fw: any) => fw.network === '?') &&
           process.env.NODE_ENV === 'development' && (
             <RoundButton
               colorbutton={'var(--colorHighlightDark)'}
