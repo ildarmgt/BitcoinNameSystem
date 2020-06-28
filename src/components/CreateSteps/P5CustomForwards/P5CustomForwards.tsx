@@ -17,7 +17,7 @@ import {
 
 import sanitize from '../../../helpers/sanitize'
 
-type Planned_Changes = { [key: string]: string | Buffer }
+type Planned_Changes = { [key: string]: string }
 
 /**
  * Component for page where user can edit custom forwards information.
@@ -63,15 +63,11 @@ export const P5CustomForwards = () => {
 
   // set global state's string to embed from an object of planned changes
   const setPlannedChanges = (objForwards: Planned_Changes = {}) => {
-    const forwardBuffers = []
     let forwardsString = ''
     Object.keys(objForwards).forEach(fwNetwork => {
       const forward = objForwards[fwNetwork]
-      if (Buffer.isBuffer(forward)) {
-        forwardBuffers.push({ [fwNetwork]: forward })
-      } else {
-        forwardsString += fwNetwork + ' ' + forward + ' '
-      }
+
+      forwardsString += fwNetwork + ' ' + forward + ' '
     })
     // remove extra space from end ('' stays '')
     forwardsString = forwardsString.slice(0, -1)
@@ -114,6 +110,7 @@ export const P5CustomForwards = () => {
         // out of this array of words
         words: Array<string>
       ): Planned_Changes => {
+        // every second word is "forwarding address", word before it is "network"
         if (index % 2 === 1) {
           return { ...plannedChangesSoFar, [words[index - 1]]: word }
         } else {
@@ -122,6 +119,7 @@ export const P5CustomForwards = () => {
       },
       {} // initial value for plannedChangesSoFar
     )
+
     return changesObject
   }
 
@@ -135,21 +133,43 @@ export const P5CustomForwards = () => {
     getOwner(state)?.forwards || []
   ).reverse()
 
-  // count # of bytes in string
-  const bytesOfChanges = stringByteCount(state.choices.embedString)
+  // count # of bytes in string and buffers
+  const bytesOfChanges =
+    stringByteCount(state.choices.embedString) +
+    state.choices.embedBuffers.reduce(
+      (bytesTotal: number, eachBufferObject: any) =>
+        // network + space + buffer
+        bytesTotal +
+        eachBufferObject.network.length +
+        eachBufferObject.address.length +
+        1,
+      0
+    )
   // count # of bytes left for storage
   const bytesLeft = BYTES_MAX - bytesOfChanges
   // if no more space
   const isSpaceFull = bytesLeft < 0
 
   /**
-   * Render explanation of the change with submitted forwards network name
+   * Render explanation of the change with submitted forwards network name.
+   * Checks if it's a buffer version or simple string.
    */
-  const explainForwards = (fwNetwork: string) => {
-    const value = getPlannedChanges()[fwNetwork]
+  const explainForwards = (
+    fwNetwork: string,
+    {
+      embededBuffer
+    }: { embededBuffer: null | { network: string; address: Buffer } } = {
+      embededBuffer: null
+    }
+  ) => {
+    const value = !embededBuffer
+      ? getPlannedChanges()[fwNetwork]
+      : `${embededBuffer.address.length} bytes long`
 
     // display byte cost (including separator)
-    const bytes = stringByteCount(fwNetwork + ' ' + value)
+    const bytes = !embededBuffer
+      ? stringByteCount(fwNetwork + ' ' + value)
+      : embededBuffer.network.length + 1 + embededBuffer.address.length
     const thisByteCostEstimate = (
       <i>
         {' '}
@@ -160,7 +180,7 @@ export const P5CustomForwards = () => {
     // return explanation of embedded content
     const interpretation = () => {
       // if it was a command
-      if (fwNetwork.startsWith('!') && !Buffer.isBuffer(value)) {
+      if (fwNetwork.startsWith('!')) {
         const cmd = interpretCommand(fwNetwork, value)
         return {
           content: (
@@ -218,8 +238,8 @@ export const P5CustomForwards = () => {
         key={fwNetwork}
         onClick={() => {
           // fill in the edit field with these values in case
-          // (only if it's not a command)
-          if (!fwNetwork.startsWith('!'))
+          // (only if it's not a command or a buffer value)
+          if (!fwNetwork.startsWith('!') && !embededBuffer)
             setTextboxContent({ network: fwNetwork, address: String(value) })
         }}
       >
@@ -275,6 +295,9 @@ export const P5CustomForwards = () => {
         {/* Show, explain, and allow editing and removing of each added key/value pair to embed */}
         {Object.keys(getPlannedChanges()).map((fwNetwork: any) =>
           explainForwards(fwNetwork)
+        )}
+        {state.choices.embedBuffers.map((eb: any) =>
+          explainForwards(eb.network, { embededBuffer: eb })
         )}
       </div>
 
@@ -406,10 +429,21 @@ export const P5CustomForwards = () => {
             <RoundButton
               colorbutton={'var(--colorHighlightDark)'}
               onClick={() => {
-                console.log('stealth address button clicked')
-                setPlannedChanges({
-                  ...getPlannedChanges(),
-                  '?': getStealthAddress(state.wallet.mnemonic, state.network)
+                console.log('adding stealth address')
+
+                // need to add stealth address to embeds
+                const newBufferAddress = {
+                  network: '?',
+                  address: getStealthAddress(
+                    state.wallet.mnemonic,
+                    state.network
+                  )
+                }
+                changeChoicesBNSAction(state, dispatch, {
+                  embedBuffers: [
+                    ...state.choices.embedBuffers,
+                    newBufferAddress
+                  ]
                 })
               }}
             >
