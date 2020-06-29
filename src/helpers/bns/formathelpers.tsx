@@ -1,3 +1,4 @@
+import bs58check from 'bs58check'
 import { newUser, newState } from './initialState'
 import {
   OWNERSHIP_DURATION_BY_BLOCKS,
@@ -15,7 +16,7 @@ import {
   I_Bid,
   BnsBidType
 } from './types/'
-import { decrypt } from './cryptography'
+import { decryptToBuffer } from './cryptography'
 import { deterministicRandomBid } from './deterministicRandom'
 
 /* -------------------------------------------------------------------------- */
@@ -193,23 +194,48 @@ export const readEmbeddedData = (st: I_BnsState, tx: I_TX): void => {
   //   user.address,
   //   nonce
   // )
-  const embeddedDataUtf8 = decrypt(embeddedDataBuffer, decryptionKey)
+  // const embeddedDataUtf8 = decrypt(embeddedDataBuffer, decryptionKey)
+  const embeddedDataBufferDecrypted = decryptToBuffer(
+    embeddedDataBuffer,
+    decryptionKey
+  )
+
   // console.log('', getTxHeight(tx), ': found embedded data:', embeddedDataUtf8)
 
   // split by spaces into array
-  const embeddedDataUtf8Array = embeddedDataUtf8.split(' ')
+  const separator = Buffer.from(' ')
+  const embeddedDataBufferArray: Buffer[] = []
+  for (let i = 0; i < embeddedDataBufferDecrypted.length; i++) {
+    const thisByte = embeddedDataBufferDecrypted.slice(i, i + 1)
+    const isSeparator = Buffer.compare(separator, thisByte) === 0
+    if (isSeparator || i === 0) {
+      embeddedDataBufferArray.push(Buffer.from([]))
+    }
+    if (!isSeparator || i === 0) {
+      const wordIndex = embeddedDataBufferArray.length - 1
+      embeddedDataBufferArray[wordIndex] = Buffer.concat([
+        embeddedDataBufferArray[wordIndex],
+        thisByte
+      ])
+    }
+  }
+  // const embeddedDataUtf8Array = embeddedDataUtf8.split(' ')
 
   // collect all forwards in this tx
   const forwardsInThisTx: Array<I_Forward> = []
 
-  embeddedDataUtf8Array.forEach((word: string, index: number) => {
+  embeddedDataBufferArray.forEach((word: Buffer, index: number) => {
     // everything must be space separated in pairs
     // so single block might mean failed decryption or
     // last unpaired block might be padding or future versioning
     // grabbing only odd and 1 before it values, only grabbing pairs
     if (index % 2 === 1) {
-      const networkPiece = embeddedDataUtf8Array[index - 1]
-      const forwardingAddressPiece = word
+      const networkPiece = embeddedDataBufferArray[index - 1].toString('utf8')
+      const forwardingAddressPiece =
+        networkPiece === '?'
+          ? bs58check.encode(word) // if it's stealth address so base58check
+          : word.toString('utf8') // otherwise it's just utf8
+
       const thisForward = {
         // encoding text here before inserting it into global state
         // encodeURIComponent() escapes all characters except: A-Z a-z 0-9 - _ . ! ~ * ' ( )

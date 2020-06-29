@@ -35,6 +35,18 @@ export function interpretFw(fw: I_Forward, blockchain?: string) {
     }
   }
 
+  if (decodeURIComponent(onNetwork) === '?') {
+    const xpub = decodeURIComponent(fw.address)
+      .replace('>', '') // safety precaution
+      .replace('<', '') // safety precaution
+    return {
+      where: 'stealth-address:',
+      what: `${xpub.slice(0, 7)}...${xpub.slice(-7)}`,
+      link: undefined,
+      render: true
+    }
+  }
+
   if (
     onNetwork === 'http' ||
     onNetwork === 'https' ||

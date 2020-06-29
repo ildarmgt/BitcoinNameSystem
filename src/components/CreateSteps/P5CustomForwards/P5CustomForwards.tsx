@@ -211,9 +211,9 @@ export const P5CustomForwards = () => {
               Updating <span>stealth address</span> to an address
               <span>
                 {' ' +
-                  stringApprox.slice(0, 5) +
+                  stringApprox.slice(0, 7) +
                   '...' +
-                  stringApprox.slice(-5) +
+                  stringApprox.slice(-7) +
                   ' '}
               </span>
               {thisByteCostEstimate}
