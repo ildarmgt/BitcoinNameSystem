@@ -25,6 +25,7 @@ export const P6Broadcast = () => {
   let tx: any
   let txIssue = ''
   try {
+    // attempt to calculate the tx content
     tx = calcTx(state.wallet, state.domain, state.choices, state.network)
   } catch (e) {
     txIssue = String(e.message)

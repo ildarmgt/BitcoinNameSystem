@@ -1,7 +1,7 @@
 import * as bitcoin from 'bitcoinjs-lib'
 import { calcP2WSH } from './calcP2WSH'
 import { MIN_NOTIFY } from './constants'
-import { encrypt } from './cryptography'
+import { encryptFromBuffer } from './cryptography'
 import { I_Domain, I_Checked_Action } from './types/'
 import { BnsSuggestionType } from './../bns/types'
 import { getNonce } from './formathelpers'
@@ -47,6 +47,7 @@ export const calcTx = (
     action: I_Checked_Action
     feeRate: number
     embedString: string
+    embedBuffers: Array<any>
     [key: string]: any
   },
   networkChoice: string,
@@ -234,9 +235,53 @@ export const calcTx = (
   const encryptionKey = domain.domainName + wallet.address + nonce
   console.log('nonce used to encrypt', domain.domainName, wallet.address, nonce)
 
-  const finalEmbedString = choices.embedString
-  console.log('string embedded is', '"' + finalEmbedString + '"')
-  const data = encrypt(finalEmbedString, encryptionKey)
+  /* ------------------------------ embedded data ----------------------------- */
+  // for now 2 sources of data to embed:
+  // 1) choices.embedString
+  // 2) choices.embedBuffers which is an array of {network:string, .address:Buffer}
+  // (TODO): simplify & generalize to just handle buffer array w/o string as it's confusing
+
+  // buffer to be embedded fromchoices.embedString
+  const fromEmbedString_Buffer = Buffer.from(choices.embedString)
+
+  // buffer to be embedded from fromchoices.embedBuffers array
+  let fromEmbedBuffers_Buffer = Buffer.from([])
+  for (let i = 0; i < choices.embedBuffers.length; i++) {
+    fromEmbedBuffers_Buffer = Buffer.concat([
+      fromEmbedBuffers_Buffer, // keep adding on
+      Buffer.from(choices.embedBuffers[i].network), // add the network
+      Buffer.from(' '), // add the separator
+      Buffer.from(choices.embedBuffers[i].address), // add the address
+      Buffer.from(' ') // add the separator for next one
+    ])
+  }
+  // combine to get total data to embed from string and buffer array
+  let finalEmbeddedData = fromEmbedBuffers_Buffer
+  if (fromEmbedString_Buffer.length > 0) {
+    // if there's string data, just add it onto the end
+    finalEmbeddedData = Buffer.concat([
+      finalEmbeddedData,
+      fromEmbedString_Buffer
+    ])
+  } else {
+    // if there's not string data, just remove the final separator
+    // (empty buffer stays empty)
+    finalEmbeddedData = finalEmbeddedData.slice(0, -1)
+  }
+
+  const data = encryptFromBuffer(finalEmbeddedData, encryptionKey)
+
+  console.log(
+    'total embedded data is',
+    '"' + finalEmbeddedData + '", bytes:',
+    finalEmbeddedData.length
+  )
+  console.log(
+    'after encryption embedded data is',
+    '"' + data + '", bytes:',
+    data.length
+  )
+
   const embed = bitcoin.payments.embed({ data: [data] })
 
   psbt.addOutput({
