@@ -236,6 +236,7 @@ export const calcTx = (
   console.log('nonce used to encrypt', domain.domainName, wallet.address, nonce)
 
   /* ------------------------------ embedded data ----------------------------- */
+
   // for now 2 sources of data to embed:
   // 1) choices.embedString
   // 2) choices.embedBuffers which is an array of {network:string, .address:Buffer}
@@ -281,6 +282,12 @@ export const calcTx = (
     '"' + data + '", bytes:',
     data.length
   )
+
+  if (data.length > 80) {
+    throw new Error(
+      'Embedded data is larger than standardness 80 byte limit rule'
+    )
+  }
 
   const embed = bitcoin.payments.embed({ data: [data] })
 
