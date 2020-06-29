@@ -65,6 +65,10 @@ export const P6Broadcast = () => {
       Math.max(tx.gatheredFromWallet - tx.change, 0)
     : undefined
 
+  /* -------------------------------------------------------------------------- */
+  /*                                   render                                   */
+  /* -------------------------------------------------------------------------- */
+
   return (
     <div className={styles.wrapper}>
       <div className={styles.title}>Finalize transaction details</div>

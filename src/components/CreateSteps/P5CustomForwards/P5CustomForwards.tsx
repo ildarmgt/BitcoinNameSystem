@@ -16,6 +16,7 @@ import {
 } from '../../../helpers/bns'
 
 import sanitize from '../../../helpers/sanitize'
+import bs58check from 'bs58check'
 
 type Planned_Changes = { [key: string]: string }
 
@@ -201,12 +202,20 @@ export const P5CustomForwards = () => {
       }
 
       // forwarding for stealth addresses
-      if (fwNetwork === '?') {
+      if (embededBuffer && fwNetwork === '?') {
+        // base58 is standard for xpub & thus stealth
+        const stringApprox = bs58check.encode(embededBuffer.address)
         return {
           content: (
             <>
               Updating <span>stealth address</span> to an address
-              <span>{' ' + value + ' '}</span>
+              <span>
+                {' ' +
+                  stringApprox.slice(0, 5) +
+                  '...' +
+                  stringApprox.slice(-5) +
+                  ' '}
+              </span>
               {thisByteCostEstimate}
             </>
           ),
