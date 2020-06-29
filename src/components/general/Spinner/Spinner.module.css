@@ -60,10 +60,7 @@
     transform: translate(calc(-100% - 0 * var(--widthSpinner)), -50%);
   }
 
-  66% {
-    transform: translate(calc(-100% - 0.4 * var(--widthSpinner)), -50%);
-  }
-
+  66%,
   100% {
     transform: translate(calc(-100% - 0.4 * var(--widthSpinner)), -50%);
   }
