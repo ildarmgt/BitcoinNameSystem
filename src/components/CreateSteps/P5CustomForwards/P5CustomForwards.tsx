@@ -447,7 +447,7 @@ export const P5CustomForwards = () => {
               <div className={styles.pastNetwork}>
                 {decodeURIComponent(fw.network) !== '?'
                   ? decodeURIComponent(fw.network)
-                  : 'stealth "?"'}
+                  : '? (stealth)'}
               </div>
               <div className={styles.pastAddress}>
                 {decodeURIComponent(fw.address)}
@@ -478,9 +478,12 @@ export const P5CustomForwards = () => {
           Ready
         </RoundButton>
         {/* if no stealth address, show button */}
-        {/* (TODO) replace with constant for this type of network */}
+        {/* (TODO) replace with constant for '?' type of network */}
+        {/* (TODO) allow to increment stealth address hardened index by 1 */}
         {!state.choices.embedBuffers.some((fw: any) => fw.network === '?') &&
-          process.env.NODE_ENV === 'development' && (
+          !pastForwards.some(
+            (fw: any) => decodeURIComponent(fw.network) === '?'
+          ) && (
             <RoundButton
               colorbutton={'var(--colorHighlightDark)'}
               onClick={() => {
