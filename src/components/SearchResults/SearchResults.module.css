@@ -30,8 +30,6 @@
 
   bottom: var(--navbarHeight);
   top: var(--searchResultsTop);
-  /* 10vh + 5s + 2vh + 2.5s */
-  /* height: calc(var(--dh) - 13.5vh - (29.5 * var(--s))); */
 
   color: var(--colorDarkText);
 

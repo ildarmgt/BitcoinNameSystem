@@ -313,6 +313,8 @@ export const P5CustomForwards = () => {
         BNS action: {state.choices.action.info}
       </div>
 
+      {/* ----------------------------- list of changes ---------------------------- */}
+
       <div className={styles.changes}>
         {/* bytes info */}
         {state.choices.embedString.length === 0 &&
@@ -336,6 +338,8 @@ export const P5CustomForwards = () => {
           explainForwards(eb.network, { embededBuffer: eb })
         )}
       </div>
+
+      {/* ----------------------------- text input area ---------------------------- */}
 
       <div className={styles.editor}>
         {textboxContent.network.length > 0 && (
@@ -404,6 +408,9 @@ export const P5CustomForwards = () => {
           <aside>Add to planned changes</aside>
         </div>
       </div>
+
+      {/* ---------------------------- current forwards ---------------------------- */}
+
       <div className={styles.pastList}>
         <Details description={'Current forwards (expand for info):'}>
           <p>
@@ -431,15 +438,27 @@ export const P5CustomForwards = () => {
               className={styles.pastPair}
               key={i}
               onClick={() => {
-                setTextboxContent({ network: fw.network, address: fw.address })
+                setTextboxContent({
+                  network: decodeURIComponent(fw.network),
+                  address: decodeURIComponent(fw.address)
+                })
               }}
             >
-              <div className={styles.pastNetwork}>{fw.network}</div>
-              <div className={styles.pastAddress}>{fw.address}</div>
+              <div className={styles.pastNetwork}>
+                {decodeURIComponent(fw.network) !== '?'
+                  ? decodeURIComponent(fw.network)
+                  : 'stealth "?"'}
+              </div>
+              <div className={styles.pastAddress}>
+                {decodeURIComponent(fw.address)}
+              </div>
             </div>
           )
         })}
       </div>
+
+      {/* --------------------------------- buttons -------------------------------- */}
+
       <div className={styles.buttonWrapper}>
         <RoundButton
           back='true'
