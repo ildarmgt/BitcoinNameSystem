@@ -228,4 +228,4 @@ The name was chosen to imply it's neutral system rather than service. I really d
 
 BTC LN: https://tippin.me/@dev_bns
 
-BTC:
+BTC: bc1qql7nee66sntmen9zdhxel8ly46pe9a5840djug
