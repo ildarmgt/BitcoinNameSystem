@@ -4,9 +4,15 @@ import { getTx } from './getTx'
 import { Logo } from './../../general/Logo/'
 const RESERVED_FROM_WALLET_KEY = 'fromWallet'
 
+// which feeds to use
+const USE_URL_AS_SOURCE = false
+const USE_SESSION_STORAGE_AS_SOURCE = true
+// if development mode
+const TESTING = process.env.NODE_ENV === 'development'
+
 // logic flow
 // user -> params -> txBuilder -> user
-// user feeds data into wallet component from any of following:
+// user feeds data into wallet component from any of following (if enabled):
 // 1. props (object with key:values inside props.txBuilder)
 // 2. querry strings (#*?key=value&key=value format, values with encodeURIcomponent encoding)
 // 3. session storage with (key:JSON.stringify(value))
@@ -33,8 +39,9 @@ export const Wallet = (props: any): JSX.Element => {
       ...(!!props.txBuilder ? props.txBuilder : {})
     })
   }
-  
+
   // gui settings
+
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [info, setInfo] = React.useState({ text: '' })
 
@@ -99,7 +106,7 @@ const handleParams = (params: any, setParams: any) => {
     removeListeners(params, setParams)
 
     // clean up url as well
-    resetUrl()
+    if (USE_URL_AS_SOURCE) resetUrl()
   }
 }
 
@@ -109,18 +116,29 @@ const handleParams = (params: any, setParams: any) => {
 
 const addListeners = (params: any, setParams: any) => {
   // even to detect session storage edit
-  window.addEventListener('storage', handleStorageChange(params, setParams))
+  if (USE_SESSION_STORAGE_AS_SOURCE)
+    window.addEventListener('storage', handleStorageChange(params, setParams))
+
   // event to detect url change
-  window.addEventListener('hashchange', handleHashChange(params, setParams))
+  if (USE_URL_AS_SOURCE)
+    window.addEventListener('hashchange', handleHashChange(params, setParams))
 }
 
 const removeListeners = (params: any, setParams: any) => {
   // clean up storage listener
-  window.removeEventListener('storage', handleStorageChange(params, setParams))
-  // clean up url hash listener
-  window.removeEventListener('hashchange', handleHashChange(params, setParams))
-}
+  if (USE_SESSION_STORAGE_AS_SOURCE)
+    window.removeEventListener(
+      'storage',
+      handleStorageChange(params, setParams)
+    )
 
+  // clean up url hash listener
+  if (USE_URL_AS_SOURCE)
+    window.removeEventListener(
+      'hashchange',
+      handleHashChange(params, setParams)
+    )
+}
 
 /* -------------------------------------------------------------------------- */
 /*                convert matching params to wallet properties                */
@@ -248,9 +266,6 @@ const resetUrl = () => {
   // emit event if param or url change if needs to be detected
   // window.dispatchEvent(new HashChangeEvent("hashchange"));
 }
-
-// if development mode
-const TESTING = process.env.NODE_ENV === 'development'
 
 /* -------------------------------------------------------------------------- */
 /*                               Initial values                               */
