@@ -40,7 +40,7 @@ export const Navbar = (): JSX.Element => {
   const isHomePage = useHistory().location.pathname === '/'
   const isAboutPage = useHistory().location.pathname === '/about'
   const isSettingsPage = useHistory().location.pathname === '/settings'
-  const isWalletPage = useHistory().location.pathname === '/wallet'
+  // const isWalletPage = useHistory().location.pathname === '/wallet'
 
   React.useEffect(() => {
     // place overflow menu and show it
@@ -166,20 +166,20 @@ export const Navbar = (): JSX.Element => {
       >
         settings
       </div>
-    ],
-    [
-      <div
-        key={'wallet'}
-        className={[styles.button, isWalletPage ? styles.selected : ''].join(
-          ' '
-        )}
-        onClick={() => {
-          !isWalletPage && history.push('/wallet')
-        }}
-      >
-        wallet
-      </div>
     ]
+    // [
+    //   <div
+    //     key={'wallet'}
+    //     className={[styles.button, isWalletPage ? styles.selected : ''].join(
+    //       ' '
+    //     )}
+    //     onClick={() => {
+    //       !isWalletPage && history.push('/wallet')
+    //     }}
+    //   >
+    //     wallet
+    //   </div>
+    // ]
   ]
 
   /* -------------------------------------------------------------------------- */
