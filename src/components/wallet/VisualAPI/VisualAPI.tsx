@@ -82,6 +82,7 @@ export const VisualAPI = (props: any) => {
         <div
           className={styles.text}
           onClick={() => {
+            // console log active async api loop object
             console.log(
               Object.keys(last.loops).map((loopKey: any) => ({
                 ...last.loops[loopKey],
@@ -91,9 +92,15 @@ export const VisualAPI = (props: any) => {
           }}
         >
           {props.message}
-          {/* {props.tasks.length > 0 && <> ({props.tasks.length})</>} */}
+          {props.tasks.length > 0 ? (
+            <> busy ({props.tasks.length})</>
+          ) : (
+            <> ready</>
+          )}
         </div>
       </div>
+
+      {/* loading spinner */}
       {props.tasks.length > 0 && (
         <Spinner className={styles.spinner} width='calc(15 * var(--s))' />
       )}

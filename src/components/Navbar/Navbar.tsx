@@ -216,6 +216,10 @@ export const Navbar = (): JSX.Element => {
 
   const TESTING = process.env.NODE_ENV === 'development'
 
+  /* -------------------------------------------------------------------------- */
+  /*                                   render                                   */
+  /* -------------------------------------------------------------------------- */
+
   return (
     <>
       <div className={styles.warning}>
