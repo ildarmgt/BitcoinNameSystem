@@ -12,7 +12,7 @@ export const initialState: I_State = {
   domain: newState.domain, // using BNS equivalent domain object
   wallet: {
     // wallet information & utxo for controlling domain names
-    address: '', // public address (p2wpkh)
+    address: '', // public control address (p2wpkh)
     mnemonic: '', // mnemonic for private key derivation
     WIF: '', // wallet import format for private key derivation
     txHistory: [], // array of all tx for this address

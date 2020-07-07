@@ -14,6 +14,7 @@
 }
 
 .request {
+  margin: calc(4 * var(--s)) calc(2 * var(--s));
 }
 
 .request__total {

@@ -51,7 +51,7 @@ export const Wallet = (props: any): JSX.Element => {
   // run methods to handle detection of new parameters from all sources
   React.useEffect(() => handleParams(params, setParams), [params])
 
-  // run methods to move new parameters into txBuilder
+  // run methods to move new parameters 'params' into txBuilder
   React.useEffect(
     () => processNewParams(params, setParams, txBuilder, setTxBuilder),
     [params, txBuilder]
@@ -176,7 +176,7 @@ const recalcBuilder = ({ txBuilder, setInfo }: any) => {
 /* -------------------------------------------------------------------------- */
 
 /**
- * Session storage scan. Key value pairs.
+ * Session storage scan. Read key value pairs, clean session storage after.
  */
 const handleStorageChange = (params: any, setParams: any) => (): void => {
   // if (e) console.warn(e)

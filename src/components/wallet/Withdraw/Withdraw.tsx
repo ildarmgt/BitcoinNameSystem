@@ -1,15 +1,20 @@
 import React from 'react'
-import { Store, unitsBTC, satsToBTCSpaced } from '../../../store/'
+import {
+  Store,
+  unitsBTC,
+  satsToBTCSpaced,
+  getUnspentSum
+} from '../../../store/'
 import styles from './Withdraw.module.css'
 import { RoundButton } from './../../general/RoundButton'
 import { ActionTypes } from './../../../interfaces'
 import {
-  scanAddressFullyAction
-  // changePageInfoAction
+  scanAddressFullyAction,
+  changePageInfoAction
 } from './../../../store/actions'
-// import { useHistory } from 'react-router-dom'
-import { getUnspentSum } from '../../../helpers/bns/bitcoin'
+import { useHistory } from 'react-router-dom'
 import { FeesSelection } from './../FeesSelection'
+import { InputForm } from './../../general/InputForm'
 
 /**
  * Allow withdrawals
@@ -18,9 +23,10 @@ export const Withdraw = () => {
   // global state
   const { state, dispatch } = React.useContext(Store)
 
-  // Local state: keep track if API is busy
-  const [apiStatus, setApiStatus] = React.useState('ok')
+  // keep track if button already clicked
+  const [btnAvailable, setBtnAvailable] = React.useState(true)
 
+  // format btc values and units for render
   const showBTC = (sats = 0): JSX.Element => (
     <>
       <span className={styles.balance}>{satsToBTCSpaced(sats)}</span>
@@ -28,51 +34,72 @@ export const Withdraw = () => {
     </>
   )
 
-  // const history = useHistory()
-  // if wallet is not loaded, send to create page 1
-  // if (!state.wallet.mnemonic) {
-  //   changePageInfoAction(state, dispatch, 1)
-  //   history.push('/create')
-  // }
+  // if wallet is not loaded, send to create page 1 to load wallet
+  const history = useHistory()
+  if (!state.wallet.mnemonic) {
+    changePageInfoAction(state, dispatch, 1)
+    history.push('/create')
+  }
+
+  const scanWalletButton = () => (
+    <RoundButton
+      onClick={async () => {
+        if (btnAvailable) {
+          setBtnAvailable(false)
+          await scanAddressFullyAction(
+            state,
+            dispatch,
+            ActionTypes.UPDATE_WALLET
+          )
+          setBtnAvailable(true)
+        }
+      }}
+    >
+      {!btnAvailable && 'Scanning wallet'}
+      {btnAvailable && state.pageInfo.checkedWallet && 'Re-scan wallet...'}
+      {btnAvailable && !state.pageInfo.checkedWallet && 'Scan wallet...'}
+    </RoundButton>
+  )
+
+  /* -------------------------------------------------------------------------- */
+  /*                                   render                                   */
+  /* -------------------------------------------------------------------------- */
 
   return (
     <div className={styles.wrapper}>
       (NOT DONE)
-      <div className={styles.title}>Withdraw from wallet</div>
-      <div className={styles.request}>
-        {!state.pageInfo.checkedWallet && (
-          <>
-            <RoundButton
-              onClick={() => {
-                if (apiStatus === 'ok') {
-                  setApiStatus('wallet')
-                  scanAddressFullyAction(
-                    state,
-                    dispatch,
-                    ActionTypes.UPDATE_WALLET
-                  )
-                }
-              }}
-            >
-              Scan wallet
-            </RoundButton>
-          </>
-        )}
-      </div>
+      {/* page title */}
+      <div className={styles.title}>Withdraw from control address</div>
+      {/* scan wallet button */}
+      <div className={styles.request}>{scanWalletButton()}</div>
       {state.pageInfo.checkedWallet && (
-        <div className={styles.fees}>
-          <FeesSelection />
-        </div>
+        <>
+          {/* if wallet scanned, show fee selection */}
+          <div className={styles.fees}>
+            <FeesSelection />
+          </div>
+
+          {/* show control address balance */}
+          <div className={styles.total}>
+            Control address: {showBTC(getUnspentSum(state.wallet.utxoList))}
+          </div>
+
+          {/* to address */}
+          <InputForm />
+
+          {/* to amount */}
+          <InputForm />
+
+          {/* change */}
+
+          {/* calc & broadcast button */}
+          <RoundButton>Send</RoundButton>
+        </>
       )}
-      {state.pageInfo.checkedWallet && (
-        <div className={styles.total}>
-          {showBTC(getUnspentSum(state.wallet.utxoList))}
-        </div>
-      )}
-      <div>to address</div>
+      {/* <div>to address</div>
       <div>to amount</div>
       <div>returned amount</div>
-      <div>broadcast button</div>
+      <div>broadcast button</div> */}
     </div>
   )
 }
