@@ -24,11 +24,24 @@
   transform: translate(1%, calc(0.1 * var(--s))) scale(0.68);
 }
 
+.logo_selected {
+  opacity: 0.9;
+  filter: saturate(1);
+}
+
+.interface_not {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  width: 200vw;
+  height: 200vh;
+}
+
 .interface {
   bottom: var(--wallet__logo_size);
   left: calc(0.5 * var(--s));
   padding: 5vmin;
-  width: 80vmin;
+  width: 95vmin;
   height: auto;
   position: fixed;
   background-color: var(--colorGradientBottomRight);
@@ -38,8 +51,8 @@
     var(--colorGradientTopLeft) 100%
   );
   border: calc(0.3 * var(--s)) solid var(--colorBitcoinBlue);
-  box-shadow: calc(0.3 * var(--s)) calc(0.3 * var(--s)) calc(1.5 * var(--s))
-    calc(1 * var(--s)) #00000010;
+  box-shadow: calc(0.1 * var(--s)) calc(0.1 * var(--s)) calc(3 * var(--s))
+    calc(1 * var(--s)) #00000030;
 
   box-sizing: border-box;
   color: var(--colorButtonText);

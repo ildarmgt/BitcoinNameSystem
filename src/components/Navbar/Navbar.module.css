@@ -79,15 +79,15 @@
   display: inline-block;
   position: fixed;
   bottom: calc(var(--navbarHeight) + (3 * var(--s)));
-  left: calc(0 * var(--s));
-  /* background-color: var(--colorWarning); */
+  right: calc(1 * var(--s));
+  background-color: var(--colorBackground);
   /* border: calc(0.2 * var(--s)) solid var(--colorButtonText); */
   font-size: calc(1.8 * var(--s));
   /* margin-left: calc(1 * var(--s)); */
   color: var(--colorWarning);
   vertical-align: middle;
   text-align: left;
-  opacity: 0.5;
+  opacity: 0.9;
   /* z-index: 1000; */
   border-radius: calc(0.5 * var(--s));
 }

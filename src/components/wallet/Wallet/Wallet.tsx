@@ -31,6 +31,8 @@ const TESTING = process.env.NODE_ENV === 'development'
  * Simulates behavior of browser wallet plugins without needing them.
  */
 export const Wallet = (props: any): JSX.Element => {
+  const [showInterface, setShowInterface] = React.useState(false)
+
   // stores and initializes tx builder from initial state and passed props
   const [txBuilder, setTxBuilder]: [I_TxBuilder | null, any] = React.useState(
     null
@@ -80,19 +82,37 @@ export const Wallet = (props: any): JSX.Element => {
         className={[styles.wrapper, props.className || ''].join(' ')}
         onClick={() => {
           console.log({ params, txBuilder })
+          setShowInterface(!showInterface)
         }}
       >
         <div>
-          <Logo className={styles.logo} size='var(--wallet__logo_size)' />
+          <Logo
+            className={[
+              styles.logo,
+              showInterface ? styles.logo_selected : ''
+            ].join(' ')}
+            size='var(--wallet__logo_size)'
+          />
         </div>
       </div>
-      {/* visual interface */}
-      <div className={styles.interface}>
-        <RoundButton>Send</RoundButton>
-        <RoundButton>Receive</RoundButton>
-        <br />
-        <InputForm thisInputLabel={'Sending to'} showButton={'false'} />
-      </div>
+      {/* visual interface & hidden background for canceling it */}
+      {showInterface && (
+        <>
+          <div
+            className={styles.interface_not}
+            onClick={() => {
+              setShowInterface(false)
+            }}
+          />
+
+          <div className={styles.interface}>
+            <RoundButton>Send</RoundButton>
+            <RoundButton>Receive</RoundButton>
+            <br />
+            <InputForm thisInputLabel={'Sending to'} showButton={'false'} />
+          </div>
+        </>
+      )}
     </>
   ) : (
     <></>
