@@ -125,6 +125,8 @@ html {
   --headerWhitespace: calc(18 * var(--s));
   /* navbar height */
   --navbarHeight: calc(6.1 * var(--s));
+  /* bitcion icon height */
+  --wallet__logo_size: calc((10 * var(--s)) + 1px);
 
   /*
     display height

@@ -27,9 +27,7 @@
   background-color: var(--colorDarker1);
   border-radius: calc(1 * var(--s));
   padding: calc(0.25 * var(--s)) calc(1 * var(--s));
-  /* vertical-align: middle; */
   text-indent: 0;
-  /* margin: calc(0.25 * var(--s)) 0; */
 }
 
 .fees {

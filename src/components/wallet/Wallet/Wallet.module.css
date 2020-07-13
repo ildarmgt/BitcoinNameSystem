@@ -3,7 +3,6 @@
 }
 
 .logo {
-  --wallet__logo_size: calc((10 * var(--s)) + 1px);
   text-rendering: geometricPrecision; /* firefox improvement */
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
@@ -23,4 +22,25 @@
 .logo:active {
   /* transform-origin: center; */
   transform: translate(1%, calc(0.1 * var(--s))) scale(0.68);
+}
+
+.interface {
+  bottom: var(--wallet__logo_size);
+  left: calc(0.5 * var(--s));
+  padding: 5vmin;
+  width: 80vmin;
+  height: auto;
+  position: fixed;
+  background-color: var(--colorGradientBottomRight);
+  background: linear-gradient(
+    135deg,
+    var(--colorGradientBottomRight) 0%,
+    var(--colorGradientTopLeft) 100%
+  );
+  border: calc(0.3 * var(--s)) solid var(--colorBitcoinBlue);
+  box-shadow: calc(0.3 * var(--s)) calc(0.3 * var(--s)) calc(1.5 * var(--s))
+    calc(1 * var(--s)) #00000010;
+
+  box-sizing: border-box;
+  color: var(--colorButtonText);
 }

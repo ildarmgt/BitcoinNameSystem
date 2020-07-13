@@ -2,6 +2,8 @@ import React from 'react'
 import styles from './Wallet.module.css'
 import { getTx } from './getTx'
 import { Logo } from './../../general/Logo/'
+import { RoundButton } from '../../general/RoundButton'
+import { InputForm } from './../../general/InputForm'
 const RESERVED_FROM_WALLET_KEY = 'fromWallet'
 
 // which feeds to use
@@ -71,19 +73,29 @@ export const Wallet = (props: any): JSX.Element => {
   /* -------------------------------------------------------------------------- */
   /*                                  Rendering                                 */
   /* -------------------------------------------------------------------------- */
-  return (
-    <div
-      className={[styles.wrapper, props.className || ''].join(' ')}
-      onClick={() => {
-        console.log({ params, txBuilder })
-      }}
-    >
-      {TESTING && (
+  // (TODO) disable testing mode when done
+  return TESTING ? (
+    <>
+      <div
+        className={[styles.wrapper, props.className || ''].join(' ')}
+        onClick={() => {
+          console.log({ params, txBuilder })
+        }}
+      >
         <div>
           <Logo className={styles.logo} size='var(--wallet__logo_size)' />
         </div>
-      )}
-    </div>
+      </div>
+      {/* visual interface */}
+      <div className={styles.interface}>
+        <RoundButton>Send</RoundButton>
+        <RoundButton>Receive</RoundButton>
+        <br />
+        <InputForm thisInputLabel={'Sending to'} showButton={'false'} />
+      </div>
+    </>
+  ) : (
+    <></>
   )
 }
 
@@ -249,7 +261,7 @@ const handleHashChange = (params: any, setParams: any) => (): void => {
       }
     }, {})
 
-  // only update state if there are new values, avoid pointless rerenders
+  // only update state if there are new values, avoid pointless refresh
   if (Object.keys(fedValues).length > 0) {
     const newParams = { ...params, ...fedValues }
     console.log('new params added:', newParams)
@@ -455,7 +467,7 @@ interface I_Input {
  *    - needs unique path or could be confusing to other components
  *    - confusing url for user (needs cleanup after read imo)
  *    - much less data can be passed (so have to get your own data)
- *    - if pass ? after #, not querry string so no forced rerender
+ *    - if pass ? after #, not querry string so no forced refresh
  *      and separate from querry string search links
  *
  * - local storage
