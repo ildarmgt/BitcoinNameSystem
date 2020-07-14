@@ -25,6 +25,8 @@ export const Withdraw = () => {
 
   // keep track if button already clicked
   const [btnAvailable, setBtnAvailable] = React.useState(true)
+  // first load
+  const [initialized, setInitialized] = React.useState(false)
 
   // format btc values and units for render
   const showBTC = (sats = 0): JSX.Element => (
@@ -41,25 +43,39 @@ export const Withdraw = () => {
     history.push('/create')
   }
 
+  // scan the wallet
+  const scanWallet = async () => {
+    if (btnAvailable) {
+      // wrap in try so if page switches too fast so button can't be set, no issue
+      try {
+        setBtnAvailable(false)
+        await scanAddressFullyAction(state, dispatch, ActionTypes.UPDATE_WALLET)
+        setBtnAvailable(true)
+      } catch (e) {}
+    }
+  }
+
   const scanWalletButton = () => (
     <RoundButton
       onClick={async () => {
-        if (btnAvailable) {
-          setBtnAvailable(false)
-          await scanAddressFullyAction(
-            state,
-            dispatch,
-            ActionTypes.UPDATE_WALLET
-          )
-          setBtnAvailable(true)
-        }
+        scanWallet()
       }}
+      minor={'true'}
     >
       {!btnAvailable && 'Scanning wallet'}
       {btnAvailable && state.pageInfo.checkedWallet && 'Re-scan wallet...'}
       {btnAvailable && !state.pageInfo.checkedWallet && 'Scan wallet...'}
     </RoundButton>
   )
+
+  // run scan on load
+  if (!initialized) {
+    const initialScan = async () => {
+      await scanWallet()
+      setInitialized(true)
+    }
+    initialScan()
+  }
 
   /* -------------------------------------------------------------------------- */
   /*                                   render                                   */
