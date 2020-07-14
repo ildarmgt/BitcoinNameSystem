@@ -68,8 +68,8 @@ export const Withdraw = () => {
     </RoundButton>
   )
 
-  // run scan on load
-  if (!initialized) {
+  // run scan on load if wallet hasn't been scanned
+  if (!initialized && !state.pageInfo.checkedWallet) {
     const initialScan = async () => {
       await scanWallet()
       setInitialized(true)
