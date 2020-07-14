@@ -29,13 +29,33 @@ export const HomeContent = (props: any): JSX.Element => {
   // is serach done
   const isSearchDone = () => state.pageInfo.checkedLightSearch
 
-  // put the textarea (by ref) into focus on mount and move caret to end
+  // put the textarea into focus on mount and move caret to end
   const inputEl = useRef<HTMLTextAreaElement>(null)
   useEffect(() => {
     if (inputEl && inputEl.current) {
       inputEl.current.selectionEnd = inputEl.current.value.length
       inputEl.current.selectionStart = inputEl.current.value.length
       inputEl.current.focus()
+    }
+  }, [])
+
+  // key presses set focus on textarea
+  useEffect(() => {
+    const onAnyKey = (e: any) => {
+      // check session storage if wallet is visible so don't focus
+      const walletVisible =
+        window.sessionStorage.getItem('fromWallet') === String(true)
+      // don't count reserved keys
+      const EXCEPTIONS = ['`']
+      if (!walletVisible && !EXCEPTIONS.some(v => v === e.key)) {
+        if (document.activeElement?.id !== 'txtSearch') {
+          inputEl?.current?.focus()
+        }
+      }
+    }
+    document.addEventListener('keydown', onAnyKey)
+    return () => {
+      document.removeEventListener('keydown', onAnyKey)
     }
   }, [])
 
@@ -69,7 +89,9 @@ export const HomeContent = (props: any): JSX.Element => {
           value={state.alias}
           placeholder={'e.g. satoshi'}
           ref={inputEl}
-          onChange={e => changeAliasAction(state, dispatch, e?.target?.value)}
+          onChange={e => {
+            changeAliasAction(state, dispatch, e?.target?.value)
+          }}
           onKeyPress={e => {
             e.key === 'Enter' && searchAction(state, dispatch)
           }}

@@ -25,12 +25,12 @@ export const DevPanel = (props: any): JSX.Element => {
         setHidden(!hidden)
       } else {
         // give focus back to the input bar
-        if (document.activeElement?.id !== 'txtSearch') {
-          const txtSearch = document.getElementById(
-            'txtSearch'
-          ) as HTMLTextAreaElement
-          txtSearch?.focus()
-        }
+        // if (document.activeElement?.id !== 'txtSearch') {
+        //   const txtSearch = document.getElementById(
+        //     'txtSearch'
+        //   ) as HTMLTextAreaElement
+        //   txtSearch?.focus()
+        // }
       }
     }
     document.addEventListener('keyup', onDevKey)

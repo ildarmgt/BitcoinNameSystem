@@ -12,6 +12,8 @@ const USE_SESSION_STORAGE_AS_SOURCE = true
 // if development mode
 const TESTING = process.env.NODE_ENV === 'development'
 
+// written so easy to separate into separate app later
+
 // logic flow
 // user -> params -> txBuilder -> user
 // user feeds data into wallet component from any of following (if enabled):
@@ -60,6 +62,14 @@ export const Wallet = (props: any): JSX.Element => {
     () => processNewParams(params, setParams, txBuilder, setTxBuilder),
     [params, txBuilder]
   )
+
+  // update on status of wallet interface
+  React.useEffect(() => {
+    window.sessionStorage.setItem(
+      RESERVED_FROM_WALLET_KEY,
+      String(showInterface)
+    )
+  }, [showInterface])
 
   // on tx builder changes, attempt to create a transaction
   React.useEffect(

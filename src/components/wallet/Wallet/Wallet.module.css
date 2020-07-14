@@ -44,15 +44,15 @@
   width: 95vmin;
   height: auto;
   position: fixed;
-  background-color: var(--colorGradientBottomRight);
-  background: linear-gradient(
+  background-color: #f3f3f3;
+  /* background: linear-gradient(
     135deg,
     var(--colorGradientBottomRight) 0%,
     var(--colorGradientTopLeft) 100%
-  );
-  border: calc(0.3 * var(--s)) solid var(--colorBitcoinBlue);
-  box-shadow: calc(0.1 * var(--s)) calc(0.1 * var(--s)) calc(3 * var(--s))
-    calc(1 * var(--s)) #00000030;
+  ); */
+  /* border: calc(0.3 * var(--s)) solid var(--colorBitcoinBlue); */
+  box-shadow: calc(0.5 * var(--s)) calc(0.5 * var(--s)) calc(3 * var(--s))
+    calc(1 * var(--s)) #00000020;
 
   box-sizing: border-box;
   color: var(--colorButtonText);
