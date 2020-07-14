@@ -157,8 +157,6 @@ Decentralization works on the principle of not being forced to trust backends. B
 
 - Client hosted on github to give confidence in source code used
 
-- Outgoing connections should be limited to requested API requests on button presses
-
 - Nothing is saved outside your client without permission (UX suffers but security is priority)
 
 - Air gapped signatures (TODO)
