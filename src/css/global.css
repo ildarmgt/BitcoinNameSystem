@@ -190,6 +190,8 @@ html {
   --colorGradientTopLeft: rgba(45, 154, 255, 0.15);
   --colorGradientBottomRight: rgba(212, 145, 37, 0.07);
 
+  --colorHoverWallet: #f1f1f5;
+
   box-sizing: border-box;
   -moz-box-sizing: border-box;
   -webkit-box-sizing: border-box;
