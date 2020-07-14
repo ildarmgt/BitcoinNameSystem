@@ -10,6 +10,8 @@ import styles from './RoundButton.module.css'
  *
  * back='true' to add back arrow on left (off if undefined or '').
  *
+ * minor='true' to just color it like a minor button (like back button) w/o arrow.
+ *
  * show='true' to display element vs show='false' to set display to none (dom still exists).
  *
  * sizebutton='2.9' to make the button size 2.9x standard var(--s) size used (defined in global global.css).
@@ -50,6 +52,7 @@ export const RoundButton = (props: any): JSX.Element => {
       className={[
         styles.roundButtonWrap,
         props.back ? styles.back : '',
+        props.minor ? styles.minorButton : undefined,
         props.className
       ].join(' ')}
     >
@@ -57,7 +60,8 @@ export const RoundButton = (props: any): JSX.Element => {
         className={[
           styles.roundButton,
           props.back ? styles.backArrowPad : undefined,
-          props.next ? styles.nextArrowPad : undefined
+          props.next ? styles.nextArrowPad : undefined,
+          props.minor ? styles.minorButton : undefined
         ].join(' ')}
       >
         {props.back && <div className={styles.backArrow} />}

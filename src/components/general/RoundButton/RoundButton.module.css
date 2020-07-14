@@ -106,6 +106,12 @@
   box-shadow: 0 0 0 calc(0.2 * var(--sizeButton)) var(--colorThisButton) inset;
 }
 
+.minorButton {
+  background-color: var(--colorTransparent);
+  box-shadow: 0 0 0 calc(0.2 * var(--sizeButton)) var(--colorThisButton) inset;
+  color: var(--colorThisButton);
+}
+
 .backArrow:hover {
   /* color: var(--colorThisButtonText); */
   /* background-color: var(--colorDarker2); */
