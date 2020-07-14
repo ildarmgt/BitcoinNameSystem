@@ -157,7 +157,7 @@
   border-radius: calc(0.5 * var(--s));
 
   box-shadow: inset 0 0 calc(0.25 * var(--s)) 0 var(--colorDarker1);
-  background-color: var(--colorBrighter4);
+  background-color: var(--colorBrighter9);
 }
 
 .overflowMenu > div > .button {
@@ -184,7 +184,7 @@
 }
 
 .overflowMenu .button:hover {
-  background-color: var(--colorBrighter9);
+  background-color: var(--colorDarker0_5);
 }
 
 .nav .selected {
@@ -199,7 +199,7 @@
   transform: translateY(calc(0.1 * var(--s))) scale(0.95);
 }
 
-/* "..." for handling menu options outside visible range */
+/* "..." button for handling collapsed menu options */
 .collapsitron {
   display: inline-block;
   position: relative;
@@ -219,9 +219,9 @@
 @supports not (backdrop-filter: blur(1px)) {
   /* firefox doesn't support backdrop filters unless manually turned on... */
   .overflowMenu {
-    background-color: rgba(199, 206, 218, 0.91);
-    --col1: rgba(255, 255, 255, 0.7);
-    --col2: rgba(255, 255, 255, 0.9);
+    /* background-color: rgba(199, 206, 218, 0.91); */
+    --col1: rgba(200, 200, 200, 0.95);
+    --col2: rgba(255, 255, 255, 0.95);
     background: linear-gradient(
       -45deg,
       var(--col1) 0%,
