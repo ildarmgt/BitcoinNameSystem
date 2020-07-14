@@ -81,8 +81,9 @@ export const FeesSelection = () => {
           onClick={() => {
             tryFees()
           }}
+          minor={'true'}
         >
-          Check online
+          Suggest
         </RoundButton>
         {feeSuggestions.showSuggestions && (
           <div className={styles.fees__feeSelection}>
