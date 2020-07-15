@@ -6,7 +6,7 @@
   font-size: var(--inputSize);
   color: var(--colorBitcoinBlue);
   align-self: flex-end;
-  text-align: center;
+  text-align: right;
 }
 
 .shiftRight {
@@ -41,8 +41,8 @@
 }
 
 .textarea {
-  display: inline-block;
-  width: calc(100% - calc(15 * var(--s)));
+  display: block;
+  width: calc(100% - calc(0 * var(--s)));
 }
 
 .button {
@@ -55,5 +55,6 @@
 }
 
 .invisible {
-  visibility: hidden;
+  /* visibility: hidden; */
+  display: none;
 }

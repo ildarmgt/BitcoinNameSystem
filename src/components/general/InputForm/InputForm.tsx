@@ -47,6 +47,7 @@ export const InputForm = (props: any) => {
         <aside className={styles.label}>{props.thisInputLabel || ''}</aside>
         <textarea
           className={styles.textarea}
+          wrap={'off'}
           spellCheck={false}
           value={
             // read what we see in the textarea
@@ -67,19 +68,18 @@ export const InputForm = (props: any) => {
             if (props.thisInputOnChange) props.thisInputOnChange(e)
           }}
         ></textarea>
-        <RoundButton
-          className={[
-            styles.button,
-            props.showButton === 'false' ? styles.invisible : ''
-          ].join(' ')}
-          next={'true'}
-          onClick={() => {
-            if (props.thisSubmitButtonOnClick)
-              props.thisSubmitButtonOnClick(textValue)
-          }}
-        >
-          OK
-        </RoundButton>
+        {props.showButton === 'true' && (
+          <RoundButton
+            className={[styles.button].join(' ')}
+            next={'true'}
+            onClick={() => {
+              if (props.thisSubmitButtonOnClick)
+                props.thisSubmitButtonOnClick(textValue)
+            }}
+          >
+            OK
+          </RoundButton>
+        )}
         {!!props.showBonusInformation && (
           <div className={styles.bonusInformation}>{props.children}</div>
         )}
