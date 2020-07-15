@@ -1,11 +1,15 @@
 import React from 'react'
 import { RoundButton } from '../../general/RoundButton'
 import styles from './P3DomainAndWallet.module.css'
-import { Store } from '../../../store/'
+import {
+  Store,
+  unitsBTC,
+  satsToBTCSpaced,
+  getUnspentSum
+} from '../../../store/'
 import { changePageInfoAction } from '../../../store/actions'
 import { scanAddressFullyAction } from './../../../store/actions'
 import { ActionTypes } from './../../../interfaces'
-import { getUnspentSum } from '../../../helpers/bns/bitcoin'
 
 /**
  * Bid on network
@@ -98,10 +102,10 @@ export const P3DomainAndWallet = () => {
       <div className={styles.unspent}>
         <div className={styles.balance}>
           {state.pageInfo.checkedWallet
-            ? (getUnspentSum(state.wallet.utxoList) / 1e8).toFixed(8)
+            ? satsToBTCSpaced(getUnspentSum(state.wallet.utxoList) / 1e8)
             : 'n/a'}
         </div>
-        {state.network === 'testnet' ? ' tBTC' : ' BTC'}
+        {' ' + unitsBTC(state)}
       </div>
       <div className={styles.ownership}>{readyStatus().info}</div>
       <div className={styles.buttonWrapper}>
