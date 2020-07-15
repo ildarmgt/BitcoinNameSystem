@@ -222,24 +222,33 @@ const recalcBuilder = ({ txBuilder, setInfo }: any) => {
  */
 const handleStorageChange = (params: any, setParams: any) => (): void => {
   // if (e) console.warn(e)
+  console.log('handle Storage Change ran')
 
   // do not want spam of events going off in middle of this
   removeListeners(params, setParams)
 
   const fedValues: { [key: string]: string } = {}
 
-  Object.keys(
-    // cloned session storage so can delete safely while parsing
-    JSON.parse(JSON.stringify(window.sessionStorage))
-  ).forEach((thisKey: string) => {
-    if (thisKey !== RESERVED_FROM_WALLET_KEY) {
-      const thisValue = JSON.parse(window.sessionStorage[thisKey])
-      fedValues[thisKey] = thisValue
+  // check for data sent to wallet
+  const foundValues = JSON.parse(
+    JSON.parse(JSON.stringify(window.sessionStorage))['toWallet']
+  )
 
-      // clear all session storage
-      sessionStorage.removeItem(thisKey)
-    }
-  })
+  console.log('found values:', foundValues)
+
+  if (foundValues)
+    Object.keys(
+      // cloned session storage so can delete safely while parsing
+      foundValues
+    ).forEach((thisKey: string) => {
+      if (thisKey !== RESERVED_FROM_WALLET_KEY) {
+        const thisValue = foundValues[thisKey]
+        fedValues[thisKey] = thisValue
+
+        // clear all session storage
+        sessionStorage.removeItem(thisKey)
+      }
+    })
 
   // only update state if there are actual values
   if (Object.keys(fedValues).length > 0) {

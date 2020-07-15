@@ -96,12 +96,8 @@ export const Withdraw = () => {
         </div>
       </div>
       <br />
-      {state.pageInfo.checkedWallet && (
-        <>
-          {/* show control address balance */}
-          {showBTC(controlBalance)}
-        </>
-      )}
+      {/* show control address balance */}
+      {state.pageInfo.checkedWallet && <>{showBTC(controlBalance)}</>}
 
       {/* scan wallet button */}
       <div className={styles.buttonWrapper}>{scanWalletButton()}</div>
@@ -130,6 +126,7 @@ export const Withdraw = () => {
               setWithdrawAddress(e.target.value)
             }}
             thisSubmitButtonOnClick={() => {
+              console.log('submitting withdrawal to wallet')
               // send each element of payload to session storage for wallet
               const payload: { [key: string]: any } = {
                 outputs: {
@@ -141,12 +138,7 @@ export const Withdraw = () => {
                   changeAddress: state.wallet.address
                 }
               }
-              Object.keys(payload).forEach((thisKey: string) => {
-                window.sessionStorage.setItem(
-                  thisKey,
-                  JSON.stringify(payload[thisKey])
-                )
-              })
+              addToSessionStorage(payload)
             }}
           />
 
@@ -178,4 +170,12 @@ export const Withdraw = () => {
       <div>broadcast button</div> */}
     </div>
   )
+}
+
+/* ------------------------- add to session storage ------------------------- */
+const addToSessionStorage = (payload: any) => {
+  // add stringified payload to session storage under 'toWallet' key
+  window.sessionStorage.setItem('toWallet', JSON.stringify(payload))
+  // this appears necessary
+  window.dispatchEvent(new StorageEvent('storage'))
 }
