@@ -3,34 +3,95 @@
   margin: 0 1%;
   font-size: calc(2.5 * var(--s));
   color: var(--colorBitcoinBlue);
+  text-align: center;
 }
 
-.title {
-  grid-area: title;
-  width: 100%;
-  font-size: calc(3 * var(--s));
-  padding: calc(2 * var(--s));
-  margin-bottom: calc(7 * var(--s));
-}
-
-.request {
-  margin: calc(4 * var(--s)) calc(2 * var(--s));
-}
-
-.request__total {
-  margin: calc(2 * var(--s));
-}
-
-.balance {
+.top {
   box-sizing: border-box;
-  display: inline-block;
-  background-color: var(--colorDarker1);
+  background-color: var(--colorBitcoinBlue);
+  margin-top: calc(0 * var(--s));
+  margin-bottom: calc(2 * var(--s));
+  padding: calc(3 * var(--s));
+  padding-top: 15vh;
+  padding-bottom: 2vh;
+}
+
+.top__title {
+  box-sizing: border-box;
+
+  font-size: calc(4 * var(--s));
+
+  color: var(--colorBackground);
+}
+
+.top__title span {
+  color: var(--colorBitcoinOrange);
+}
+/* ------------------------- address balance ------------------------- */
+
+.total {
+  vertical-align: middle;
+  padding: calc(2 * var(--s));
+  display: inline-flex;
+  flex-wrap: nowrap;
+  justify-content: center;
+  align-items: center;
+}
+
+.total__value {
+  font-size: calc(4 * var(--s));
+  box-sizing: border-box;
+  background-color: var(--colorDarker0_5);
   border-radius: calc(1 * var(--s));
   padding: calc(0.25 * var(--s)) calc(1 * var(--s));
   text-indent: 0;
+  vertical-align: middle;
 }
 
-.fees {
+.total__units {
   box-sizing: border-box;
-  padding: calc(2 * var(--s));
+  margin-left: calc(1 * var(--s));
+  vertical-align: middle;
+  font-size: calc(3 * var(--s));
+}
+
+.btnScan {
+}
+
+/* ------------------------- address to withdraw to ------------------------- */
+
+.withdraw_control {
+  display: inline-block;
+  width: 80vmin;
+  margin: 3vh 0;
+}
+
+/* -------------------------- wide screen settings -------------------------- */
+
+@media screen and (min-aspect-ratio: 14/10) {
+  .wrapper {
+    transform-origin: top;
+    transform: scale(var(--horizontalScale));
+    text-align: right;
+  }
+
+  .top {
+    /* width: auto; */
+    display: inline-block;
+    text-align: left;
+    margin-bottom: calc(5 * var(--s));
+    width: 100%;
+    /* padding: calc(0.2 * var(--s)) calc(20 * var(--s)); */
+  }
+
+  .top__title {
+    /* text-align: right; */
+    display: inline-block;
+    padding: calc(1 * var(--s)) calc(2 * var(--s));
+    line-height: 100%;
+  }
+
+  .withdraw_control {
+    /* margin: 3vh 0; */
+  }
 }

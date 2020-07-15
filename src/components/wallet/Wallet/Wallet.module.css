@@ -52,7 +52,7 @@
   ); */
   /* border: calc(0.3 * var(--s)) solid var(--colorBitcoinBlue); */
   box-shadow: calc(1 * var(--s)) calc(1 * var(--s)) calc(3 * var(--s))
-    calc(1.5 * var(--s)) #00000012;
+    calc(1 * var(--s)) #00000022;
 
   box-sizing: border-box;
   color: var(--colorButtonText);

@@ -4,6 +4,7 @@ import {
   unitsBTC,
   satsToBTCSpaced,
   getUnspentSum
+  // getNetworkName
 } from '../../../store/'
 import styles from './Withdraw.module.css'
 import { RoundButton } from './../../general/RoundButton'
@@ -13,7 +14,7 @@ import {
   changePageInfoAction
 } from './../../../store/actions'
 import { useHistory } from 'react-router-dom'
-import { FeesSelection } from './../FeesSelection'
+// import { FeesSelection } from './../FeesSelection'
 import { InputForm } from './../../general/InputForm'
 
 /**
@@ -22,18 +23,24 @@ import { InputForm } from './../../general/InputForm'
 export const Withdraw = () => {
   // global state
   const { state, dispatch } = React.useContext(Store)
-
   // keep track if button already clicked
   const [btnAvailable, setBtnAvailable] = React.useState(true)
   // first load
   const [initialized, setInitialized] = React.useState(false)
 
+  // address local state
+  const [withdrawAddress, setWithdrawAddress] = React.useState('')
+  // amount local state
+  // const [withdrawAmount, setWithdrawAmount] = React.useState(0)
+
+  const controlBalance = getUnspentSum(state.wallet.utxoList)
+
   // format btc values and units for render
   const showBTC = (sats = 0): JSX.Element => (
-    <>
-      <span className={styles.balance}>{satsToBTCSpaced(sats)}</span>
-      {' ' + unitsBTC(state) + ' '}
-    </>
+    <div className={styles.total}>
+      <span className={styles.total__value}>{satsToBTCSpaced(sats)}</span>
+      <span className={styles.total__units}>{' ' + unitsBTC(state) + ' '}</span>
+    </div>
   )
 
   // if wallet is not loaded, send to create page 1 to load wallet
@@ -57,22 +64,23 @@ export const Withdraw = () => {
 
   const scanWalletButton = () => (
     <RoundButton
+      className={styles.btnScan}
       onClick={async () => {
         scanWallet()
       }}
       minor={'true'}
     >
-      {!btnAvailable && 'Scanning wallet'}
-      {btnAvailable && state.pageInfo.checkedWallet && 'Re-scan wallet...'}
-      {btnAvailable && !state.pageInfo.checkedWallet && 'Scan wallet...'}
+      {!btnAvailable && 'scanning...'}
+      {btnAvailable && state.pageInfo.checkedWallet && 'rescan'}
+      {btnAvailable && !state.pageInfo.checkedWallet && 'scan'}
     </RoundButton>
   )
 
   // run scan on load if wallet hasn't been scanned
   if (!initialized && !state.pageInfo.checkedWallet) {
+    setInitialized(true)
     const initialScan = async () => {
       await scanWallet()
-      setInitialized(true)
     }
     initialScan()
   }
@@ -83,33 +91,82 @@ export const Withdraw = () => {
 
   return (
     <div className={styles.wrapper}>
-      (NOT DONE)
       {/* page title */}
-      <div className={styles.title}>Withdraw from control address</div>
-      {/* scan wallet button */}
-      <div className={styles.request}>{scanWalletButton()}</div>
+      <div className={styles.top}>
+        <div className={styles.top__title}>
+          Withdraw from <span>BNS</span>
+        </div>
+      </div>
+      <br />
       {state.pageInfo.checkedWallet && (
         <>
           {/* if wallet scanned, show fee selection */}
-          <div className={styles.fees}>
+          {/* <div className={styles.fees}>
             <FeesSelection />
-          </div>
+          </div> */}
 
           {/* show control address balance */}
-          <div className={styles.total}>
-            Control address: {showBTC(getUnspentSum(state.wallet.utxoList))}
-          </div>
+          {showBTC(controlBalance)}
+        </>
+      )}
 
+      {/* scan wallet button */}
+      {scanWalletButton()}
+
+      <br />
+
+      {state.pageInfo.checkedWallet && (
+        <>
           {/* to address */}
-          <InputForm />
+          <InputForm
+            className={styles.withdraw_control}
+            thisInputLabel={`Send from control address to`}
+            showButton={'true'}
+            sanitizeFilters={['basic']}
+            thisInputOnChange={(e: any) => {
+              setWithdrawAddress(e.target.value)
+            }}
+            thisSubmitButtonOnClick={() => {
+              // send each element of payload to session storage for wallet
+              const payload: { [key: string]: any } = {
+                outputs: {
+                  '1': {
+                    address: withdrawAddress,
+                    value: 0
+                  },
+                  // change sent back
+                  changeAddress: state.wallet.address
+                }
+              }
+              Object.keys(payload).forEach((thisKey: string) => {
+                window.sessionStorage.setItem(
+                  thisKey,
+                  JSON.stringify(payload[thisKey])
+                )
+              })
+            }}
+          />
 
           {/* to amount */}
-          <InputForm />
+          {/* <InputForm
+            thisInputLabel={`Amount (${unitsBTC(state)})`}
+            showButton={'false'}
+            thisInitialValue={'0.00000000'}
+            sanitizeFilters={['fractions', 'decimal_point', 'no_leading_zeros']}
+            thisInputOnChange={(e: any) => {
+              setWithdrawAmount(e.target.value)
+            }}
+          /> */}
 
           {/* change */}
+          {/* TODO update from wallet */}
+          {/* <div className={styles.total}>
+            Change sent back:{' '}
+            {showBTC(2011134535435435) + ' ' + unitsBTC(state)}
+          </div> */}
 
           {/* calc & broadcast button */}
-          <RoundButton>Send</RoundButton>
+          {/* <RoundButton>Withdraw</RoundButton> */}
         </>
       )}
       {/* <div>to address</div>
