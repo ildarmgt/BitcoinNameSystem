@@ -39,7 +39,7 @@ export const satsToBTC = (sats: number): string => (sats / 1e8).toFixed(8)
 // easier visually to count satoshi via spaces
 export const satsToBTCSpaced = (sats: number): string => {
   // where to put spaces (from right)
-  const spacesLocationsFromRight = [3, 6, 9, 12, 15, 18]
+  const spacesLocationsFromRight = [3, 6, 12, 15, 18]
 
   const styling = (sats / 1e8).toFixed(8).split('')
   const lengthText = styling.length
@@ -58,3 +58,7 @@ export const getUnspentSum = (utxoArray: Array<any>): number => {
 
   return sumSats
 }
+
+// writes out the network name clearly
+export const getNetworkName = (st: I_State): string =>
+  st.network === 'bitcoin' ? 'Bitcoin mainnet' : 'Bitcoin testnet'
