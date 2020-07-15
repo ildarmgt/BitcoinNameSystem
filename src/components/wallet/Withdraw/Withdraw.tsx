@@ -98,14 +98,6 @@ export const Withdraw = () => {
       <br />
       {state.pageInfo.checkedWallet && (
         <>
-          {/* show address from which this withdraws */}
-
-          <div className={styles.address}>
-            <span>Control address</span>
-            <br />
-            {state.wallet.address}
-          </div>
-
           {/* show control address balance */}
           {showBTC(controlBalance)}
         </>
@@ -113,6 +105,17 @@ export const Withdraw = () => {
 
       {/* scan wallet button */}
       <div className={styles.buttonWrapper}>{scanWalletButton()}</div>
+
+      <br />
+
+      {/* show address from which this withdraws */}
+      {state.pageInfo.checkedWallet && (
+        <div className={styles.from}>
+          <div className={styles.from__label}>From control address</div>
+          <div className={styles.from__address}>{state.wallet.address}</div>
+        </div>
+      )}
+
       <br />
 
       {state.pageInfo.checkedWallet && (

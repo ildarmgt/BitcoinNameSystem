@@ -28,20 +28,27 @@
   color: var(--colorBitcoinOrange);
 }
 
-.address {
-  color: var(--colorLightText);
-  display: block;
+.from {
+  display: inline-block;
   overflow-wrap: break-word;
   word-wrap: break-word;
   word-break: break-all;
-  margin: 3vh calc(1 * var(--s));
+  margin: 5vh calc(1 * var(--s));
+  margin-bottom: 1vh;
+  width: 90vmin;
+  text-align: left;
+}
+
+.from__address {
+  color: var(--colorLightText);
+  text-indent: calc(2 * var(--s));
   -webkit-user-select: text;
   -moz-user-select: text;
 }
 
 .buttonWrapper {
   display: inline-block;
-  min-width: calc(20 * var(--s));
+  min-width: calc(15 * var(--s));
 }
 
 /* ------------------------- address balance ------------------------- */
@@ -76,7 +83,7 @@
 
 .withdraw_control {
   display: inline-block;
-  width: 80vmin;
+  width: 90vmin;
   margin: 3vh calc(1 * var(--s));
 }
 
@@ -90,12 +97,10 @@
   }
 
   .top {
-    /* width: auto; */
     display: inline-block;
     text-align: left;
     margin-bottom: calc(5 * var(--s));
     width: 100%;
-    /* padding: calc(0.2 * var(--s)) calc(20 * var(--s)); */
   }
 
   .top__title {
@@ -103,8 +108,5 @@
     display: inline-block;
     padding: calc(1 * var(--s)) calc(2 * var(--s));
     line-height: 100%;
-  }
-
-  .withdraw_control {
   }
 }
