@@ -28,10 +28,8 @@ export const Withdraw = () => {
   // first load
   const [initialized, setInitialized] = React.useState(false)
 
-  // address local state
+  // address to send to, local state
   const [withdrawAddress, setWithdrawAddress] = React.useState('')
-  // amount local state
-  // const [withdrawAmount, setWithdrawAmount] = React.useState(0)
 
   const controlBalance = getUnspentSum(state.wallet.utxoList)
 
@@ -71,7 +69,7 @@ export const Withdraw = () => {
       minor={'true'}
     >
       {!btnAvailable && 'scanning...'}
-      {btnAvailable && state.pageInfo.checkedWallet && 'rescan'}
+      {btnAvailable && state.pageInfo.checkedWallet && 're-scan'}
       {btnAvailable && !state.pageInfo.checkedWallet && 'scan'}
     </RoundButton>
   )
@@ -100,10 +98,13 @@ export const Withdraw = () => {
       <br />
       {state.pageInfo.checkedWallet && (
         <>
-          {/* if wallet scanned, show fee selection */}
-          {/* <div className={styles.fees}>
-            <FeesSelection />
-          </div> */}
+          {/* show address from which this withdraws */}
+
+          <div className={styles.address}>
+            <span>Control address</span>
+            <br />
+            {state.wallet.address}
+          </div>
 
           {/* show control address balance */}
           {showBTC(controlBalance)}
@@ -111,8 +112,7 @@ export const Withdraw = () => {
       )}
 
       {/* scan wallet button */}
-      {scanWalletButton()}
-
+      <div className={styles.buttonWrapper}>{scanWalletButton()}</div>
       <br />
 
       {state.pageInfo.checkedWallet && (
@@ -120,7 +120,7 @@ export const Withdraw = () => {
           {/* to address */}
           <InputForm
             className={styles.withdraw_control}
-            thisInputLabel={`Send from control address to`}
+            thisInputLabel={`Send to`}
             showButton={'true'}
             sanitizeFilters={['basic']}
             thisInputOnChange={(e: any) => {

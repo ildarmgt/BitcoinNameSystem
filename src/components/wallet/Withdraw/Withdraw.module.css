@@ -19,7 +19,7 @@
 .top__title {
   box-sizing: border-box;
 
-  font-size: calc(4 * var(--s));
+  font-size: calc(5 * var(--s));
 
   color: var(--colorBackground);
 }
@@ -27,6 +27,23 @@
 .top__title span {
   color: var(--colorBitcoinOrange);
 }
+
+.address {
+  color: var(--colorLightText);
+  display: block;
+  overflow-wrap: break-word;
+  word-wrap: break-word;
+  word-break: break-all;
+  margin: 3vh calc(1 * var(--s));
+  -webkit-user-select: text;
+  -moz-user-select: text;
+}
+
+.buttonWrapper {
+  display: inline-block;
+  min-width: calc(20 * var(--s));
+}
+
 /* ------------------------- address balance ------------------------- */
 
 .total {
@@ -55,15 +72,12 @@
   font-size: calc(3 * var(--s));
 }
 
-.btnScan {
-}
-
 /* ------------------------- address to withdraw to ------------------------- */
 
 .withdraw_control {
   display: inline-block;
   width: 80vmin;
-  margin: 3vh 0;
+  margin: 3vh calc(1 * var(--s));
 }
 
 /* -------------------------- wide screen settings -------------------------- */
@@ -92,6 +106,5 @@
   }
 
   .withdraw_control {
-    /* margin: 3vh 0; */
   }
 }
