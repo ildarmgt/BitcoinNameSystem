@@ -17,6 +17,8 @@ import { ActionTypes } from './../../../interfaces'
 export const P3DomainAndWallet = () => {
   // global state
   const { state, dispatch } = React.useContext(Store)
+  // initialized state
+  const [initialized, setInitialized] = React.useState(false)
 
   // Local state: keep track if API is busy
   const [apiStatus, setApiStatus] = React.useState('ok')
@@ -62,6 +64,26 @@ export const P3DomainAndWallet = () => {
     return { isReady: false, info: 'Unknown status' }
   }
 
+  // try scanning for best UX
+  if (!initialized) {
+    setInitialized(true)
+    const initialScan = async () => {
+      if (!state.pageInfo.checkedDomain) {
+        setApiStatus('domain')
+        await scanAddressFullyAction(state, dispatch, ActionTypes.UPDATE_DOMAIN)
+      }
+      if (!state.pageInfo.checkedWallet) {
+        setApiStatus('wallet')
+        await scanAddressFullyAction(state, dispatch, ActionTypes.UPDATE_WALLET)
+      }
+    }
+    initialScan()
+  }
+
+  /* -------------------------------------------------------------------------- */
+  /*                                   render                                   */
+  /* -------------------------------------------------------------------------- */
+
   return (
     <div className={styles.wrapper}>
       <div className={styles.title}>
@@ -79,6 +101,7 @@ export const P3DomainAndWallet = () => {
               scanAddressFullyAction(state, dispatch, ActionTypes.UPDATE_DOMAIN)
             }
           }}
+          minor={'true'}
         >
           API Scan
         </RoundButton>
@@ -95,6 +118,7 @@ export const P3DomainAndWallet = () => {
               scanAddressFullyAction(state, dispatch, ActionTypes.UPDATE_WALLET)
             }
           }}
+          minor={'true'}
         >
           API Scan
         </RoundButton>
@@ -102,7 +126,7 @@ export const P3DomainAndWallet = () => {
       <div className={styles.unspent}>
         <div className={styles.balance}>
           {state.pageInfo.checkedWallet
-            ? satsToBTCSpaced(getUnspentSum(state.wallet.utxoList) / 1e8)
+            ? satsToBTCSpaced(getUnspentSum(state.wallet.utxoList))
             : 'n/a'}
         </div>
         {' ' + unitsBTC(state)}
