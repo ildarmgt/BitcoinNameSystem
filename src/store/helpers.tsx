@@ -37,14 +37,17 @@ export const unitsBTC = (st: I_State) =>
 export const satsToBTC = (sats: number): string => (sats / 1e8).toFixed(8)
 
 // easier visually to count satoshi via spaces
-// 123.8765 4321
 export const satsToBTCSpaced = (sats: number): string => {
-  let styling = (sats / 1e8).toFixed(8).split('')
+  // where to put spaces (from right)
+  const spacesLocationsFromRight = [3, 6, 9, 12, 15, 18]
 
-  // insert space 4 chars from end
-  styling = [...styling.slice(0, -4), '\xa0', ...styling.slice(-4)]
-
-  // styling = [...styling.slice(0, -2), '\xa0', ...styling.slice(-2)]
+  const styling = (sats / 1e8).toFixed(8).split('')
+  const lengthText = styling.length
+  const lengthLocations = spacesLocationsFromRight.length
+  for (let i = 0; i < lengthLocations; i++) {
+    const location = lengthText - spacesLocationsFromRight[i]
+    if (location > 0) styling.splice(location, 0, '\xa0')
+  }
 
   return styling.join('')
 }
