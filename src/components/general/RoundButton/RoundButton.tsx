@@ -29,6 +29,7 @@ import styles from './RoundButton.module.css'
  * colorbuttontext = var(--colorButtonText).
  */
 export const RoundButton = (props: any): JSX.Element => {
+  // styles.roundButtonWrap on outside
   return (
     <div
       // variables defined by string will be available to button & its children for scope
@@ -52,7 +53,7 @@ export const RoundButton = (props: any): JSX.Element => {
       className={[
         styles.roundButtonWrap,
         props.back ? styles.back : '',
-        props.minor ? styles.minorButton : undefined,
+        props.minor ? styles.minorButtonWrapper : undefined,
         props.className
       ].join(' ')}
     >

@@ -19,6 +19,7 @@
   user-select: none;
   cursor: pointer;
   vertical-align: middle;
+  font-size: calc(2.9 * var(--sizeButton));
 }
 
 .roundButton {
@@ -28,7 +29,7 @@
   padding: calc(0.7 * var(--sizeButton)) calc(3 * var(--sizeButton));
   border-radius: calc(0.5 * var(--sizeButton));
   /* was sized as 2.9 but js code resizes it using params to 2.5 default */
-  font-size: calc(2.9 * var(--sizeButton));
+
   vertical-align: middle;
   /* white-space: nowrap; */
 }
@@ -106,8 +107,14 @@
   box-shadow: 0 0 0 calc(0.2 * var(--sizeButton)) var(--colorThisButton) inset;
 }
 
-.minorButton {
+/* ----------------------------- minor versions ----------------------------- */
+
+.minorButtonWrapper {
   background-color: var(--colorTransparent);
+}
+
+.minorButton {
+  color: var(--colorThisButton);
   box-shadow: 0 0 0 calc(0.2 * var(--sizeButton)) var(--colorThisButton) inset;
   color: var(--colorThisButton);
 }
