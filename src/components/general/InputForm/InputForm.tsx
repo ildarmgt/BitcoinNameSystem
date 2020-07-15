@@ -8,11 +8,20 @@ import sanitize from '../../../helpers/sanitize'
  * Component is internally a controlled component, but externally uncontrolled.
  * value is kept in text form, but can provide thisInputOnChange to optionally store it in another form elsewhere.
  * value is read internally, but initial value can be set with thisInitialValue
+ *
+ * props:
+ * thisInputLabel - label.
+ * thisInitialValue - initial value.
+ * thisInputOnChange - function to do onChange.
+ * sanitizeFilters - sanitize filters, default is single line.
+ * showButton - show ok button or not.
+ * thisSubmitButtonOnClick - function to run on OK clicked.
+ * showBonusInformation - show what's b/w <InputForm> & </InputForm> under the text area.
  */
 export const InputForm = (props: any) => {
   // local state so can edit / store textbox content without having
   // to read from final state which might be a number or further sanitized
-  const [textValue, setTextValue] = React.useState()
+  const [textValue, setTextValue]: [string | undefined, any] = React.useState()
 
   if (textValue === undefined) {
     if (props.thisInputOnChange)
@@ -24,6 +33,10 @@ export const InputForm = (props: any) => {
   React.useEffect(() => {
     setTextValue(props.thisInitialValue || '')
   }, [props.thisInitialValue])
+
+  /* -------------------------------------------------------------------------- */
+  /*                                   render                                   */
+  /* -------------------------------------------------------------------------- */
 
   return (
     <div
@@ -60,10 +73,9 @@ export const InputForm = (props: any) => {
             props.showButton === 'false' ? styles.invisible : ''
           ].join(' ')}
           next={'true'}
-          onClick={(e: any) => {
-            props.thisSubmitButtonOnClick
-              ? props.thisSubmitButtonOnClick(textValue)
-              : (() => {})()
+          onClick={() => {
+            if (props.thisSubmitButtonOnClick)
+              props.thisSubmitButtonOnClick(textValue)
           }}
         >
           OK
