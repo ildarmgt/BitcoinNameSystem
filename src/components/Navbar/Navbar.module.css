@@ -81,15 +81,17 @@
   bottom: calc(var(--navbarHeight) + (3 * var(--s)));
   right: calc(1 * var(--s));
   background-color: var(--colorBackground);
-  /* border: calc(0.2 * var(--s)) solid var(--colorButtonText); */
-  font-size: calc(1.8 * var(--s));
-  /* margin-left: calc(1 * var(--s)); */
+
+  font-size: calc(2.1 * var(--s));
+
   color: var(--colorWarning);
   vertical-align: middle;
   text-align: left;
-  opacity: 0.9;
-  /* z-index: 1000; */
+  opacity: 0.95;
+
   border-radius: calc(0.5 * var(--s));
+  box-shadow: calc(1 * var(--s)) calc(1 * var(--s)) calc(3 * var(--s))
+    calc(1 * var(--s)) #00000012;
 }
 .warning > div {
   padding: calc(1 * var(--s)) calc(2 * var(--s));
