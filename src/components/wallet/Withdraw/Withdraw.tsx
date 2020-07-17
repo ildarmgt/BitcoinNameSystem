@@ -18,7 +18,7 @@ import { useHistory } from 'react-router-dom'
 import { InputForm } from './../../general/InputForm'
 
 /**
- * Allow withdrawals
+ * Allow withdrawals.
  */
 export const Withdraw = () => {
   // global state
@@ -116,7 +116,7 @@ export const Withdraw = () => {
 
       {state.pageInfo.checkedWallet && (
         <>
-          {/* to address */}
+          {/* editable to address */}
           <InputForm
             className={styles.withdraw_control}
             thisInputLabel={`Send to`}
@@ -127,41 +127,39 @@ export const Withdraw = () => {
             }}
             thisSubmitButtonOnClick={() => {
               console.log('submitting withdrawal to wallet')
+
+              /* ----------------------------- loading wallet ----------------------------- */
+
+              // clone utxo
+              const utxoList = JSON.parse(JSON.stringify(state.wallet.utxoList))
+              // load inputs w/ additional data
+              utxoList.forEach((utxo: any) => {
+                utxo.sequence = 0xfffffffe
+                utxo.canJustSign = true
+                utxo.keyPairs = [state.wallet.WIF] // (TODO: remove later)
+                utxo.sighashTypes = ['SIGHASH_ALL'] // SIGHASH_ALL or 0x01
+                utxo.address = state.wallet.address
+                utxo.confirmed = true
+                utxo.info = 'BNS control wallet'
+              })
               // send each element of payload to session storage for wallet
               const payload: { [key: string]: any } = {
-                outputs: {
-                  '1': {
+                network: state.network,
+                // wallet utxo's
+                utxoList,
+                // specific outputs
+                outputsFixed: {
+                  '0': {
                     address: withdrawAddress,
-                    value: 0
-                  },
-                  // change sent back
-                  changeAddress: state.wallet.address
-                }
+                    value: 5000 // (TODO test replace)
+                  }
+                },
+                // change sent back
+                changeAddress: state.wallet.address
               }
               addToSessionStorage(payload)
             }}
           />
-
-          {/* to amount */}
-          {/* <InputForm
-            thisInputLabel={`Amount (${unitsBTC(state)})`}
-            showButton={'false'}
-            thisInitialValue={'0.00000000'}
-            sanitizeFilters={['fractions', 'decimal_point', 'no_leading_zeros']}
-            thisInputOnChange={(e: any) => {
-              setWithdrawAmount(e.target.value)
-            }}
-          /> */}
-
-          {/* change */}
-          {/* TODO update from wallet */}
-          {/* <div className={styles.total}>
-            Change sent back:{' '}
-            {showBTC(2011134535435435) + ' ' + unitsBTC(state)}
-          </div> */}
-
-          {/* calc & broadcast button */}
-          {/* <RoundButton>Withdraw</RoundButton> */}
         </>
       )}
       {/* <div>to address</div>

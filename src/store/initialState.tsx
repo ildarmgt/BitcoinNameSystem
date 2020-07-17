@@ -14,7 +14,7 @@ export const initialState: I_State = {
     // wallet information & utxo for controlling domain names
     address: '', // public control address (p2wpkh)
     mnemonic: '', // mnemonic for private key derivation
-    WIF: '', // wallet import format for private key derivation
+    WIF: '', // wallet import format for private key derivation (what path? TODO here)
     txHistory: [], // array of all tx for this address
     utxoList: [] // array of all current utxo for this address
   },

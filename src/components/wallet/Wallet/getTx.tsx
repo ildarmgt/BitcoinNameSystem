@@ -7,18 +7,24 @@ import varuint from 'varuint-bitcoin'
  * Tx builder (tb) values cannot be undefined, only null or type.
  * Null values will not enter into psbt.
  * Throws tb-specific errors too.
+ * vBytes is the max allowed tx size that is within fee rate set.
  */
-export const getTx = (tb: I_TxBuilder) => {
+export const getTx = (tb: I_TxBuilder, vBytesMax = 1) => {
   if (!tb.network)
     throw new Error('Must provide network ("bitcoin" or "testnet")')
-
   const network = bitcoin.networks[tb.network]
+
+  // reset inputs & outputs
+  tb.outputs = JSON.parse(JSON.stringify(tb.outputsFixed))
+  tb.inputs = JSON.parse(JSON.stringify(tb.inputsFixed))
+
+  // create psbt builder
   const psbt = new bitcoin.Psbt({ network })
   psbt.setVersion(tb.setVersion)
   psbt.setLocktime(tb.setLocktime)
 
   // add exact inputs
-  addInputs({ tb, psbt })
+  addInputs({ tb, psbt, vBytesMax })
 
   // add outputs
   addOutputs({ tb, psbt })
@@ -26,8 +32,30 @@ export const getTx = (tb: I_TxBuilder) => {
   // sign & finalize inputs
   signInputs({ tb, psbt })
 
-  // return tx
-  return psbt.extractTransaction()
+  // finalize tx
+  const tx = psbt.extractTransaction()
+  const thisVirtualSize = tx.virtualSize()
+
+  if (vBytesMax >= thisVirtualSize) {
+    // if within fee limit
+
+    console.log(`tx with appropriate size calculated`)
+    console.log(tx)
+    console.log('hex', tx.toHex())
+    console.log('virtualSize', tx.virtualSize())
+    tb.result.virtualSize = thisVirtualSize
+    console.log('byteLength', tx.byteLength())
+    console.log('getId', tx.getId())
+    console.log('')
+
+    return psbt.extractTransaction()
+  } else {
+    console.log(
+      `tx draft size ${thisVirtualSize} was larger than max of ${vBytesMax} vbytes, recalculating`
+    )
+    // if above fee limit, redo calc with new fee limit
+    getTx(tb, thisVirtualSize)
+  }
 }
 
 const signInputs = ({ tb, psbt }: { tb: any; psbt: any }) => {
@@ -39,8 +67,8 @@ const signInputs = ({ tb, psbt }: { tb: any; psbt: any }) => {
     const input = tb.inputs[i.toFixed(0)]
 
     if (input.canJustSign) {
-      // easy case, signs with input.keyPair[0]
-      psbt.signInput(i, input.keyPair[0])
+      // easy case, signs with input.keyPairs[0]
+      psbt.signInput(i, input.keyPairs[0])
 
       if (!psbt.validateSignaturesOfInput(i)) {
         throw new Error(
@@ -70,14 +98,24 @@ const addOutputs = ({ tb, psbt }: { tb: any; psbt: any }) => {
     throw new Error(`Can't have no outputs`)
   }
 
-  // check that there's an input for each index up to max
+  // check that there's an output for each index up to max
   console.log(
     `getTx found ${Object.keys(tb.outputs).length.toFixed(0)} outputs`
   )
+
   for (let i = 0; i < Object.keys(tb.outputs).length; i++) {
     const thisValue = tb.outputs[i.toFixed(0)]
     if (thisValue === undefined) {
       throw new Error(`Missing output at vout index ${i.toFixed(0)}`)
+    }
+  }
+
+  // add change output if change is above dust level
+  if (tb.minDustValue < tb.result.changeValue) {
+    const nextIndex = Object.keys(tb.outputs).length // next index
+    tb.outputs[nextIndex.toFixed(0)] = {
+      address: tb.changeAddress,
+      value: tb.result.changeValue
     }
   }
 
@@ -108,7 +146,81 @@ const addOutputs = ({ tb, psbt }: { tb: any; psbt: any }) => {
   })
 }
 
-const addInputs = ({ tb, psbt }: { tb: any; psbt: any }) => {
+const addInputs = ({
+  tb,
+  psbt,
+  vBytesMax
+}: {
+  tb: any
+  psbt: any
+  vBytesMax: number
+}) => {
+  // use last calculated tx size to calculate fee
+  // recursion guarantees fee will not end up smaller than fee rate
+  const fee: number = Math.ceil(vBytesMax * tb.feeRate)
+  // to cover transfer AND fee, need at least this much from inputs
+  const totalNeeded: number = tb.result.outgoingValue + fee
+
+  // match or beat needed sats value with utxo list
+  let valueGatheredFromWallet = 0
+  const toBeUsedUtxoOfUserWallet: any = []
+
+  // go from utxo array to enough utxo to cover withdrawal
+  tb.utxoList?.forEach((utxo: any) => {
+    if (
+      valueGatheredFromWallet < totalNeeded ||
+      toBeUsedUtxoOfUserWallet.length === 0
+    ) {
+      toBeUsedUtxoOfUserWallet.push(utxo)
+      valueGatheredFromWallet += utxo.value
+    }
+  })
+
+  // abort if not enough funds
+  if (valueGatheredFromWallet < totalNeeded) {
+    throw new Error(
+      'Not enough funds available (need: ' +
+        (totalNeeded / 1e8).toFixed(8) +
+        ' BTC, have: ' +
+        (valueGatheredFromWallet / 1e8).toFixed(8) +
+        ' BTC)'
+    )
+  }
+
+  // change is the left over between wallet inputs minus fee minus transfer
+  tb.result.changeValue = valueGatheredFromWallet - totalNeeded
+  tb.result.fee = fee
+  tb.result.inputsValue = valueGatheredFromWallet
+
+  /* ----------------- add detailed info for USED psbt inputs ----------------- */
+
+  toBeUsedUtxoOfUserWallet.forEach((utxo: any, index: number) => {
+    tb.inputs[index.toFixed(0)] = {
+      hash: utxo.txid,
+      index: utxo.vout,
+      sequence: utxo.sequence,
+      nonWitnessUtxo: Buffer.from(utxo.hex, 'hex'),
+      witnessScript: utxo.witnessScript,
+      redeemScript: utxo.redeemScript,
+      inputScript: utxo.inputScript,
+
+      keyPairs: utxo.keyPairs.map((wif: any) =>
+        bitcoin.ECPair.fromWIF(wif, bitcoin.networks[tb.network])
+      ),
+      // string to bitcoin lib sighash value
+      sighashTypes: utxo.sighashTypes.map(
+        (sighashType: string) => bitcoin.Transaction[sighashType]
+      ),
+      canJustSign: utxo.canJustSign,
+
+      // useful info
+      address: utxo.address,
+      value: utxo.value,
+      info: utxo.info
+    }
+  })
+
+  // check that there has been enough information for at least one input
   if (!tb.inputs || Object.keys(tb.inputs).length === 0) {
     throw new Error(`Can't have no inputs`)
   }
@@ -122,7 +234,9 @@ const addInputs = ({ tb, psbt }: { tb: any; psbt: any }) => {
     }
   }
 
-  // check and add each exact input
+  // check and add each exact input to PSBT
+  // thisInput is what goes into PSBT
+  // tb.inputs is my personal detailed input data
   Object.keys(tb.inputs).forEach((thisVin: string, i: number) => {
     // check that input key matches current index
     if (thisVin !== i.toFixed(0))
@@ -131,11 +245,13 @@ const addInputs = ({ tb, psbt }: { tb: any; psbt: any }) => {
     const thisInput = tb.inputs[thisVin]
 
     // required values
-    if (!thisInput.hash) throw new Error(`Missing txid on input #${thisVin}`)
-    if (!thisInput.index) throw new Error(`Missing vout on input #${thisVin}`)
-    if (!thisInput.sequence)
+    if (thisInput.hash === undefined)
+      throw new Error(`Missing txid on input #${thisVin}`)
+    if (thisInput.index === undefined)
+      throw new Error(`Missing vout on input #${thisVin}`)
+    if (thisInput.sequence === undefined)
       throw new Error(`Missing sequence on input #${thisVin}`)
-    if (!thisInput.nonWitnessUtxo)
+    if (thisInput.nonWitnessUtxo === undefined)
       throw new Error(`Missing input's full tx hex on input #${thisVin}`)
 
     const inputBuilder: any = {
@@ -205,7 +321,7 @@ const addInputs = ({ tb, psbt }: { tb: any; psbt: any }) => {
       (!thisInput.keyPairs || !thisInput.keyPairs[0]) &&
       thisInput.canJustSign
     ) {
-      throw new Error(`Need at least 1 keypair to just sign input #${thisVin}`)
+      throw new Error(`Need 1 keypair to just sign input #${thisVin}`)
     }
 
     if (thisInput.sighashTypes)
@@ -219,11 +335,6 @@ const addInputs = ({ tb, psbt }: { tb: any; psbt: any }) => {
         `Each key pair needs matching sighash choice. Missing matches on input #${thisVin}`
       )
     }
-
-    if (thisInput.address) inputBuilder.address = thisInput.address
-    if (thisInput.value) inputBuilder.value = thisInput.value
-    if (thisInput.confirmed) inputBuilder.confirmed = thisInput.confirmed
-    if (thisInput.info) inputBuilder.info = thisInput.info
 
     // add it
     psbt.addInput({ ...inputBuilder })

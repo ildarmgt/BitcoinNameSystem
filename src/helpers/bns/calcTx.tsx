@@ -9,6 +9,7 @@ import { getFinalScripts } from './bitcoin'
 
 const hash160 = bitcoin.crypto.hash160
 const op = bitcoin.opcodes
+// psbt: https://github.com/bitcoinjs/bitcoinjs-lib/blob/master/ts_src/psbt.ts
 
 interface I_Tx_Result {
   thisVirtualSize: number
@@ -98,6 +99,7 @@ export const calcTx = (
   const burnAmount = Math.max(...burnAmounts, 0)
 
   // add up any refunds to do for total needed and array of address/amount for generating outputs
+  // (refunds are the requirement to compensate past bidders for their burn in auction)
   let refundsAmount = 0
   const refundAmountsArray = choices.action.suggestions.reduce(
     (refundAmounts: any, thisSuggestion: any) => {
@@ -136,6 +138,8 @@ export const calcTx = (
   let gatheredFromWallet = 0
   let gatheredFromOther = 0
 
+  /* ---------- get all your notification (anyone can spend acs) utxo --------- */
+
   // prepare extra inputs from other rules
   // adding these first to totalGathered satoshi since have to add them all anyway
   const toBeUsedUtxoOfNotifications: Array<any> = []
@@ -149,6 +153,8 @@ export const calcTx = (
       gatheredFromOther += utxo.value
     }
   })
+
+  /* -------------------- get all the necessary wallet utxo ------------------- */
 
   // Adding remaining funds from user's wallet to total Gathered
   // Must always add at least 1 user utxo @ index 0 to indicate ownership
@@ -183,13 +189,17 @@ export const calcTx = (
   psbt.setVersion(2) // default
   psbt.setLocktime(0) // default
 
-  // add all inputs to transaction
+  /* -------------------------------------------------------------------------- */
+  /*                                adding inputs                               */
+  /* -------------------------------------------------------------------------- */
 
   // must be first added as owner address must always be at index 0 input
   toBeUsedUtxoOfUserWallet.forEach(utxo => {
     psbt.addInput({
       hash: utxo.txid,
       index: utxo.vout,
+      // anything below 0xfffffffe enables opt-in-RBF
+      // relative locktime in version 2 tx needs to follow BIP68
       sequence: 0xfffffffe,
       // should work for segwit and nonsegwit inputs
       nonWitnessUtxo: Buffer.from(utxo.hex, 'hex')
@@ -334,7 +344,6 @@ export const calcTx = (
   toBeUsedUtxoOfUserWallet.forEach((utxo, index) => {
     // sign p2wpkh of controlling
     psbt.signInput(index, keyPair)
-    // (TODO) signing ACS inputs will need script
 
     if (!psbt.validateSignaturesOfInput(index)) {
       throw new Error(

@@ -15,7 +15,13 @@ const TESTING = process.env.NODE_ENV === 'development'
 // written so easy to separate into separate app later
 
 // logic flow
-// user -> params -> txBuilder -> user
+// outside wallet -> params -> txBuilder -> user
+// separating params and txBuilder to place formatting logic
+
+// session storage temporarily used instead of other means like URI to be dropped in later
+// entry toWallet is used to send data to wallet
+// entry fromWallet is used to send data from wallet
+
 // user feeds data into wallet component from any of following (if enabled):
 // 1. props (object with key:values inside props.txBuilder)
 // 2. querry strings (#*?key=value&key=value format, values with encodeURIcomponent encoding)
@@ -30,19 +36,23 @@ const TESTING = process.env.NODE_ENV === 'development'
 
 /**
  * Reusable component for creating a wallet.
- * Simulates behavior of browser wallet plugins without needing them.
+ * Simulates behavior of browser/desktop wallet plugins so I can move it outside later.
  */
 export const Wallet = (props: any): JSX.Element => {
+  // initialize
+  const [initialized, setInitialized] = React.useState(false)
+
   // show pop up interface
   const [showInterface, setShowInterface] = React.useState(false)
 
-  // stores fed params before organizing them for txBuilder
+  // stores raw fed params before organizing them for txBuilder
   const [params, setParams]: [any, (args: any) => void] = React.useState({})
 
-  // stores and initializes tx builder from initial state and passed props
+  // stores state useful for building tx
   const [txBuilder, setTxBuilder]: [I_TxBuilder | null, any] = React.useState(
     null
   )
+  // initializes txbuilder state from initial state and passed props
   if (txBuilder === null) {
     setTxBuilder({
       ...initialTxBuilder,
@@ -54,21 +64,15 @@ export const Wallet = (props: any): JSX.Element => {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [info, setInfo] = React.useState({ text: '' })
 
-  // run methods to handle detection of new parameters from all sources
-  React.useEffect(() => handleParams(params, setParams), [params])
+  // run methods to handle evenlisteners for new parameters from all sources
+  // React.useEffect(() => handleListeners(params, setParams), [params])
+  if (!initialized) {
+    setInitialized(true)
+    handleListeners(params, setParams)
+  }
 
   // run methods to move new parameters 'params' into txBuilder
-  React.useEffect(() => processNewParams(params, setParams, setTxBuilder), [
-    params
-  ])
-
-  // update on status of wallet interface
-  React.useEffect(() => {
-    window.sessionStorage.setItem(
-      RESERVED_FROM_WALLET_KEY,
-      String(showInterface)
-    )
-  }, [showInterface])
+  React.useEffect(() => processNewParams(params, setTxBuilder), [params])
 
   // once fed data is organized (on txbuilder changes) attempt to create a transaction
   React.useEffect(
@@ -80,6 +84,14 @@ export const Wallet = (props: any): JSX.Element => {
       }),
     [txBuilder]
   )
+
+  // update on status of wallet interface
+  React.useEffect(() => {
+    window.sessionStorage.setItem(
+      RESERVED_FROM_WALLET_KEY,
+      String(showInterface)
+    )
+  }, [showInterface])
 
   /* -------------------------------------------------------------------------- */
   /*                                  Rendering                                 */
@@ -137,7 +149,7 @@ export const Wallet = (props: any): JSX.Element => {
 
 // Run methods to handle detection and clean up of parameters passed.
 // Was easiest to do it with access to params.
-const handleParams = (params: any, setParams: any) => {
+const handleListeners = (params: any, setParams: any) => {
   // Events added to move user data from listening sources to params
   addListeners(params, setParams)
 
@@ -184,11 +196,26 @@ const removeListeners = (params: any, setParams: any) => {
 /* -------------------------------------------------------------------------- */
 /*                convert matching params to wallet properties                */
 /* -------------------------------------------------------------------------- */
-const processNewParams = (params: any, setParams: any, setTxBuilder: any) => {
+const processNewParams = (params: any, setTxBuilder: any) => {
   // only update state if necessary
   if (Object.keys(params).length > 0) {
-    // most basic version is just adding params on top of txbuilder
-    setTxBuilder((prevTxBuilder: any) => ({ ...prevTxBuilder, ...params })) // add params to txBuilder
+    // get min necessary value from known outputs
+    // as that lets us do inputs quickly
+    let outgoingValue = 0
+    Object.keys(params.outputsFixed).forEach((vout: string) => {
+      outgoingValue += params.outputsFixed[vout].value
+    })
+
+    // add params to txBuilder
+    setTxBuilder((prevTxBuilder: any) => ({
+      ...prevTxBuilder,
+      ...params,
+      result: {
+        ...prevTxBuilder.result,
+        outgoingValue
+      }
+    }))
+
     // setParams({}) // reset params
   }
 }
@@ -198,11 +225,11 @@ const processNewParams = (params: any, setParams: any, setTxBuilder: any) => {
 /* -------------------------------------------------------------------------- */
 const recalcBuilder = ({ txBuilder, setInfo }: any) => {
   try {
-    // attempt to build
+    // attempt to build within try/catch
     const res = getTx(txBuilder)
     console.log('successful psbt:', res)
   } catch (e) {
-    console.log('can not do psbt yet:', e.message)
+    console.log('can not do psbt yet:', e)
     setInfo({ text: e.message })
   }
 }
@@ -255,56 +282,6 @@ const handleStorageChange = (params: any, setParams: any) => (): void => {
   addListeners(params, setParams)
 }
 
-/* -------------------------------------------------------------------------- */
-/*                           reading params from url                          */
-/* -------------------------------------------------------------------------- */
-
-// curried url change handler
-const handleHashChange = (params: any, setParams: any) => (): void => {
-  // if (e) console.warn(e)
-
-  // convert url string starting with # into key/value pair object
-  // #/ok/?a=b&c=d becomes { a:b, c:d }
-  const fedValues = window.location.hash
-    .split('#')
-    .slice(1) // removes all before 1st # and 1st #
-    .join('')
-    .split('?')
-    .slice(1) // removes all before 1st ? and 1st ?
-    .join('')
-    .split('&') // split between sets of key-value pairs
-    .reduce((finalParamObject: any, thisKeyValue: string) => {
-      // assume values were passed through encodeURIComponent() so only '=' are from standard format
-      const splitKeyValue = thisKeyValue.split('=')
-      const thisKey = splitKeyValue[0]
-      const thisValue = decodeURIComponent(splitKeyValue[1])
-      if (thisKey === '') {
-        // no change
-        return finalParamObject
-      } else {
-        // check if key/value already exist within params
-        if (thisKey in params && params[thisKey] === thisValue) {
-          // if so, no need to add
-          return finalParamObject
-        } else {
-          // add changes
-          console.log(thisKey)
-          return { ...finalParamObject, [thisKey]: thisValue }
-        }
-      }
-    }, {})
-
-  // only update state if there are new values, avoid pointless refresh
-  if (Object.keys(fedValues).length > 0) {
-    const newParams = { ...params, ...fedValues }
-    console.log('new params added:', newParams)
-    setParams(newParams)
-  }
-
-  // clean up url as well
-  resetUrl()
-}
-
 // remove params from URL
 const resetUrl = () => {
   window.history.pushState({}, '', `${window.location.href.split('?')[0]}`)
@@ -324,74 +301,26 @@ const initialTxBuilder: I_TxBuilder = {
 
   minFeeRate: 1.0,
   maxFeeRate: 1000.0,
-  minOutputValue: 500,
+  minDustValue: 500,
 
   result: {
     tx: null,
     hex: null,
-    virtualSize: 0
+    virtualSize: 0, // vbytes
+    outgoingValue: 0, // sats in outputs have to pay
+    changeValue: 0, // sats in output returning
+    inputsValue: 0,
+    fee: 0 // sats going to miners
   },
 
   inputs: {},
-  fillInputs: null,
+  inputsFixed: {},
+  utxoList: null,
 
   outputs: {},
+  outputsFixed: {},
   changeAddress: null
 }
-
-/* -------------------------------------------------------------------------- */
-/*                        dummy example for type checks                       */
-/* -------------------------------------------------------------------------- */
-
-// const dummyInput: I_Input = {
-//   hash: 'abc123',
-//   index: 123,
-//   sequence: 0xfffffffe,
-//   nonWitnessUtxo: Buffer.from(' ', 'utf8'),
-//   witnessScript: Buffer.from(' ', 'utf8'),
-//   redeemScript: Buffer.from(' ', 'utf8'),
-//   inputScript: 'OP_TRUE OP_DROP OP_TRUE',
-//   canJustSign: false,
-//   keyPairs: [ { some: 'object' } ],
-//   sighashTypes: [ 1 ],
-//   address: '123abc',
-//   value: 123,
-//   confirmed: true,
-//   info: 'why'
-// }
-
-// const dummyTxBuilder: I_TxBuilder = {
-//   network: 'testnet',
-//   setVersion: 2,
-//   setLocktime: 0,
-//   feeRate: 1.0,
-
-//   minFeeRate: 1.0,
-//   maxFeeRate: 1000.0,
-//   minOutputValue: 500,
-
-//   result: {
-//     tx: { bitcoinjslibtxobject: 'returned here' },
-//     hex: 'abc1234',
-//     virtualSize: 123
-//   },
-
-//   inputs: {
-//     // eslint-disable-next-line no-useless-computed-key
-//     ['1']: dummyInput
-//   },
-//   fillInputs: [dummyInput],
-
-//   outputs: {
-//     // eslint-disable-next-line no-useless-computed-key
-//     ['1']: {
-//       address: 'abc',
-//       script: Buffer.from(' ', 'utf8'),
-//       value: 123
-//     }
-//   },
-//   changeAddress: 'abc'
-// }
 
 /* -------------------------------------------------------------------------- */
 /*                                    Types                                   */
@@ -408,17 +337,26 @@ export interface I_TxBuilder {
   // some safety things to check
   minFeeRate: number | null // sat/vByte
   maxFeeRate: number | null // sat/vByte
-  minOutputValue: number | null // sats
+  minDustValue: number | null // sats
 
   result: {
     tx: ObjectOrNull
     hex: string | null
     virtualSize: number | null
+    outgoingValue: number | null
+    changeValue: number | null
+    inputsValue: number | null
+    fee: number
+  }
+
+  // used inputs
+  inputs: {
+    [inputIndex: string]: I_Input
   }
 
   // MUST USE / USED inputs as exact input info object with input index as keys
   // so specific indexes can be set by user, the rest filled in automiatcally.
-  inputs: {
+  inputsFixed: {
     [inputIndex: string]: I_Input
   }
 
@@ -429,9 +367,9 @@ export interface I_TxBuilder {
   // (TODO) if only address + keys given, wallet could get missing info
   // to create 1-multiple inputs from 1 address
   // adds to inputs if used
-  fillInputs: Array<I_Input> | null
+  utxoList: Array<any> | null
 
-  // MUST use outputs
+  // used outputs
   outputs: {
     [outputIndex: string]: {
       address: string | null // standard tx to address that will generate output at that addrss
@@ -441,6 +379,15 @@ export interface I_TxBuilder {
       script: Buffer | null
 
       value: number | null // sats we need to pay
+    }
+  }
+
+  // MUST use outputs
+  outputsFixed: {
+    [outputIndex: string]: {
+      address: string | null
+      script: Buffer | null
+      value: number | null
     }
   }
 
@@ -549,3 +496,107 @@ interface I_Input {
 // props are unescaped and many times appear in html, most dangerous
 
 // https://owasp.org/www-community/xss-filter-evasion-cheatsheet
+
+/* -------------------------------------------------------------------------- */
+/*                           reading params from url                          */
+/* -------------------------------------------------------------------------- */
+
+// curried url change handler
+const handleHashChange = (params: any, setParams: any) => (): void => {
+  // if (e) console.warn(e)
+
+  // convert url string starting with # into key/value pair object
+  // #/ok/?a=b&c=d becomes { a:b, c:d }
+  const fedValues = window.location.hash
+    .split('#')
+    .slice(1) // removes all before 1st # and 1st #
+    .join('')
+    .split('?')
+    .slice(1) // removes all before 1st ? and 1st ?
+    .join('')
+    .split('&') // split between sets of key-value pairs
+    .reduce((finalParamObject: any, thisKeyValue: string) => {
+      // assume values were passed through encodeURIComponent() so only '=' are from standard format
+      const splitKeyValue = thisKeyValue.split('=')
+      const thisKey = splitKeyValue[0]
+      const thisValue = decodeURIComponent(splitKeyValue[1])
+      if (thisKey === '') {
+        // no change
+        return finalParamObject
+      } else {
+        // check if key/value already exist within params
+        if (thisKey in params && params[thisKey] === thisValue) {
+          // if so, no need to add
+          return finalParamObject
+        } else {
+          // add changes
+          console.log(thisKey)
+          return { ...finalParamObject, [thisKey]: thisValue }
+        }
+      }
+    }, {})
+
+  // only update state if there are new values, avoid pointless refresh
+  if (Object.keys(fedValues).length > 0) {
+    const newParams = { ...params, ...fedValues }
+    console.log('new params added:', newParams)
+    setParams(newParams)
+  }
+
+  // clean up url as well
+  resetUrl()
+}
+
+/* -------------------------------------------------------------------------- */
+/*                        dummy example for type checks                       */
+/* -------------------------------------------------------------------------- */
+
+// const dummyInput: I_Input = {
+//   hash: 'abc123',
+//   index: 123,
+//   sequence: 0xfffffffe,
+//   nonWitnessUtxo: Buffer.from(' ', 'utf8'),
+//   witnessScript: Buffer.from(' ', 'utf8'),
+//   redeemScript: Buffer.from(' ', 'utf8'),
+//   inputScript: 'OP_TRUE OP_DROP OP_TRUE',
+//   canJustSign: false,
+//   keyPairs: [ { some: 'object' } ],
+//   sighashTypes: [ 1 ],
+//   address: '123abc',
+//   value: 123,
+//   confirmed: true,
+//   info: 'why'
+// }
+
+// const dummyTxBuilder: I_TxBuilder = {
+//   network: 'testnet',
+//   setVersion: 2,
+//   setLocktime: 0,
+//   feeRate: 1.0,
+
+//   minFeeRate: 1.0,
+//   maxFeeRate: 1000.0,
+//   minDustValue: 500,
+
+//   result: {
+//     tx: { bitcoinjslibtxobject: 'returned here' },
+//     hex: 'abc1234',
+//     virtualSize: 123
+//   },
+
+//   inputs: {
+//     // eslint-disable-next-line no-useless-computed-key
+//     ['1']: dummyInput
+//   },
+//   fillInputs: [dummyInput],
+
+//   outputs: {
+//     // eslint-disable-next-line no-useless-computed-key
+//     ['1']: {
+//       address: 'abc',
+//       script: Buffer.from(' ', 'utf8'),
+//       value: 123
+//     }
+//   },
+//   changeAddress: 'abc'
+// }
