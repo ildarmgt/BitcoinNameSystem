@@ -33,7 +33,11 @@ const TESTING = process.env.NODE_ENV === 'development'
  * Simulates behavior of browser wallet plugins without needing them.
  */
 export const Wallet = (props: any): JSX.Element => {
+  // show pop up interface
   const [showInterface, setShowInterface] = React.useState(false)
+
+  // stores fed params before organizing them for txBuilder
+  const [params, setParams]: [any, (args: any) => void] = React.useState({})
 
   // stores and initializes tx builder from initial state and passed props
   const [txBuilder, setTxBuilder]: [I_TxBuilder | null, any] = React.useState(
@@ -47,21 +51,16 @@ export const Wallet = (props: any): JSX.Element => {
   }
 
   // gui settings
-
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [info, setInfo] = React.useState({ text: '' })
-
-  // stores fed params
-  const [params, setParams]: [any, (args: any) => void] = React.useState({})
 
   // run methods to handle detection of new parameters from all sources
   React.useEffect(() => handleParams(params, setParams), [params])
 
   // run methods to move new parameters 'params' into txBuilder
-  React.useEffect(
-    () => processNewParams(params, setParams, txBuilder, setTxBuilder),
-    [params, txBuilder]
-  )
+  React.useEffect(() => processNewParams(params, setParams, setTxBuilder), [
+    params
+  ])
 
   // update on status of wallet interface
   React.useEffect(() => {
@@ -71,7 +70,7 @@ export const Wallet = (props: any): JSX.Element => {
     )
   }, [showInterface])
 
-  // on tx builder changes, attempt to create a transaction
+  // once fed data is organized (on txbuilder changes) attempt to create a transaction
   React.useEffect(
     () =>
       recalcBuilder({
@@ -185,17 +184,12 @@ const removeListeners = (params: any, setParams: any) => {
 /* -------------------------------------------------------------------------- */
 /*                convert matching params to wallet properties                */
 /* -------------------------------------------------------------------------- */
-const processNewParams = (
-  params: any,
-  setParams: any,
-  txBuilder: any,
-  setTxBuilder: any
-) => {
+const processNewParams = (params: any, setParams: any, setTxBuilder: any) => {
   // only update state if necessary
   if (Object.keys(params).length > 0) {
-    // most basic
-    setTxBuilder({ ...txBuilder, params }) // add params to txBuilder
-    setParams({}) // reset params
+    // most basic version is just adding params on top of txbuilder
+    setTxBuilder((prevTxBuilder: any) => ({ ...prevTxBuilder, ...params })) // add params to txBuilder
+    // setParams({}) // reset params
   }
 }
 
