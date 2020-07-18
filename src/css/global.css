@@ -606,6 +606,12 @@ table td p {
   transition-property: none !important;
 }
 
+.letter_breakable {
+  overflow-wrap: break-word;
+  word-wrap: break-word;
+  word-break: break-all;
+}
+
 .arbitraryFixes {
   /* various animation fixes */
   -webkit-backface-visibility: hidden;
