@@ -14,7 +14,6 @@ import {
   changePageInfoAction
 } from './../../../store/actions'
 import { useHistory } from 'react-router-dom'
-// import { FeesSelection } from './../FeesSelection'
 import { InputForm } from './../../general/InputForm'
 
 /**
@@ -107,8 +106,18 @@ export const Withdraw = () => {
       {/* show address from which this withdraws */}
       {state.pageInfo.checkedWallet && (
         <div className={styles.from}>
-          <div className={styles.from__label}>From control address</div>
-          <div className={styles.from__address}>{state.wallet.address}</div>
+          <div className={styles.from__label}>
+            From{' '}
+            <span
+              className={[styles.from__alias, 'letter_breakable'].join(' ')}
+            >
+              {state.alias}.btc
+            </span>{' '}
+            control address
+          </div>
+          <div className={[styles.from__address, 'letter_breakable'].join(' ')}>
+            {state.wallet.address}
+          </div>
         </div>
       )}
 
