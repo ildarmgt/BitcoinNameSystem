@@ -18,9 +18,7 @@
 
 .top__title {
   box-sizing: border-box;
-
   font-size: calc(5 * var(--s));
-
   color: var(--colorBackground);
 }
 
@@ -30,21 +28,22 @@
 
 .from {
   display: inline-block;
-  overflow-wrap: break-word;
-  word-wrap: break-word;
-  word-break: break-all;
   margin: 5vh calc(1 * var(--s));
   margin-bottom: 1vh;
   width: 90vmin;
   text-align: left;
 }
 
-.from__label {
+.from__alias {
   color: var(--colorBitcoinBlue);
-  opacity: 0.7;
+}
+
+.from__label {
+  color: var(--colorMediumText);
 }
 
 .from__address {
+  display: inline-block;
   color: var(--colorLightText);
   text-indent: calc(2 * var(--s));
   -webkit-user-select: text;
