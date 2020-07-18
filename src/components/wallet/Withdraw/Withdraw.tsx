@@ -129,12 +129,16 @@ export const Withdraw = () => {
           <InputForm
             className={styles.withdraw_control}
             thisInputLabel={`Send to`}
+            placeholder={'Bitcoin address or BNS alias'}
             showButton={'true'}
             sanitizeFilters={['basic']}
             thisInputOnChange={(e: any) => {
               setWithdrawAddress(e.target.value)
             }}
-            thisSubmitButtonOnClick={() => {
+            thisSubmitButtonOnClick={(textValue: string) => {
+              // abort if empty
+              if (!textValue) return undefined
+
               console.log('submitting withdrawal to wallet')
 
               /* ----------------------------- loading wallet ----------------------------- */
@@ -160,7 +164,7 @@ export const Withdraw = () => {
                 outputsFixed: {
                   '0': {
                     address: withdrawAddress,
-                    value: 5000 // (TODO test replace)
+                    value: controlBalance // (TODO test replace)
                   }
                 },
                 // change sent back
