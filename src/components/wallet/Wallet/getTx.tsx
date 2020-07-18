@@ -14,17 +14,19 @@ export const getTx = (tb: I_TxBuilder, vBytesMax = 1) => {
     throw new Error('Must provide network ("bitcoin" or "testnet")')
   const network = bitcoin.networks[tb.network]
 
-  // reset inputs & outputs
-  tb.outputs = JSON.parse(JSON.stringify(tb.outputsFixed))
+  // reset inputs from fixedInputs
   tb.inputs = JSON.parse(JSON.stringify(tb.inputsFixed))
 
-  // create psbt builder
+  // initialize psbt builder
   const psbt = new bitcoin.Psbt({ network })
   psbt.setVersion(tb.setVersion)
   psbt.setLocktime(tb.setLocktime)
 
-  // add exact inputs
+  // add exact inputs & adjust outputs if need more for fee
   addInputs({ tb, psbt, vBytesMax })
+
+  // reset outputs from fixedOutputs
+  tb.outputs = JSON.parse(JSON.stringify(tb.outputsFixed))
 
   // add outputs
   addOutputs({ tb, psbt })
@@ -45,7 +47,10 @@ export const getTx = (tb: I_TxBuilder, vBytesMax = 1) => {
     console.log('virtualSize', tx.virtualSize())
     tb.result.virtualSize = thisVirtualSize
     console.log('byteLength', tx.byteLength())
-    console.log('getId', tx.getId())
+    console.log('txid', tx.getId())
+    console.log('fee', tb.result.fee)
+    console.log('actual fee rate', tb.result.fee / tb.result.virtualSize)
+    console.log('tb:', tb)
     console.log('')
 
     return psbt.extractTransaction()
@@ -58,94 +63,9 @@ export const getTx = (tb: I_TxBuilder, vBytesMax = 1) => {
   }
 }
 
-const signInputs = ({ tb, psbt }: { tb: any; psbt: any }) => {
-  const network = bitcoin.networks[tb.network]
-
-  const nInputs = Object.keys(tb.inputs).length
-
-  for (let i = 0; i < nInputs; i++) {
-    const input = tb.inputs[i.toFixed(0)]
-
-    if (input.canJustSign) {
-      // easy case, signs with input.keyPairs[0]
-      psbt.signInput(i, input.keyPairs[0])
-
-      if (!psbt.validateSignaturesOfInput(i)) {
-        throw new Error(
-          'Signature validation failed for input index ' + i.toFixed(0)
-        )
-      }
-
-      psbt.finalizeInput(i)
-    }
-
-    // hard case with scripts
-    // ((TODO): no signatures calc yet. Those would go into input.inputScript)
-    if (!input.canJustSign) {
-      psbt.finalizeInput(
-        i,
-        getFinalScripts({
-          inputScript: input.inputScript,
-          network
-        })
-      )
-    }
-  }
-}
-
-const addOutputs = ({ tb, psbt }: { tb: any; psbt: any }) => {
-  if (!tb.outputs || Object.keys(tb.outputs).length === 0) {
-    throw new Error(`Can't have no outputs`)
-  }
-
-  // check that there's an output for each index up to max
-  console.log(
-    `getTx found ${Object.keys(tb.outputs).length.toFixed(0)} outputs`
-  )
-
-  for (let i = 0; i < Object.keys(tb.outputs).length; i++) {
-    const thisValue = tb.outputs[i.toFixed(0)]
-    if (thisValue === undefined) {
-      throw new Error(`Missing output at vout index ${i.toFixed(0)}`)
-    }
-  }
-
-  // add change output if change is above dust level
-  if (tb.minDustValue < tb.result.changeValue) {
-    const nextIndex = Object.keys(tb.outputs).length // next index
-    tb.outputs[nextIndex.toFixed(0)] = {
-      address: tb.changeAddress,
-      value: tb.result.changeValue
-    }
-  }
-
-  Object.keys(tb.outputs).forEach((thisVout: string, i: number) => {
-    // check that output key matches current index
-    if (thisVout !== i.toFixed(0))
-      throw new Error(`Badly labeled output with key ${thisVout}`)
-
-    const thisNewOutput = tb.outputs[thisVout]
-
-    // required values
-    if (!thisNewOutput.value)
-      throw new Error(`Missing value on output #${thisVout}`)
-
-    const outputBuilder: any = {
-      value: thisNewOutput.value
-    }
-
-    // need either address or script
-    if (!thisNewOutput.address && !thisNewOutput.script) {
-      throw new Error(`Missing address OR script on output #${thisVout}`)
-    }
-    if (thisNewOutput.address) outputBuilder.address = thisNewOutput.address
-    if (thisNewOutput.script) outputBuilder.script = thisNewOutput.script
-
-    // add it
-    psbt.addOutput({ ...thisNewOutput })
-  })
-}
-
+/* -------------------------------------------------------------------------- */
+/*                                 add inputs                                 */
+/* -------------------------------------------------------------------------- */
 const addInputs = ({
   tb,
   psbt,
@@ -155,9 +75,15 @@ const addInputs = ({
   psbt: any
   vBytesMax: number
 }) => {
+  // add up required "fixed" outputs for required "fixed" outgoing value
+  tb.result.outgoingValue = 0
+  Object.keys(tb.outputsFixed).forEach((vout: string) => {
+    tb.result.outgoingValue += tb.outputsFixed[vout].value
+  })
+
   // use last calculated tx size to calculate fee
   // recursion guarantees fee will not end up smaller than fee rate
-  const fee: number = Math.ceil(vBytesMax * tb.feeRate)
+  let fee: number = Math.ceil(vBytesMax * tb.feeRate) + 1
   // to cover transfer AND fee, need at least this much from inputs
   const totalNeeded: number = tb.result.outgoingValue + fee
 
@@ -176,8 +102,60 @@ const addInputs = ({
     }
   })
 
-  // abort if not enough funds
-  if (valueGatheredFromWallet < totalNeeded) {
+  // check if not enough funds
+  if (valueGatheredFromWallet - totalNeeded < 0) {
+    // check if there's enough funds to subtract the fees from amount to send
+    if (tb.result.outgoingValue - fee > tb.minDustValue) {
+      console.log(
+        `Attempting to reduce outputs to get ${fee} sats necessary for fee`,
+        tb
+      )
+      // go through reducing fixed outputs to  attempt to find enough for a fee
+      Object.keys(tb.outputsFixed).forEach((vout: string) => {
+        if (
+          tb.outputsFixed[vout].minValue === undefined ||
+          tb.outputsFixed[vout].minValue === null
+        ) {
+          // just in case set min value to value if it's missing
+          tb.outputsFixed[vout].minValue = tb.outputsFixed[vout].value
+        }
+        console.log(tb.outputsFixed[vout].value, tb.outputsFixed[vout].minValue)
+        // this output allows this much reduction in sats
+        const slack = Math.max(
+          tb.outputsFixed[vout].value - tb.outputsFixed[vout].minValue,
+          0
+        )
+        // this is how much this output & outstanding fee can be reduced by
+        const subtractable = Math.min(slack, fee)
+        // reduce outstanding fees needed and output value
+        fee -= subtractable
+        tb.outputsFixed[vout].value -= subtractable
+
+        console.log(
+          tb.outputsFixed[vout].value,
+          tb.outputsFixed[vout].minValue,
+          slack,
+          subtractable
+        )
+
+        console.log(
+          `output ${vout} value had to be decreased from ${tb.outputsFixed[vout]
+            .value + subtractable} to ${
+            tb.outputsFixed[vout].value
+          } resulting in ${fee} sat more necessary to cover the fee`
+        )
+      })
+
+      // if the fee was covered, redo adding inputs
+      if (fee <= 0) {
+        // abort this addInputs call and redo it with new outputsFixed values
+        addInputs({ tb, psbt, vBytesMax })
+        return undefined
+      }
+      // otherwise continue to the error below
+    }
+
+    // abort since no way to compensate for lacking funds
     throw new Error(
       'Not enough funds available (need: ' +
         (totalNeeded / 1e8).toFixed(8) +
@@ -340,6 +318,102 @@ const addInputs = ({
     psbt.addInput({ ...inputBuilder })
   })
 }
+
+/* -------------------------------------------------------------------------- */
+/*                                 add outputs                                */
+/* -------------------------------------------------------------------------- */
+const addOutputs = ({ tb, psbt }: { tb: any; psbt: any }) => {
+  if (!tb.outputs || Object.keys(tb.outputs).length === 0) {
+    throw new Error(`Can't have no outputs`)
+  }
+
+  // check that there's an output for each index up to max
+  console.log(
+    `getTx found ${Object.keys(tb.outputs).length.toFixed(0)} outputs`
+  )
+
+  for (let i = 0; i < Object.keys(tb.outputs).length; i++) {
+    const thisValue = tb.outputs[i.toFixed(0)]
+    if (thisValue === undefined) {
+      throw new Error(`Missing output at vout index ${i.toFixed(0)}`)
+    }
+  }
+
+  // add change output if change is above dust level
+  if (tb.minDustValue < tb.result.changeValue) {
+    const nextIndex = Object.keys(tb.outputs).length // next index
+    tb.outputs[nextIndex.toFixed(0)] = {
+      address: tb.changeAddress,
+      value: tb.result.changeValue
+    }
+  }
+
+  Object.keys(tb.outputs).forEach((thisVout: string, i: number) => {
+    // check that output key matches current index
+    if (thisVout !== i.toFixed(0))
+      throw new Error(`Badly labeled output with key ${thisVout}`)
+
+    const thisNewOutput = tb.outputs[thisVout]
+
+    // required values
+    if (!thisNewOutput.value)
+      throw new Error(`Missing value on output #${thisVout}`)
+
+    const outputBuilder: any = {
+      value: thisNewOutput.value
+    }
+
+    // need either address or script
+    if (!thisNewOutput.address && !thisNewOutput.script) {
+      throw new Error(`Missing address OR script on output #${thisVout}`)
+    }
+    if (thisNewOutput.address) outputBuilder.address = thisNewOutput.address
+    if (thisNewOutput.script) outputBuilder.script = thisNewOutput.script
+
+    // add it
+    psbt.addOutput({ ...thisNewOutput })
+  })
+}
+
+/* -------------------------------------------------------------------------- */
+/*                                 sign inputs                                */
+/* -------------------------------------------------------------------------- */
+const signInputs = ({ tb, psbt }: { tb: any; psbt: any }) => {
+  const network = bitcoin.networks[tb.network]
+
+  const nInputs = Object.keys(tb.inputs).length
+
+  for (let i = 0; i < nInputs; i++) {
+    const input = tb.inputs[i.toFixed(0)]
+
+    if (input.canJustSign) {
+      // easy case, signs with input.keyPairs[0]
+      psbt.signInput(i, input.keyPairs[0])
+
+      if (!psbt.validateSignaturesOfInput(i)) {
+        throw new Error(
+          'Signature validation failed for input index ' + i.toFixed(0)
+        )
+      }
+
+      psbt.finalizeInput(i)
+    }
+
+    // hard case with scripts
+    // ((TODO): no signatures calc yet. Those would go into input.inputScript)
+    if (!input.canJustSign) {
+      psbt.finalizeInput(
+        i,
+        getFinalScripts({
+          inputScript: input.inputScript,
+          network
+        })
+      )
+    }
+  }
+}
+
+/* ----------------------------- handle scripts ----------------------------- */
 
 /**
  * Finalize outputs that require custom scripts.

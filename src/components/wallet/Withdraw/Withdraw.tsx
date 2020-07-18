@@ -164,7 +164,8 @@ export const Withdraw = () => {
                 outputsFixed: {
                   '0': {
                     address: withdrawAddress,
-                    value: controlBalance // (TODO test replace)
+                    value: controlBalance, // value sent
+                    minValue: 500 // lowest value sent can be
                   }
                 },
                 // change sent back

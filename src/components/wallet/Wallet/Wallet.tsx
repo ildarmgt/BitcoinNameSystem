@@ -4,6 +4,8 @@ import { getTx } from './getTx'
 import { Logo } from './../../general/Logo/'
 import { RoundButton } from '../../general/RoundButton'
 import { InputForm } from './../../general/InputForm'
+import { FeesSelection } from './../FeesSelection'
+
 const RESERVED_FROM_WALLET_KEY = 'fromWallet'
 
 // which feeds to use
@@ -127,10 +129,18 @@ export const Wallet = (props: any): JSX.Element => {
           />
 
           <div className={styles.interface}>
-            <RoundButton>Send</RoundButton>
-            <RoundButton>Receive</RoundButton>
+            {/* <RoundButton>Receive</RoundButton> */}
             <br />
-            <InputForm thisInputLabel={'Sending to'} showButton={'false'} />
+            <br />
+            <br />
+            <InputForm thisInputLabel={'Amount (tBTC)'} showButton={'false'} />
+            <br />
+            <br />
+            <br />
+            <FeesSelection />
+            <br />
+            <br />
+            <RoundButton>Send</RoundButton>
           </div>
         </>
       )}
@@ -201,19 +211,19 @@ const processNewParams = (params: any, setTxBuilder: any) => {
   if (Object.keys(params).length > 0) {
     // get min necessary value from known outputs
     // as that lets us do inputs quickly
-    let outgoingValue = 0
-    Object.keys(params.outputsFixed).forEach((vout: string) => {
-      outgoingValue += params.outputsFixed[vout].value
-    })
+    // let outgoingValue = 0
+    // Object.keys(params.outputsFixed).forEach((vout: string) => {
+    //   outgoingValue += params.outputsFixed[vout].value
+    // })
 
     // add params to txBuilder
     setTxBuilder((prevTxBuilder: any) => ({
       ...prevTxBuilder,
-      ...params,
-      result: {
-        ...prevTxBuilder.result,
-        outgoingValue
-      }
+      ...params
+      // result: {
+      //   ...prevTxBuilder.result,
+      //   outgoingValue
+      // }
     }))
 
     // setParams({}) // reset params
@@ -342,10 +352,10 @@ export interface I_TxBuilder {
   result: {
     tx: ObjectOrNull
     hex: string | null
-    virtualSize: number | null
-    outgoingValue: number | null
-    changeValue: number | null
-    inputsValue: number | null
+    virtualSize: number
+    outgoingValue: number
+    changeValue: number
+    inputsValue: number
     fee: number
   }
 
@@ -388,6 +398,7 @@ export interface I_TxBuilder {
       address: string | null
       script: Buffer | null
       value: number | null
+      minValue: number
     }
   }
 
