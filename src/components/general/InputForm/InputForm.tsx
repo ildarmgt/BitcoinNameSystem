@@ -67,6 +67,7 @@ export const InputForm = (props: any) => {
             // furthermore, run user provided setter
             if (props.thisInputOnChange) props.thisInputOnChange(e)
           }}
+          placeholder={props.placeholder || ''}
         ></textarea>
         {props.showButton === 'true' && (
           <RoundButton
