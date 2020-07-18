@@ -17,6 +17,7 @@ import sanitize from '../../../helpers/sanitize'
  * showButton - show ok button or not.
  * thisSubmitButtonOnClick - function to run on OK clicked.
  * showBonusInformation - show what's b/w <InputForm> & </InputForm> under the text area.
+ * placeholder - text to show as placeholder in text area.
  */
 export const InputForm = (props: any) => {
   // local state so can edit / store textbox content without having
