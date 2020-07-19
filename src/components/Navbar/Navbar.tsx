@@ -103,83 +103,77 @@ export const Navbar = (): JSX.Element => {
     }
   }, [nav])
 
-  // all main buttons
+  /* ------------------------------ main buttons ------------------------------ */
+
+  const buttonSearch = [
+    <div
+      key={'search'}
+      ref={searchButton}
+      className={[styles.button, isHomePage ? styles.selected : ''].join(' ')}
+      onClick={() => {
+        !isHomePage && history.push('/')
+      }}
+    >
+      search
+    </div>
+  ]
+
+  const buttonUser = [
+    <div
+      key={'create'}
+      className={[styles.button, isCreatePage ? styles.selected : ''].join(' ')}
+      onClick={() => {
+        !isCreatePage && history.push('/create')
+      }}
+    >
+      users
+    </div>
+  ]
+
+  const buttonSource = [
+    <div
+      key={'git'}
+      className={[styles.button].join(' ')}
+      onClick={() => {
+        window.open('https://github.com/ildarmgt/BitcoinNameSystem', '_blank')
+      }}
+    >
+      &lt;{'source'}&gt;
+    </div>
+  ]
+
+  const buttonAbout = [
+    <div
+      key={'about'}
+      className={[styles.button, isAboutPage ? styles.selected : ''].join(' ')}
+      onClick={() => {
+        !isAboutPage && history.push('/about')
+      }}
+    >
+      about
+    </div>
+  ]
+
+  const buttonSettings = [
+    <div
+      key={'settings'}
+      className={[styles.button, isSettingsPage ? styles.selected : ''].join(
+        ' '
+      )}
+      onClick={() => {
+        !isSettingsPage && history.push('/settings')
+      }}
+    >
+      settings
+    </div>
+  ]
+
   const buttonsArray = [
-    [
-      <div
-        key={'search'}
-        ref={searchButton}
-        className={[styles.button, isHomePage ? styles.selected : ''].join(' ')}
-        onClick={() => {
-          !isHomePage && history.push('/')
-        }}
-      >
-        search
-      </div>
-    ],
-    [
-      <div
-        key={'create'}
-        className={[styles.button, isCreatePage ? styles.selected : ''].join(
-          ' '
-        )}
-        onClick={() => {
-          !isCreatePage && history.push('/create')
-        }}
-      >
-        users
-      </div>
-    ],
-    [
-      <div
-        key={'git'}
-        className={[styles.button].join(' ')}
-        onClick={() => {
-          window.open('https://github.com/ildarmgt/BitcoinNameSystem', '_blank')
-        }}
-      >
-        &lt;{'source'}&gt;
-      </div>
-    ],
-    [
-      <div
-        key={'about'}
-        className={[styles.button, isAboutPage ? styles.selected : ''].join(
-          ' '
-        )}
-        onClick={() => {
-          !isAboutPage && history.push('/about')
-        }}
-      >
-        about
-      </div>
-    ],
-    [
-      <div
-        key={'settings'}
-        className={[styles.button, isSettingsPage ? styles.selected : ''].join(
-          ' '
-        )}
-        onClick={() => {
-          !isSettingsPage && history.push('/settings')
-        }}
-      >
-        settings
-      </div>
-    ]
-    // [
-    //   <div
-    //     key={'wallet'}
-    //     className={[styles.button, isWalletPage ? styles.selected : ''].join(
-    //       ' '
-    //     )}
-    //     onClick={() => {
-    //       !isWalletPage && history.push('/wallet')
-    //     }}
-    //   >
-    //     wallet
-    //   </div>
-    // ]
+    isHomePage ? buttonUser : buttonSearch,
+    isHomePage ? buttonSearch : buttonUser,
+    buttonSource,
+    buttonAbout,
+    buttonSettings
   ]
 
   /* -------------------------------------------------------------------------- */

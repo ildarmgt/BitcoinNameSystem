@@ -24,18 +24,6 @@ const TESTING = process.env.NODE_ENV === 'development'
 // entry toWallet is used to send data to wallet
 // entry fromWallet is used to send data from wallet
 
-// user feeds data into wallet component from any of following (if enabled):
-// 1. props (object with key:values inside props.txBuilder)
-// 2. querry strings (#*?key=value&key=value format, values with encodeURIcomponent encoding)
-// 3. session storage with (key:JSON.stringify(value))
-// 4. via forms in wallet gui
-// querry strings and session storage is wiped after data is copied
-// all new values are fed into same 'params' local state
-// 'params' key:values are processed and added in correct formats to 'txBuilder' state
-// 'txBuilder' state changes trigger updated calculations
-// user can check what's missing
-// user is notified if tx is ready (session storage)
-
 /**
  * Reusable component for creating a wallet.
  * Simulates behavior of browser/desktop wallet plugins so I can move it outside later.
@@ -209,24 +197,11 @@ const removeListeners = (params: any, setParams: any) => {
 const processNewParams = (params: any, setTxBuilder: any) => {
   // only update state if necessary
   if (Object.keys(params).length > 0) {
-    // get min necessary value from known outputs
-    // as that lets us do inputs quickly
-    // let outgoingValue = 0
-    // Object.keys(params.outputsFixed).forEach((vout: string) => {
-    //   outgoingValue += params.outputsFixed[vout].value
-    // })
-
     // add params to txBuilder
     setTxBuilder((prevTxBuilder: any) => ({
       ...prevTxBuilder,
       ...params
-      // result: {
-      //   ...prevTxBuilder.result,
-      //   outgoingValue
-      // }
     }))
-
-    // setParams({}) // reset params
   }
 }
 
@@ -611,3 +586,15 @@ const handleHashChange = (params: any, setParams: any) => (): void => {
 //   },
 //   changeAddress: 'abc'
 // }
+
+// user feeds data into wallet component from any of following (if enabled):
+// 1. props (object with key:values inside props.txBuilder)
+// 2. querry strings (#*?key=value&key=value format, values with encodeURIcomponent encoding)
+// 3. session storage with (key:JSON.stringify(value))
+// 4. via forms in wallet gui
+// querry strings and session storage is wiped after data is copied
+// all new values are fed into same 'params' local state
+// 'params' key:values are processed and added in correct formats to 'txBuilder' state
+// 'txBuilder' state changes trigger updated calculations
+// user can check what's missing
+// user is notified if tx is ready (session storage)

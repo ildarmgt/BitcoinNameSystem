@@ -113,7 +113,7 @@ export const Withdraw = () => {
             >
               {state.alias}.btc
             </span>{' '}
-            control address
+            owner address
           </div>
           <div className={[styles.from__address, 'letter_breakable'].join(' ')}>
             {state.wallet.address}
@@ -165,7 +165,7 @@ export const Withdraw = () => {
                   '0': {
                     address: withdrawAddress,
                     value: controlBalance, // value sent
-                    minValue: 500 // lowest value sent can be
+                    minValue: controlBalance - 1 // lowest value sent can be
                   }
                 },
                 // change sent back
@@ -176,10 +176,6 @@ export const Withdraw = () => {
           />
         </>
       )}
-      {/* <div>to address</div>
-      <div>to amount</div>
-      <div>returned amount</div>
-      <div>broadcast button</div> */}
     </div>
   )
 }
