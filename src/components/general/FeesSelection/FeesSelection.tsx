@@ -109,7 +109,7 @@ export const FeesSelection = (props: any) => {
                 setFeeSuggestions({ ...feeSuggestions, showSuggestions: false })
               }}
             >
-              {'< '}20 min ( {feeSuggestions.min20.toFixed(1)} sat / vByte )
+              {'< '}20 min ( {feeSuggestions.min20?.toFixed(1)} sat / vByte )
             </div>
             <div
               className={styles.fees__feeSelection__choice}
@@ -119,7 +119,7 @@ export const FeesSelection = (props: any) => {
                 setFeeSuggestions({ ...feeSuggestions, showSuggestions: false })
               }}
             >
-              {'< '}40 min ( {feeSuggestions.min40.toFixed(1)} sat / vByte )
+              {'< '}40 min ( {feeSuggestions.min40?.toFixed(1)} sat / vByte )
             </div>
             <div
               className={styles.fees__feeSelection__choice}
@@ -129,7 +129,7 @@ export const FeesSelection = (props: any) => {
                 setFeeSuggestions({ ...feeSuggestions, showSuggestions: false })
               }}
             >
-              {'< '}60 min ( {feeSuggestions.min60.toFixed(1)} sat / vByte )
+              {'< '}60 min ( {feeSuggestions.min60?.toFixed(1)} sat / vByte )
             </div>
           </div>
         )}

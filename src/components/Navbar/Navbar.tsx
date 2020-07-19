@@ -4,7 +4,13 @@ import { useHistory } from 'react-router-dom'
 import styles from './Navbar.module.css'
 import { Wallet } from './../wallet/Wallet'
 import { VisualAPI } from './../wallet/VisualAPI'
-import { setApiAction } from './../../store'
+import {
+  setApiAction,
+  addNewApiTaskAction,
+  changeChoicesBNSAction
+} from './../../store'
+
+import { getFeeEstimatesAPI } from './../../api/blockstream'
 
 const MAX_BUTTONS_TO_SHOW_UNCOLLAPSED = 4
 
@@ -233,7 +239,20 @@ export const Navbar = (): JSX.Element => {
         <div className={styles.wallet}>
           <Wallet
             txBuilder={{
-              network: state.network
+              network: state.network,
+              feeRateInitial: state.choices.feeRate
+            }}
+            export={{
+              feeRateInitial: (cleanNumber: number) =>
+                changeChoicesBNSAction(state, dispatch, {
+                  feeRate: cleanNumber
+                })
+            }}
+            api={{
+              getFeeSuggestions: () =>
+                addNewApiTaskAction(state, dispatch, () =>
+                  getFeeEstimatesAPI(state.network, state.api.path)
+                )
             }}
           />
         </div>

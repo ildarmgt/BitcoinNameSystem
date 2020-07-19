@@ -4,7 +4,7 @@ import { getTx } from './getTx'
 import { Logo } from './../../general/Logo/'
 import { RoundButton } from '../../general/RoundButton'
 import { InputForm } from './../../general/InputForm'
-import { FeesSelection } from './../FeesSelection'
+import { FeesSelection } from './../../general/FeesSelection'
 
 const RESERVED_FROM_WALLET_KEY = 'fromWallet'
 
@@ -89,6 +89,7 @@ export const Wallet = (props: any): JSX.Element => {
   // (TODO) disable testing mode when done
   return TESTING ? (
     <>
+      {/* wallet icon */}
       <div
         className={[styles.wrapper, props.className || ''].join(' ')}
         onClick={() => {
@@ -106,9 +107,11 @@ export const Wallet = (props: any): JSX.Element => {
           />
         </div>
       </div>
-      {/* visual interface & hidden background for canceling it */}
+
+      {/* visual wallet interface */}
       {showInterface && (
         <>
+          {/* hidden full screen div for closing wallet interface */}
           <div
             className={styles.interface_not}
             onClick={() => {
@@ -116,16 +119,20 @@ export const Wallet = (props: any): JSX.Element => {
             }}
           />
 
+          {/* visible wallet interface */}
           <div className={styles.interface}>
-            {/* <RoundButton>Receive</RoundButton> */}
-            <br />
-            <br />
+            {/* allow fee customization */}
+            <FeesSelection
+              initialFee={txBuilder!.feeRateInitial || 1}
+              getFeeSuggestions={() => props.api.getFeeSuggestions()}
+              setFee={props.export.feeRateInitial}
+            />
             <br />
             <InputForm thisInputLabel={'Amount (tBTC)'} showButton={'false'} />
             <br />
             <br />
             <br />
-            <FeesSelection />
+
             <br />
             <br />
             <RoundButton>Send</RoundButton>
@@ -284,8 +291,10 @@ const initialTxBuilder: I_TxBuilder = {
   setLocktime: 0,
   feeRate: 1.0,
 
+  feeRateInitial: 1.0,
   minFeeRate: 1.0,
   maxFeeRate: 1000.0,
+
   minDustValue: 500,
 
   result: {
@@ -320,6 +329,7 @@ export interface I_TxBuilder {
   feeRate: number | null
 
   // some safety things to check
+  feeRateInitial: number | null
   minFeeRate: number | null // sat/vByte
   maxFeeRate: number | null // sat/vByte
   minDustValue: number | null // sats
