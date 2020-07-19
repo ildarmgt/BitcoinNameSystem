@@ -255,7 +255,8 @@ export const SearchResults = () => {
             }
           })}
 
-          {!!owner && (
+          {/* show owner address as a forward */}
+          {/* {!!owner && (
             <a
               className={styles.listItem}
               href={
@@ -275,7 +276,7 @@ export const SearchResults = () => {
               <span className={styles.key}>control address: </span>
               {state.domain.currentOwner}
             </a>
-          )}
+          )} */}
 
           {/* show if domain is available */}
           <div className={styles.avaiability}>
