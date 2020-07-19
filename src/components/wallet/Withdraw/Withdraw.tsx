@@ -165,7 +165,7 @@ export const Withdraw = () => {
                   '0': {
                     address: withdrawAddress,
                     value: controlBalance, // value sent
-                    minValue: controlBalance - 1 // lowest value sent can be
+                    minValue: 500 // lowest value sent can be
                   }
                 },
                 // change sent back
