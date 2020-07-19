@@ -69,8 +69,10 @@
 }
 
 .changes {
+  padding-top: calc(3 * var(--s));
   grid-area: changes;
   width: 100%;
+  text-align: left;
 }
 .pastList {
   grid-area: pastList;
@@ -78,7 +80,8 @@
 
 .buttonWrapper {
   grid-area: buttonWrapper;
-  margin: calc(3 * var(--s)) 0;
+  padding: calc(3 * var(--s)) 0;
+  padding-bottom: calc(9 * var(--s));
 }
 
 .buttonWrapper > div {
@@ -319,12 +322,14 @@
     margin-right: 0;
   }
   .changes {
+    padding-top: 0;
     justify-self: right;
     text-align: right;
   }
   .buttonWrapper {
     justify-self: right;
     text-align: right;
+    padding-bottom: 0;
   }
   .editor {
     justify-self: right;

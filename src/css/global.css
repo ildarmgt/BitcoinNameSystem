@@ -612,6 +612,12 @@ table td p {
   word-break: break-all;
 }
 
+.word_breakable {
+  overflow-wrap: normal;
+  word-wrap: normal;
+  word-break: normal;
+}
+
 .arbitraryFixes {
   /* various animation fixes */
   -webkit-backface-visibility: hidden;

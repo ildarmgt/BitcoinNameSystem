@@ -72,10 +72,6 @@
   width: 100%;
   padding: calc(2 * var(--s)) 0;
   white-space: pre-wrap;
-
-  overflow-wrap: break-word;
-  word-wrap: break-word;
-  word-break: break-all;
 }
 
 .status {
@@ -123,10 +119,6 @@
   width: 100%;
   vertical-align: top;
   border-collapse: collapse;
-
-  overflow-wrap: normal;
-  word-wrap: normal;
-  word-break: normal;
 }
 
 .txSummary td {
@@ -178,6 +170,14 @@
   /* vertical-align: middle; */
   text-indent: 0;
   /* margin: calc(0.25 * var(--s)) 0; */
+}
+
+.error {
+  color: var(--colorWarning);
+}
+
+.notify {
+  color: var(--colorHighlightDark);
 }
 
 /* wide screen settings */

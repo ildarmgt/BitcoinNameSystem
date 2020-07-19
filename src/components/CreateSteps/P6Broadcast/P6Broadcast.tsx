@@ -4,13 +4,15 @@ import { RoundButton } from '../../general/RoundButton'
 import styles from './P6Broadcast.module.css'
 import {
   changePageInfoAction,
-  addNewApiTaskAction
+  addNewApiTaskAction,
+  changeChoicesBNSAction
 } from '../../../store/actions'
 import { calcTx } from './../../../helpers/bns/'
 import { txPushAPI } from './../../../api/blockstream'
 import { getUnspentSum } from '../../../helpers/bns/bitcoin'
 import { Details } from './../../general/Details'
-import { FeesSelection } from './../../wallet/FeesSelection'
+import { FeesSelection } from './../../general/FeesSelection'
+import { getFeeEstimatesAPI } from './../../../api/blockstream'
 
 /**
  * Broadcast tx page.
@@ -74,16 +76,28 @@ export const P6Broadcast = () => {
     <div className={styles.wrapper}>
       <div className={styles.title}>Finalize transaction details</div>
       <div className={styles.fees}>
-        <FeesSelection />
+        <FeesSelection
+          initialFee={state.choices.feeRate}
+          getFeeSuggestions={async () => {
+            return await addNewApiTaskAction(state, dispatch, () =>
+              getFeeEstimatesAPI(state.network, state.api.path)
+            )
+          }}
+          setFee={(cleanNumber: number) => {
+            return changeChoicesBNSAction(state, dispatch, {
+              feeRate: cleanNumber
+            })
+          }}
+        />
       </div>
       <div className={styles.totalCost}>
         {!!tx ? <>Your final cost: {showBTC(finalCost)}</> : ' '}
       </div>
-      <div className={styles.txSummary}>
+      <div className={[styles.txSummary, 'letter_breakable'].join(' ')}>
         {!!tx && (
           <>
             <Details>
-              <table>
+              <table className={'word_breakable'}>
                 <tbody>
                   <tr>
                     <td>Action:</td>
@@ -167,7 +181,11 @@ export const P6Broadcast = () => {
           </>
         )}
         {!tx && (
-          <div className={styles.txSummary}>
+          <div
+            className={[styles.txSummary, 'word_breakable', styles.error].join(
+              ' '
+            )}
+          >
             calculation failed <br />
             {txIssue}
           </div>
@@ -191,6 +209,8 @@ export const P6Broadcast = () => {
           </>
         ) : broadcastStatus.reason.length > 0 ? (
           <div className={styles.status__failed}>{broadcastStatus.reason}</div>
+        ) : tx && tx.hex ? (
+          <span className={styles.notify}>BNS transaction ready</span>
         ) : (
           ''
         )}
