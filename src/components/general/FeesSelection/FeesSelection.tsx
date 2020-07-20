@@ -67,7 +67,7 @@ export const FeesSelection = (props: any) => {
   /* -------------------------------------------------------------------------- */
 
   return (
-    <div className={styles.fees}>
+    <div className={[styles.fees, props.className].join(' ')}>
       <div className={styles.fees__rate}>
         <aside>Fee rate (sat / vByte):</aside>
         <textarea

@@ -10,11 +10,12 @@
   display: inline-block;
   width: calc(20 * var(--s));
   overflow-x: visible;
+  padding-top: calc(3.1 * var(--s));
 }
 
 .fees__rate aside {
   width: calc(25 * var(--s));
-  top: calc(-2.8 * var(--s));
+  top: 0;
   line-height: calc(2.5 * var(--s));
   left: calc(-2 * var(--s));
   font-size: calc(2.3 * var(--s));
