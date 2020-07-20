@@ -1,9 +1,9 @@
 /*
-  .roundButtonWrap - outter most lowst div that handles background color & clicking animation
+  .roundWrap - outter most lowst div that handles background color & clicking animation
 
   .roundButton - inner div that handles text, arrows, and their colors
 
-  .overhead - inner most div to handle hover darkness that covers text & arrows
+  .overhead - inner most div to handle hover darkness/brightness that covers text & arrows
 */
 .roundButtonWrap {
   display: inline-block;
@@ -34,15 +34,6 @@
   /* white-space: nowrap; */
 }
 
-.roundButtonWrap:active {
-  /* transform: translateY(calc(0.2 * var(--sizeButton))); */
-  transform: translateY(calc(0.1 * var(--s)));
-}
-
-.roundButtonWrap.disabledWrap:active {
-  transform: none;
-}
-
 .roundButtonWrap.disabledWrap {
   filter: saturate(0);
 }
@@ -55,18 +46,6 @@
   left: 0;
   width: 100%;
   height: 100%;
-}
-
-.overhead:hover {
-  background-color: var(--colorDarker0_5);
-}
-
-.roundButtonWrap .overhead:hover {
-  background-color: transparent;
-}
-
-.roundButton:hover {
-  /* background-color: var(--colorDarker1); */
 }
 
 .nextArrowPad {
@@ -114,14 +93,12 @@
   border-bottom: calc(0.75 * var(--sizeButton)) solid transparent;
 }
 
-.back {
+.backWrapper {
   background-color: var(--colorTransparent);
   box-shadow: 0 0 0 calc(0.2 * var(--sizeButton)) var(--colorThisButton) inset;
 }
 
-/* ----------------------------- minor versions ----------------------------- */
-
-.minorButtonWrapper {
+.minorWrapper {
   background-color: var(--colorTransparent);
 }
 
@@ -131,20 +108,28 @@
   color: var(--colorThisButton);
 }
 
-.backArrow:hover {
-  /* color: var(--colorThisButtonText); */
-  /* background-color: var(--colorDarker2); */
-  /* box-shadow: 0 0 0 calc(0.2 * var(--sizeButton)) var(--colorTransparent) inset; */
+/* ---------------------------------- hover --------------------------------- */
+
+.overhead:hover {
+  background-color: var(--colorDarker0_5);
 }
 
-.backArrow:hover {
-  /* border-right: calc(1.5 * var(--sizeButton)) solid var(--colorThisButtonText); */
+.disabled:hover .overhead {
+  background-color: transparent;
 }
 
-.back:hover {
-  /* background-color: var(--colorThisButton); */
-}
-
-.back:hover .overhead {
+.minorWrapper:hover .overhead,
+.backWrapper:hover .overhead {
   background-color: var(--colorBrighter2);
+}
+
+/* --------------------------------- active --------------------------------- */
+
+.roundButtonWrap:active {
+  /* transform: translateY(calc(0.2 * var(--sizeButton))); */
+  transform: translateY(calc(0.1 * var(--s)));
+}
+
+.roundButtonWrap.disabledWrap:active {
+  transform: none;
 }

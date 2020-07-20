@@ -22,7 +22,8 @@ import styles from './RoundButton.module.css'
  *
  * colorbuttonText='var(--colorButtonText)' to customize text color.
  *
- * Defaults (vars defined in global global.css):
+ * -------------------------------------------------
+ * Defaults (vars defined in global global.css):`
  *
  * sizebutton = 2.5. ( means font size calc(2.5/2.9 * var(--s)) )
  *
@@ -54,8 +55,8 @@ export const RoundButton = (props: any): JSX.Element => {
       {...props}
       className={[
         styles.roundButtonWrap,
-        props.back ? styles.back : '',
-        props.minor ? styles.minorButtonWrapper : undefined,
+        props.back ? styles.backWrapper : '',
+        props.minor ? styles.minorWrapper : undefined,
         props.showdisabled ? styles.disabledWrap : undefined,
         props.className
       ].join(' ')}
