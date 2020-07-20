@@ -10,7 +10,7 @@ import {
   changeChoicesBNSAction
 } from './../../store'
 
-import { getFeeEstimatesAPI } from './../../api/blockstream'
+import { getFeeEstimatesAPI, txPushAPI } from './../../api/blockstream'
 
 const MAX_BUTTONS_TO_SHOW_UNCOLLAPSED = 4
 
@@ -252,6 +252,10 @@ export const Navbar = (): JSX.Element => {
               getFeeSuggestions: () =>
                 addNewApiTaskAction(state, dispatch, () =>
                   getFeeEstimatesAPI(state.network, state.api.path)
+                ),
+              broadcastTx: (hex: string) =>
+                addNewApiTaskAction(state, dispatch, () =>
+                  txPushAPI(hex, state.network, state.api.path)
                 )
             }}
           />
