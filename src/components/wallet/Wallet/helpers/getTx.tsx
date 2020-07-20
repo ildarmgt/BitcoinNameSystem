@@ -1,5 +1,5 @@
 import * as bitcoin from 'bitcoinjs-lib'
-import { I_TxBuilder } from './Wallet'
+import { I_TxBuilder } from '../interfaces'
 import varuint from 'varuint-bitcoin'
 
 /**

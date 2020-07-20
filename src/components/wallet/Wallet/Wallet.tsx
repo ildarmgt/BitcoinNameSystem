@@ -1,10 +1,13 @@
 import React from 'react'
 import styles from './Wallet.module.css'
-import { getTx } from './getTx'
+import { getTx } from './helpers/getTx'
+import { resetUrl, handleHashChange } from './helpers/urlReading'
 import { Logo } from './../../general/Logo/'
 import { RoundButton } from '../../general/RoundButton'
 import { InputForm } from './../../general/InputForm'
 import { FeesSelection } from './../../general/FeesSelection'
+import { I_Wallet, I_TxBuilder } from './interfaces'
+import { initialWallet, initialTxBuilder } from './store'
 
 const RESERVED_FROM_WALLET_KEY = 'fromWallet'
 const RESERVED_TO_WALLET_KEY = 'toWallet'
@@ -33,21 +36,20 @@ export const Wallet = (props: any): JSX.Element => {
   // initialize
   const [initialized, setInitialized] = React.useState(false)
 
+  // wallet general state
+  const [wallet, setWallet]: [I_Wallet, any] = React.useState(initialWallet)
+
   // stores raw fed params before organizing them for txBuilder
   const [params, setParams]: [any, (args: any) => void] = React.useState({})
 
-  // stores state useful for building tx
+  // stores state for building tx
   const [txBuilder, setTxBuilder]: [I_TxBuilder, any] = React.useState({
     ...initialTxBuilder,
     ...(props.txBuilder || {})
   })
 
-  // show pop up interface
+  // show/hide pop up interface
   const [showInterface, setShowInterface] = React.useState(false)
-
-  // gui settings
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  // const [info, setInfo] = React.useState({ text: '' })
 
   // run methods to handle evenlisteners for new parameters from all sources
   // React.useEffect(() => handleListeners(params, setParams), [params])
@@ -71,6 +73,18 @@ export const Wallet = (props: any): JSX.Element => {
       txBuilder.showUI = false
       setTxBuilder({ ...txBuilder }) // redo useEffect
     }
+
+    // update the wallet headline for current task
+    setWallet((w: I_Wallet) => {
+      if (txBuilder.notifyUI && txBuilder.notifyUI !== w.headline)
+        // update wallet headline
+        return { ...w, headline: txBuilder.notifyUI }
+      else if (txBuilder.notifyUI && txBuilder.notifyUI === w.headline)
+        // no changes to wallet headline
+        return w
+      // reset wallet headline
+      else return { ...w, headline: initialWallet.headline }
+    })
   }, [txBuilder])
 
   // update session storage about interface showing
@@ -100,7 +114,7 @@ export const Wallet = (props: any): JSX.Element => {
 
           {/* visible wallet interface */}
           <div className={styles.interface}>
-            <div className={styles.title}>Transaction requested</div>
+            <div className={styles.title}>{wallet.headline}</div>
 
             {/* allow fee customization */}
             <FeesSelection
@@ -161,7 +175,7 @@ export const Wallet = (props: any): JSX.Element => {
             <br />
             <div className={styles.buttonWrapper}>
               <RoundButton
-                back={'true'}
+                minor={'true'}
                 onClick={() => {
                   setShowInterface(false)
                 }}
@@ -343,179 +357,8 @@ const handleStorageChange = (params: any, setParams: any) => (): void => {
   addListeners(params, setParams)
 }
 
-// remove params from URL
-const resetUrl = () => {
-  window.history.pushState({}, '', `${window.location.href.split('?')[0]}`)
-  // emit event if param or url change if needs to be detected
-  // window.dispatchEvent(new HashChangeEvent("hashchange"));
-}
-
-/* -------------------------------------------------------------------------- */
-/*                               Initial values                               */
-/* -------------------------------------------------------------------------- */
-
-const initialTxBuilder: I_TxBuilder = {
-  showUI: false,
-  network: null,
-  setVersion: 2,
-  setLocktime: 0,
-  feeRate: 1.0,
-
-  minFeeRate: 1.0,
-  maxFeeRate: 1000.0,
-
-  minDustValue: 500,
-
-  wallet: {
-    availableValue: 0
-  },
-
-  result: {
-    hex: '',
-    virtualSize: 0, // vbytes
-    outgoingValue: 0, // sats in outputs have to pay
-    minOutgoingValue: 0, // min values overall possible
-    changeValue: 0, // sats in output returning
-    inputsValue: 0, // selected input value
-    availableInputsValue: 0, // available inputs total
-    fee: 0, // sats going to miners
-    txid: ''
-  },
-
-  inputs: {},
-  inputsFixed: {},
-  utxoList: null,
-
-  outputs: {},
-  outputsFixed: {},
-  changeAddress: null
-}
-
-/* -------------------------------------------------------------------------- */
-/*                                    Types                                   */
-/* -------------------------------------------------------------------------- */
-
-// everything I need to build any tx
-// matching as close as possible to bitcoinjs psbt design
-export interface I_TxBuilder {
-  showUI: boolean
-  network: 'bitcoin' | 'testnet' | null
-  setVersion: number | null
-  setLocktime: number | null
-
-  feeRate: number | null
-
-  minFeeRate: number // sat/vByte
-  maxFeeRate: number // sat/vByte
-  minDustValue: number | null // sats
-
-  wallet: {
-    availableValue: number
-  }
-
-  result: {
-    hex: string
-    virtualSize: number
-    outgoingValue: number
-    minOutgoingValue: number
-    changeValue: number
-    inputsValue: number
-    availableInputsValue: number
-    fee: number
-    txid: string
-  }
-
-  // used inputs
-  inputs: {
-    [inputIndex: string]: I_Input
-  }
-
-  // MUST USE / USED inputs as exact input info object with input index as keys
-  // so specific indexes can be set by user, the rest filled in automiatcally.
-  inputsFixed: {
-    [inputIndex: string]: I_Input
-  }
-
-  // OPTIONAL INPUTS:
-  // array of other possible inputs to use,
-  // used in exact order of this array,
-  // priority given to defined inputs always.
-  // (TODO) if only address + keys given, wallet could get missing info
-  // to create 1-multiple inputs from 1 address
-  // adds to inputs if used
-  utxoList: Array<any> | null
-
-  // used outputs
-  outputs: {
-    [outputIndex: string]: {
-      address: string | null // standard tx to address that will generate output at that addrss
-
-      // for OP_RETURN that has no address can be fed for with data to embed
-      // bitcoin.payments.embed({ data: [bufferOfDataToEmbed] }).output
-      script: Buffer | null
-
-      value: number // sats we need to pay
-    }
-  }
-
-  // MUST use outputs
-  outputsFixed: {
-    [outputIndex: string]: {
-      address: string | null
-      script: Buffer | null
-      value: number
-      minValue: number
-    }
-  }
-
-  changeAddress: string | null // where left over change goes, adds to outputs if used
-}
-
-type ObjectOrNull = Exclude<{ [any: string]: any } | null, undefined>
-
-interface I_Input {
-  // to create input
-
-  hash: string | null // txid (32B, 64 char hex) (dislike little endian buffer)
-  index: number | null // vout (integer)
-  sequence: number | null // e.g. 0xfffffffe
-  nonWitnessUtxo: Buffer | null // raw tx buffer, only 1 that works for all types
-  witnessScript: Buffer | null // original script, via bitcoin.script.compile([opcodes, ...])
-  redeemScript: Buffer | null // original script, via bitcoin.script.compile([opcodes, ...])
-
-  // to sign and finalize:
-
-  // could do from asm and pass as string instead of function
-  // then replace signature<index> publickey<index> with matching
-  // keyPairs[index] and if needed sighashTypes[index], numbers can be encoded
-  // into string before.
-  // https://github.com/bitcoinjs/bitcoinjs-lib/blob/f48abd322f14f6eec8bfc19e7838a1a150eefb56/test/integration/cltv.spec.ts#L43
-  // ((TODO): psbt.getHashForSig , .hashForSignature , hashForWitnessV0 , keypair.sign(hash))
-  inputScript: string | null
-
-  // ( (TODO):
-  //  canJustSign:
-  //    true means wallet just use
-  //      psbt.signInput(vin, keyPair); psbt.finalizeInput(vin);
-  //    false means it is fancy script so have to feed it
-  //      psbt.finalizeInput(vin, getFinalScripts({ inputScript, network }))
-  // )
-  canJustSign: boolean | null
-  keyPairs: ObjectOrNull[] | null
-  sighashTypes: number[] | null
-
-  // to explain to user each value when waiting for confirmation
-  address: string | null
-  value: number | null
-  confirmed: boolean | null
-  info: string | null
-}
-
-/* -------------------------------------------------------------------------- */
-/*                                 Temp notes                                 */
-/* -------------------------------------------------------------------------- */
-
 /**
+ * temp notes
  *
  * what's best for passing data?
  * - querry strings
@@ -573,110 +416,6 @@ interface I_Input {
 // props are unescaped and many times appear in html, most dangerous
 
 // https://owasp.org/www-community/xss-filter-evasion-cheatsheet
-
-/* -------------------------------------------------------------------------- */
-/*                           reading params from url                          */
-/* -------------------------------------------------------------------------- */
-
-// curried url change handler (might be worth removing completely)
-const handleHashChange = (params: any, setParams: any) => (): void => {
-  // if (e) console.warn(e)
-
-  // convert url string starting with # into key/value pair object
-  // #/ok/?a=b&c=d becomes { a:b, c:d }
-  const fedValues = window.location.hash
-    .split('#')
-    .slice(1) // removes all before 1st # and 1st #
-    .join('')
-    .split('?')
-    .slice(1) // removes all before 1st ? and 1st ?
-    .join('')
-    .split('&') // split between sets of key-value pairs
-    .reduce((finalParamObject: any, thisKeyValue: string) => {
-      // assume values were passed through encodeURIComponent() so only '=' are from standard format
-      const splitKeyValue = thisKeyValue.split('=')
-      const thisKey = splitKeyValue[0]
-      const thisValue = decodeURIComponent(splitKeyValue[1])
-      if (thisKey === '') {
-        // no change
-        return finalParamObject
-      } else {
-        // check if key/value already exist within params
-        if (thisKey in params && params[thisKey] === thisValue) {
-          // if so, no need to add
-          return finalParamObject
-        } else {
-          // add changes
-          console.log(thisKey)
-          return { ...finalParamObject, [thisKey]: thisValue }
-        }
-      }
-    }, {})
-
-  // only update state if there are new values, avoid pointless refresh
-  if (Object.keys(fedValues).length > 0) {
-    const newParams = { ...params, ...fedValues }
-    console.log('new params added:', newParams)
-    setParams(newParams)
-  }
-
-  // clean up url as well
-  resetUrl()
-}
-
-/* -------------------------------------------------------------------------- */
-/*                        dummy example for type checks                       */
-/* -------------------------------------------------------------------------- */
-
-// const dummyInput: I_Input = {
-//   hash: 'abc123',
-//   index: 123,
-//   sequence: 0xfffffffe,
-//   nonWitnessUtxo: Buffer.from(' ', 'utf8'),
-//   witnessScript: Buffer.from(' ', 'utf8'),
-//   redeemScript: Buffer.from(' ', 'utf8'),
-//   inputScript: 'OP_TRUE OP_DROP OP_TRUE',
-//   canJustSign: false,
-//   keyPairs: [ { some: 'object' } ],
-//   sighashTypes: [ 1 ],
-//   address: '123abc',
-//   value: 123,
-//   confirmed: true,
-//   info: 'why'
-// }
-
-// const dummyTxBuilder: I_TxBuilder = {
-//   network: 'testnet',
-//   setVersion: 2,
-//   setLocktime: 0,
-//   feeRate: 1.0,
-
-//   minFeeRate: 1.0,
-//   maxFeeRate: 1000.0,
-//   minDustValue: 500,
-
-//   result: {
-//     tx: { bitcoinjslibtxobject: 'returned here' },
-//     hex: 'abc1234',
-//     virtualSize: 123
-//   },
-
-//   inputs: {
-//     // eslint-disable-next-line no-useless-computed-key
-//     ['1']: dummyInput
-//   },
-//   fillInputs: [dummyInput],
-
-//   outputs: {
-//     // eslint-disable-next-line no-useless-computed-key
-//     ['1']: {
-//       address: 'abc',
-//       script: Buffer.from(' ', 'utf8'),
-//       value: 123
-//     }
-//   },
-//   changeAddress: 'abc'
-// }
 
 // user feeds data into wallet component from any of following (if enabled):
 // 1. props (object with key:values inside props.txBuilder)

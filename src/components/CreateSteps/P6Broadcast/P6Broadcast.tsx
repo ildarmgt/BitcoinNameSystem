@@ -49,7 +49,7 @@ export const P6Broadcast = () => {
   // keep track of broadcast
   const [broadcastStatus, setBroadcastStatus] = React.useState({
     ok: false,
-    txid: '123',
+    txid: '',
     reason: ''
   })
 

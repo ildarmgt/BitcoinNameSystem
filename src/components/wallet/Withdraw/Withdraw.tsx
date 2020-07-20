@@ -159,13 +159,11 @@ export const Withdraw = () => {
               // send each element of payload to session storage for wallet
               const payload: { [key: string]: any } = {
                 showUI: true,
+                notifyUI: 'Withdraw from wallet?',
                 network: state.network,
                 // wallet utxo's
                 utxoList,
-                // summary
-                wallet: {
-                  availableValue: controlBalance
-                },
+
                 // specific outputs
                 outputsFixed: {
                   '0': {
