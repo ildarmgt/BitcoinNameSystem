@@ -6,11 +6,13 @@
 // on for `npm run start` (development mode)
 // off for `npm run build` (production mode)
 const TESTING = process.env.NODE_ENV === 'development'
-TESTING && console.warn('Testing mode ON')
+TESTING ? console.warn('Testing mode ON') : console.warn('Deployment mode')
 
 // Block times can vary from 10 minutes but ok for estimate.
+// blocks * 10 / 60 / 24 ~ days
 // 52560 blocks ~365 days.
-// 1000 blocks ~ a week.
+// 15000 blocks ~104 days.
+// 1000 blocks ~7 days.
 // 288 blocks ~48 hours.
 // 144 blocks ~1 day.
 
@@ -25,7 +27,7 @@ const MIN_BURN = 1000
 const MIN_NOTIFY = 1000
 
 // Ownership duration after victory (blocks)
-// ~1 year (production) / ~70 days (development)
+// ~1 year (production) / ~104 days (development)
 const OWNERSHIP_DURATION_BY_BLOCKS = !TESTING ? 52560 : 15000
 
 // Duration before a top bidder becomes owner (blocks)
