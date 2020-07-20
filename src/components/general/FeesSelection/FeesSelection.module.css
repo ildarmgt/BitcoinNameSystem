@@ -55,6 +55,7 @@
   border-radius: calc(0.5 * var(--s));
   cursor: pointer;
   color: var(--colorBackground);
+  text-align: center;
 }
 
 .fees__feeSelection__choice:hover {

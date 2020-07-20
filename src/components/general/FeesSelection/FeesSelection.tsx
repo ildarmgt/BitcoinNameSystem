@@ -36,6 +36,20 @@ export const FeesSelection = (props: any) => {
     min60: 1
   })
 
+  // feeSuggestions click listener to handle menu closing
+  React.useEffect(() => {
+    const onClickElsewhere = () => {
+      if (feeSuggestions.showSuggestions) {
+        setFeeSuggestions({ ...feeSuggestions, showSuggestions: false })
+      }
+    }
+
+    document.addEventListener('click', onClickElsewhere)
+    return () => {
+      document.removeEventListener('click', onClickElsewhere)
+    }
+  }, [feeSuggestions])
+
   // get new suggestions if never got them through api
   // otherwise show previous
   const tryFees = async () => {
@@ -78,7 +92,8 @@ export const FeesSelection = (props: any) => {
             const cleanText = sanitize(e.target.value, [
               'numbers',
               'decimal_point',
-              'no_leading_zeros'
+              'no_leading_zeros',
+              'max_decimal_places:3'
             ])
             setFeeText(cleanText)
             // 123. works in parseFloat and outputs 123 so safe

@@ -4,6 +4,8 @@
  * Returns the string of interst with only characters present in filters selected.
  */
 export default function sanitize (inputString, stringOrArray) {
+  inputString = String(inputString)
+
   // get choice input into same form of array of string(s) of choices
   let choices // :string | Array<string>
   if (Array.isArray(stringOrArray)) {
@@ -114,6 +116,23 @@ export default function sanitize (inputString, stringOrArray) {
           })
           .join('.')
       )
+    }
+
+    // 'max_decimal_places:3'
+    if (choice.startsWith('max_decimal_places')) {
+      const maxDecimalPlaces = +choice.split(':')[1] || 8
+      logicFilters.push(str => {
+        const length = str.length
+        const decimalIndex = str.indexOf('.')
+        const digitsAfterDecimal = length - decimalIndex - 1
+        // if there is no decimal or it's last character, no changes
+        if (decimalIndex === -1 || digitsAfterDecimal === 0) return str
+        // otherwise cut off necessary number of characters
+        if (digitsAfterDecimal > maxDecimalPlaces) {
+          const cutoffNumber = digitsAfterDecimal - maxDecimalPlaces
+          return str.slice(0, -cutoffNumber)
+        } else return str
+      })
     }
   })
 
