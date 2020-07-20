@@ -271,7 +271,7 @@ const SUGGESTION_REFUND_PAST_BIDDERS = ({
         describe,
         type: BnsSuggestionType.REFUND_BIDDERS,
         get: {
-          value: false,
+          value: true,
           name: 'Refund now?'
         },
         set: {

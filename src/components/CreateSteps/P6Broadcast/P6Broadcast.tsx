@@ -38,13 +38,14 @@ export const P6Broadcast = () => {
   }
 
   // summarize number of updates in the embeded string
-  const numberOfUpdates = state.choices.embedString
-    .split(' ')
-    .reduce(
-      (countSoFar: number, word: string, index: number) =>
-        index % 2 === 1 ? countSoFar + 1 : countSoFar,
-      0
-    )
+  const numberOfUpdates =
+    state.choices.embedString
+      .split(' ')
+      .reduce(
+        (countSoFar: number, word: string, index: number) =>
+          index % 2 === 1 ? countSoFar + 1 : countSoFar,
+        0
+      ) + state.choices.embedBuffers.length
 
   // keep track of broadcast
   const [broadcastStatus, setBroadcastStatus] = React.useState({

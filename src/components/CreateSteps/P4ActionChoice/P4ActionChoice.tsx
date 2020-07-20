@@ -254,7 +254,7 @@ export const P4ActionChoice = () => {
                         key={suggestionToGet.info.describe}
                         thisInputLabel={
                           suggestionToGet.info.describe +
-                          ': \n  ' +
+                          ': \n\n  ' +
                           suggestionToGet.info.get.name
                         }
                         initialIndex={suggestionToGet.info.get.value ? 1 : 0}
