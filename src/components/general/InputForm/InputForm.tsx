@@ -27,12 +27,17 @@ export const InputForm = (props: any) => {
   if (textValue === undefined) {
     if (props.thisInputOnChange)
       props.thisInputOnChange({
-        target: { value: props.thisInitialValue || '' }
+        target: {
+          value:
+            props.thisInitialValue !== undefined ? props.thisInitialValue : ''
+        }
       })
   }
 
   React.useEffect(() => {
-    setTextValue(props.thisInitialValue || '')
+    setTextValue(
+      props.thisInitialValue !== undefined ? props.thisInitialValue : ''
+    )
   }, [props.thisInitialValue])
 
   /* -------------------------------------------------------------------------- */
@@ -64,7 +69,6 @@ export const InputForm = (props: any) => {
             setTextValue(cleanedValue)
             // update value so it's single line for custom change function below if any
             e.target.value = cleanedValue
-
             // furthermore, run user provided setter
             if (props.thisInputOnChange) props.thisInputOnChange(e)
           }}
