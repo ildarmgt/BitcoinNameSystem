@@ -14,6 +14,8 @@ import styles from './RoundButton.module.css'
  *
  * show='true' to display element vs show='false' to set display to none (dom still exists).
  *
+ * showdisabled='true' to make button unclickable and grayed out
+ *
  * sizebutton='2.9' to make the button size 2.9x standard var(--s) size used (defined in global global.css).
  *
  * colorbutton='var(--colorBitcoinOrange)' to customize color.
@@ -54,15 +56,21 @@ export const RoundButton = (props: any): JSX.Element => {
         styles.roundButtonWrap,
         props.back ? styles.back : '',
         props.minor ? styles.minorButtonWrapper : undefined,
+        props.showdisabled ? styles.disabledWrap : undefined,
         props.className
       ].join(' ')}
+      onClick={e => {
+        // do not process click if showdisabled is on
+        if (!props.showdisabled) props.onClick(e)
+      }}
     >
       <div
         className={[
           styles.roundButton,
           props.back ? styles.backArrowPad : undefined,
           props.next ? styles.nextArrowPad : undefined,
-          props.minor ? styles.minorButton : undefined
+          props.minor ? styles.minorButton : undefined,
+          props.showdisabled ? styles.disabled : undefined
         ].join(' ')}
       >
         {props.back && <div className={styles.backArrow} />}

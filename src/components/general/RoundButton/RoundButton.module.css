@@ -39,6 +39,14 @@
   transform: translateY(calc(0.1 * var(--s)));
 }
 
+.roundButtonWrap.disabledWrap:active {
+  transform: none;
+}
+
+.roundButtonWrap.disabledWrap {
+  filter: saturate(0);
+}
+
 .overhead {
   display: inline-block;
   position: absolute;
@@ -51,6 +59,10 @@
 
 .overhead:hover {
   background-color: var(--colorDarker0_5);
+}
+
+.roundButtonWrap .overhead:hover {
+  background-color: transparent;
 }
 
 .roundButton:hover {
