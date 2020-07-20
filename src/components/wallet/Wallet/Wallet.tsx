@@ -13,7 +13,7 @@ const RESERVED_TO_WALLET_KEY = 'toWallet'
 const USE_URL_AS_SOURCE = false
 const USE_SESSION_STORAGE_AS_SOURCE = true
 // if development mode
-const TESTING = process.env.NODE_ENV === 'development'
+// const TESTING = process.env.NODE_ENV === 'development'
 
 // written so easy to separate into separate app later
 
@@ -84,8 +84,8 @@ export const Wallet = (props: any): JSX.Element => {
   /* -------------------------------------------------------------------------- */
   /*                                  Rendering                                 */
   /* -------------------------------------------------------------------------- */
-  // (TODO) disable testing mode when done
-  return TESTING ? (
+
+  return (
     <>
       {/* visual wallet interface */}
       {showInterface && (
@@ -170,14 +170,20 @@ export const Wallet = (props: any): JSX.Element => {
               </RoundButton>
               <RoundButton
                 showdisabled={txBuilder.result.hex ? undefined : 'true'}
-                onClick={() => {
+                onClick={async () => {
                   console.log('Send clicked')
                   // abort if no hex
-                  if (txBuilder.result.hex === null) return undefined
+                  if (txBuilder.result.hex === '') return undefined
                   console.log('attempting to broadcast')
                   console.log('hex:\n', txBuilder!.result.hex)
-                  const res = props.api.broadcastTx(txBuilder!.result.hex)
-                  console.log(res)
+                  try {
+                    const res = await props.api.broadcastTx(
+                      txBuilder.result.hex
+                    )
+                    console.log('broadcast success:', res)
+                  } catch (e) {
+                    console.log('broadcast failed:', e)
+                  }
                 }}
               >
                 Send
@@ -206,8 +212,6 @@ export const Wallet = (props: any): JSX.Element => {
         </div>
       </div>
     </>
-  ) : (
-    <></>
   )
 }
 

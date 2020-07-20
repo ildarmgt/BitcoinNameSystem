@@ -132,7 +132,7 @@ export const Navbar = (): JSX.Element => {
         !isCreatePage && history.push('/create')
       }}
     >
-      users
+      owners
     </div>
   ]
 
