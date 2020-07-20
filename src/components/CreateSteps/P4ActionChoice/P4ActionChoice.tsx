@@ -50,7 +50,7 @@ export const P4ActionChoice = () => {
     )
   }
 
-  // help with understanding a get suggestion
+  // help with units & type of numbers needed for a get suggestion input
   const getSuggestInfo = (getSuggestion: any) => {
     const get = getSuggestion.info.get
     const network = state.network
@@ -292,9 +292,16 @@ export const P4ActionChoice = () => {
                             : // if not number just show the actual value
                               suggestionToGet.info.get.value
                         }
-                        sanitizeFilters={[
-                          typeof suggestionToGet.info.get.value
-                        ]}
+                        sanitizeFilters={
+                          typeof suggestionToGet.info.get.value === 'number'
+                            ? [
+                                'number',
+                                'no_leading_zeros',
+                                'decimal_point',
+                                'max_decimal_places:8'
+                              ]
+                            : ['string']
+                        }
                         thisInputOnChange={(e: any) => {
                           // type in bitcoin units
                           // store into memory in expected units (depending on .units)

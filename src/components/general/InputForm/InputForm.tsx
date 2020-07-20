@@ -22,23 +22,25 @@ import sanitize from '../../../helpers/sanitize'
 export const InputForm = (props: any) => {
   // local state so can edit / store textbox content without having
   // to read from final state which might be a number or further sanitized
-  const [textValue, setTextValue]: [string | undefined, any] = React.useState()
+  const [textValue, setTextValue]: [string | undefined, any] = React.useState(
+    props.thisInitialValue !== undefined ? props.thisInitialValue : ''
+  )
 
-  if (textValue === undefined) {
-    if (props.thisInputOnChange)
-      props.thisInputOnChange({
-        target: {
-          value:
-            props.thisInitialValue !== undefined ? props.thisInitialValue : ''
-        }
-      })
-  }
+  // if (textValue === undefined) {
+  //   if (props.thisInputOnChange)
+  //     props.thisInputOnChange({
+  //       target: {
+  //         value:
+  //           props.thisInitialValue !== undefined ? props.thisInitialValue : ''
+  //       }
+  //     })
+  // }
 
-  React.useEffect(() => {
-    setTextValue(
-      props.thisInitialValue !== undefined ? props.thisInitialValue : ''
-    )
-  }, [props.thisInitialValue])
+  // React.useEffect(() => {
+  //   setTextValue(
+  //     props.thisInitialValue !== undefined ? props.thisInitialValue : ''
+  //   )
+  // }, [props.thisInitialValue])
 
   /* -------------------------------------------------------------------------- */
   /*                                   render                                   */
