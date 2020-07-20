@@ -102,7 +102,7 @@ export const VisualAPI = (props: any) => {
 
       {/* loading spinner */}
       {props.tasks.length > 0 && (
-        <Spinner className={styles.spinner} width='calc(15 * var(--s))' />
+        <Spinner className={styles.spinner} width='calc(15 * 1vmin)' />
       )}
     </>
   )

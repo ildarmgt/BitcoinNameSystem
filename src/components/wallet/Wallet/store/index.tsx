@@ -1,7 +1,7 @@
 import { I_Wallet, I_TxBuilder } from './../interfaces'
 
 export const initialWallet: I_Wallet = {
-  headline: 'Wallet'
+  headline: 'BNS Wallet'
 }
 
 export const initialTxBuilder: I_TxBuilder = {
