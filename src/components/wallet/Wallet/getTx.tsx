@@ -9,19 +9,15 @@ import varuint from 'varuint-bitcoin'
  * Throws tb-specific errors too.
  * vBytes is the max allowed tx size that is within fee rate set.
  */
-export const getTx = (tb: I_TxBuilder, vBytesMax = 1) => {
+export const getTx = (tb: I_TxBuilder, vBytesMax = 1): I_TxBuilder => {
   if (!tb.network)
     throw new Error('Must provide network ("bitcoin" or "testnet")')
 
   const network = bitcoin.networks[tb.network]
 
-  // reset inputs from fixedInputs
-  tb.inputs = JSON.parse(JSON.stringify(tb.inputsFixed))
-
-  // initialize psbt builder
+  // initialize psbt object & values
   const psbt = new bitcoin.Psbt({ network })
-  psbt.setVersion(tb.setVersion)
-  psbt.setLocktime(tb.setLocktime)
+  initializeValues({ tb, psbt })
 
   // add exact inputs & adjust outputs if need more for fee
   addInputs({ tb, psbt, vBytesMax })
@@ -45,7 +41,7 @@ export const getTx = (tb: I_TxBuilder, vBytesMax = 1) => {
     // update transction builder
     tb.result.hex = tx.toHex()
     tb.result.virtualSize = thisVirtualSize
-    tb.result.txid = tx.txid()
+    tb.result.txid = tx.getId()
 
     // console.log some results
     console.log('')
@@ -66,7 +62,31 @@ export const getTx = (tb: I_TxBuilder, vBytesMax = 1) => {
       `tx draft size ${thisVirtualSize} was larger than max of ${vBytesMax} vbytes, recalculating`
     )
     // if above fee limit, redo calc with new fee limit
-    getTx(tb, thisVirtualSize)
+    return getTx(tb, thisVirtualSize)
+  }
+}
+
+/* -------------------------------------------------------------------------- */
+/*                              Initialize values                             */
+/* -------------------------------------------------------------------------- */
+const initializeValues = ({ tb, psbt }: { tb: any; psbt: any }): any => {
+  // basic tx settings
+  psbt.setVersion(tb.setVersion)
+  psbt.setLocktime(tb.setLocktime)
+  // reset inputs from fixedInputs
+  tb.inputs = JSON.parse(JSON.stringify(tb.inputsFixed))
+
+  // reset results
+  tb.result = {
+    hex: '',
+    virtualSize: 0,
+    outgoingValue: 0,
+    minOutgoingValue: 0,
+    changeValue: 0,
+    inputsValue: 0,
+    availableInputsValue: 0,
+    fee: 0,
+    txid: ''
   }
 }
 
@@ -81,11 +101,17 @@ const addInputs = ({
   tb: any
   psbt: any
   vBytesMax: number
-}) => {
+}): any => {
   // add up required "fixed" outputs for required "fixed" outgoing value
   tb.result.outgoingValue = 0
+  tb.result.minOutgoingValue = 0
   Object.keys(tb.outputsFixed).forEach((vout: string) => {
+    tb.result.minOutgoingValue += tb.outputsFixed[vout].minValue
     tb.result.outgoingValue += tb.outputsFixed[vout].value
+    if (tb.outputsFixed[vout].value <= tb.minDustValue)
+      throw new Error(
+        `Output ${vout} value is below dust setting of ${tb.minDustValue}`
+      )
   })
 
   // use last calculated tx size to calculate fee
@@ -97,9 +123,11 @@ const addInputs = ({
   // match or beat needed sats value with utxo list
   let valueGatheredFromWallet = 0
   const toBeUsedUtxoOfUserWallet: any = []
+  tb.result.availableInputsValue = 0
 
   // go from utxo array to enough utxo to cover withdrawal
   tb.utxoList?.forEach((utxo: any) => {
+    tb.result.availableInputsValue += utxo.value
     if (
       valueGatheredFromWallet < totalNeeded ||
       toBeUsedUtxoOfUserWallet.length === 0
@@ -109,10 +137,21 @@ const addInputs = ({
     }
   })
 
+  // disqualify if more outgoing than all funds available in utxo
+  if (tb.result.availableInputsValue < tb.result.outgoingValue) {
+    throw new Error(
+      'Not enough overall funds available (need: ' +
+        (tb.result.outgoingValue / 1e8).toFixed(8) +
+        ' BTC, have: ' +
+        (tb.result.availableInputsValue / 1e8).toFixed(8) +
+        ' BTC)'
+    )
+  }
+
   // check if not enough funds
-  if (valueGatheredFromWallet - totalNeeded < 0) {
+  if (valueGatheredFromWallet < totalNeeded) {
     // check if there's enough funds to subtract the fees from amount to send
-    if (tb.result.outgoingValue - fee > tb.minDustValue) {
+    if (tb.result.outgoingValue - fee > tb.result.minOutgoingValue) {
       console.log(
         `Attempting to reduce outputs to get ${fee} sats necessary for fee`,
         tb
@@ -156,8 +195,7 @@ const addInputs = ({
       // if the fee was covered, redo adding inputs
       if (fee <= 0) {
         // abort this addInputs call and redo it with new outputsFixed values
-        addInputs({ tb, psbt, vBytesMax })
-        return undefined
+        return addInputs({ tb, psbt, vBytesMax })
       }
       // otherwise continue to the error below
     }

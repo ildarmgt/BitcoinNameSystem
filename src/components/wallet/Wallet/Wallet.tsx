@@ -7,6 +7,7 @@ import { InputForm } from './../../general/InputForm'
 import { FeesSelection } from './../../general/FeesSelection'
 
 const RESERVED_FROM_WALLET_KEY = 'fromWallet'
+const RESERVED_TO_WALLET_KEY = 'toWallet'
 
 // which feeds to use
 const USE_URL_AS_SOURCE = false
@@ -32,27 +33,21 @@ export const Wallet = (props: any): JSX.Element => {
   // initialize
   const [initialized, setInitialized] = React.useState(false)
 
-  // show pop up interface
-  const [showInterface, setShowInterface] = React.useState(false)
-
   // stores raw fed params before organizing them for txBuilder
   const [params, setParams]: [any, (args: any) => void] = React.useState({})
 
   // stores state useful for building tx
-  const [txBuilder, setTxBuilder]: [I_TxBuilder | null, any] = React.useState(
-    null
-  )
-  // initializes txbuilder state from initial state and passed props
-  if (txBuilder === null) {
-    setTxBuilder({
-      ...initialTxBuilder,
-      ...(!!props.txBuilder ? props.txBuilder : {})
-    })
-  }
+  const [txBuilder, setTxBuilder]: [I_TxBuilder, any] = React.useState({
+    ...initialTxBuilder,
+    ...(props.txBuilder || {})
+  })
+
+  // show pop up interface
+  const [showInterface, setShowInterface] = React.useState(false)
 
   // gui settings
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const [info, setInfo] = React.useState({ text: '' })
+  // const [info, setInfo] = React.useState({ text: '' })
 
   // run methods to handle evenlisteners for new parameters from all sources
   // React.useEffect(() => handleListeners(params, setParams), [params])
@@ -65,17 +60,20 @@ export const Wallet = (props: any): JSX.Element => {
   React.useEffect(() => processNewParams(params, setTxBuilder), [params])
 
   // once fed data is organized (on txbuilder changes) attempt to create a transaction
-  React.useEffect(
-    () =>
-      recalcBuilder({
-        txBuilder,
-        setTxBuilder,
-        setInfo
-      }),
-    [txBuilder]
-  )
+  React.useEffect(() => {
+    // handle the change in txBuilder object
+    console.log('txBuilder object changed')
+    recalcBuilder({ txBuilder })
 
-  // update on status of wallet interface
+    if (txBuilder.showUI) {
+      // just handle interface showing on/off first
+      setShowInterface(true)
+      txBuilder.showUI = false
+      setTxBuilder({ ...txBuilder }) // redo useEffect
+    }
+  }, [txBuilder])
+
+  // update session storage about interface showing
   React.useEffect(() => {
     window.sessionStorage.setItem(
       RESERVED_FROM_WALLET_KEY,
@@ -89,6 +87,106 @@ export const Wallet = (props: any): JSX.Element => {
   // (TODO) disable testing mode when done
   return TESTING ? (
     <>
+      {/* visual wallet interface */}
+      {showInterface && (
+        <>
+          {/* hidden full screen div for closing wallet interface */}
+          <div
+            className={styles.interface_not}
+            onClick={() => {
+              setShowInterface(false)
+            }}
+          />
+
+          {/* visible wallet interface */}
+          <div className={styles.interface}>
+            <div className={styles.title}>Transaction requested</div>
+
+            {/* allow fee customization */}
+            <FeesSelection
+              className={styles.feeSelection}
+              initialFee={txBuilder.feeRate}
+              getFeeSuggestions={() => props.api.getFeeSuggestions()}
+              setFee={(feeRate: string) => {
+                if (+feeRate > txBuilder.maxFeeRate)
+                  feeRate = String(txBuilder.maxFeeRate)
+                if (+feeRate < txBuilder.minFeeRate)
+                  feeRate = String(txBuilder.minFeeRate)
+                props.export.feeRate(parseFloat(feeRate)) // outside wallet
+                setTxBuilder({ ...txBuilder, feeRate: parseFloat(feeRate) }) // inside wallet
+                return feeRate
+              }}
+            />
+            <br />
+
+            {/* amount customization */}
+            {Object.keys(txBuilder!.outputsFixed).map(
+              (vout: string, index: number) => {
+                const output = txBuilder!.outputsFixed[vout]
+                return (
+                  <InputForm
+                    key={'outputform' + String(index)}
+                    className={styles.amounts}
+                    thisInputLabel={`Amount sent (${
+                      txBuilder!.network === 'testnet' ? 'tBTC' : 'BTC'
+                    })`}
+                    showButton={'false'}
+                    thisInitialValue={String(+(output.value * 1e-8).toFixed(8))}
+                    sanitizeFilters={[
+                      'fractions',
+                      'decimal_point',
+                      'no_leading_zeros',
+                      'max_decimal_places:8'
+                    ]}
+                    thisInputOnChange={(e: any) => {
+                      // convert string in BTC to number of satoshi
+                      const thisValue = Math.round(+e.target.value * 1e8)
+                      // change the fixed output value
+                      const isChanged = output.value !== thisValue
+                      output.value = thisValue
+                      e.target.value = String(+(output.value * 1e-8).toFixed(8))
+                      // update wallet state w/ new change
+                      if (isChanged) setTxBuilder({ ...txBuilder })
+                    }}
+                  />
+                )
+              }
+            )}
+
+            <br />
+            <br />
+            <br />
+
+            <br />
+            <br />
+            <div className={styles.buttonWrapper}>
+              <RoundButton
+                back={'true'}
+                onClick={() => {
+                  setShowInterface(false)
+                }}
+              >
+                Cancel
+              </RoundButton>
+              <RoundButton
+                showdisabled={txBuilder.result.hex ? undefined : 'true'}
+                onClick={() => {
+                  console.log('Send clicked')
+                  // abort if no hex
+                  if (txBuilder.result.hex === null) return undefined
+                  console.log('attempting to broadcast')
+                  console.log('hex:\n', txBuilder!.result.hex)
+                  const res = props.api.broadcastTx(txBuilder!.result.hex)
+                  console.log(res)
+                }}
+              >
+                Send
+              </RoundButton>
+            </div>
+          </div>
+        </>
+      )}
+
       {/* wallet icon */}
       <div
         className={[styles.wrapper, props.className || ''].join(' ')}
@@ -107,38 +205,6 @@ export const Wallet = (props: any): JSX.Element => {
           />
         </div>
       </div>
-
-      {/* visual wallet interface */}
-      {showInterface && (
-        <>
-          {/* hidden full screen div for closing wallet interface */}
-          <div
-            className={styles.interface_not}
-            onClick={() => {
-              setShowInterface(false)
-            }}
-          />
-
-          {/* visible wallet interface */}
-          <div className={styles.interface}>
-            {/* allow fee customization */}
-            <FeesSelection
-              initialFee={txBuilder!.feeRateInitial || 1}
-              getFeeSuggestions={() => props.api.getFeeSuggestions()}
-              setFee={props.export.feeRateInitial}
-            />
-            <br />
-            <InputForm thisInputLabel={'Amount (tBTC)'} showButton={'false'} />
-            <br />
-            <br />
-            <br />
-
-            <br />
-            <br />
-            <RoundButton>Send</RoundButton>
-          </div>
-        </>
-      )}
     </>
   ) : (
     <></>
@@ -215,14 +281,14 @@ const processNewParams = (params: any, setTxBuilder: any) => {
 /* -------------------------------------------------------------------------- */
 /*                             attempt to build tx                            */
 /* -------------------------------------------------------------------------- */
-const recalcBuilder = ({ txBuilder, setInfo }: any) => {
+const recalcBuilder = ({ txBuilder }: any) => {
   try {
     // attempt to build within try/catch
     const res = getTx(txBuilder)
-    console.log('successful psbt:', res)
+    console.log('successful tx done:\n', res)
   } catch (e) {
     console.log('can not do psbt yet:', e)
-    setInfo({ text: e.message })
+    // setInfo({ text: e.message })
   }
 }
 
@@ -243,24 +309,20 @@ const handleStorageChange = (params: any, setParams: any) => (): void => {
   const fedValues: { [key: string]: string } = {}
 
   // check for data sent to wallet
-  const foundValues = JSON.parse(
-    JSON.parse(JSON.stringify(window.sessionStorage))['toWallet']
-  )
+  const found = window.sessionStorage[RESERVED_TO_WALLET_KEY]
+  const foundObject = found
+    ? JSON.parse(window.sessionStorage[RESERVED_TO_WALLET_KEY])
+    : null
 
-  console.log('found values:', foundValues)
+  console.log('found values:', foundObject)
 
-  if (foundValues)
+  if (foundObject)
     Object.keys(
       // cloned session storage so can delete safely while parsing
-      foundValues
+      foundObject
     ).forEach((thisKey: string) => {
-      if (thisKey !== RESERVED_FROM_WALLET_KEY) {
-        const thisValue = foundValues[thisKey]
-        fedValues[thisKey] = thisValue
-
-        // clear all session storage
-        sessionStorage.removeItem(thisKey)
-      }
+      const thisValue = foundObject[thisKey]
+      fedValues[thisKey] = thisValue
     })
 
   // only update state if there are actual values
@@ -269,6 +331,9 @@ const handleStorageChange = (params: any, setParams: any) => (): void => {
     console.log('new params added:', newParams)
     setParams(newParams)
   }
+
+  // clear session storage
+  // sessionStorage.removeItem(RESERVED_TO_WALLET_KEY)
 
   // safe to add listeners again
   addListeners(params, setParams)
@@ -286,25 +351,31 @@ const resetUrl = () => {
 /* -------------------------------------------------------------------------- */
 
 const initialTxBuilder: I_TxBuilder = {
+  showUI: false,
   network: null,
   setVersion: 2,
   setLocktime: 0,
   feeRate: 1.0,
 
-  feeRateInitial: 1.0,
   minFeeRate: 1.0,
   maxFeeRate: 1000.0,
 
   minDustValue: 500,
 
+  wallet: {
+    availableValue: 0
+  },
+
   result: {
-    tx: null,
-    hex: null,
+    hex: '',
     virtualSize: 0, // vbytes
     outgoingValue: 0, // sats in outputs have to pay
+    minOutgoingValue: 0, // min values overall possible
     changeValue: 0, // sats in output returning
-    inputsValue: 0,
-    fee: 0 // sats going to miners
+    inputsValue: 0, // selected input value
+    availableInputsValue: 0, // available inputs total
+    fee: 0, // sats going to miners
+    txid: ''
   },
 
   inputs: {},
@@ -323,25 +394,31 @@ const initialTxBuilder: I_TxBuilder = {
 // everything I need to build any tx
 // matching as close as possible to bitcoinjs psbt design
 export interface I_TxBuilder {
+  showUI: boolean
   network: 'bitcoin' | 'testnet' | null
   setVersion: number | null
   setLocktime: number | null
+
   feeRate: number | null
 
-  // some safety things to check
-  feeRateInitial: number | null
-  minFeeRate: number | null // sat/vByte
-  maxFeeRate: number | null // sat/vByte
+  minFeeRate: number // sat/vByte
+  maxFeeRate: number // sat/vByte
   minDustValue: number | null // sats
 
+  wallet: {
+    availableValue: number
+  }
+
   result: {
-    tx: ObjectOrNull
-    hex: string | null
+    hex: string
     virtualSize: number
     outgoingValue: number
+    minOutgoingValue: number
     changeValue: number
     inputsValue: number
+    availableInputsValue: number
     fee: number
+    txid: string
   }
 
   // used inputs
@@ -373,7 +450,7 @@ export interface I_TxBuilder {
       // bitcoin.payments.embed({ data: [bufferOfDataToEmbed] }).output
       script: Buffer | null
 
-      value: number | null // sats we need to pay
+      value: number // sats we need to pay
     }
   }
 
@@ -382,7 +459,7 @@ export interface I_TxBuilder {
     [outputIndex: string]: {
       address: string | null
       script: Buffer | null
-      value: number | null
+      value: number
       minValue: number
     }
   }
@@ -497,7 +574,7 @@ interface I_Input {
 /*                           reading params from url                          */
 /* -------------------------------------------------------------------------- */
 
-// curried url change handler
+// curried url change handler (might be worth removing completely)
 const handleHashChange = (params: any, setParams: any) => (): void => {
   // if (e) console.warn(e)
 

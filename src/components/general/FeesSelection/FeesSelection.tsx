@@ -89,16 +89,14 @@ export const FeesSelection = (props: any) => {
           value={feeText}
           placeholder={'e.g. 1.2'}
           onChange={e => {
-            const cleanText = sanitize(e.target.value, [
+            let cleanText = sanitize(e.target.value, [
               'numbers',
               'decimal_point',
               'no_leading_zeros',
               'max_decimal_places:3'
             ])
+            cleanText = setFeeExternal(cleanText) || cleanText
             setFeeText(cleanText)
-            // 123. works in parseFloat and outputs 123 so safe
-            const cleanNumber = parseFloat(cleanText)
-            setFeeExternal(cleanNumber)
           }}
         ></textarea>
       </div>

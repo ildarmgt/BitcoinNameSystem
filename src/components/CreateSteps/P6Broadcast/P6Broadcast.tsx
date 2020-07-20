@@ -83,10 +83,13 @@ export const P6Broadcast = () => {
               getFeeEstimatesAPI(state.network, state.api.path)
             )
           }}
-          setFee={(cleanNumber: number) => {
-            return changeChoicesBNSAction(state, dispatch, {
-              feeRate: cleanNumber
+          setFee={(feeRate: string) => {
+            if (+feeRate > 1000) feeRate = String(1000)
+            if (+feeRate < 1) feeRate = String(1)
+            changeChoicesBNSAction(state, dispatch, {
+              feeRate: parseFloat(feeRate)
             })
+            return feeRate
           }}
         />
       </div>

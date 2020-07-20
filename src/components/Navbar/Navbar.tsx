@@ -240,10 +240,10 @@ export const Navbar = (): JSX.Element => {
           <Wallet
             txBuilder={{
               network: state.network,
-              feeRateInitial: state.choices.feeRate
+              feeRate: state.choices.feeRate
             }}
             export={{
-              feeRateInitial: (cleanNumber: number) =>
+              feeRate: (cleanNumber: number) =>
                 changeChoicesBNSAction(state, dispatch, {
                   feeRate: cleanNumber
                 })

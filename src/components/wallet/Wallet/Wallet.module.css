@@ -2,6 +2,8 @@
   line-height: 0;
 }
 
+/* ------------------------------ Bitcoin icon ------------------------------ */
+
 .logo {
   text-rendering: geometricPrecision; /* firefox improvement */
   -webkit-font-smoothing: antialiased;
@@ -29,13 +31,18 @@
   filter: saturate(1);
 }
 
+/* -------------- transparent background to turn off interface -------------- */
+
 .interface_not {
+  background-color: var(--colorDarker4);
   position: fixed;
   bottom: 0;
   left: 0;
   width: 200vw;
   height: 200vh;
 }
+
+/* -------------------------------- interface ------------------------------- */
 
 .interface {
   bottom: var(--wallet__logo_size);
@@ -56,4 +63,28 @@
 
   box-sizing: border-box;
   color: var(--colorButtonText);
+}
+
+/* title message on pop up interface */
+.title {
+  box-sizing: border-box;
+  font-size: calc(4 * var(--s));
+  padding-bottom: calc(6 * var(--s));
+  color: var(--colorBitcoinBlue);
+  font-weight: bold;
+}
+
+.feeSelection {
+  text-align: left;
+}
+
+/* bitcoin value in output */
+.amounts {
+  width: 100%;
+}
+
+.buttonWrapper {
+  display: flex;
+  flex-wrap: wrap-reverse;
+  justify-content: space-between;
 }

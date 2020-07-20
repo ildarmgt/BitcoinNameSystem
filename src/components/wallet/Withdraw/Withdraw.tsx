@@ -132,6 +132,7 @@ export const Withdraw = () => {
             placeholder={'Bitcoin address or BNS alias'}
             showButton={'true'}
             sanitizeFilters={['basic']}
+            thisInitialValue={''}
             thisInputOnChange={(e: any) => {
               setWithdrawAddress(e.target.value)
             }}
@@ -157,9 +158,14 @@ export const Withdraw = () => {
               })
               // send each element of payload to session storage for wallet
               const payload: { [key: string]: any } = {
+                showUI: true,
                 network: state.network,
                 // wallet utxo's
                 utxoList,
+                // summary
+                wallet: {
+                  availableValue: controlBalance
+                },
                 // specific outputs
                 outputsFixed: {
                   '0': {
