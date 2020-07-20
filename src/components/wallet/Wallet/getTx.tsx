@@ -12,6 +12,7 @@ import varuint from 'varuint-bitcoin'
 export const getTx = (tb: I_TxBuilder, vBytesMax = 1) => {
   if (!tb.network)
     throw new Error('Must provide network ("bitcoin" or "testnet")')
+
   const network = bitcoin.networks[tb.network]
 
   // reset inputs from fixedInputs
@@ -41,19 +42,25 @@ export const getTx = (tb: I_TxBuilder, vBytesMax = 1) => {
   if (vBytesMax >= thisVirtualSize) {
     // if within fee limit
 
-    console.log(`tx with appropriate size calculated`)
-    console.log(tx)
-    console.log('hex', tx.toHex())
-    console.log('virtualSize', tx.virtualSize())
+    // update transction builder
+    tb.result.hex = tx.toHex()
     tb.result.virtualSize = thisVirtualSize
-    console.log('byteLength', tx.byteLength())
-    console.log('txid', tx.getId())
-    console.log('fee', tb.result.fee)
+    tb.result.txid = tx.txid()
+
+    // console.log some results
+    console.log('')
+    console.log(`tx with appropriate size calculated:`)
+    console.log(tx)
+    console.log('hex', tb.result.hex)
+    console.log('virtualSize', thisVirtualSize)
+    console.log('txid', tb.result.txid)
+    console.log('actual fee', tb.result.fee)
     console.log('actual fee rate', tb.result.fee / tb.result.virtualSize)
-    console.log('tb:', tb)
+    console.log('transaction builder object:', tb)
     console.log('')
 
-    return psbt.extractTransaction()
+    // return transaction builder object
+    return tb
   } else {
     console.log(
       `tx draft size ${thisVirtualSize} was larger than max of ${vBytesMax} vbytes, recalculating`
