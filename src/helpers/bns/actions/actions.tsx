@@ -172,7 +172,7 @@ const IS_COMMAND_CALLED = ({
 
 const IS_BIDDING_ONGOING = ({ st }: any = {}): I_Condition => ({
   status: () => isBiddingOngoing(st),
-  info: { describe: 'The domain is undergoing a bidding period' }
+  info: { describe: 'The domain must be undergoing a bidding period' }
 })
 
 const IS_BIDDING_OVER = ({ st }: any = {}): I_Condition => ({
