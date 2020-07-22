@@ -344,6 +344,7 @@ export const refundOtherBidders = (
     : () => {
         console.assert(!!tx, 'Must not execute action without tx')
         subtractRefunds(st, tx)
+        console.log(`Actions:subtractRefunds:executed`, tx)
       }
 
   return {
@@ -400,6 +401,7 @@ export const bidForOwnershipAction = (
         // have to start or add to bidding
         // ownership will be derived through automatic check based on bidding started here
         addBid(st, tx, BnsBidType.BURN)
+        console.log(`Actions:bidForOwnershipAction:executed`, tx)
       }
 
   return {
@@ -733,12 +735,18 @@ export const autoCheckForBiddingWinnerNewOwnerAction = (
   return {
     info: 'Derive the new owner from bidding period',
 
-    conditions: [NO_OWNER(args), IS_BIDDING_OVER(args)],
+    conditions: [
+      NO_OWNER(args),
+      // this will only be true directly after bidding
+      IS_BIDDING_OVER(args)
+    ],
 
     execute: () => {
       endBidding(st)
 
-      console.log('bidding period is over')
+      console.log(
+        'autoCheckForBiddingWinnerNewOwnerAction(): Bidding period has ended'
+      )
     }
   }
 }

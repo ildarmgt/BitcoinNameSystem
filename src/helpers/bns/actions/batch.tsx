@@ -1,6 +1,7 @@
 import {
   currentOwnerRenewAction,
   bidForOwnershipAction,
+  refundOtherBidders,
   autoCheckForOwnerExpiredAction,
   updateForwardingInfoAction,
   updateUtxoFromTxAction,
@@ -25,6 +26,7 @@ export const runAllActionPermissionChecks = (
     updateForwardingInfoAction(st, address),
     currentOwnerRenewAction(st, address),
     bidForOwnershipAction(st, address),
+    refundOtherBidders(st, address),
 
     sendOwnershipAction(st, address),
     changeAddressAction(st, address)
@@ -78,6 +80,7 @@ export const runAllUserActions = (st: I_BnsState, tx: I_TX): void => {
     updateForwardingInfoAction(st, undefined, tx), // reads embedded data
     currentOwnerRenewAction(st, undefined, tx), // renew ownership
     bidForOwnershipAction(st, undefined, tx), // new ownership
+    refundOtherBidders(st, undefined, tx), // count the refunds
 
     // giving up ownership should go last in case user state needs to be edited first
     sendOwnershipAction(st, undefined, tx), // give up ownership to another
@@ -139,6 +142,7 @@ export const scanEveryActionForCommand = () => {
     updateForwardingInfoAction(null),
     currentOwnerRenewAction(null),
     bidForOwnershipAction(null),
+    refundOtherBidders(null),
 
     sendOwnershipAction(null),
     changeAddressAction(null)
