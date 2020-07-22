@@ -190,7 +190,7 @@ export const readEmbeddedData = (st: I_BnsState, tx: I_TX): void => {
   // deterministic symmetric decryption key from nonce
   const decryptionKey = st.domain.domainName + user.address + nonce
   console.log(
-    '%c------------ embeded data found -----------------\n',
+    '%cembeded data found:',
     'color: green;',
     getTxHeight(tx),
     '  decryption key (w/ added spaces and pre hash): ',
@@ -198,19 +198,18 @@ export const readEmbeddedData = (st: I_BnsState, tx: I_TX): void => {
     user.address,
     nonce
   )
-  // const embeddedDataUtf8 = decrypt(embeddedDataBuffer, decryptionKey)
 
   // decrypt embedded data buffer to decrypted buffer
   const embeddedDataBufferDecrypted = decryptToBuffer(
     embeddedDataBuffer,
     decryptionKey
   )
-  console.log(
-    '',
-    getTxHeight(tx),
-    '  found embedded data (raw buffer to utf8):',
-    `"${embeddedDataBufferDecrypted.toString('utf8')}"`
-  )
+  // console.log(
+  //   '',
+  //   getTxHeight(tx),
+  //   '  raw buffer to utf8:',
+  //   `"${embeddedDataBufferDecrypted.toString('utf8')}"`
+  // )
 
   // split by spaces into array
   const separator = Buffer.from(' ')
@@ -236,7 +235,7 @@ export const readEmbeddedData = (st: I_BnsState, tx: I_TX): void => {
     }
   }
   console.log(
-    'array of entries:',
+    'array of embedded buffers (logged as utf8):',
     embeddedDataBufferArray,
     '\nseparated:',
     embeddedDataBufferArray.reduce(
@@ -494,7 +493,7 @@ export const addBid = (st: I_BnsState, tx: I_TX, type: BnsBidType): void => {
   }
   bids.push(bid)
 
-  console.log('New bid from', userAddress, 'for', burnValue)
+  console.log('addBid(): New bid from', userAddress, 'for', burnValue)
 }
 
 /**
@@ -507,7 +506,8 @@ export const isBiddingOver = (st: I_BnsState): boolean => {
   const biddingType = st.domain.bidding.type
   const endHeight = st.domain.bidding.endHeight
 
-  // real bidding type still assigned but height is at or above end height for bidding
+  // real bidding type still assigned (which means bidding WAS happening)
+  // but parsed height is at or above end height for bidding (means bidding ended)
   if (biddingType !== BnsBidType.NULL && endHeight <= parsedHeight) {
     return true
   }
@@ -618,12 +618,20 @@ export const subtractRefunds = (st: I_BnsState, tx: I_TX): void => {
       // subtract out the refund from both paid amount and valueLeftToRefund
       thisBid.valueLeftToRefund -= refund
       paidTo[thisBidAddress] -= refund
+
+      console.log(
+        `Height ${getTxHeight(
+          tx
+        )}: ${txUserAddress} refunded ${refund} to ${thisBidAddress} leaving ${
+          thisBid.valueLeftToRefund
+        } to be refunded`
+      )
     }
   }
 }
 
 /**
- * Return array of bids with only unrefunded bids.
+ * Return array of bids that have not been yet fully refunded.
  */
 export const unrefundedBidsOnly = (st: I_BnsState): Array<I_Bid> => {
   const bids = st.domain.bidding.bids
@@ -707,6 +715,15 @@ export const endBidding = (st: I_BnsState): void => {
     // if no unrefunded bids in the past, add to goodBidsThatRefunded
     if (!hasUnrefundedPastBids) {
       goodBidsThatRefunded.push(thisBid)
+      console.log(
+        `endBidding: at height ${thisBidHeight}, this bid fully refunded previous and counts`,
+        thisBid
+      )
+    } else {
+      console.log(
+        `endBidding: at height ${thisBidHeight}, this bid failed to refund`,
+        thisBid
+      )
     }
   }
 
