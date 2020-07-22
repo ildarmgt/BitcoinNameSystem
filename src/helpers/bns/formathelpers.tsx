@@ -182,36 +182,52 @@ export const readEmbeddedData = (st: I_BnsState, tx: I_TX): void => {
   const user = getUser(st, fromAddress)
   const nonce = getNonce(st, fromAddress).toString()
 
+  // get embedded raw data hex
   const embeddedDataHex = getTxOutput0Data(tx)
+  // convert hex to a buffer
   const embeddedDataBuffer = Buffer.from(embeddedDataHex, 'hex')
 
+  // deterministic symmetric decryption key from nonce
   const decryptionKey = st.domain.domainName + user.address + nonce
-  // console.log(
-  //   '',
-  //   getTxHeight(tx),
-  //   ': decryption key: ',
-  //   st.domain.domainName,
-  //   user.address,
-  //   nonce
-  // )
+  console.log(
+    '%c------------ embeded data found -----------------\n',
+    'color: green;',
+    getTxHeight(tx),
+    '  decryption key (w/ added spaces and pre hash): ',
+    st.domain.domainName,
+    user.address,
+    nonce
+  )
   // const embeddedDataUtf8 = decrypt(embeddedDataBuffer, decryptionKey)
+
+  // decrypt embedded data buffer to decrypted buffer
   const embeddedDataBufferDecrypted = decryptToBuffer(
     embeddedDataBuffer,
     decryptionKey
   )
-
-  // console.log('', getTxHeight(tx), ': found embedded data:', embeddedDataUtf8)
+  console.log(
+    '',
+    getTxHeight(tx),
+    '  found embedded data (raw buffer to utf8):',
+    `"${embeddedDataBufferDecrypted.toString('utf8')}"`
+  )
 
   // split by spaces into array
   const separator = Buffer.from(' ')
+  const emptyBuffer = Buffer.from('')
   const embeddedDataBufferArray: Buffer[] = []
   for (let i = 0; i < embeddedDataBufferDecrypted.length; i++) {
+    // go byte by byte through the decrypted buffer
     const thisByte = embeddedDataBufferDecrypted.slice(i, i + 1)
+    // check if this byte is the separator
     const isSeparator = Buffer.compare(separator, thisByte) === 0
-    if (isSeparator || i === 0) {
-      embeddedDataBufferArray.push(Buffer.from([]))
-    }
-    if (!isSeparator || i === 0) {
+    // initialize new separated buffer
+    if (i === 0) embeddedDataBufferArray.push(emptyBuffer)
+    // on separators initialize another separated buffer
+    if (isSeparator) embeddedDataBufferArray.push(emptyBuffer)
+    // on non-separators add current byte to last buffer
+    if (!isSeparator) {
+      // if not separator or just starting, add this byte to the current separated buffer
       const wordIndex = embeddedDataBufferArray.length - 1
       embeddedDataBufferArray[wordIndex] = Buffer.concat([
         embeddedDataBufferArray[wordIndex],
@@ -219,6 +235,16 @@ export const readEmbeddedData = (st: I_BnsState, tx: I_TX): void => {
       ])
     }
   }
+  console.log(
+    'array of entries:',
+    embeddedDataBufferArray,
+    '\nseparated:',
+    embeddedDataBufferArray.reduce(
+      (outputText: string, sepBuffer: Buffer) =>
+        `${outputText} [${sepBuffer.toString('utf8')}]`,
+      ''
+    )
+  )
   // const embeddedDataUtf8Array = embeddedDataUtf8.split(' ')
 
   // collect all forwards in this tx
@@ -253,6 +279,8 @@ export const readEmbeddedData = (st: I_BnsState, tx: I_TX): void => {
 
   // update forwards on the user
   addToUserForwards(st, fromAddress, forwardsInThisTx)
+
+  console.log('%c------------------------------------------\n', 'color: green;')
 }
 
 // ===== rule checks (getters) =====
