@@ -214,7 +214,6 @@ export const Wallet = (props: any): JSX.Element => {
               styles.logo,
               showInterface ? styles.logo_selected : ''
             ].join(' ')}
-            size='var(--wallet__logo_size)'
           />
         </div>
       </div>

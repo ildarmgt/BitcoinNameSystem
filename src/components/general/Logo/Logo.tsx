@@ -9,11 +9,11 @@ export const Logo = (props: any) => {
     <div
       className={[styles.outershell2, props.className].join(' ')}
       style={
-        {
-          '--btcLogoInputSize': props.size
-            ? props.size.toString()
-            : 'calc(10 * (0.5vw + 0.5vh))'
-        } as React.CSSProperties
+        props.size
+          ? ({
+              '--btcLogoInputSize': props.size.toString()
+            } as React.CSSProperties)
+          : {}
       }
     >
       <div className={[styles.btcLogo, styles.cutoffs].join(' ')}>

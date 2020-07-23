@@ -5,6 +5,8 @@
 /* ------------------------------ Bitcoin icon ------------------------------ */
 
 .logo {
+  --btcLogoInputSize: var(--wallet__logo_size);
+
   text-rendering: geometricPrecision; /* firefox improvement */
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
