@@ -280,7 +280,7 @@ export const Wallet = (props: any): JSX.Element => {
   const viewMain = () => (
     <>
       <div className={styles.title}>BNS Wallet</div>
-      <div>not ready</div>
+      <div>not loaded</div>
     </>
   )
 
