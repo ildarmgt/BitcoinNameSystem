@@ -11,7 +11,8 @@
   left: 50vw;
   z-index: 1000;
   transform: translate(-50%, 0);
-  /* --widthSpinner: calc(100 * var(--s)); */
+
+  --widthSpinner: calc(15vmin);
 }
 
 /* have to undo scaling */

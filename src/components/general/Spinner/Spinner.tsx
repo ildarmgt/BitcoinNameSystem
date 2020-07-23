@@ -6,9 +6,11 @@ export const Spinner = (props: any): JSX.Element => {
     <div
       className={[styles.spinner, props.className].join(' ')}
       style={
-        {
-          '--widthSpinner': props.width ? props.width : `20vw`
-        } as React.CSSProperties
+        props.width
+          ? ({
+              '--widthSpinner': props.width
+            } as React.CSSProperties)
+          : {}
       }
     >
       <div className={styles.block}></div>
