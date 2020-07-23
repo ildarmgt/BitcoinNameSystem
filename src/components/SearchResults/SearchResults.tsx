@@ -236,7 +236,7 @@ export const SearchResults = () => {
 
           {latestForwards.map((fw: any) => {
             // convert forward info to specifics of what to display and link to for this front-end
-            const ifw = interpretFw(fw)
+            const ifw = interpretFw(fw, state.network)
             if (ifw.render) {
               return (
                 <a
