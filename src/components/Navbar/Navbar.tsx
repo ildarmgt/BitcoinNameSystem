@@ -21,14 +21,14 @@ export const Navbar = (): JSX.Element => {
   const history = useHistory()
 
   // references for objects of interest
-  const searchButton = React.useRef<HTMLDivElement>(null)
+  const refButton = React.useRef<HTMLDivElement>(null)
   const toggleMenuButtonDiv = React.useRef<HTMLDivElement>(null)
   const overflowMenuDiv = React.useRef<HTMLDivElement>(null)
 
   // local state for navbar
   const [nav, setNav] = React.useState({
-    buttonWidth: !!searchButton.current
-      ? searchButton.current.offsetWidth
+    buttonWidth: !!refButton.current
+      ? refButton.current.offsetWidth
       : undefined,
     showCollapsed: false,
     resizeTimer: 0
@@ -70,7 +70,7 @@ export const Navbar = (): JSX.Element => {
 
     // resize event
     const onResize = () => {
-      if (searchButton.current) {
+      if (refButton.current) {
         //adds a class to get rid of any animations / transitions while resizing just for that moment
         document.body.classList.add('resize-animation-stopper')
         clearTimeout(nav.resizeTimer)
@@ -81,12 +81,8 @@ export const Navbar = (): JSX.Element => {
           ...nav,
           resizeTimer: resizeTimer as any,
           showCollapsed: false,
-          buttonWidth: searchButton.current.getBoundingClientRect().width
+          buttonWidth: refButton.current.getBoundingClientRect().width
         })
-
-        //measure viewport height for mobile to size pages (disabled for now)
-        // const dh2 = window.innerHeight * 0.01
-        // document.documentElement.style.setProperty('--dh2', `${dh2}px`)
       }
     }
     // handle resize event listeners
@@ -114,7 +110,7 @@ export const Navbar = (): JSX.Element => {
   const buttonSearch = [
     <div
       key={'search'}
-      ref={searchButton}
+      ref={!isHomePage ? refButton : undefined}
       className={[styles.button, isHomePage ? styles.selected : ''].join(' ')}
       onClick={() => {
         !isHomePage && history.push('/')
@@ -127,6 +123,7 @@ export const Navbar = (): JSX.Element => {
   const buttonUser = [
     <div
       key={'create'}
+      ref={!!isHomePage ? refButton : undefined}
       className={[styles.button, isCreatePage ? styles.selected : ''].join(' ')}
       onClick={() => {
         !isCreatePage && history.push('/create')
