@@ -3,7 +3,8 @@ import { I_Wallet, I_TxBuilder, Mode } from './../interfaces'
 export const initialWallet: I_Wallet = {
   headline: 'BNS Wallet',
   mode: Mode.MAIN,
-  history: []
+  history: [],
+  lastError: ''
 }
 
 export const initialTxBuilder: I_TxBuilder = {

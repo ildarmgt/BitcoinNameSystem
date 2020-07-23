@@ -52,7 +52,6 @@ export const Wallet = (props: any): JSX.Element => {
   const [showInterface, setShowInterface] = React.useState(false)
 
   // run methods to handle evenlisteners for new parameters from all sources
-  // React.useEffect(() => handleListeners(params, setParams), [params])
   if (!initialized) {
     setInitialized(true)
     handleListeners(params, setParams)
@@ -65,12 +64,11 @@ export const Wallet = (props: any): JSX.Element => {
   React.useEffect(() => {
     // handle the change in txBuilder object
     console.log('txBuilder object changed')
-    recalcBuilder({ txBuilder })
 
     // just handle interface showing on/off once
     if (txBuilder.showUI) {
       setShowInterface(true)
-
+      recalcBuilder({ txBuilder })
       setTxBuilder({ ...txBuilder, showUI: false })
       return undefined
     }
@@ -139,16 +137,20 @@ export const Wallet = (props: any): JSX.Element => {
       />
 
       {/* amount customization */}
-      {Object.keys(txBuilder!.outputsFixed).map(
+      {Object.keys(txBuilder.outputsFixed).map(
         (vout: string, index: number) => {
-          const output = txBuilder!.outputsFixed[vout]
+          const output = txBuilder.outputsFixed[vout]
           return (
             <InputForm
               key={'outputform' + String(index)}
               className={styles.amounts}
-              thisInputLabel={`Amount sent (${
-                txBuilder!.network === 'testnet' ? 'tBTC' : 'BTC'
-              })`}
+              thisInputLabel={
+                <>
+                  #{vout} Sending this{' '}
+                  {txBuilder!.network === 'testnet' ? 'tBTC' : 'BTC'} to{' '}
+                  <span className={'letter_breakable'}>{output.address}</span>
+                </>
+              }
               showButton={'false'}
               thisInitialValue={String(+(output.value * 1e-8).toFixed(8))}
               sanitizeFilters={[
@@ -161,15 +163,45 @@ export const Wallet = (props: any): JSX.Element => {
                 // convert string in BTC to number of satoshi
                 const thisValue = Math.round(+e.target.value * 1e8)
                 // change the fixed output value
-                const isChanged = output.value !== thisValue
+                // const isChanged = output.value !== thisValue
                 output.value = thisValue
                 e.target.value = String(+(output.value * 1e-8).toFixed(8))
-                // update wallet state w/ new change
-                if (isChanged) setTxBuilder({ ...txBuilder })
+
+                // update builder and wallet state w/ new change
+                const lastError = recalcBuilder({ txBuilder })
+                setWallet({ ...wallet, lastError })
+                setTxBuilder({ ...txBuilder })
               }}
             />
           )
         }
+      )}
+
+      {/* calculated outputs */}
+      {Object.keys(txBuilder.outputs).map((vout: string, index: number) => {
+        // make sure it's not fixed output
+        if (txBuilder.outputsFixed[vout])
+          return <div key={`calcoutput_${index}`}></div>
+        const output = txBuilder.outputs[vout]
+        console.log(`calc outputs:`, vout, output.value)
+        return (
+          <div
+            className={[styles.calculatedAmounts, 'word_breakable'].join(' ')}
+            key={`calcoutput_${index}`}
+          >
+            #{vout} Sending {(+output.value * 1e-8).toFixed(8)}{' '}
+            {txBuilder.network === 'testnet' ? 'tBTC' : 'BTC'}
+            {output.info ? ` for ${output.info} ` : ' '}to{' '}
+            <span className={'letter_breakable'}>{output.address}</span>
+          </div>
+        )
+      })}
+
+      {/* status */}
+      {!!wallet.lastError && (
+        <div className={[styles.lastError, 'word_breakable'].join(' ')}>
+          {wallet.lastError}
+        </div>
       )}
 
       <div className={styles.buttonWrapper}>
@@ -401,14 +433,19 @@ const processNewParams = (params: any, setTxBuilder: any) => {
 /*                             attempt to build tx                            */
 /* -------------------------------------------------------------------------- */
 const recalcBuilder = ({ txBuilder }: any) => {
+  let lastError = ''
   try {
     // attempt to build within try/catch
     const res = getTx(txBuilder)
     console.log('successful tx done:\n', res)
   } catch (e) {
     console.log('can not do psbt yet:', e)
+    lastError = e.message
     // setInfo({ text: e.message })
   }
+
+  console.log('recalc builder', txBuilder)
+  return lastError
 }
 
 /* -------------------------------------------------------------------------- */

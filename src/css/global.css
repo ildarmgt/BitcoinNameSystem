@@ -161,6 +161,7 @@ html {
   --colorLightText: rgba(17, 17, 51, 0.35);
   --colorMediumText: rgba(17, 17, 51, 0.5);
   --colorHeavyText: rgba(17, 17, 51, 0.8);
+  --colorDarkText: var(----colorHeavyText);
 
   --colorButtonText: white;
   --colorBackground: white;

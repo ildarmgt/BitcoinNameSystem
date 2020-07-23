@@ -26,6 +26,10 @@
   color: var(--colorBitcoinOrange);
 }
 
+.contentWrapper {
+  padding: 0;
+}
+
 .from {
   display: inline-block;
   margin: 5vh calc(1 * var(--s));
@@ -97,20 +101,23 @@
   .wrapper {
     transform-origin: top;
     transform: scale(var(--horizontalScale));
-    text-align: right;
+    text-align: center;
   }
 
   .top {
     display: inline-block;
-    text-align: left;
+    text-align: center;
     margin-bottom: calc(5 * var(--s));
     width: 100%;
   }
 
   .top__title {
-    /* text-align: right; */
     display: inline-block;
-    padding: calc(1 * var(--s)) calc(2 * var(--s));
+    padding: calc(1 * var(--s)) calc(5 * var(--s));
     line-height: 100%;
+  }
+
+  .contentWrapper {
+    padding: calc(1 * var(--s)) calc(2 * var(--s));
   }
 }

@@ -59,6 +59,7 @@ export const getUser = (st: I_BnsState, address: string): I_User => {
 export const getOwner = (st: I_BnsState) => {
   const ownerAddress = getOwnerAddress(st)
   if (!ownerAddress) return undefined
+  if (!existsUser(st, ownerAddress)) return undefined
   return getUser(st, ownerAddress)
 }
 

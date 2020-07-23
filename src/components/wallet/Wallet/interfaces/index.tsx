@@ -17,6 +17,7 @@ export interface I_Wallet {
   headline: string // title
   mode: string | Mode // page
   history: I_Attempt[] // previous actions
+  lastError: string
 }
 
 // everything I need to build any tx
@@ -78,6 +79,7 @@ export interface I_TxBuilder {
       script: Buffer | null
 
       value: number // sats we need to pay
+      info: string
     }
   }
 
@@ -88,6 +90,7 @@ export interface I_TxBuilder {
       script: Buffer | null
       value: number
       minValue: number
+      info: string
     }
   }
 

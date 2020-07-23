@@ -32,7 +32,7 @@
   font-size: var(--inputSize);
   /* position: absolute; */
   display: block;
-  color: var(--colorBitcoinBlue);
+  color: var(--colorHeavyText);
   opacity: 0.7;
   text-align: left;
 
@@ -57,4 +57,44 @@
 .invisible {
   /* visibility: hidden; */
   display: none;
+}
+
+/* ------------------------------- suggestions ------------------------------ */
+
+.suggestions {
+  box-sizing: border-box;
+  position: absolute;
+  /* border: 2px solid blue; */
+  width: calc(100% - (1 * var(--inputSize)));
+  margin-top: calc(0.5 * var(--s));
+  max-height: calc(6 * var(--inputSize));
+  overflow-y: scroll;
+  overflow-x: hidden;
+  z-index: 100;
+  background-color: var(--colorBackground);
+  text-align: left;
+}
+
+.suggestions__item {
+  box-sizing: border-box;
+  margin: calc(0.5 * var(--s)) calc(1 * var(--s));
+  padding: calc(0.5 * var(--s)) calc(1 * var(--s));
+  color: var(--colorMediumText);
+  cursor: pointer;
+  font-size: calc(0.9 * var(--inputSize));
+  text-indent: calc(-2 * var(--s));
+  padding-left: calc(2.5 * var(--s));
+}
+
+.suggestions__item:hover {
+  background-color: var(--colorDarker0_5);
+}
+
+.suggestions__separator {
+  display: block;
+  position: relative;
+  width: 33%;
+  height: 0;
+  border: 1px solid var(--colorDarker0_5);
+  margin: 0 auto;
 }

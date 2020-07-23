@@ -11,20 +11,21 @@ const { STORE_SEARCH_RESULTS_FAIL, STORE_SEARCH_RESULTS } = ActionTypes
  * find current owner's forwarding info,
  * send/dispatch to reducer to store important data found
  * (No UTXO nor raw TX scan for speed in front page search necessary yet)
+ * otherDomain - to search another alias.btc & return state
  */
 export const searchAction = async (
   state: I_State,
   dispatch: Dispatch,
-  router: any = undefined
+  { otherDomain } = { otherDomain: '' }
 ) => {
-  const domainName = state.alias + state.extension
-  const apiPath = state.api.path
-
-  // stop if no alias submitted, nothing to save to state
-  if (!state.alias) {
-    console.log('lost alias')
+  // stop if no alias or domain submitted, nothing to save to state
+  if (!state.alias && !otherDomain) {
+    console.log('no alias/domain found')
     return undefined
   }
+
+  const domainName = !otherDomain ? state.alias + state.extension : otherDomain
+  const apiPath = state.api.path
 
   // find address for this alias
   const { notificationsAddress } = calcP2WSH(domainName, state.network)
@@ -53,30 +54,41 @@ export const searchAction = async (
     )
 
     // store data
-    dispatch({
-      type: STORE_SEARCH_RESULTS,
-      payload: {
-        alias: state.alias,
-        domain,
-        chain: {
-          height: currentHeight
+    if (!otherDomain)
+      dispatch({
+        type: STORE_SEARCH_RESULTS,
+        payload: {
+          alias: state.alias,
+          domain,
+          chain: {
+            height: currentHeight
+          }
         }
-      }
-    })
+      })
 
-    if (window.location.hash !== '#/') router.push('/')
+    return {
+      domain,
+      chain: {
+        height: currentHeight
+      }
+    }
+
+    // if (window.location.hash !== '#/') router.push('/')
   } catch (e) {
     console.log('searchAction issue found:', e)
 
     // still updating the notification address
-    dispatch({
-      type: STORE_SEARCH_RESULTS_FAIL,
-      payload: {
-        alias: state.alias, // can save alias
-        domainName,
-        notificationsAddress // can save this easy derivation
-      }
-    })
-    if (window.location.hash !== '#/') router.push('/')
+    if (!otherDomain)
+      dispatch({
+        type: STORE_SEARCH_RESULTS_FAIL,
+        payload: {
+          alias: state.alias, // can save alias
+          domainName,
+          notificationsAddress // can save this easy derivation
+        }
+      })
+
+    return null
+    // if (window.location.hash !== '#/') router.push('/')
   }
 }

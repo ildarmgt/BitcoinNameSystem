@@ -10,71 +10,79 @@ import varuint from 'varuint-bitcoin'
  * vBytes is the max allowed tx size that is within fee rate set.
  */
 export const getTx = (tb: I_TxBuilder, vBytesMax = 1): I_TxBuilder => {
-  if (!tb.network)
-    throw new Error('Must provide network ("bitcoin" or "testnet")')
+  try {
+    if (!tb.network)
+      throw new Error('Must provide network ("bitcoin" or "testnet")')
 
-  const network = bitcoin.networks[tb.network]
+    const network = bitcoin.networks[tb.network]
 
-  // initialize psbt object & values
-  const psbt = new bitcoin.Psbt({ network })
-  initializeValues({ tb, psbt })
+    // initialize psbt object & values
+    const psbt = new bitcoin.Psbt({ network })
+    initializeValues({ tb, psbt })
 
-  // add exact inputs & adjust outputs if need more for fee
-  addInputs({ tb, psbt, vBytesMax })
+    // add exact inputs & adjust outputs if need more for fee
+    addInputs({ tb, psbt, vBytesMax })
 
-  // reset outputs from fixedOutputs
-  tb.outputs = JSON.parse(JSON.stringify(tb.outputsFixed))
+    // reset outputs from fixedOutputs
+    tb.outputs = JSON.parse(JSON.stringify(tb.outputsFixed))
 
-  // add outputs
-  addOutputs({ tb, psbt })
+    // add outputs
+    addOutputs({ tb, psbt })
 
-  // sign & finalize inputs
-  signInputs({ tb, psbt })
+    // sign & finalize inputs
+    signInputs({ tb, psbt })
 
-  // finalize tx
-  const tx = psbt.extractTransaction()
-  const thisVirtualSize = tx.virtualSize()
+    // finalize tx
+    const tx = psbt.extractTransaction()
+    const thisVirtualSize = tx.virtualSize()
 
-  if (vBytesMax >= thisVirtualSize) {
-    // if within fee limit
+    if (vBytesMax >= thisVirtualSize) {
+      // if within fee limit
 
-    // update transction builder
-    tb.result.hex = tx.toHex()
-    tb.result.virtualSize = thisVirtualSize
-    tb.result.txid = tx.getId()
+      // update transction builder
+      tb.result.hex = tx.toHex()
+      tb.result.virtualSize = thisVirtualSize
+      tb.result.txid = tx.getId()
 
-    // console.log some results
-    console.log('')
-    console.log(`tx with appropriate size calculated:`)
-    console.log(tx)
-    console.log('hex', tb.result.hex)
-    console.log('virtualSize', thisVirtualSize)
-    console.log('txid', tb.result.txid)
-    console.log('actual fee', tb.result.fee)
-    console.log('actual fee rate', tb.result.fee / tb.result.virtualSize)
-    console.log('transaction builder object:', tb)
-    console.log('')
+      // console.log some results
+      console.log('')
+      console.log(`tx with appropriate size calculated:`)
+      console.log(tx)
+      console.log('hex', tb.result.hex)
+      console.log('virtualSize', thisVirtualSize)
+      console.log('txid', tb.result.txid)
+      console.log('actual fee', tb.result.fee)
+      console.log('actual fee rate', tb.result.fee / tb.result.virtualSize)
+      console.log('transaction builder object:', tb)
+      console.log('')
 
-    // return transaction builder object
-    return tb
-  } else {
-    console.log(
-      `tx draft size ${thisVirtualSize} was larger than max of ${vBytesMax} vbytes, recalculating`
-    )
-    // if above fee limit, redo calc with new fee limit
-    return getTx(tb, thisVirtualSize)
+      // return transaction builder object
+      return tb
+    } else {
+      console.log(
+        `tx draft size ${thisVirtualSize} was larger than max of ${vBytesMax} vbytes, recalculating`
+      )
+      // if above fee limit, redo calc with new fee limit
+      return getTx(tb, thisVirtualSize)
+    }
+  } catch (e) {
+    console.log('before', tb)
+    initializeValues({ tb })
+    console.log('after', tb)
+    throw e
   }
 }
 
 /* -------------------------------------------------------------------------- */
 /*                              Initialize values                             */
 /* -------------------------------------------------------------------------- */
-const initializeValues = ({ tb, psbt }: { tb: any; psbt: any }): any => {
+const initializeValues = ({ tb, psbt }: { tb: any; psbt?: any }): any => {
   // basic tx settings
-  psbt.setVersion(tb.setVersion)
-  psbt.setLocktime(tb.setLocktime)
-  // reset inputs from fixedInputs
+  psbt?.setVersion(tb.setVersion)
+  psbt?.setLocktime(tb.setLocktime)
+  // reset inputs & outputs from fixedInputs
   tb.inputs = JSON.parse(JSON.stringify(tb.inputsFixed))
+  tb.outputs = JSON.parse(JSON.stringify(tb.outputsFixed))
 
   // reset results
   tb.result = {
@@ -389,7 +397,8 @@ const addOutputs = ({ tb, psbt }: { tb: any; psbt: any }) => {
     const nextIndex = Object.keys(tb.outputs).length // next index
     tb.outputs[nextIndex.toFixed(0)] = {
       address: tb.changeAddress,
-      value: tb.result.changeValue
+      value: tb.result.changeValue,
+      info: 'change'
     }
   }
 

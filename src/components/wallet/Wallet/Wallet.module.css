@@ -91,6 +91,19 @@
   padding-bottom: calc(2 * var(--s));
 }
 
+.calculatedAmounts {
+  box-sizing: border-box;
+  text-align: left;
+  text-indent: calc(-2 * var(--s));
+  padding-left: calc(2 * var(--s));
+  color: var(--colorMediumText);
+}
+
+.lastError {
+  padding: calc(1 * var(--s));
+  color: var(--colorLightText);
+}
+
 .buttonWrapper {
   display: flex;
   flex-wrap: wrap-reverse;

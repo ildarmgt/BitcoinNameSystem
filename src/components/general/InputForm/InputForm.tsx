@@ -3,6 +3,8 @@ import styles from './InputForm.module.css'
 import { RoundButton } from './../../general/RoundButton'
 import sanitize from '../../../helpers/sanitize'
 
+const TIME_DELAY_BEFORE_SEARCH = 1000 // ms
+
 /**
  * Reusable and styled form, label, textarea.
  * Component is internally a controlled component, but externally uncontrolled.
@@ -22,25 +24,57 @@ import sanitize from '../../../helpers/sanitize'
 export const InputForm = (props: any) => {
   // local state so can edit / store textbox content without having
   // to read from final state which might be a number or further sanitized
-  const [textValue, setTextValue]: [string | undefined, any] = React.useState(
+  const [textValue, setTextValue]: [string, any] = React.useState(
     props.thisInitialValue !== undefined ? props.thisInitialValue : ''
   )
 
-  // if (textValue === undefined) {
-  //   if (props.thisInputOnChange)
-  //     props.thisInputOnChange({
-  //       target: {
-  //         value:
-  //           props.thisInitialValue !== undefined ? props.thisInitialValue : ''
-  //       }
-  //     })
-  // }
+  // store look up table and time delay for it
+  const [dropdowns, setDropdowns]: any = React.useState({
+    lastTimer: null,
+    known: {}
+  })
 
-  // React.useEffect(() => {
-  //   setTextValue(
-  //     props.thisInitialValue !== undefined ? props.thisInitialValue : ''
-  //   )
-  // }, [props.thisInitialValue])
+  // const [note, setNote]: any = React.useState('')
+
+  // store if text area has focus (for drop down)
+  const [hasFocus, setHasFocus]: any = React.useState(false)
+
+  const handleChange = (e?: any) => {
+    // set what we see in the textarea after removing unwanted chars like nextline
+    const cleanedValue = sanitize(
+      e.target.value,
+      props.sanitizeFilters || ['oneline']
+    )
+    setTextValue(cleanedValue)
+
+    // update value so it's single line for custom change function below if any
+    e.target.value = cleanedValue
+    // furthermore, run user provided setter
+    if (props.thisInputOnChange) props.thisInputOnChange(e)
+
+    // check dropdown once stopped typing long enough
+    // clear old timer, set new timer
+    if (props.getDropdowns) {
+      clearTimeout(dropdowns.lastTimer)
+      const newTimer = setTimeout(async () => {
+        // look up previously searched string, otherwise use the function to search it
+        if (!dropdowns.known[cleanedValue]) {
+          // if have to look it up first time
+          const items = (await props.getDropdowns(cleanedValue)) || []
+          // add whatever it is to look up table
+          if (items.length)
+            setDropdowns({
+              ...dropdowns,
+              known: {
+                ...dropdowns.known,
+                [cleanedValue]: items
+              }
+            })
+        }
+      }, TIME_DELAY_BEFORE_SEARCH)
+      setDropdowns({ ...dropdowns, lastTimer: newTimer })
+    }
+  }
 
   /* -------------------------------------------------------------------------- */
   /*                                   render                                   */
@@ -54,6 +88,16 @@ export const InputForm = (props: any) => {
       <div className={styles.shiftRight}>
         <aside className={styles.label}>{props.thisInputLabel || ''}</aside>
         <textarea
+          onFocus={() =>
+            setTimeout(async () => {
+              setHasFocus(true)
+            }, TIME_DELAY_BEFORE_SEARCH / 4)
+          }
+          onBlur={() =>
+            setTimeout(async () => {
+              setHasFocus(false)
+            }, TIME_DELAY_BEFORE_SEARCH / 4)
+          }
           className={styles.textarea}
           wrap={'off'}
           spellCheck={false}
@@ -62,20 +106,43 @@ export const InputForm = (props: any) => {
             textValue
             // props.thisInputValue
           }
-          onChange={(e?: any) => {
-            // set what we see in the textarea after removing unwanted chars like nextline
-            const cleanedValue = sanitize(
-              e.target.value,
-              props.sanitizeFilters || ['oneline']
-            )
-            setTextValue(cleanedValue)
-            // update value so it's single line for custom change function below if any
-            e.target.value = cleanedValue
-            // furthermore, run user provided setter
-            if (props.thisInputOnChange) props.thisInputOnChange(e)
-          }}
+          onChange={handleChange}
+          // onKeyDown={handleChange}
           placeholder={props.placeholder || ''}
         ></textarea>
+        {/* show suggestions when text area is in focus, delay, and there are results */}
+        {props.getDropdowns && hasFocus && dropdowns.known[textValue] && (
+          <div className={[styles.suggestions, 'scrollbar'].join(' ')}>
+            {(dropdowns.known[textValue] || []).map(
+              (item: any, index: number) => {
+                const [type, address] = item.split(' ')
+                return (
+                  <div key={`suggestion_dropdown_${index}`}>
+                    <div
+                      className={[
+                        styles.suggestions__item,
+                        'letter_breakable'
+                      ].join(' ')}
+                      onClick={() => {
+                        // set textarea value to the 2nd term
+                        setTextValue(String(address))
+                        handleChange({ target: { value: String(address) } })
+                        console.log('set textarea to', String(address))
+                      }}
+                    >
+                      <b>
+                        {decodeURIComponent(type)}@{textValue}
+                      </b>
+                      &nbsp;&nbsp;
+                      {decodeURIComponent(address)}
+                    </div>
+                    <div className={styles.suggestions__separator}></div>
+                  </div>
+                )
+              }
+            )}
+          </div>
+        )}
         {props.showButton === 'true' && (
           <RoundButton
             className={[styles.button].join(' ')}
@@ -95,3 +162,19 @@ export const InputForm = (props: any) => {
     </div>
   )
 }
+
+// if (textValue === undefined) {
+//   if (props.thisInputOnChange)
+//     props.thisInputOnChange({
+//       target: {
+//         value:
+//           props.thisInitialValue !== undefined ? props.thisInitialValue : ''
+//       }
+//     })
+// }
+
+// React.useEffect(() => {
+//   setTextValue(
+//     props.thisInitialValue !== undefined ? props.thisInitialValue : ''
+//   )
+// }, [props.thisInitialValue])

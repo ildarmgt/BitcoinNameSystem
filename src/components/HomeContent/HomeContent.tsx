@@ -21,9 +21,14 @@ export const HomeContent = (props: any): JSX.Element => {
   // http://localhost:3000/#/id/satoshi
   const alias = props?.match?.params?.alias
   const hash = window.location.hash
+  const reroute = () => {
+    if (window.location.hash !== '#/') history.push('/')
+  }
   if (alias && hash !== '#/') {
     console.log('alias id detected in url:', alias, hash)
-    searchAction({ ...state, alias }, dispatch, history)
+    searchAction({ ...state, alias }, dispatch)
+      .then(() => reroute())
+      .catch(() => reroute())
   }
 
   // is serach done
@@ -58,6 +63,10 @@ export const HomeContent = (props: any): JSX.Element => {
       document.removeEventListener('keydown', onAnyKey)
     }
   }, [])
+
+  /* -------------------------------------------------------------------------- */
+  /*                                   render                                   */
+  /* -------------------------------------------------------------------------- */
 
   return (
     <div className={styles.wrapper}>
