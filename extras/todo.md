@@ -1,12 +1,10 @@
 ## Short term
 
-- bns should be separated into a separate npm library, was already segregated to src/helpers/bns folder with that in mind, but basics are done already
+- generalized wallet: all different transaction types are putting too much complexity into transaction building function. I should create a wallet component that can be reused into any project to respond to queries. Source for query should be customizable and can come from state or even url. Wallet should handle displaying all data in full generic detail and give user option to review, accept, or deny broadcasts. This should allow separating logic for putting rules to do something vs putting together the bytes of transactions properly via 1 or more methods. Ideally I shouldn't have to scan for full tx hex's for all inputs until wallet is ready to build where it can queue api for only necessary tx hex's.
+  - generate psbt from required outputs and wallet info
+  - encrypt keys, do not save anywhere, decrypt and sign only in wallet when ready to send
 
-- stealth addresses proof of concept to send, receive, UI
-
-- independent single task queue for (each) api. visually might be easiest to handle them as a component, pass api functions as props, and even show history of all api calls and results for clarity or progress of calls. Component can be placed high up on tree to limit redraws and with persistent state. Editing api settings would could just render another component with different props killing previous. Combined with wallet component, these could then even be deployed as stand alone app, browser plugin, or reused in another app.
-
-- all different transaction types are putting too much complexity into transaction building function. I should create a wallet component that can be reused into any project to respond to queries. Source for query should be customizable and can come from state or even url. Wallet should handle displaying all data in full generic detail and give user option to review, accept, or deny broadcasts. This should allow separating logic for putting rules to do something vs putting together the bytes of transactions properly via 1 or more methods. Ideally I shouldn't have to scan for full tx hex's for all inputs until wallet is ready to build where it can queue api for only necessary tx hex's.
+- stealth addresses proof of concept to send, receive, UI (via generalized wallet)
 
 - if notification is on input, shouldn't be necessary to include it on output! Conditions could check for either, and thus cut down in notification utxo use and smaller/cheaper tx (modify)
 
@@ -60,7 +58,11 @@
 
 ---
 
-Long term
+## Long term
+
+- bns should be separated into a separate npm library, was already segregated to src/helpers/bns folder with that in mind, but basics are done already
+
+- wallet should be separated into a separate npm library, was already segregated to src/components/wallet
 
 - show full history of alias (maybe users want to use old values)
 
@@ -83,13 +85,13 @@ Long term
 
 ---
 
-Tests
+## Tests
 
 - automate predetermined scenarios and bids to make sure domain owner is always same. no API bc might get throttled.
 
 ---
 
-Uncertain ideas
+## Uncertain ideas
 
 - messages, warnings to addresses
 
@@ -265,3 +267,7 @@ onbtc.me/=url@alice - decent but not as readable
 onbtc.me/=alice/url - seems more inline with url formats, minor things later, alice is the "me", url is property of alice.
 
 "on bitcoin I am alice with this link for URL"
+
+## Recently done
+
+- independent single task queue for (each) api. visually might be easiest to handle them as a component, pass api functions as props, and even show history of all api calls and results for clarity or progress of calls. Component can be placed high up on tree to limit redraws and with persistent state. Editing api settings would could just render another component with different props killing previous. Combined with wallet component, these could then even be deployed as stand alone app, browser plugin, or reused in another app.
