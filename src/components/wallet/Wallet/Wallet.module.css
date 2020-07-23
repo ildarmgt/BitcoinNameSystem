@@ -76,15 +76,20 @@
 
 .feeSelection {
   text-align: left;
+  padding-top: calc(2 * var(--s));
+  padding-bottom: calc(2 * var(--s));
 }
 
 /* bitcoin value in output */
 .amounts {
   width: 100%;
+  padding-top: calc(2 * var(--s));
+  padding-bottom: calc(2 * var(--s));
 }
 
 .buttonWrapper {
   display: flex;
   flex-wrap: wrap-reverse;
   justify-content: space-between;
+  padding-top: calc(2 * var(--s));
 }

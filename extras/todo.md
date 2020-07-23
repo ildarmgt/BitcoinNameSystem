@@ -1,7 +1,12 @@
 ## Short term
 
-- generalized wallet: all different transaction types are putting too much complexity into transaction building function. I should create a wallet component that can be reused into any project to respond to queries. Source for query should be customizable and can come from state or even url. Wallet should handle displaying all data in full generic detail and give user option to review, accept, or deny broadcasts. This should allow separating logic for putting rules to do something vs putting together the bytes of transactions properly via 1 or more methods. Ideally I shouldn't have to scan for full tx hex's for all inputs until wallet is ready to build where it can queue api for only necessary tx hex's.
-  - generate psbt from required outputs and wallet info
+- page 2 and 3 should be combined
+
+- generalized wallet:
+  - show success/fail broadcast
+  - generate psbt from required outputs and wallet info (part done)
+
+  - all different transaction types are putting too much complexity into transaction building function. I should create a wallet component that can be reused into any project to respond to queries. Source for query should be customizable and can come from state or even url. Wallet should handle displaying all data in full generic detail and give user option to review, accept, or deny broadcasts. This should allow separating logic for putting rules to do something vs putting together the bytes of transactions properly via 1 or more methods. Ideally I shouldn't have to scan for full tx hex's for all inputs until wallet is ready to build where it can queue api for only necessary tx hex's.
   - encrypt keys, do not save anywhere, decrypt and sign only in wallet when ready to send
 
 - stealth addresses proof of concept to send, receive, UI (via generalized wallet)

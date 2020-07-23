@@ -131,7 +131,6 @@ export const Wallet = (props: any): JSX.Element => {
                 return feeRate
               }}
             />
-            <br />
 
             {/* amount customization */}
             {Object.keys(txBuilder!.outputsFixed).map(
@@ -167,12 +166,6 @@ export const Wallet = (props: any): JSX.Element => {
               }
             )}
 
-            <br />
-            <br />
-            <br />
-
-            <br />
-            <br />
             <div className={styles.buttonWrapper}>
               <RoundButton
                 minor={'true'}
