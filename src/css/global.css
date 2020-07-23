@@ -154,7 +154,7 @@ html {
   --colorBitcoinOrange: rgb(255, 155, 0);
 
   /* derived from tetradic rgb colors with blue/orange as base */
-  --colorHighlightDark: rgba(85, 153, 255, 0.75);
+  --colorHighlightDark: rgba(47, 121, 231, 0.75);
   --colorHighlightLight: #ffff00;
 
   /* transparent version of blue */

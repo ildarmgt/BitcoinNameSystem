@@ -6,7 +6,7 @@ import { Logo } from './../../general/Logo/'
 import { RoundButton } from '../../general/RoundButton'
 import { InputForm } from './../../general/InputForm'
 import { FeesSelection } from './../../general/FeesSelection'
-import { I_Wallet, I_TxBuilder } from './interfaces'
+import { I_Wallet, I_TxBuilder, I_Attempt, Mode } from './interfaces'
 import { initialWallet, initialTxBuilder } from './store'
 
 const RESERVED_FROM_WALLET_KEY = 'fromWallet'
@@ -67,24 +67,44 @@ export const Wallet = (props: any): JSX.Element => {
     console.log('txBuilder object changed')
     recalcBuilder({ txBuilder })
 
+    // just handle interface showing on/off once
     if (txBuilder.showUI) {
-      // just handle interface showing on/off first
       setShowInterface(true)
-      txBuilder.showUI = false
-      setTxBuilder({ ...txBuilder }) // redo useEffect
+
+      setTxBuilder({ ...txBuilder, showUI: false })
+      return undefined
     }
 
-    // update the wallet headline for current task
-    setWallet((w: I_Wallet) => {
-      if (txBuilder.notifyUI && txBuilder.notifyUI !== w.headline)
-        // update wallet headline
-        return { ...w, headline: txBuilder.notifyUI }
-      else if (txBuilder.notifyUI && txBuilder.notifyUI === w.headline)
-        // no changes to wallet headline
-        return w
-      // reset wallet headline
-      else return { ...w, headline: initialWallet.headline }
-    })
+    // just handle mode to load once
+    if (txBuilder.loadMode) {
+      // checks if string matches enum for mode
+      if (Object.values(Mode as any).includes(txBuilder.loadMode)) {
+        setWallet((w: I_Wallet) => ({
+          ...w,
+          mode: txBuilder.loadMode
+        }))
+        // Mode[txBuilder.loadMode as keyof typeof Mode] as Mode
+        setTxBuilder({ ...txBuilder, loadMode: '' })
+        return undefined
+      }
+    }
+
+    // update the headline once
+    if (txBuilder.notifyUI) {
+      setWallet((w: I_Wallet) => {
+        if (txBuilder.notifyUI && txBuilder.notifyUI !== w.headline)
+          // update wallet headline
+          return { ...w, headline: txBuilder.notifyUI }
+        else if (txBuilder.notifyUI && txBuilder.notifyUI === w.headline)
+          // no changes to wallet headline
+          return w
+        // reset wallet headline
+        else return { ...w, headline: initialWallet.headline }
+      })
+
+      setTxBuilder({ ...txBuilder, notifyUI: '' })
+      return undefined
+    }
   }, [txBuilder])
 
   // update session storage about interface showing
@@ -94,6 +114,175 @@ export const Wallet = (props: any): JSX.Element => {
       String(showInterface)
     )
   }, [showInterface])
+
+  // (TODO) separate views into separate components
+
+  /* ------------------------------ sending view ------------------------------ */
+  const viewSending = (props: any) => (
+    <>
+      <div className={styles.title}>{wallet.headline}</div>
+
+      {/* allow fee customization */}
+      <FeesSelection
+        className={styles.feeSelection}
+        initialFee={txBuilder.feeRate}
+        getFeeSuggestions={() => props.api.getFeeSuggestions()}
+        setFee={(feeRate: string) => {
+          if (+feeRate > txBuilder.maxFeeRate)
+            feeRate = String(txBuilder.maxFeeRate)
+          if (+feeRate < txBuilder.minFeeRate)
+            feeRate = String(txBuilder.minFeeRate)
+          props.export.feeRate(parseFloat(feeRate)) // outside wallet
+          setTxBuilder({ ...txBuilder, feeRate: parseFloat(feeRate) }) // inside wallet
+          return feeRate
+        }}
+      />
+
+      {/* amount customization */}
+      {Object.keys(txBuilder!.outputsFixed).map(
+        (vout: string, index: number) => {
+          const output = txBuilder!.outputsFixed[vout]
+          return (
+            <InputForm
+              key={'outputform' + String(index)}
+              className={styles.amounts}
+              thisInputLabel={`Amount sent (${
+                txBuilder!.network === 'testnet' ? 'tBTC' : 'BTC'
+              })`}
+              showButton={'false'}
+              thisInitialValue={String(+(output.value * 1e-8).toFixed(8))}
+              sanitizeFilters={[
+                'fractions',
+                'decimal_point',
+                'no_leading_zeros',
+                'max_decimal_places:8'
+              ]}
+              thisInputOnChange={(e: any) => {
+                // convert string in BTC to number of satoshi
+                const thisValue = Math.round(+e.target.value * 1e8)
+                // change the fixed output value
+                const isChanged = output.value !== thisValue
+                output.value = thisValue
+                e.target.value = String(+(output.value * 1e-8).toFixed(8))
+                // update wallet state w/ new change
+                if (isChanged) setTxBuilder({ ...txBuilder })
+              }}
+            />
+          )
+        }
+      )}
+
+      <div className={styles.buttonWrapper}>
+        <RoundButton
+          minor={'true'}
+          onClick={() => {
+            setShowInterface(false)
+          }}
+        >
+          Cancel
+        </RoundButton>
+        <RoundButton
+          showdisabled={txBuilder.result.hex ? undefined : 'true'}
+          onClick={async () => {
+            console.log('Send clicked')
+            // abort if no hex
+            if (txBuilder.result.hex === '') return undefined
+            console.log('attempting to broadcast')
+            console.log('hex:\n', txBuilder!.result.hex)
+            try {
+              const res = await props.api.broadcastTx(txBuilder.result.hex)
+              console.log('broadcast success:', res)
+              // add this to historic events
+              wallet.history.push({
+                describe: `outgoing transaction`,
+                txid: res.txid,
+                message: '',
+                success: true,
+                txBuilder: JSON.parse(JSON.stringify(txBuilder)),
+                timestamp: Date.now()
+              })
+            } catch (e) {
+              console.log('broadcast failed:', e)
+              // add this to historic events
+              wallet.history.push({
+                describe: `outgoing transaction`,
+                txid: '',
+                message: e.message,
+                success: false,
+                txBuilder: JSON.parse(JSON.stringify(txBuilder)),
+                timestamp: Date.now()
+              })
+            }
+            wallet.mode = Mode.HISTORY
+            setWallet({ ...wallet })
+          }}
+        >
+          Send
+        </RoundButton>
+      </div>
+    </>
+  )
+
+  /* ------------------------------ view history ------------------------------ */
+  const viewHistory = () => (
+    <>
+      <div className={styles.title}>Past transactions</div>
+      <div className={styles.entries}>
+        {wallet.history
+          .slice()
+          .reverse()
+          .map((entry: I_Attempt, index: number) => (
+            <div
+              key={`historicEntry_${index}`}
+              className={styles.entries__entry}
+            >
+              <div
+                className={
+                  entry.success
+                    ? styles.entries__entry__done
+                    : styles.entries__entry__error
+                }
+              >
+                {entry.describe} : {entry.success ? 'Done' : 'Failed'}
+              </div>
+              {entry.success ? (
+                <RoundButton
+                  className={styles.entries__entry__button}
+                  minor={'true'}
+                  onClick={() => {
+                    const PATH =
+                      `https://blockstream.info/` +
+                      `${
+                        entry.txBuilder.network === 'testnet' ? 'testnet/' : ''
+                      }tx/` +
+                      `${entry.txid}`
+                    window.open(PATH, '_blank')
+                  }}
+                >
+                  See online
+                </RoundButton>
+              ) : (
+                <div className={styles.entries__entry__message}>
+                  {entry.message}
+                </div>
+              )}
+              <div className={styles.entries__entry__time}>
+                {new Date(entry.timestamp).toUTCString()}
+              </div>
+            </div>
+          ))}
+      </div>
+    </>
+  )
+
+  /* ------------------------------ general view ------------------------------ */
+
+  const viewMain = () => (
+    <>
+      <div className={styles.title}>BNS Wallet</div>
+      <div>not ready</div>
+    </>
+  )
 
   /* -------------------------------------------------------------------------- */
   /*                                  Rendering                                 */
@@ -114,97 +303,19 @@ export const Wallet = (props: any): JSX.Element => {
 
           {/* visible wallet interface */}
           <div className={styles.interface}>
-            <div className={styles.title}>{wallet.headline}</div>
-
-            {/* allow fee customization */}
-            <FeesSelection
-              className={styles.feeSelection}
-              initialFee={txBuilder.feeRate}
-              getFeeSuggestions={() => props.api.getFeeSuggestions()}
-              setFee={(feeRate: string) => {
-                if (+feeRate > txBuilder.maxFeeRate)
-                  feeRate = String(txBuilder.maxFeeRate)
-                if (+feeRate < txBuilder.minFeeRate)
-                  feeRate = String(txBuilder.minFeeRate)
-                props.export.feeRate(parseFloat(feeRate)) // outside wallet
-                setTxBuilder({ ...txBuilder, feeRate: parseFloat(feeRate) }) // inside wallet
-                return feeRate
-              }}
-            />
-
-            {/* amount customization */}
-            {Object.keys(txBuilder!.outputsFixed).map(
-              (vout: string, index: number) => {
-                const output = txBuilder!.outputsFixed[vout]
-                return (
-                  <InputForm
-                    key={'outputform' + String(index)}
-                    className={styles.amounts}
-                    thisInputLabel={`Amount sent (${
-                      txBuilder!.network === 'testnet' ? 'tBTC' : 'BTC'
-                    })`}
-                    showButton={'false'}
-                    thisInitialValue={String(+(output.value * 1e-8).toFixed(8))}
-                    sanitizeFilters={[
-                      'fractions',
-                      'decimal_point',
-                      'no_leading_zeros',
-                      'max_decimal_places:8'
-                    ]}
-                    thisInputOnChange={(e: any) => {
-                      // convert string in BTC to number of satoshi
-                      const thisValue = Math.round(+e.target.value * 1e8)
-                      // change the fixed output value
-                      const isChanged = output.value !== thisValue
-                      output.value = thisValue
-                      e.target.value = String(+(output.value * 1e-8).toFixed(8))
-                      // update wallet state w/ new change
-                      if (isChanged) setTxBuilder({ ...txBuilder })
-                    }}
-                  />
-                )
-              }
-            )}
-
-            <div className={styles.buttonWrapper}>
-              <RoundButton
-                minor={'true'}
-                onClick={() => {
-                  setShowInterface(false)
-                }}
-              >
-                Cancel
-              </RoundButton>
-              <RoundButton
-                showdisabled={txBuilder.result.hex ? undefined : 'true'}
-                onClick={async () => {
-                  console.log('Send clicked')
-                  // abort if no hex
-                  if (txBuilder.result.hex === '') return undefined
-                  console.log('attempting to broadcast')
-                  console.log('hex:\n', txBuilder!.result.hex)
-                  try {
-                    const res = await props.api.broadcastTx(
-                      txBuilder.result.hex
-                    )
-                    console.log('broadcast success:', res)
-                  } catch (e) {
-                    console.log('broadcast failed:', e)
-                  }
-                }}
-              >
-                Send
-              </RoundButton>
-            </div>
+            {/* views to render */}
+            {wallet.mode === Mode.SENDING && viewSending(props)}
+            {wallet.mode === Mode.HISTORY && viewHistory()}
+            {wallet.mode === Mode.MAIN && viewMain()}
           </div>
         </>
       )}
 
       {/* wallet icon */}
       <div
-        className={[styles.wrapper, props.className || ''].join(' ')}
+        className={[styles.logo_wrapper, props.className || ''].join(' ')}
         onClick={() => {
-          console.log({ params, txBuilder })
+          console.log({ params, txBuilder, wallet })
           setShowInterface(!showInterface)
         }}
       >
@@ -221,9 +332,7 @@ export const Wallet = (props: any): JSX.Element => {
   )
 }
 
-/* -------------------------------------------------------------------------- */
-/*                              helpers (for now)                             */
-/* -------------------------------------------------------------------------- */
+/* --------------------------------- helpers -------------------------------- */
 
 // if events not firing need to use
 // window.dispatchEvent(new Event('storage'))

@@ -1,32 +1,51 @@
+export enum Mode {
+  HISTORY = 'HISTORY',
+  SENDING = 'SENDING',
+  MAIN = 'MAIN'
+}
+
+export interface I_Attempt {
+  describe: string // describe what happened briefly
+  txid: string // txid for clicking if possible
+  message: string // error message
+  success: boolean // ok or bad?
+  txBuilder: I_TxBuilder // detailed clone object
+  timestamp: number // timestamp for sorting
+}
+
 export interface I_Wallet {
-  headline: string
+  headline: string // title
+  mode: string | Mode // page
+  history: I_Attempt[] // previous actions
 }
 
 // everything I need to build any tx
 // matching as close as possible to bitcoinjs psbt design
 export interface I_TxBuilder {
-  showUI: boolean
-  notifyUI: string
-  network: 'bitcoin' | 'testnet'
-  setVersion: number | null
-  setLocktime: number | null
+  showUI: boolean // show UI
+  notifyUI: string // what to set wallet title to
+  loadMode: string // what mode to load
 
-  feeRate: number | null
+  network: 'bitcoin' | 'testnet' // testnet or bitcoin
+  setVersion: number | null // tx version
+  setLocktime: number | null // default locktime
 
-  minFeeRate: number // sat/vByte
-  maxFeeRate: number // sat/vByte
-  minDustValue: number | null // sats
+  feeRate: number | null // starting fee rate
+
+  minFeeRate: number // min fee rate sat/vByte
+  maxFeeRate: number // max fee rate sat/vByte
+  minDustValue: number | null // smallest output value (except OP_RETURN) sats
 
   result: {
-    hex: string
-    virtualSize: number
-    outgoingValue: number
-    minOutgoingValue: number
-    changeValue: number
-    inputsValue: number
-    availableInputsValue: number
-    fee: number
-    txid: string
+    hex: string // hex of tx
+    virtualSize: number // vbytes
+    outgoingValue: number // sats initial outputs to pay (not change)
+    minOutgoingValue: number // min sats outputs allowed (not change)
+    changeValue: number // sats in output returning (change)
+    inputsValue: number // sats in used inputs
+    availableInputsValue: number // max sats available for inputs
+    fee: number // sats going to miners
+    txid: string // txid of tx
   }
 
   // used inputs

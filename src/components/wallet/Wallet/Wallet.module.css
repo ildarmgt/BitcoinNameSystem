@@ -1,4 +1,4 @@
-.wrapper {
+.logo_wrapper {
   line-height: 0;
 }
 
@@ -44,7 +44,9 @@
   height: 200vh;
 }
 
-/* -------------------------------- interface ------------------------------- */
+/* -------------------------------------------------------------------------- */
+/*                                  interface                                 */
+/* -------------------------------------------------------------------------- */
 
 .interface {
   bottom: var(--wallet__logo_size);
@@ -64,7 +66,7 @@
     calc(1 * var(--s)) #00000022;
 
   box-sizing: border-box;
-  color: var(--colorButtonText);
+  color: var(--colorBitcoinBlue);
 }
 
 /* title message on pop up interface */
@@ -94,4 +96,39 @@
   flex-wrap: wrap-reverse;
   justify-content: space-between;
   padding-top: calc(2 * var(--s));
+}
+
+/* --------------------------------- history -------------------------------- */
+
+.entries {
+  text-align: left;
+}
+
+.entries__entry {
+  padding-bottom: calc(3 * var(--s));
+}
+
+.entries__entry__time {
+  padding-left: calc(2 * var(--s));
+  color: var(--colorLightText);
+}
+
+.entries__entry__button {
+  padding-left: calc(2 * var(--s));
+}
+
+.entries__entry__message {
+  overflow-wrap: normal;
+  word-wrap: normal;
+  word-break: normal;
+  padding-left: calc(2 * var(--s));
+  color: var(--colorMediumText);
+}
+
+.entries__entry__error {
+  color: var(--colorWarning);
+}
+
+.entries__entry__done {
+  color: var(--colorBitcoinBlue);
 }
