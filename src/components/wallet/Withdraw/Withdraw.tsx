@@ -148,6 +148,30 @@ export const Withdraw = () => {
                 // return items to show for the term if possible
                 return !res ? [] : findOwnersForwards(res).toSpaceSeparated
               }}
+              renderDropdowns={({
+                textValue,
+                item
+              }: {
+                textValue: string
+                item: string
+                handleClick: any
+              }) => {
+                const [type, address] = item.split(' ')
+                return {
+                  // what is shown for each of found textValue's items
+                  contents: (
+                    <>
+                      <b>
+                        {decodeURIComponent(type)}@{textValue}
+                      </b>
+                      &nbsp;&nbsp;
+                      {decodeURIComponent(address)}
+                    </>
+                  ),
+                  // what goes into the address bar
+                  selection: address
+                }
+              }}
               thisSubmitButtonOnClick={(textValue: string) => {
                 // abort if empty
                 if (!textValue) return undefined

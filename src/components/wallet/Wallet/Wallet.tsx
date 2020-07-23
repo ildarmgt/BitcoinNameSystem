@@ -146,13 +146,13 @@ export const Wallet = (props: any): JSX.Element => {
               className={styles.amounts}
               thisInputLabel={
                 <>
-                  #{vout} Sending this{' '}
+                  #{vout} Sending {(output.value * 1e-8).toFixed(8)}{' '}
                   {txBuilder!.network === 'testnet' ? 'tBTC' : 'BTC'} to{' '}
                   <span className={'letter_breakable'}>{output.address}</span>
                 </>
               }
               showButton={'false'}
-              thisInitialValue={String(+(output.value * 1e-8).toFixed(8))}
+              thisInitialValue={(output.value * 1e-8).toFixed(8)}
               sanitizeFilters={[
                 'fractions',
                 'decimal_point',

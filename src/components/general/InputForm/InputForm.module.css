@@ -67,8 +67,10 @@
   /* border: 2px solid blue; */
   width: calc(100% - (1 * var(--inputSize)));
   margin-top: calc(0.5 * var(--s));
+  padding-top: calc(0.5 * var(--s));
+  padding-bottom: calc(0.5 * var(--s));
   max-height: calc(10 * var(--inputSize));
-  overflow-y: scroll;
+  overflow-y: auto;
   overflow-x: hidden;
   z-index: 100;
   background-color: var(--colorBackground);
@@ -93,7 +95,7 @@
 .suggestions__separator {
   display: block;
   position: relative;
-  width: 33%;
+  width: 2%;
   height: 0;
   border: 1px solid var(--colorDarker0_5);
   margin: 0 auto;

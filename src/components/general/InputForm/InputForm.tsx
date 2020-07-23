@@ -111,38 +111,43 @@ export const InputForm = (props: any) => {
           placeholder={props.placeholder || ''}
         ></textarea>
         {/* show suggestions when text area is in focus, delay, and there are results */}
-        {props.getDropdowns && hasFocus && dropdowns.known[textValue] && (
-          <div className={[styles.suggestions, 'scrollbar'].join(' ')}>
-            {(dropdowns.known[textValue] || []).map(
-              (item: any, index: number) => {
-                const [type, address] = item.split(' ')
-                return (
-                  <div key={`suggestion_dropdown_${index}`}>
-                    <div
-                      className={[
-                        styles.suggestions__item,
-                        'letter_breakable'
-                      ].join(' ')}
-                      onClick={() => {
-                        // set textarea value to the 2nd term
-                        setTextValue(String(address))
-                        handleChange({ target: { value: String(address) } })
-                        console.log('set textarea to', String(address))
-                      }}
-                    >
-                      <b>
-                        {decodeURIComponent(type)}@{textValue}
-                      </b>
-                      &nbsp;&nbsp;
-                      {decodeURIComponent(address)}
+        {props.getDropdowns &&
+          props.renderDropdowns &&
+          hasFocus &&
+          dropdowns.known[textValue] && (
+            <div className={[styles.suggestions, 'scrollbar'].join(' ')}>
+              {(dropdowns.known[textValue] || []).map(
+                (item: any, index: number) => {
+                  // fill in the string
+                  const handleClick = (newValue: string) => {
+                    setTextValue(newValue)
+                    handleChange({ target: { value: newValue } })
+                  }
+                  const renderDropdowns = props?.renderDropdowns({
+                    textValue,
+                    item
+                  })
+                  return !renderDropdowns ? (
+                    undefined
+                  ) : (
+                    <div key={`suggestion_dropdown_${index}`}>
+                      <div
+                        className={[
+                          styles.suggestions__item,
+                          'letter_breakable'
+                        ].join(' ')}
+                        onClick={() => handleClick(renderDropdowns.selection)}
+                      >
+                        {renderDropdowns.contents}
+                      </div>
+
+                      <div className={styles.suggestions__separator}></div>
                     </div>
-                    <div className={styles.suggestions__separator}></div>
-                  </div>
-                )
-              }
-            )}
-          </div>
-        )}
+                  )
+                }
+              )}
+            </div>
+          )}
         {props.showButton === 'true' && (
           <RoundButton
             className={[styles.button].join(' ')}
