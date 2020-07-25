@@ -645,6 +645,11 @@ table td p {
   /* display: table; */
 }
 
+.dropshadow {
+  box-shadow: calc(1 * var(--s)) calc(1 * var(--s)) calc(3 * var(--s))
+    calc(-1 * var(--s)) #00000012;
+}
+
 /*
   small screen helpers
   e.g. when phone keyboard is out so easier to see

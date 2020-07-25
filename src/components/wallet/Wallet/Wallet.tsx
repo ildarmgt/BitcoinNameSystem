@@ -334,7 +334,7 @@ export const Wallet = (props: any): JSX.Element => {
           />
 
           {/* visible wallet interface */}
-          <div className={styles.interface}>
+          <div className={[styles.interface, 'dropshadow'].join(' ')}>
             {/* views to render */}
             {wallet.mode === Mode.SENDING && viewSending(props)}
             {wallet.mode === Mode.HISTORY && viewHistory()}

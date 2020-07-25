@@ -219,7 +219,7 @@ export const Navbar = (): JSX.Element => {
 
   return (
     <>
-      <div className={styles.warning}>
+      <div className={[styles.warning, 'dropshadow'].join(' ')}>
         <input type='checkbox' id={'closewarning'} />
         <label htmlFor='closewarning'>✕</label>
         <div>
