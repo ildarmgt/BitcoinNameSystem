@@ -1,0 +1,41 @@
+/* title message on pop up interface */
+.title {
+  box-sizing: border-box;
+  font-size: calc(4 * var(--s));
+  padding-bottom: calc(6 * var(--s));
+  color: var(--colorBitcoinBlue);
+  font-weight: bold;
+}
+
+.feeSelection {
+  text-align: left;
+  padding-top: calc(2 * var(--s));
+  padding-bottom: calc(2 * var(--s));
+}
+
+/* bitcoin value in output */
+.amounts {
+  width: 100%;
+  padding-top: calc(2 * var(--s));
+  padding-bottom: calc(2 * var(--s));
+}
+
+.lastError {
+  padding: calc(1 * var(--s));
+  color: var(--colorLightText);
+}
+
+.calculatedAmounts {
+  box-sizing: border-box;
+  text-align: left;
+  text-indent: calc(-2 * var(--s));
+  padding-left: calc(2 * var(--s));
+  color: var(--colorMediumText);
+}
+
+.buttonWrapper {
+  display: flex;
+  flex-wrap: wrap-reverse;
+  justify-content: space-between;
+  padding-top: calc(2 * var(--s));
+}

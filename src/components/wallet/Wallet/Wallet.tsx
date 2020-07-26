@@ -4,10 +4,11 @@ import { getTx } from './helpers/getTx'
 import { resetUrl, handleHashChange } from './helpers/urlReading'
 import { Logo } from './../../general/Logo/'
 import { RoundButton } from '../../general/RoundButton'
-import { InputForm } from './../../general/InputForm'
-import { FeesSelection } from './../../general/FeesSelection'
+
 import { I_Wallet, I_TxBuilder, I_Attempt, Mode } from './interfaces'
 import { initialWallet, initialTxBuilder } from './store'
+
+import { Sending } from './components/sending'
 
 const RESERVED_FROM_WALLET_KEY = 'fromWallet'
 const RESERVED_TO_WALLET_KEY = 'toWallet'
@@ -115,146 +116,6 @@ export const Wallet = (props: any): JSX.Element => {
 
   // (TODO) separate views into separate components
 
-  /* ------------------------------ sending view ------------------------------ */
-  const viewSending = (props: any) => (
-    <>
-      <div className={styles.title}>{wallet.headline}</div>
-
-      {/* allow fee customization */}
-      <FeesSelection
-        className={styles.feeSelection}
-        initialFee={txBuilder.feeRate}
-        getFeeSuggestions={() => props.api.getFeeSuggestions()}
-        setFee={(feeRate: string) => {
-          if (+feeRate > txBuilder.maxFeeRate)
-            feeRate = String(txBuilder.maxFeeRate)
-          if (+feeRate < txBuilder.minFeeRate)
-            feeRate = String(txBuilder.minFeeRate)
-          props.export.feeRate(parseFloat(feeRate)) // outside wallet
-          setTxBuilder({ ...txBuilder, feeRate: parseFloat(feeRate) }) // inside wallet
-          return feeRate
-        }}
-      />
-
-      {/* amount customization */}
-      {Object.keys(txBuilder.outputsFixed).map(
-        (vout: string, index: number) => {
-          const output = txBuilder.outputsFixed[vout]
-          return (
-            <InputForm
-              key={'outputform' + String(index)}
-              className={styles.amounts}
-              thisInputLabel={
-                <>
-                  #{vout} Sending {(output.value * 1e-8).toFixed(8)}{' '}
-                  {txBuilder!.network === 'testnet' ? 'tBTC' : 'BTC'} to{' '}
-                  <span className={'letter_breakable'}>{output.address}</span>
-                </>
-              }
-              showButton={'false'}
-              thisInitialValue={(output.value * 1e-8).toFixed(8)}
-              sanitizeFilters={[
-                'fractions',
-                'decimal_point',
-                'no_leading_zeros',
-                'max_decimal_places:8'
-              ]}
-              thisInputOnChange={(e: any) => {
-                // convert string in BTC to number of satoshi
-                const thisValue = Math.round(+e.target.value * 1e8)
-                // change the fixed output value
-                // const isChanged = output.value !== thisValue
-                output.value = thisValue
-                e.target.value = String(+(output.value * 1e-8).toFixed(8))
-
-                // update builder and wallet state w/ new change
-                const lastError = recalcBuilder({ txBuilder })
-                setWallet({ ...wallet, lastError })
-                setTxBuilder({ ...txBuilder })
-              }}
-            />
-          )
-        }
-      )}
-
-      {/* calculated outputs */}
-      {Object.keys(txBuilder.outputs).map((vout: string, index: number) => {
-        // make sure it's not fixed output
-        if (txBuilder.outputsFixed[vout])
-          return <div key={`calcoutput_${index}`}></div>
-        const output = txBuilder.outputs[vout]
-        console.log(`calc outputs:`, vout, output.value)
-        return (
-          <div
-            className={[styles.calculatedAmounts, 'word_breakable'].join(' ')}
-            key={`calcoutput_${index}`}
-          >
-            #{vout} Sending {(+output.value * 1e-8).toFixed(8)}{' '}
-            {txBuilder.network === 'testnet' ? 'tBTC' : 'BTC'}
-            {output.info ? ` for ${output.info} ` : ' '}to{' '}
-            <span className={'letter_breakable'}>{output.address}</span>
-          </div>
-        )
-      })}
-
-      {/* status */}
-      {!!wallet.lastError && (
-        <div className={[styles.lastError, 'word_breakable'].join(' ')}>
-          {wallet.lastError}
-        </div>
-      )}
-
-      <div className={styles.buttonWrapper}>
-        <RoundButton
-          minor={'true'}
-          onClick={() => {
-            setShowInterface(false)
-          }}
-        >
-          Cancel
-        </RoundButton>
-        <RoundButton
-          showdisabled={txBuilder.result.hex ? undefined : 'true'}
-          onClick={async () => {
-            console.log('Send clicked')
-            // abort if no hex
-            if (txBuilder.result.hex === '') return undefined
-            console.log('attempting to broadcast')
-            console.log('hex:\n', txBuilder!.result.hex)
-            try {
-              const res = await props.api.broadcastTx(txBuilder.result.hex)
-              console.log('broadcast success:', res)
-              // add this to historic events
-              wallet.history.push({
-                describe: `outgoing transaction`,
-                txid: res.txid,
-                message: '',
-                success: true,
-                txBuilder: JSON.parse(JSON.stringify(txBuilder)),
-                timestamp: Date.now()
-              })
-            } catch (e) {
-              console.log('broadcast failed:', e)
-              // add this to historic events
-              wallet.history.push({
-                describe: `outgoing transaction`,
-                txid: '',
-                message: e.message,
-                success: false,
-                txBuilder: JSON.parse(JSON.stringify(txBuilder)),
-                timestamp: Date.now()
-              })
-            }
-            wallet.mode = Mode.HISTORY
-            setWallet({ ...wallet })
-          }}
-        >
-          Send
-        </RoundButton>
-      </div>
-    </>
-  )
-
   /* ------------------------------ view history ------------------------------ */
   const viewHistory = () => (
     <>
@@ -336,7 +197,19 @@ export const Wallet = (props: any): JSX.Element => {
           {/* visible wallet interface */}
           <div className={[styles.interface, 'dropshadow'].join(' ')}>
             {/* views to render */}
-            {wallet.mode === Mode.SENDING && viewSending(props)}
+            {wallet.mode === Mode.SENDING && (
+              <Sending
+                {...props}
+                passedstate={{
+                  wallet,
+                  setWallet,
+                  txBuilder,
+                  setTxBuilder,
+                  recalcBuilder,
+                  setShowInterface
+                }}
+              />
+            )}
             {wallet.mode === Mode.HISTORY && viewHistory()}
             {wallet.mode === Mode.MAIN && viewMain()}
           </div>
@@ -364,7 +237,9 @@ export const Wallet = (props: any): JSX.Element => {
   )
 }
 
-/* --------------------------------- helpers -------------------------------- */
+/* -------------------------------------------------------------------------- */
+/*                               event listeners                              */
+/* -------------------------------------------------------------------------- */
 
 // if events not firing need to use
 // window.dispatchEvent(new Event('storage'))
@@ -384,10 +259,6 @@ const handleListeners = (params: any, setParams: any) => {
     if (USE_URL_AS_SOURCE) resetUrl()
   }
 }
-
-/* -------------------------------------------------------------------------- */
-/*                               event listeners                              */
-/* -------------------------------------------------------------------------- */
 
 const addListeners = (params: any, setParams: any) => {
   // even to detect session storage edit

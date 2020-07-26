@@ -69,12 +69,6 @@
   font-weight: bold;
 }
 
-.feeSelection {
-  text-align: left;
-  padding-top: calc(2 * var(--s));
-  padding-bottom: calc(2 * var(--s));
-}
-
 /* bitcoin value in output */
 .amounts {
   width: 100%;

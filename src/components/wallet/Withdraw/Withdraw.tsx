@@ -49,6 +49,8 @@ export const Withdraw = () => {
     history.push('/create')
   }
 
+  /* ------------------------------- scan wallet ------------------------------ */
+
   // scan the wallet
   const scanWallet = async () => {
     if (btnAvailable) {
@@ -83,6 +85,99 @@ export const Withdraw = () => {
     }
     initialScan()
   }
+
+  /* ------------------------------- to address ------------------------------- */
+
+  const destinationAddressForm = () => (
+    <InputForm
+      className={styles.withdraw_control}
+      thisInputLabel={`Send to`}
+      placeholder={'Bitcoin address or *.btc BNS alias'}
+      showButton={'true'}
+      sanitizeFilters={['oneline']}
+      thisInitialValue={''}
+      thisInputOnChange={(e: any) => {
+        setWithdrawAddress(e.target.value)
+      }}
+      getDropdowns={async (searchTerm: string) => {
+        // do nothing if doesn't end in .btc
+        if (!searchTerm.endsWith('.btc')) return []
+        // queue api for .btc name, returns state object
+        const res = await searchAction(state, dispatch, {
+          otherDomain: searchTerm
+        })
+        // return items to show for the term if possible
+        return !res ? [] : findOwnersForwards(res).toSpaceSeparated
+      }}
+      renderDropdowns={({
+        textValue,
+        item
+      }: {
+        textValue: string
+        item: string
+        handleClick: any
+      }) => {
+        const [type, address] = item.split(' ')
+        return {
+          // what is shown for each of found textValue's items
+          contents: (
+            <>
+              <b>
+                {decodeURIComponent(type)}@{textValue}
+              </b>
+              &nbsp;&nbsp;
+              {decodeURIComponent(address)}
+            </>
+          ),
+          // what goes into the address bar
+          selection: address
+        }
+      }}
+      thisSubmitButtonOnClick={(textValue: string) => {
+        // abort if empty
+        if (!textValue) return undefined
+
+        console.log('submitting withdrawal to wallet')
+
+        /* ----------------------------- loading wallet ----------------------------- */
+
+        // clone utxo
+        const utxoList = JSON.parse(JSON.stringify(state.wallet.utxoList))
+        // load wallet utxo with additional info
+        utxoList.forEach((utxo: any) => {
+          utxo.sequence = 0xfffffffe
+          utxo.canJustSign = true
+          utxo.keyPairs = [state.wallet.WIF] // (TODO: remove later)
+          utxo.sighashTypes = ['SIGHASH_ALL'] // SIGHASH_ALL or 0x01
+          utxo.address = state.wallet.address
+          utxo.confirmed = true
+          utxo.info = 'BNS control wallet'
+        })
+        // create payload to send to wallet
+        const payload: { [key: string]: any } = {
+          showUI: true,
+          loadMode: 'SENDING',
+          notifyUI: 'Withdraw from wallet?',
+          network: state.network,
+          // wallet utxo's
+          utxoList,
+
+          // specific outputs
+          outputsFixed: {
+            '0': {
+              address: withdrawAddress,
+              value: controlBalance, // value sent
+              minValue: 500 // lowest value sent can be
+            }
+          },
+
+          changeAddress: state.wallet.address
+        }
+        // send payload to wallet
+        addToSessionStorage(payload)
+      }}
+    />
+  )
 
   /* -------------------------------------------------------------------------- */
   /*                                   render                                   */
@@ -128,95 +223,7 @@ export const Withdraw = () => {
         {state.pageInfo.checkedWallet && (
           <>
             {/* editable to address */}
-            <InputForm
-              className={styles.withdraw_control}
-              thisInputLabel={`Send to`}
-              placeholder={'Bitcoin address or *.btc BNS alias'}
-              showButton={'true'}
-              sanitizeFilters={['oneline']}
-              thisInitialValue={''}
-              thisInputOnChange={(e: any) => {
-                setWithdrawAddress(e.target.value)
-              }}
-              getDropdowns={async (searchTerm: string) => {
-                // do nothing if doesn't end in .btc
-                if (!searchTerm.endsWith('.btc')) return []
-                // queue api for .btc name, returns state object
-                const res = await searchAction(state, dispatch, {
-                  otherDomain: searchTerm
-                })
-                // return items to show for the term if possible
-                return !res ? [] : findOwnersForwards(res).toSpaceSeparated
-              }}
-              renderDropdowns={({
-                textValue,
-                item
-              }: {
-                textValue: string
-                item: string
-                handleClick: any
-              }) => {
-                const [type, address] = item.split(' ')
-                return {
-                  // what is shown for each of found textValue's items
-                  contents: (
-                    <>
-                      <b>
-                        {decodeURIComponent(type)}@{textValue}
-                      </b>
-                      &nbsp;&nbsp;
-                      {decodeURIComponent(address)}
-                    </>
-                  ),
-                  // what goes into the address bar
-                  selection: address
-                }
-              }}
-              thisSubmitButtonOnClick={(textValue: string) => {
-                // abort if empty
-                if (!textValue) return undefined
-
-                console.log('submitting withdrawal to wallet')
-
-                /* ----------------------------- loading wallet ----------------------------- */
-
-                // clone utxo
-                const utxoList = JSON.parse(
-                  JSON.stringify(state.wallet.utxoList)
-                )
-                // load inputs w/ additional data
-                utxoList.forEach((utxo: any) => {
-                  utxo.sequence = 0xfffffffe
-                  utxo.canJustSign = true
-                  utxo.keyPairs = [state.wallet.WIF] // (TODO: remove later)
-                  utxo.sighashTypes = ['SIGHASH_ALL'] // SIGHASH_ALL or 0x01
-                  utxo.address = state.wallet.address
-                  utxo.confirmed = true
-                  utxo.info = 'BNS control wallet'
-                })
-                // send each element of payload to session storage for wallet
-                const payload: { [key: string]: any } = {
-                  showUI: true,
-                  loadMode: 'SENDING',
-                  notifyUI: 'Withdraw from wallet?',
-                  network: state.network,
-                  // wallet utxo's
-                  utxoList,
-
-                  // specific outputs
-                  outputsFixed: {
-                    '0': {
-                      address: withdrawAddress,
-                      value: controlBalance, // value sent
-                      minValue: 500 // lowest value sent can be
-                    }
-                  },
-                  // change sent back
-                  changeAddress: state.wallet.address
-                }
-                addToSessionStorage(payload)
-              }}
-            />
+            {destinationAddressForm()}
           </>
         )}
       </div>
