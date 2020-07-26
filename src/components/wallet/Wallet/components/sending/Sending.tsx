@@ -59,6 +59,7 @@ export const Sending = (props: any): JSX.Element => {
               }
               showButton={'false'}
               thisInitialValue={(output.value * 1e-8).toFixed(8)}
+              onBlur={() => (output.value * 1e-8).toFixed(8)}
               sanitizeFilters={[
                 'fractions',
                 'decimal_point',

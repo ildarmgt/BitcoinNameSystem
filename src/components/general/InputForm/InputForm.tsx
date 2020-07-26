@@ -93,11 +93,13 @@ export const InputForm = (props: any) => {
               setHasFocus(true)
             }, TIME_DELAY_BEFORE_SEARCH / 4)
           }
-          onBlur={() =>
+          onBlur={() => {
             setTimeout(async () => {
               setHasFocus(false)
             }, TIME_DELAY_BEFORE_SEARCH / 4)
-          }
+            // format if textarea is prop.onBlur provided and textarea is unfocused
+            if (props?.onBlur) setTextValue(props.onBlur())
+          }}
           className={styles.textarea}
           wrap={'off'}
           spellCheck={false}
