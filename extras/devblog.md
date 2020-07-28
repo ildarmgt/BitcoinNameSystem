@@ -1,5 +1,16 @@
 # Dev Blog
 
+### 2020-07-27
+
+After much research settled on a way to safely do auctions. It's inspired by [this](http://archive.vn/evbJm) medium article. The simplest design would be:
+
+1. seller creates a transaction that has an output only they can sign to enable an auction
+2. seller creates transactions to be used to buy the domain. The seller signs 1st output and first input via sighash 0x83 (single + anyonecanpay) with output 1 going to seller at desired value.
+3. buyer fills out the rest to fund the buy and be able to broadcast tx
+4. since it spends a single output you signed, only 1 of such transactions can make it into the block, rendering all parallel bids invalid
+
+More than 1 tx can be created at different nlocktime so they are not spendable until some time, highest price with earlier spendable time or just single price. Tx have to be shared off-chain by the seller, can be done from browser, via ipfs.
+
 ### 2020-06-28
 
 Had development of this on pause to deal with the global situation. Now getting back into it, want to demonstrate the usefulness of these domains for non-interactive stealth addresses. The utf-8 approach of embedding the string was simple, but the stealth addresses must be in byte form to fit into the allotted op return format. Now I have to add a buffer based embed state and make sure the data can fit and be retrieved accurately.

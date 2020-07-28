@@ -90,7 +90,7 @@ export const Sending = (props: any): JSX.Element => {
         if (txBuilder.outputsFixed[vout])
           return <div key={`calcoutput_${index}`}></div>
         const output = txBuilder.outputs[vout]
-        console.log(`calc outputs:`, vout, output.value)
+
         return (
           <div
             className={[styles.calculatedAmounts, 'word_breakable'].join(' ')}
