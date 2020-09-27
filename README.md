@@ -45,7 +45,7 @@ npm run build
 npm run serve
 ```
 
-This makes it accessible locally at http://localhost:3000
+This makes it accessible locally at http://localhost:3005
 
 ## Testnet bitcoin faucets
 

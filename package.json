@@ -26,7 +26,7 @@
     "start": "react-scripts start # makes the dev mode version available on localhost",
     "build": "react-scripts build && rm -rf docs && mv build docs # builds the production version for /docs",
     "test": "react-scripts test # runs the tests",
-    "serve": "serve -s docs -l 3000 # makes the production version in /docs available on localhost",
+    "serve": "serve -s docs -l 3005 # makes the production version in /docs available on localhost",
     "format": "prettier-standard --format # formatter passes over entire folder structure permitted"
   },
   "eslintConfig": {
