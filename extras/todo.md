@@ -1,3 +1,8 @@
+## Immidiate
+
+- transfering ownership appears not to transfer rent time? check.
+- check why expiration is using dev setting of ~month instead of production value of 1 year
+
 ## Short term
 
 - page 2 and 3 should be combined
