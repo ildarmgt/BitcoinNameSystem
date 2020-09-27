@@ -38,6 +38,7 @@
 
 .lblMainTitle {
   margin-top: var(--bnsTitleTopMargin);
+  cursor: pointer;
 }
 
 /* after search */

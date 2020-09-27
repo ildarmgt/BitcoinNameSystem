@@ -79,6 +79,9 @@ export const HomeContent = (props: any): JSX.Element => {
             ? [styles.lblMainTitle].join(' ')
             : [styles.lblMainTitle, styles.lblMainTitleAfter].join(' ')
         }
+        onClick={() => {
+          changeAliasAction(state, dispatch, '') // reset search box
+        }}
       >
         <span>Bitcoin</span> Name System
       </div>
