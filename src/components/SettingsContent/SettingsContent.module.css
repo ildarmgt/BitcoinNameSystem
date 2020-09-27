@@ -9,6 +9,7 @@
 
 .title {
   font-size: calc(5 * var(--s));
+  margin-bottom: calc(3 * var(--s));
 }
 
 /* wide screen settings */
