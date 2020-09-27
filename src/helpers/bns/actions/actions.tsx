@@ -481,10 +481,11 @@ export const changeAddressAction = (
           // for new user, no changes to updateHeight, nonce
 
           // old owner loses ownership data
-          oldOwner!.winHeight = 0
-          oldOwner!.winTimestamp = 0
-          oldOwner!.burnAmount = 0
+          // oldOwner!.winHeight = 0
+          // oldOwner!.winTimestamp = 0
+          // oldOwner!.burnAmount = 0
           // nonce, forwards (not active now), update height are not touched
+
           console.log(
             'ownership transfered from',
             oldOwner!.address,
@@ -564,9 +565,9 @@ export const sendOwnershipAction = (
           // for new user, no changes to updateHeight, nonce, or forwards
 
           // old owner loses ownership data
-          oldOwner!.winHeight = 0
-          oldOwner!.winTimestamp = 0
-          oldOwner!.burnAmount = 0
+          // oldOwner!.winHeight = 0
+          // oldOwner!.winTimestamp = 0
+          // oldOwner!.burnAmount = 0
           // nonce, forwards (not active now), update height are not touched
 
           console.log(
