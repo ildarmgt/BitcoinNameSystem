@@ -3,7 +3,7 @@ import styles from './SettingsContent.module.css'
 import { Switch } from './../general/Switch'
 import { InputForm } from './../general/InputForm'
 import { Store } from './../../store'
-import { ActionTypes } from './../../interfaces'
+import { changeSettingsAction } from './../../store/'
 
 export const SettingsContent = () => {
   // global state
@@ -22,26 +22,16 @@ export const SettingsContent = () => {
               {
                 value: 'testnet',
                 do: () => {
-                  dispatch({
-                    type: ActionTypes.LOAD_STATE,
-                    payload: {
-                      ...state,
-                      network: 'testnet',
-                      pageInfo: { ...state.pageInfo, checkedLightSearch: true }
-                    }
+                  changeSettingsAction(state, dispatch, st => {
+                    st.network = 'testnet'
                   })
                 }
               },
               {
                 value: 'mainnet',
                 do: () => {
-                  dispatch({
-                    type: ActionTypes.LOAD_STATE,
-                    payload: {
-                      ...state,
-                      network: 'bitcoin',
-                      pageInfo: { ...state.pageInfo, checkedLightSearch: true }
-                    }
+                  changeSettingsAction(state, dispatch, st => {
+                    st.network = 'bitcoin'
                   })
                 }
               }
@@ -51,20 +41,25 @@ export const SettingsContent = () => {
         </div>
         <InputForm
           style={{ width: '80%' }}
-          thisInputLabel={'Path for full node with esplora API'}
+          thisInputLabel={'Path for a node with esplora API'}
           thisInitialValue={state.api.path[state.network]}
           showBonusInformation={'true'}
           sanitizeFilters={['url']}
+          showButton={'true'}
           thisSubmitButtonOnClick={(textValue: string) => {
-            state.api.path[state.network] = textValue
-            console.log('click set value to ', textValue)
-            dispatch({
-              type: ActionTypes.LOAD_STATE,
-              payload: { ...state }
-            })
+            changeSettingsAction(
+              state,
+              dispatch,
+              st => {
+                st.api.path[state.network] = textValue
+              },
+              false
+            )
+            console.log('set API path value to ', textValue)
           }}
         >
-          {state.network} : {state.api.path[state.network]}
+          {state.network === 'testnet' ? 'testnet' : 'mainnet'} :{' '}
+          {state.api.path[state.network]}
         </InputForm>
         <br />
         {/* <div>

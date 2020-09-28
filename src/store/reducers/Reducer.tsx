@@ -11,7 +11,8 @@ const {
   ACTION_FAIL,
   LOAD_STATE,
   CHOICES_BNS_ACTION,
-  SET_API
+  SET_API,
+  CHANGE_SETTINGS
 } = ActionTypes
 
 /**
@@ -20,7 +21,7 @@ const {
  * type describes what type of changes to global state to make.
  * payload contains data provided to make those changes.
  */
-export default function reducer(state: I_State, action: I_Action): I_State {
+export default function reducer (state: I_State, action: I_Action): I_State {
   const { payload } = action
 
   switch (action.type) {
@@ -172,6 +173,13 @@ export default function reducer(state: I_State, action: I_Action): I_State {
     case ACTION_FAIL: {
       return {
         ...state,
+        lastTimeStamp: Date.now()
+      }
+    }
+
+    case CHANGE_SETTINGS: {
+      return {
+        ...payload,
         lastTimeStamp: Date.now()
       }
     }

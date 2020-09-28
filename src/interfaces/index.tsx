@@ -23,7 +23,8 @@ export enum ActionTypes {
   ACTION_FAIL = 'ACTION_FAIL',
   LOAD_STATE = 'LOAD_STATE',
   CHOICES_BNS_ACTION = 'CHOICES_BNS_ACTION',
-  SET_API = 'SET_API'
+  SET_API = 'SET_API',
+  CHANGE_SETTINGS = 'CHANGE_SETTINGS'
 }
 
 // for global state reducer
