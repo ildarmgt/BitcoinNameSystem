@@ -278,7 +278,7 @@ export const Navbar = (): JSX.Element => {
             }}
             delayBusy={1000 / state.api.rateLimit}
             delayStandby={100}
-            message={state.network}
+            message={state.network === 'testnet' ? 'testnet' : 'mainnet'}
           />
         </div>
       </div>

@@ -198,7 +198,7 @@ export const SearchResults = () => {
         <div>
           {state.domain.txHistory.length} transaction
           {state.domain.txHistory.length === 1 ? '' : 's'} found on{' '}
-          {state.network}
+          {state.network === 'testnet' ? 'testnet' : 'mainnet'}
         </div>
         <div>
           {latestForwards.length} current forward

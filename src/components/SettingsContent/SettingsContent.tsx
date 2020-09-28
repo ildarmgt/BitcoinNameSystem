@@ -24,7 +24,11 @@ export const SettingsContent = () => {
                 do: () => {
                   dispatch({
                     type: ActionTypes.LOAD_STATE,
-                    payload: { ...state, network: 'testnet' }
+                    payload: {
+                      ...state,
+                      network: 'testnet',
+                      pageInfo: { ...state.pageInfo, checkedLightSearch: true }
+                    }
                   })
                 }
               },
@@ -33,11 +37,16 @@ export const SettingsContent = () => {
                 do: () => {
                   dispatch({
                     type: ActionTypes.LOAD_STATE,
-                    payload: { ...state, network: 'bitcoin' }
+                    payload: {
+                      ...state,
+                      network: 'bitcoin',
+                      pageInfo: { ...state.pageInfo, checkedLightSearch: true }
+                    }
                   })
                 }
               }
             ]}
+            initialIndex={state.network === 'testnet' ? 0 : 1}
           />
         </div>
         <InputForm
