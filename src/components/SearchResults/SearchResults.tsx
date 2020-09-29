@@ -9,6 +9,7 @@ import {
   interpretFw,
   findLatestForwards
 } from '../../helpers/bns/'
+import copyToClipboard from './../../helpers/copyToClipboard'
 import { Details } from './../general/Details'
 
 export const SearchResults = () => {
@@ -285,6 +286,16 @@ export const SearchResults = () => {
                 {isBurn ? 'Join bidding' : 'Domain available!'}
               </Link>
             )}
+          </div>
+
+          {/* link */}
+          <div
+            className={styles.link}
+            onClick={() => {
+              copyToClipboard('http://onbtc.me/?' + state.alias)
+            }}
+          >
+            <span>link </span> <span> copied!</span>
           </div>
         </div>
       </div>

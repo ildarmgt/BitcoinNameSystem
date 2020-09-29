@@ -195,6 +195,29 @@
   width: 100%;
 }
 
+.link {
+  color: var(--colorLightText);
+  background-color: var(--colorTransparent);
+  margin: calc(2 * var(--s));
+  margin-left: auto;
+  border-radius: calc(0.5 * var(--s));
+  padding: calc(0.5 * var(--s)) calc(2 * var(--s));
+  cursor: pointer;
+}
+
+.link:hover {
+  background-color: var(--colorLightText);
+  color: var(--colorBackground);
+}
+
+.link span:last-child {
+  display: none;
+}
+
+.link:active:last-child > span {
+  display: inline-block;
+}
+
 /* -------------------------------------------------------------------------- */
 /*                                   @media                                   */
 /* -------------------------------------------------------------------------- */
