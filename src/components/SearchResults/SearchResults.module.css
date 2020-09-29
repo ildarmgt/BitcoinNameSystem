@@ -214,7 +214,7 @@
   display: none;
 }
 
-.link:active:last-child > span {
+.link:active > span {
   display: inline-block;
 }
 
