@@ -92,11 +92,7 @@ export const VisualAPI = (props: any) => {
           }}
         >
           {props.message}
-          {props.tasks.length > 0 ? (
-            <> busy ({props.tasks.length})</>
-          ) : (
-            <> ready</>
-          )}
+          {props.tasks.length > 0 ? <> ({props.tasks.length} tasks)</> : ''}
         </div>
       </div>
 
