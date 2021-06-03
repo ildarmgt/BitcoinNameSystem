@@ -28,8 +28,8 @@ export const MIN_BURN = 1000
 export const MIN_NOTIFY = 1000
 
 // Ownership duration after victory (blocks)
-// ~1 year (production) / ~104 days (development)
-export const OWNERSHIP_DURATION_BY_BLOCKS = !TESTING ? 52560 : 15000
+// ~2 years (production) / ~104 days (development)
+export const OWNERSHIP_DURATION_BY_BLOCKS = !TESTING ? 52560 * 2 : 15000
 
 // Duration before a top bidder becomes owner (blocks)
 // ~1 day
