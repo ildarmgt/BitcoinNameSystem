@@ -20,6 +20,8 @@ export const HomeContent = (props: any): JSX.Element => {
   // and then it will do search with new alias
   // http://localhost:3000/#/id/satoshi
   const alias = props?.match?.params?.alias
+    // remove any characters after any dots e.g. satoshi.btc becomes satoshi
+    ?.split('.')[0]
   const hash = window.location.hash
   const reroute = () => {
     // run to remove path after #/
