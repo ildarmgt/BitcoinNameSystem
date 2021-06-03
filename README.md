@@ -7,7 +7,7 @@ Currently set to testnet by default.
 |                           |                                                                                       |
 | ------------------------: | ------------------------------------------------------------------------------------- |
 |           Short demo url: | [onbtc.me](http://onbtc.me)                                                           |
-|      Short url with name: | [onbtc.me?satoshi](http://onbtc.me?satoshi)                                           |
+|      Short url with name: | [onbtc.me/satoshi](http://onbtc.me/satoshi)                                           |
 | Full final path for demo: | [ildarmgt.github.io/BitcoinNameSystem](https://ildarmgt.github.io/BitcoinNameSystem/) |
 
 ![pic](https://i.imgur.com/22AMxLh.png)
@@ -64,18 +64,19 @@ Majority of rules will be implemented here (future npm library):
 
 Not all rules in code are yet in final version as more complicated rules are introduced and lifecycle logic flow is in flux while searching for most effective and generalized ways to implement those rules.
 
-Until I copy all rules here, basic premise is:
+Basic premise is:
 
-- Only have to request tx history for a single address per domain name.
-  This should simplify the task for API & SPV/Neutrino clients
+- domain-name-to-forwarding look-up is one way - a hash of the domain name is inserted into anyone-can-spend p2wsh script to determine a unique notification address for that domain name.
+  This makes it easy to check domain state, harder to find out what domain tx belongs to.
 
-- Anyone can spend outputs used for that, so require cleanup of utxo for it to count.
+- Only have to request tx history for a single "notification" address per domain name to have everything you need to derive state of key/value pairs for forwarding.
+  Tx history is often indexed by address so should simplify the task for full nodes (w/ esplora), API, and SPV/Neutrino clients.
 
-- domain-name-to-forwarding look-up is one way - a hash of the domain name is used to determine a unique address via the a hash function - easy to do, hard to find what was hashed.
+- Anyone can spend outputs used for notificaiton address, so require cleanup of your own notification utxo for commands to count.
 
-- ~1 year of blocks duration, ~24 hour of blocks challenge period with clean up & reimbersement required.
+- Currently with ~2 years of blocks duration for ownership, ~24 hour of blocks challenge period with clean up & reimbersement of previous bidders required.
 
-- Burns are kept small but non-0 (for miners) and at least double on each challenge.
+- Burns are kept small but non-zero (no free lunch for miners) and at least double the amount required for each successful challenge.
 
 Tons more stuff to list here and do in the app.
 
@@ -85,7 +86,7 @@ Located here: [Terminology and definitions](extras/Definitions.md)
 
 ## Payments
 
-This design has neutral costs to prevent domains from being captured en masse, especially over a contested domain name. First layer of protection are burn costs where the coins are destroyed, which means they cannot be sent to oneself to get an unfair advantage. Bitcoin's fee market that secures the network creates significant barrier to sybil attack spam. Proof of key ownership and upkeep burns are required periodically through time-limited ownership duration of ~1 year. Every domain ownership bid can be challenged for first ~24 hours to give interested parties a chance to get domain they want. Only people watching specific domain names will be able to see which domains are bid on to prevent griefing. Ownership extensions costs are equal to winning bid costs, so for challenged domains upkeep is higher, equal to that of the winning bid every year. These measures combined should minimize domain squatting, even for miners. Nobody gets a significant advantage over others. For exampe, miners could try to put their transactions in without fees but would still cost them income from displacing other fee paying transactions. Additionally, they, nor anyone else, can get any discount on burning costs.
+This design has neutral costs to prevent domains from being captured en masse, especially over a contested domain name. First layer of protection are burn costs where the coins are destroyed, which means they cannot be sent to oneself to get an unfair advantage. Bitcoin's fee market that secures the network creates significant barrier to sybil attack spam. Proof of key ownership and upkeep burns are required periodically through time-limited ownership duration of ~2 year. Every domain ownership bid can be challenged for first ~24 hours to give interested parties a chance to get domain they want. Only people watching specific domain names will be able to see which domains are bid on to prevent griefing. Ownership extensions costs are equal to winning bid costs, so for challenged domains upkeep is higher, equal to that of the winning bid every 2 years. These measures combined should minimize domain squatting, even for miners. Nobody gets a significant advantage over others. For exampe, miners could try to put their transactions in without fees but would still cost them income from displacing other fee paying transactions. Additionally, they, nor anyone else, can get any discount on burning costs.
 
 ## What works
 
