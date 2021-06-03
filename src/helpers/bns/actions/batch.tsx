@@ -115,9 +115,9 @@ export const runAllAutomaticActions = (
 ): void => {
   // list of all automatic actions
   const allAutoChecks = [
-    autoCheckForOwnerExpiredAction(st),
     tx ? updateUtxoFromTxAction(st, tx) : undefined,
-    autoCheckForBiddingWinnerNewOwnerAction(st)
+    autoCheckForBiddingWinnerNewOwnerAction(st),
+    autoCheckForOwnerExpiredAction(st)
   ]
 
   allAutoChecks.forEach(action => {

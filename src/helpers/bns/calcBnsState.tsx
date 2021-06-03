@@ -66,12 +66,14 @@ export const calcBnsState = (
 
     // update ownership history each tx even if not owner
     updateOwnerHistory(st)
+
+    console.log({ st })
   })
 
-  // final check for current block height
+  // final parsing step for current block height
   setParsedHeight(st, currentHeight)
 
-  // check if owner expired
+  // check for bidding winners or expirations at final height
   actions.runAllAutomaticActions(st, undefined)
 
   return st
