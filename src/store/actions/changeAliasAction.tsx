@@ -13,7 +13,7 @@ export const changeAliasAction = async (
 ) => {
   // clean up the string
   const newString = value
-  const sanitizedString = sanitize(newString, 'url')
+  const sanitizedString = sanitize(newString, 'bns')
 
   return dispatch({
     type: TYPING,

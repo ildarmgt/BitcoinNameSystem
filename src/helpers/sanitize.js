@@ -47,6 +47,10 @@ export default function sanitize (inputString, stringOrArray) {
       filter += ' '
     }
 
+    // clean url and subdomain safe standard for bns
+    if (choice === 'bns') {
+      filter += '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ-_~'
+    }
     // longer masks
     if (choice === 'base58') {
       // https://en.wikipedia.org/wiki/Base58#cite_note-3
