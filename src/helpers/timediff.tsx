@@ -16,7 +16,7 @@ export default function timeDiff (
   timestampMsec: number
   referenceTimestampMsec: number
 } {
-  let diff = timestampMsec - referenceTimestampMsec
+  let diff = Math.abs(timestampMsec - referenceTimestampMsec)
   // note sign
   const isExpired = diff <= 0
   // mod away higher time frames
