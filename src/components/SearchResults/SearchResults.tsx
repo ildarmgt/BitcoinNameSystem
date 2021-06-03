@@ -292,10 +292,11 @@ export const SearchResults = () => {
           <div
             className={styles.link}
             onClick={() => {
-              copyToClipboard('http://onbtc.me/?' + state.alias)
+              copyToClipboard('http://onbtc.me/' + state.alias)
             }}
           >
-            <span>link </span> <span> copied!</span>
+            <span>link </span>
+            <span> copied!</span>
           </div>
         </div>
       </div>
