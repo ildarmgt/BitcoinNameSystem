@@ -22,7 +22,8 @@ export const HomeContent = (props: any): JSX.Element => {
   const alias = props?.match?.params?.alias
   const hash = window.location.hash
   const reroute = () => {
-    if (window.location.hash !== '#/') history.push('/')
+    // run to remove path after #/
+    if (hash !== '#/') history.push('/')
   }
   if (alias && hash !== '#/') {
     console.log('alias id detected in url:', alias, hash)
@@ -30,6 +31,8 @@ export const HomeContent = (props: any): JSX.Element => {
       .then(() => reroute())
       .catch(() => reroute())
   }
+  // to handle root calls without alias so no need for just /id/ on end
+  if (hash === '#/id/') history.push('/')
 
   // is serach done
   const isSearchDone = () => state.pageInfo.checkedLightSearch
@@ -101,8 +104,9 @@ export const HomeContent = (props: any): JSX.Element => {
           value={state.alias}
           placeholder={'e.g. satoshi'}
           ref={inputEl}
-          onChange={e => {
-            changeAliasAction(state, dispatch, e?.target?.value)
+          onChange={ e => {
+            const rawtext = e?.target?.value || ''
+            changeAliasAction(state, dispatch, rawtext)
           }}
           onKeyPress={e => {
             e.key === 'Enter' && searchAction(state, dispatch)
