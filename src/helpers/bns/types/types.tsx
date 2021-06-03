@@ -88,7 +88,7 @@ export interface I_User {
   address: string // address in control
   forwards: Array<I_Forward> // for forwards later
   burnAmount: number // burned to get ownership
-  winHeight: number // blockheight winning bid
+  winHeight: number // blockheight winning bid or most recent renewal
   winTimestamp: number // winHeight in block's timestamp
   nonce: number // for counting previous notification
   // height from this address, no matter good/bad/type

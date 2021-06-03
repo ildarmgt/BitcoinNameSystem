@@ -74,7 +74,7 @@ Basic premise is:
 
 - Anyone can spend outputs used for notificaiton address, so require cleanup of your own notification utxo for commands to count.
 
-- Currently with ~2 years of blocks duration for ownership, ~24 hour of blocks challenge period with clean up & reimbersement of previous bidders required.
+- Currently with ~5 years of blocks duration for ownership, ~24 hour of blocks challenge period with clean up & reimbersement of previous bidders required.
 
 - Burns are kept small but non-zero (no free lunch for miners) and at least double the amount required for each successful challenge.
 
@@ -86,7 +86,7 @@ Located here: [Terminology and definitions](extras/Definitions.md)
 
 ## Payments
 
-This design has neutral costs to prevent domains from being captured en masse, especially over a contested domain name. First layer of protection are burn costs where the coins are destroyed, which means they cannot be sent to oneself to get an unfair advantage. Bitcoin's fee market that secures the network creates significant barrier to sybil attack spam. Proof of key ownership and upkeep burns are required periodically through time-limited ownership duration of ~2 year. Every domain ownership bid can be challenged for first ~24 hours to give interested parties a chance to get domain they want. Only people watching specific domain names will be able to see which domains are bid on to prevent griefing. Ownership extensions costs are equal to winning bid costs, so for challenged domains upkeep is higher, equal to that of the winning bid every 2 years. These measures combined should minimize domain squatting, even for miners. Nobody gets a significant advantage over others. For exampe, miners could try to put their transactions in without fees but would still cost them income from displacing other fee paying transactions. Additionally, they, nor anyone else, can get any discount on burning costs.
+This design has neutral costs to prevent domains from being captured en masse, especially over a contested domain name. First layer of protection are burn costs where the coins are destroyed, which means they cannot be sent to oneself to get an unfair advantage. Bitcoin's fee market that secures the network creates significant barrier to sybil attack spam. Proof of key ownership and upkeep burns are required periodically through time-limited ownership duration of ~2 year. Every domain ownership bid can be challenged for first ~24 hours to give interested parties a chance to get domain they want. Only people watching specific domain names will be able to see which domains are bid on to prevent griefing. Ownership extensions costs are equal to winning bid costs, so for challenged domains upkeep is higher, equal to that of the winning bid every 5 years. These measures combined should minimize domain squatting, even for miners. Nobody gets a significant advantage over others. For exampe, miners could try to put their transactions in without fees but would still cost them income from displacing other fee paying transactions. Additionally, they, nor anyone else, can get any discount on burning costs.
 
 ## What works
 

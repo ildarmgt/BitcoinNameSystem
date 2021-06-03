@@ -11,6 +11,7 @@ TESTING ? console.warn('Testing mode ON') : console.warn('Deployment mode')
 // Block times can vary from 10 minutes but ok for estimate.
 // Extremely different results timewise on testnet.
 // blocks * 10 / 60 / 24 ~ days
+// 262800 blocks ~5 years
 // 52560 blocks ~365 days.
 // 15000 blocks ~104 days.
 // 1000 blocks ~7 days.
@@ -28,8 +29,8 @@ export const MIN_BURN = 1000
 export const MIN_NOTIFY = 1000
 
 // Ownership duration after victory (blocks)
-// ~2 years (production) / ~104 days (development)
-export const OWNERSHIP_DURATION_BY_BLOCKS = !TESTING ? 52560 * 2 : 15000
+// ~5 years (production) / ~104 days (development)
+export const OWNERSHIP_DURATION_BY_BLOCKS = !TESTING ? 262800 : 15000
 
 // Duration before a top bidder becomes owner (blocks)
 // ~1 day
