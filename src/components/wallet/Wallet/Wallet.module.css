@@ -75,7 +75,7 @@
   padding-bottom: calc(2 * var(--s));
   color: var(--colorBitcoinBlue);
   white-space: pre-wrap;
-  /* font-weight: bold; */
+  font-weight: bold;
 }
 
 /* navbar for wallet */

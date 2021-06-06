@@ -54,10 +54,11 @@ export function interpretFw (fw: I_Forward, blockchain?: string) {
     onNetwork === 'web' ||
     onNetwork === 'forums'
   ) {
+    const linkedAddress = fw.address.replace('%2F', '/')
     return {
       where: 'https://',
-      what: fw.address,
-      link: 'https://' + fw.address,
+      what: linkedAddress,
+      link: 'https://' + linkedAddress,
       render: true
     }
   }
