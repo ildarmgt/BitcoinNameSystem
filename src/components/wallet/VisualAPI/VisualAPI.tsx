@@ -12,11 +12,12 @@ const last: any = { props: {}, loops: {} }
 /**
  * API rate limited task queue with visual interface.
  * @param setProcessId - function to run when API task queue launches.
- * @param processId - stores the id of the running loop
- * @param tasks - array of current tasks to watch
- * @param setTasks - action to remove 1 task
+ * @param processId - stores the id of the running loop.
+ * @param tasks - array of current API tasks to watch.
+ * @param setTasks - action to remove 1 API task.
  * @param delayBusy - ms of delay when tasks exist.
- * @param delayStandby - ms of delay when no tasks
+ * @param delayStandby - ms of delay when no tasks.
+ * @param message - visual text to display before (# of tasks).
  */
 export const VisualAPI = (props: any) => {
   // grab latest props on re-renders
@@ -91,12 +92,14 @@ export const VisualAPI = (props: any) => {
             )
           }}
         >
-          {props.message}
+          {/* network */}
+          { props.message }
+          {/* # of tasks left */}
           {props.tasks.length > 0 ? <> ({props.tasks.length} tasks)</> : ''}
         </div>
       </div>
 
-      {/* loading spinner */}
+      {/* loading spinner mid screen */}
       {props.tasks.length > 0 && <Spinner className={styles.spinner} />}
     </>
   )
