@@ -1,6 +1,10 @@
+# to do
+
 ## Immidiate
 
-## Short term
+- separate tx design creation (to app) and tx building/signing (to wallet) everywhere so can break bns into separate app and wallet easier
+
+## Medium term
 
 - page 2 and 3 should be combined
 
