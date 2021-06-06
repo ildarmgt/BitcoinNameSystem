@@ -1,7 +1,7 @@
 import React from 'react'
 import styles from './Wallet.module.css'
 import { getTx } from './helpers/getTx'
-import { resetUrl, handleHashChange } from './helpers/urlReading'
+// import { resetUrl, handleHashChange } from './helpers/urlReading'
 import { Logo } from './../../general/Logo/'
 import { RoundButton } from '../../general/RoundButton'
 
@@ -13,9 +13,12 @@ import { Sending } from './components/sending'
 const RESERVED_FROM_WALLET_KEY = 'fromWallet'
 const RESERVED_TO_WALLET_KEY = 'toWallet'
 
-// which feeds to use
-const USE_URL_AS_SOURCE = false
+// for now just this method
 const USE_SESSION_STORAGE_AS_SOURCE = true
+
+// which feeds to use
+// const USE_URL_AS_SOURCE = false
+
 // if development mode
 // const TESTING = process.env.NODE_ENV === 'development'
 
@@ -34,9 +37,6 @@ const USE_SESSION_STORAGE_AS_SOURCE = true
  * Simulates behavior of browser/desktop wallet plugins so I can move it outside later.
  */
 export const Wallet = (props: any): JSX.Element => {
-  // initialize
-  const [initialized, setInitialized] = React.useState(false)
-
   // wallet general state
   const [wallet, setWallet]: [I_Wallet, any] = React.useState(initialWallet)
 
@@ -51,6 +51,9 @@ export const Wallet = (props: any): JSX.Element => {
 
   // show/hide pop up interface
   const [showInterface, setShowInterface] = React.useState(false)
+
+  // initialize
+  const [initialized, setInitialized] = React.useState(false)
 
   // run methods to handle evenlisteners for new parameters from all sources
   if (!initialized) {
@@ -116,10 +119,43 @@ export const Wallet = (props: any): JSX.Element => {
 
   // (TODO) separate views into separate components
 
-  /* ------------------------------ view history ------------------------------ */
+  /* -------------------------------------------------------------------------- */
+  /*                                  Main page                                 */
+  /* -------------------------------------------------------------------------- */
+
+  const viewMain = () => (
+    <>
+      {/* <div className={styles.title}>BNS Wallet</div> */}
+      <div>Main page</div>
+    </>
+  )
+
+  /* -------------------------------------------------------------------------- */
+  /*                                Sending page                                */
+  /* -------------------------------------------------------------------------- */
+
+  const viewSending = () => (
+    <>
+      Sending page
+      <Sending
+        {...props}
+        passedstate={{
+          wallet,
+          setWallet,
+          txBuilder,
+          setTxBuilder,
+          recalcBuilder,
+          setShowInterface
+        }}
+      />
+    </>
+  )
+
+  /* -------------------------------------------------------------------------- */
+  /*                                History page                                */
+  /* -------------------------------------------------------------------------- */
   const viewHistory = () => (
     <>
-      <div className={styles.title}>Past transactions</div>
       <div className={styles.entries}>
         {wallet.history
           .slice()
@@ -168,13 +204,36 @@ export const Wallet = (props: any): JSX.Element => {
     </>
   )
 
-  /* ------------------------------ general view ------------------------------ */
+  /* -------------------------------------------------------------------------- */
+  /*                                wallet navbar                               */
+  /* -------------------------------------------------------------------------- */
 
-  const viewMain = () => (
-    <>
-      <div className={styles.title}>BNS Wallet</div>
-      <div>not loaded</div>
-    </>
+  const viewWalletNavbar = () => (
+    <div className={styles.walletnav}>
+      <span
+        onClick={() => {
+          setWallet({ ...wallet, mode: Mode.MAIN })
+        }}
+      >
+        BNS wallet
+      </span>
+
+      <span
+        onClick={() => {
+          setWallet({ ...wallet, mode: Mode.HISTORY })
+        }}
+      >
+        History
+      </span>
+
+      <span
+        onClick={() => {
+          setWallet({ ...wallet, mode: Mode.SENDING })
+        }}
+      >
+        Send
+      </span>
+    </div>
   )
 
   /* -------------------------------------------------------------------------- */
@@ -194,29 +253,26 @@ export const Wallet = (props: any): JSX.Element => {
             }}
           />
 
-          {/* visible wallet interface */}
+          {/* opened wallet */}
+
           <div className={[styles.interface, 'dropshadow'].join(' ')}>
-            {/* views to render */}
-            {wallet.mode === Mode.SENDING && (
-              <Sending
-                {...props}
-                passedstate={{
-                  wallet,
-                  setWallet,
-                  txBuilder,
-                  setTxBuilder,
-                  recalcBuilder,
-                  setShowInterface
-                }}
-              />
-            )}
-            {wallet.mode === Mode.HISTORY && viewHistory()}
-            {wallet.mode === Mode.MAIN && viewMain()}
+            {/* title / headline / notification */}
+            <div className={styles.title}>{wallet.headline}</div>
+
+            <div className={[styles.content, 'scrollbar'].join(' ')}>
+              {/* display selected page */}
+              {wallet.mode === Mode.SENDING && viewSending()}
+              {wallet.mode === Mode.HISTORY && viewHistory()}
+              {wallet.mode === Mode.MAIN && viewMain()}
+            </div>
+
+            {/* wallet navigation */}
+            {viewWalletNavbar()}
           </div>
         </>
       )}
 
-      {/* wallet icon */}
+      {/* wallet icon button */}
       <div
         className={[styles.logo_wrapper, props.className || ''].join(' ')}
         onClick={() => {
@@ -241,11 +297,8 @@ export const Wallet = (props: any): JSX.Element => {
 /*                               event listeners                              */
 /* -------------------------------------------------------------------------- */
 
-// if events not firing need to use
-// window.dispatchEvent(new Event('storage'))
-
 // Run methods to handle detection and clean up of parameters passed.
-// Was easiest to do it with access to params.
+// handles passing of paramters to wallet and back
 const handleListeners = (params: any, setParams: any) => {
   // Events added to move user data from listening sources to params
   addListeners(params, setParams)
@@ -256,7 +309,7 @@ const handleListeners = (params: any, setParams: any) => {
     removeListeners(params, setParams)
 
     // clean up url as well
-    if (USE_URL_AS_SOURCE) resetUrl()
+    // if (USE_URL_AS_SOURCE) resetUrl()
   }
 }
 
@@ -266,8 +319,8 @@ const addListeners = (params: any, setParams: any) => {
     window.addEventListener('storage', handleStorageChange(params, setParams))
 
   // event to detect url change
-  if (USE_URL_AS_SOURCE)
-    window.addEventListener('hashchange', handleHashChange(params, setParams))
+  // if (USE_URL_AS_SOURCE)
+  //   window.addEventListener('hashchange', handleHashChange(params, setParams))
 }
 
 const removeListeners = (params: any, setParams: any) => {
@@ -279,11 +332,11 @@ const removeListeners = (params: any, setParams: any) => {
     )
 
   // clean up url hash listener
-  if (USE_URL_AS_SOURCE)
-    window.removeEventListener(
-      'hashchange',
-      handleHashChange(params, setParams)
-    )
+  // if (USE_URL_AS_SOURCE)
+  //   window.removeEventListener(
+  //     'hashchange',
+  //     handleHashChange(params, setParams)
+  //   )
 }
 
 /* -------------------------------------------------------------------------- */
@@ -437,3 +490,6 @@ const handleStorageChange = (params: any, setParams: any) => (): void => {
 // 'txBuilder' state changes trigger updated calculations
 // user can check what's missing
 // user is notified if tx is ready (session storage)
+
+// if events not firing need to use
+// window.dispatchEvent(new Event('storage'))

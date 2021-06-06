@@ -14,7 +14,7 @@ export interface I_Attempt {
 }
 
 export interface I_Wallet {
-  headline: string // title
+  headline: string // title or notification
   mode: string | Mode // page
   history: I_Attempt[] // previous actions
   lastError: string

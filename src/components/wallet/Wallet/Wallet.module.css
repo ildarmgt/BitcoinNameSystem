@@ -51,10 +51,16 @@
 .interface {
   box-sizing: border-box;
   bottom: var(--wallet__logo_size);
+  /* top: calc(-100vh + var(--headerWhitespace) + var(--wallet__logo_size)); */
+  max-height: calc(
+    (100vh - var(--headerWhitespace) - var(--wallet__logo_size)) /
+      var(--currentScale)
+  );
   left: 2.5vmin;
-  padding: 5vmin;
+  padding: 3vmin;
+  padding-bottom: 1vmin;
   width: 95vmin;
-  height: auto;
+  /* height: auto; */
   position: fixed;
   background-color: var(--colorHoverWallet);
   color: var(--colorBitcoinBlue);
@@ -62,11 +68,39 @@
 
 /* title message on pop up interface */
 .title {
+  text-align: left;
   box-sizing: border-box;
   font-size: calc(4 * var(--s));
-  padding-bottom: calc(6 * var(--s));
+  padding-left: calc(2 * var(--s));
+  padding-bottom: calc(2 * var(--s));
   color: var(--colorBitcoinBlue);
-  font-weight: bold;
+  white-space: pre-wrap;
+  /* font-weight: bold; */
+}
+
+/* navbar for wallet */
+.walletnav {
+  display: flex;
+  flex-wrap: wrap-reverse;
+  justify-content: space-around;
+  padding: calc(1 * var(--s));
+  color: var(--colorDarker3);
+}
+
+.walletnav span {
+  padding: calc(1 * var(--s));
+  cursor: pointer;
+}
+
+.walletnav span:hover {
+  color: var(--colorBitcoinBlue);
+}
+
+.content {
+  max-height: calc(
+    (100vh - var(--headerWhitespace) - var(--wallet__logo_size)) / 2 /
+      var(--currentScale)
+  );
 }
 
 /* bitcoin value in output */

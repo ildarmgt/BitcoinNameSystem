@@ -22,9 +22,12 @@ export const Sending = (props: any): JSX.Element => {
     setShowInterface: any
   } = props.passedstate
 
+  /* -------------------------------------------------------------------------- */
+  /*                                  Rendering                                 */
+  /* -------------------------------------------------------------------------- */
   return (
     <>
-      <div className={styles.title}>{wallet.headline}</div>
+      {/* <div className={styles.title}>{wallet.headline}</div> */}
 
       {/* allow fee customization */}
       <FeesSelection

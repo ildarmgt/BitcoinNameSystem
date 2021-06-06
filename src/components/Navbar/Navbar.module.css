@@ -42,7 +42,6 @@
   min-height: calc(var(--navbarHeight));
   grid-area: wallet;
   padding: calc(0.75 * var(--s)) calc(1 * var(--s));
-  /* z-index: 5; */
   transform: scale(0.999);
 
   /* allow clicking */
