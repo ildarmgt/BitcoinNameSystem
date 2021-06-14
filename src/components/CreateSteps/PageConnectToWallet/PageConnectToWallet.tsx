@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 import { RoundButton } from '../../general/RoundButton'
-import styles from './P1RestoreOrBackup.module.css'
+import styles from './PageConnectToWallet.module.css'
 import {
   createNewWalletAction,
   changePageInfoAction
@@ -16,7 +16,7 @@ enum pages {
 }
 
 // restore backup or create new
-export const P1RestoreOrBackup = () => {
+export const PageConnectToWallet = () => {
   const { state, dispatch } = React.useContext(Store) // global state
   const [page, setPage] = useState(pages.ROOT) // local state
   const [backup, setBackup] = useState('') // local state
@@ -31,10 +31,9 @@ export const P1RestoreOrBackup = () => {
         <div className={styles.title}>
           {state.wallet.address ? (
             <>
-              Your <span className={styles.orange}>BTC</span> wallet for
-              interacting
+              <span className={styles.orange}>BTC</span> wallet for interacting
               <br />
-              with the domains
+              with the domains connected
             </>
           ) : (
             <>
@@ -50,14 +49,17 @@ export const P1RestoreOrBackup = () => {
           <Details description={'Explain'}>
             <p>
               <span>
-                This wallet has the built-in unique functionality to create
-                transactions with custom scripts, inputs, and outputs necessary
-                for this application.
+                This dapp requires a connecting to a wallet with the
+                functionality to create transactions with custom scripts,
+                inputs, and outputs necessary for this application. For early
+                proof of concept it's part of the page but eventually BNS should
+                be usable with an external wallet.
               </span>
 
               <span>
-                The wallet's address is how users and owners of the domains are
-                identified and should only be used for this purpose.
+                Such transations from a specific Bitcoin address is how
+                ownership of the domains is acquired, identified, validated, and
+                it should only be used for this purpose.
               </span>
 
               <span>1. BIP39 mnemonic is used from backup or generated</span>
@@ -75,7 +77,27 @@ export const P1RestoreOrBackup = () => {
         </div>
 
         <div className={styles.buttonWrapper}>
+          {/* show connect to wallet button  */}
           <RoundButton
+            onClick={() => {
+              // createNewWalletAction(state, dispatch)
+            }}
+          >
+            Open wallet
+          </RoundButton>
+
+          {/* move to next page button */}
+          <RoundButton
+            show={!!state.wallet?.address ? 'true' : 'false'}
+            onClick={() => {
+              changePageInfoAction(state, dispatch, 2)
+            }}
+            next='true'
+          >
+            Next
+          </RoundButton>
+
+          {/* <RoundButton
             show={state.wallet.mnemonic.length > 0 ? 'false' : 'true'}
             onClick={() => {
               setPage(pages.NEW_WALLET)
@@ -107,7 +129,7 @@ export const P1RestoreOrBackup = () => {
             next='true'
           >
             Don't change wallet
-          </RoundButton>
+          </RoundButton> */}
         </div>
       </div>
 
